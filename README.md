@@ -18,7 +18,7 @@
 - `books.html` — বইয়ের তালিকা; বিস্তারিত পৃথক পৃষ্ঠায়
 - `book-islam-science.html`, `book-islam-response.html`, `book-comparative-religion.html` — প্রতিটি বইয়ের বিস্তারিত, অনলাইন PDF প্রিভিউ ও ডাউনলোড
 - `files/comparative-religions-color.pdf` — বিদ্যমান রঙিন তুলনামূলক ধর্মতত্ত্ব PDF
-- `files/islam-science-selection.pdf` — ইসলাম ও বিজ্ঞান সংকলনের PDF (৫৯৭ পৃষ্ঠা, ৫২১ অধ্যায়, ৬ গ্রন্থ, ১২ পর্ব)। সাইটের সব লিংক এই একই ফাইলনাম ব্যবহার করে।
+- `files/islam-science-selection.pdf` — ইসলাম ও বিজ্ঞান সংকলনের PDF (৫৯৬ পৃষ্ঠা, ৫২১ অধ্যায়, ৬ গ্রন্থ, ১২ পর্ব)। সাইটের সব লিংক এই একই ফাইলনাম ব্যবহার করে।
 - `files/islam-opponents-response.pdf` — ইসলাম বিরোধীদের জবাব বইয়ের PDF (১২০৩ পৃষ্ঠা)।
 - `assets/islam-opponents-response-cover.jpg`, `assets/islam-opponents-response-wrap.jpg` — নতুন বইয়ের সামনের প্রচ্ছদ ও পূর্ণ প্রচ্ছদ
 - `ask.html` — নাস্তিকতা ও তুলনামূলক ধর্মতত্ত্ব-সম্পর্কিত মতবিনিময়
