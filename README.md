@@ -9,6 +9,7 @@
 - `quran-compilation-history.html` — কুরআনের উৎস ও সংকলনের ইতিহাস
 - `islam-spread-history.html` — ইসলামের ইতিহাস ও বিস্তার বিষয়ে প্রবন্ধ
 - `filistin-tarihi.html` — “ফিলিস্তিনের ইতিহাস: প্রাচীন কানআন থেকে ২০২৬ সাল পর্যন্ত” পূর্ণ প্রবন্ধ; ৬টি ছবি ও সূত্রসহ (`assets/filistin/`)
+- `filistin-dharma-gurutto.html` — “বিভিন্ন ধর্মে ফিলিস্তিনের গুরুত্ব ও ইতিহাস” — কুরআন, হাদিস, বাইবেল ও ইতিহাসভিত্তিক তুলনামূলক প্রবন্ধ; ৭টি ছবি ও ৬টি টেবিলসহ
 - `logic.html` — যুক্তিবিদ্যা নিয়ে পূর্ণ প্রবন্ধ
 - `quran-science.html` — “কুরআন ও আধুনিক বিজ্ঞান” পূর্ণ প্রবন্ধ
 - `assets/ibrahim-iyad-portrait.jpeg`, `assets/ibrahim-iyad-window.jpg` — আপনার দেওয়া দুটি পোর্ট্রেট
