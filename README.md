@@ -8,6 +8,7 @@
 - `four-pillars-logic.html` — যুক্তিবিদ্যায় দক্ষ হতে চারটি বিষয়
 - `quran-compilation-history.html` — কুরআনের উৎস ও সংকলনের ইতিহাস
 - `islam-spread-history.html` — ইসলামের ইতিহাস ও বিস্তার বিষয়ে প্রবন্ধ
+- `filistin-tarihi.html` — “ফিলিস্তিনের ইতিহাস: প্রাচীন কানআন থেকে ২০২৬ সাল পর্যন্ত” পূর্ণ প্রবন্ধ; ৬টি ছবি ও সূত্রসহ (`assets/filistin/`)
 - `logic.html` — যুক্তিবিদ্যা নিয়ে পূর্ণ প্রবন্ধ
 - `quran-science.html` — “কুরআন ও আধুনিক বিজ্ঞান” পূর্ণ প্রবন্ধ
 - `assets/ibrahim-iyad-portrait.jpeg`, `assets/ibrahim-iyad-window.jpg` — আপনার দেওয়া দুটি পোর্ট্রেট
