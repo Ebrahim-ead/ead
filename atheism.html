@@ -1201,6 +1201,19 @@ html[data-theme="light"] .motion-sparks i{background:#a4710a;opacity:.18;box-sha
 @media(max-width:560px){.motion-sparks i:nth-child(2),.motion-sparks i:nth-child(3){display:none}}
 @media(prefers-reduced-motion:reduce){.motion-sparks{display:none!important}header.top::after,.hero .btn.fill::before,.article-list-grid .article-card-more b{animation:none!important}}
 </style>
+<style id="article-pager">
+.pager{display:flex;align-items:center;justify-content:center;gap:14px;margin:34px 0 6px;flex-wrap:wrap}
+.pager-num{display:inline-grid;place-items:center;min-width:46px;height:46px;padding:0 6px;border:1px solid rgba(244,196,78,.34);border-radius:12px;color:#dbe7f2;font-weight:800;font-size:17px;text-decoration:none;background:rgba(255,255,255,.03);transition:transform .25s var(--ease),border-color .25s,background .25s,color .25s}
+.pager-num:hover,.pager-num:focus-visible{transform:translateY(-2px);border-color:rgba(244,196,78,.7);background:rgba(244,196,78,.12);color:#ffe09a}
+.pager-num[aria-current="page"]{background:linear-gradient(135deg,rgba(245,184,28,.9),rgba(214,150,12,.95));border-color:rgba(245,184,28,.85);color:#141006;cursor:default}
+.pager-num[aria-current="page"]:hover{transform:none;background:linear-gradient(135deg,rgba(245,184,28,.9),rgba(214,150,12,.95))}
+.pager-sep{color:rgba(219,231,242,.45);font-size:15px}
+[data-theme="light"] .pager-num{color:#33495a;border-color:rgba(155,101,0,.3);background:#fff}
+[data-theme="light"] .pager-num:hover{background:rgba(155,101,0,.08);color:#7a5000}
+[data-theme="light"] .pager-num[aria-current="page"]{background:linear-gradient(135deg,#c98f10,#a4710a);border-color:#a4710a;color:#fff}
+[data-theme="light"] .pager-sep{color:rgba(51,73,90,.4)}
+@media(max-width:640px){.pager{margin:26px 0 4px;gap:11px}.pager-num{min-width:42px;height:42px;font-size:16px}}
+</style>
 </head>
 <body>
 <div class="motion-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -1262,16 +1275,7 @@ html[data-theme="light"] .motion-sparks i{background:#a4710a;opacity:.18;box-sha
     <p class="article-card-excerpt">“কেন কিছু একটা অস্তিত্বশীল, কিছুই না থাকার পরিবর্তে?”—অস্তিত্বের চূড়ান্ত ব্যাখ্যা নিয়ে একটি দার্শনিক অনুসন্ধান।</p>
     <span class="article-card-more">সম্পূর্ণ প্রবন্ধ পড়ুন <b aria-hidden="true">→</b></span>
   </a>
-</article>
-<article class="article-card rv">
-  <a class="article-card-link" href="filistin-tarihi.html">
-    <span class="article-card-kicker">নিজস্ব প্রবন্ধ · ইতিহাস</span>
-    <h3>ফিলিস্তিনের ইতিহাস: প্রাচীন কানআন থেকে ২০২৬ সাল পর্যন্ত</h3>
-    <p class="article-card-subtitle">কানআনের নগর-রাজ্য থেকে আজকের গাজা — তিন হাজার বছরের ধারাবাহিক ইতিহাস</p>
-    <p class="article-card-excerpt">ফিলিস্তিন নামের উৎপত্তি, ইসলামি বিজয়, উসমানীয় যুগ, ব্রিটিশ ম্যান্ডেট, ১৯৪৮-এর নাকবা, ১৯৬৭-এর দখল, ইনতিফাদা, অসলো চুক্তি এবং ২০২৬ সাল পর্যন্ত গাজার বাস্তবতা — জাতিসংঘ, ICJ ও ICC-র নথি অনুসারে সাজানো।</p>
-    <span class="article-card-more">সম্পূর্ণ প্রবন্ধ পড়ুন <b aria-hidden="true">→</b></span>
-  </a>
-</article></div></div></section></main>
+</article></div><nav class="pager" aria-label="প্রবন্ধের পৃষ্ঠা"><a class="pager-num" href="atheism.html" aria-label="পৃষ্ঠা ১" aria-current="page">১</a><span class="pager-sep" aria-hidden="true">|</span><a class="pager-num" href="atheism-2.html" aria-label="পৃষ্ঠা ২">২</a></nav></div></section></main>
 <footer><div class="wrap">
   <div class="fgrid">
     <div>
