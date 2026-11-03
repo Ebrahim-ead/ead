@@ -61,6 +61,8 @@
   var cache = {};
   var lastQuery = "";
   var fullRun = false;
+  var lastQuery = "";
+  var fullRun = false;
 
   /* ---------------------------------------------------------- *
    * elements
@@ -103,17 +105,81 @@
   /* ---------------------------------------------------------- *
    * sura list
    * ---------------------------------------------------------- */
+
+  /* common ways people spell the suras, so a lookup does not depend on
+     which transliteration the dataset happened to choose */
+  var ALIAS = {
+    1: ["fatiha", "fatihah", "fatima"], 2: ["baqara", "baqarah", "bakara"],
+    3: ["imran"], 4: ["nisa", "nisaa"], 5: ["maida", "maidah"], 6: ["anam", "anaam"],
+    7: ["araf", "aaraf"], 8: ["anfal"], 9: ["tawba", "tawbah", "tauba"],
+    10: ["yunus", "younus"], 11: ["hud", "hood"], 12: ["yusuf", "yousuf"],
+    13: ["rad", "raad"], 14: ["ibrahim"], 15: ["hijr"], 16: ["nahl"],
+    17: ["isra"], 18: ["kahf", "kahaf"], 19: ["maryam", "mariam"],
+    20: ["taha", "tahaa"], 21: ["anbiya", "ambiya"], 22: ["hajj", "haj"],
+    23: ["muminun", "mominun"], 24: ["nur", "noor"], 25: ["furqan", "furkan"],
+    26: ["shuara", "shuaraa"], 27: ["naml"], 28: ["qasas", "kasas"],
+    29: ["ankabut", "ankaboot"], 30: ["rum", "room"], 31: ["luqman", "lokman"],
+    32: ["sajda", "sajdah"], 33: ["ahzab", "ahzaab"], 34: ["saba", "sabaa"],
+    35: ["fatir", "faatir"], 36: ["yasin", "yaseen", "yasin sharif"],
+    37: ["saffat", "saaffaat"], 38: ["sad", "saad", "swad"], 39: ["zumar"],
+    40: ["ghafir", "ghafur"], 41: ["fussilat", "ha mim"], 42: ["shura", "shoora"],
+    43: ["zukhruf"], 44: ["dukhan", "dukhaan"], 45: ["jathiya", "jasiya"],
+    46: ["ahqaf"], 47: ["muhammad"], 48: ["fath", "fatah"], 49: ["hujurat", "hujraat"],
+    50: ["qaf", "kaaf"], 51: ["dhariyat", "zariyat"], 52: ["tur", "toor"],
+    53: ["najm", "najam"], 54: ["qamar", "kamar"], 55: ["rahman", "rahmon"],
+    56: ["waqia", "waqiah"], 57: ["hadid"], 58: ["mujadila", "mujadala"],
+    59: ["hashr"], 60: ["mumtahina", "mumtahana"], 61: ["saff", "saf"],
+    62: ["juma", "jumma"], 63: ["munafiqun", "munafiqoon"], 64: ["taghabun"],
+    65: ["talaq", "talak"], 66: ["tahrim", "tahreem"], 67: ["mulk", "mulk sharif"],
+    68: ["qalam", "kalam"], 69: ["haqqa", "haqqah"], 70: ["maarij", "marij"],
+    71: ["nuh", "nooh"], 72: ["jinn", "jin"], 73: ["muzzammil", "mujammil"],
+    74: ["muddassir", "mudassir"], 75: ["qiyama", "qiyamah"], 76: ["insan", "dahr"],
+    77: ["mursalat"], 78: ["naba", "nabaah"], 79: ["naziat", "naziyat"],
+    80: ["abasa", "abasa"], 81: ["takwir", "takweer"], 82: ["infitar", "infitaf"],
+    83: ["mutaffifin", "mutaffifin"], 84: ["inshiqaq", "inshikak"],
+    85: ["buruj", "burooj"], 86: ["tariq", "taariq"], 87: ["ala", "aalaa"],
+    88: ["ghashiya", "ghashiyah"], 89: ["fajr"], 90: ["balad", "balad sharif"],
+    91: ["shams", "shamsh"], 92: ["layl", "lail"], 93: ["duha", "zuha"],
+    94: ["sharh", "inshirah"], 95: ["tin", "teen"], 96: ["alaq", "alak"],
+    97: ["qadr", "kadar"], 98: ["bayyina", "bayyinah"], 99: ["zalzala", "zilzal"],
+    100: ["adiyat", "adiyaat"], 101: ["qaria", "qariah"], 102: ["takathur", "takasur"],
+    103: ["asr", "asar"], 104: ["humaza", "humazah"], 105: ["fil", "feel"],
+    106: ["quraysh", "kuraish"], 107: ["maun", "maoon"], 108: ["kawthar", "kausar"],
+    109: ["kafirun", "kafiroon"], 110: ["nasr", "nasr sharif"], 111: ["lahab", "masad"],
+    112: ["ikhlas", "ekhlas"], 113: ["falaq", "falak"], 114: ["nas", "naas", "an-nas"]
+  };
+
+  /* let readers type loosely: "al-ikhlas" and "Al-Ikhlaas" are the same
+     sura, and nobody wants to think about hyphens while looking one up */
+  function squash(t) {
+    return String(t).toLowerCase().replace(/[\s\-'’]/g, "");
+  }
+  function loose(t) {
+    return squash(t).replace(/(.)\1+/g, "$1");
+  }
+  function matches(hay, hayLoose, q) {
+    if (hay.indexOf(q) !== -1) return true;
+    var lq = loose(q);
+    return lq.length >= 4 && hayLoose.indexOf(lq) !== -1;
+  }
+
+  function suraButton(s) {
+    var text = squash(s.bn + " " + s.translit + " " + s.name + " " +
+      (ALIAS[s.n] || []).join(" "));
+    return '<button class="q-sura" type="button" data-sura="' + s.n + '"' +
+      (s.n === current ? ' aria-current="true"' : '') +
+      ' data-hay="' + esc(text) + '" data-hay2="' + esc(loose(text)) + '">' +
+      '<span class="num">' + bn(s.n) + '</span>' +
+      '<span class="txt"><span class="bn">' + esc(s.bn) + '</span>' +
+      '<span class="meta">' + esc(s.translit) + ' · ' + bn(s.count) + ' আয়াত · ' +
+      (s.type === "makki" ? "মাক্কী" : "মাদানী") + '</span></span>' +
+      '<span class="ar" aria-hidden="true">' + esc(s.name) + '</span>' +
+      '</button>';
+  }
+
   function renderList() {
-    var html = index.suras.map(function (s) {
-      return '<button class="q-sura" type="button" data-sura="' + s.n + '"' +
-        (s.n === current ? ' aria-current="true"' : '') + '>' +
-        '<span class="num">' + bn(s.n) + '</span>' +
-        '<span class="txt"><span class="bn">' + esc(s.bn) + '</span>' +
-        '<span class="meta">' + esc(s.translit) + ' · ' + bn(s.count) + ' আয়াত</span></span>' +
-        '<span class="ar" aria-hidden="true">' + esc(s.name) + '</span>' +
-        '</button>';
-    }).join("");
-    listEl.innerHTML = html;
+    /* one straight 1–114 list: no grouping, just the order of the mushaf */
+    listEl.innerHTML = index.suras.map(suraButton).join("");
 
     listEl.addEventListener("click", function (e) {
       var btn = e.target.closest("[data-sura]");
@@ -123,6 +189,24 @@
     });
 
     $("#q-total").textContent = bn(index.total) + " আয়াত · " + bn(114) + " সূরা";
+    bindFilter();
+  }
+
+  /* 114 names are a lot: give the reader a box instead of a hunt */
+  function bindFilter() {
+    var box = document.getElementById("q-filter");
+    if (!box) return;
+    box.addEventListener("input", function () {
+      var q = squash(box.value.trim());
+      var shown = 0;
+      [].forEach.call(listEl.querySelectorAll(".q-sura"), function (b) {
+        var hit = !q || matches(b.dataset.hay, b.dataset.hay2 || "", q);
+        b.hidden = !hit;
+        if (hit) shown++;
+      });
+      var none = document.getElementById("q-filter-none");
+      if (none) none.hidden = !(q && !shown);
+    });
   }
 
   function markActive(n) {
@@ -148,7 +232,15 @@
     if (replace) history.replaceState(null, "", hash);
     else history.pushState(null, "", hash);
 
-    if (cache[n]) { paint(n, meta, cache[n], jumpTo); return; }
+    if (cache[n]) {
+      if (jumpTo && n === current && mainEl.querySelector("#v" + jumpTo)) {
+        /* already rendered: just move to the ayah instead of repainting */
+        scrollToVerse(jumpTo);
+        return;
+      }
+      paint(n, meta, cache[n], jumpTo);
+      return;
+    }
 
     mainEl.innerHTML = '<div class="q-empty">সূরা লোড হচ্ছে…</div>';
     fetch(DATA + "suras/" + n + ".json")

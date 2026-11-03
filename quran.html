@@ -1252,7 +1252,7 @@ html[data-theme="light"] .motion-sparks i{background:#a4710a;opacity:.18;box-sha
   <div class="q-note"><b>সূত্র ও ভার্সন:</b> বাংলা অনুবাদ ও সংক্ষিপ্ত তাফসীর — ড. আবূ বকর মুহাম্মাদ যাকারিয়া, প্রকাশক রাওয়াদ ট্রান্সলেশন সেন্টার, সূত্র <a href="https://quranenc.com/bn/browse/bengali_zakaria" target="_blank" rel="noopener">QuranEnc.com</a> (সংস্করণ ১.১.১); ইংরেজি — Saheeh International (১.১.২); আরবি — উসমানি লিপি (Tanzil.net)। অনুবাদের পাঠ অপরিবর্তিত রাখা হয়েছে।</div>
 </div></section>
 
-<div class="q-wrap">
+<div class="q-full">
   <div class="q-toolbar" role="toolbar" aria-label="পাঠের সেটিংস">
     <div class="q-search">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -1280,7 +1280,12 @@ html[data-theme="light"] .motion-sparks i{background:#a4710a;opacity:.18;box-sha
       <div class="q-aside-head">
         <div><b>সূরাসমূহ</b><br><small id="q-total">…</small></div>
       </div>
+      <div class="q-aside-filter">
+        <input id="q-filter" type="search" autocomplete="off" placeholder="সূরার নাম লিখুন…"
+               aria-label="সূরার নাম দিয়ে তালিকা ছাঁকুন">
+      </div>
       <div class="q-list" id="q-sura-list"></div>
+      <div class="q-empty" id="q-filter-none" hidden style="padding:10px 14px">এই নামে কোনো সূরা নেই।</div>
     </aside>
     <div class="q-backdrop" id="q-backdrop"></div>
 
