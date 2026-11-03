@@ -152,10 +152,37 @@ html[data-theme="light"] .h-aside{background:linear-gradient(180deg,#ffffff,#f4f
   font-size:var(--h-ar-size,25px);line-height:2.1;text-align:right;direction:rtl;
   color:var(--text);letter-spacing:0}
 /* english */
-.h-en{font-size:var(--h-en-size,15px);line-height:1.9;color:var(--muted);margin-top:10px;
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.h-ar,.h-en{overflow-wrap:anywhere}
+.h-ar{overflow-wrap:anywhere}
 .h-hidden{display:none!important}
+
+/* ---------- grade badge (সহিহ / হাসান / দুর্বল / জাল) ---------- */
+.h-grade{flex:0 0 auto;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;
+  border:1px solid var(--line);color:var(--muted);background:rgba(255,255,255,.04);
+  white-space:nowrap;line-height:1.5}
+.h-grade.ok{border-color:rgba(70,184,145,.5);color:#7de0bd;background:rgba(70,184,145,.13)}
+.h-grade.weak{border-color:rgba(240,160,60,.5);color:#f4c07a;background:rgba(240,160,60,.12)}
+.h-grade.fake{border-color:rgba(226,84,84,.55);color:#ff9d9d;background:rgba(226,84,84,.14)}
+.h-grade.other{border-color:rgba(150,165,185,.4);color:#b6c6d8;background:rgba(150,165,185,.08)}
+html[data-theme="light"] .h-grade.ok{color:#116b4d;background:rgba(70,184,145,.16)}
+html[data-theme="light"] .h-grade.weak{color:#8a5300;background:rgba(240,160,60,.16)}
+html[data-theme="light"] .h-grade.fake{color:#9d1c1c;background:rgba(226,84,84,.14)}
+
+/* বাংলা অনুবাদ */
+.h-bn{font-size:var(--h-bn-size,17px);line-height:2;color:var(--text);margin-top:11px}
+.h-bn{overflow-wrap:anywhere}
+
+/* উৎসে পাঠ না থাকলে */
+.h-bn-missing,.h-ar-missing{color:var(--muted);font-style:italic;font-size:14.5px}
+.h-ar-missing{margin-top:8px;font-size:13px;opacity:.85}
+
+/* ব্যাখ্যা ও সনদ (উৎসের নোট) */
+.h-note-d{margin-top:12px;border-top:1px dashed var(--line);padding-top:9px}
+.h-note-d summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--gold2);
+  list-style:none;display:inline-flex;align-items:center;gap:6px}
+.h-note-d summary::-webkit-details-marker{display:none}
+.h-note-d summary::before{content:"▸";font-size:11px;transition:transform .2s}
+.h-note-d[open] summary::before{transform:rotate(90deg)}
+.h-note-body{margin-top:9px;font-size:14px;line-height:1.95;color:var(--muted);white-space:pre-wrap}
 
 /* ---------- pager ---------- */
 .h-pager{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:24px;
@@ -198,6 +225,7 @@ html[data-theme="light"] .h-aside{background:linear-gradient(180deg,#ffffff,#f4f
   .h-item{padding:13px 12px}
   .h-item-tools{opacity:1}
   .h-ar{font-size:calc(var(--h-ar-size,25px) * .94);line-height:2}
+  .h-bn{font-size:calc(var(--h-bn-size,17px) * .97)}
 }
 html.h-drawer .h-aside,
 html.h-drawer .h-aside.open{
@@ -233,7 +261,8 @@ html.h-drawer .h-backdrop.on{opacity:1;visibility:visible}
   .h-item{border:none!important;background:none!important;padding:6pt 0;break-inside:avoid;
     border-bottom:.5pt dotted #ccc!important}
   .h-ar{font-size:14pt;color:#000!important}
-  .h-en{font-size:9.5pt;color:#444!important}
+  .h-bn{font-size:10.5pt;color:#111!important}
+  .h-grade{border-color:#999!important;color:#333!important;background:none!important}
   .h-item-tools{display:none!important}
   .h-credit{display:block!important;border:none;border-top:1pt solid #999;border-radius:0;
     padding:6pt 0 0;margin:10pt 0 0;font-size:8pt;color:#444!important}
