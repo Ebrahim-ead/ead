@@ -1121,6 +1121,28 @@ html[data-theme="light"] .cta::before,html[data-theme="light"] .book-teaser::bef
 /* Keep portraits visible even when scroll animations fail. */
 .hero-photo{opacity:1!important;transform:none;transform-style:flat}
 .hero-photo img{transform:none!important;backface-visibility:visible}
+.quran-home-card{display:flex;align-items:center;gap:18px;max-width:920px;margin:18px auto 0;
+  padding:20px 22px;border-radius:20px;text-decoration:none;color:inherit;
+  border:1px solid rgba(244,196,78,.32);background:linear-gradient(135deg,rgba(17,35,53,.92),rgba(8,20,33,.94));
+  box-shadow:0 18px 44px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.08);
+  transition:transform .3s cubic-bezier(.2,.75,.25,1),border-color .3s,box-shadow .3s}
+.quran-home-card:hover{transform:translateY(-4px);border-color:rgba(244,196,78,.6);
+  box-shadow:0 26px 60px rgba(0,0,0,.32)}
+.qhc-icon{flex:0 0 46px;width:46px;height:46px;display:grid;place-items:center;border-radius:13px;
+  background:rgba(244,196,78,.14);border:1px solid rgba(244,196,78,.3)}
+.qhc-icon svg{width:22px;height:22px;fill:none;stroke:#f5c64f;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.qhc-body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.qhc-kicker{color:#f5c64f;font-size:12px;font-weight:800;letter-spacing:.04em}
+.qhc-title{color:#f5f7fb;font-size:clamp(17px,2.2vw,20px);line-height:1.4}
+.qhc-meta{color:#b7c7d8;font-size:13.5px;line-height:1.6}
+.qhc-go{margin-left:auto;color:#ffd66e;font-weight:800;white-space:nowrap;font-size:14px}
+html[data-theme="light"] .quran-home-card{background:linear-gradient(135deg,#ffffff,#f3f7fa);
+  border-color:rgba(155,101,0,.28);box-shadow:0 16px 38px rgba(31,59,76,.12)}
+html[data-theme="light"] .qhc-title{color:#1b2c38}
+html[data-theme="light"] .qhc-meta{color:#536a7a}
+html[data-theme="light"] .qhc-kicker,html[data-theme="light"] .qhc-go{color:#805300}
+@media(max-width:640px){.quran-home-card{gap:12px;padding:16px;flex-wrap:wrap}
+  .qhc-go{margin-left:0;width:100%}}
 </style>
 <style id="site-quality-polish">
 /* Reliable mobile layout, inclusive motion settings and keyboard focus. */
@@ -1267,7 +1289,22 @@ html[data-theme="light"] .motion-sparks i{background:#a4710a;opacity:.18;box-sha
   </figure>
   </div>
   <a class="scrollhint" href="#sec-start" aria-label="নিচে স্ক্রল করুন"><span>নিচে দেখুন</span><svg class="i"><use href="#up"/></svg></a>
-</div></section>
+</div>
+  <!-- the Quran reader: a section link, not a third article -->
+  <a class="quran-home-card rv" href="quran.html">
+    <span class="qhc-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M3 5.5h7a2 2 0 0 1 2 2V20a2 2 0 0 0-2-2H3z"/>
+      <path d="M21 5.5h-7a2 2 0 0 0-2 2V20a2 2 0 0 1 2-2h7z"/></svg>
+    </span>
+    <span class="qhc-body">
+      <span class="qhc-kicker">আল-কুরআনুল কারীম</span>
+      <b class="qhc-title">সম্পূর্ণ কুরআন — আরবি, বাংলা ও ইংরেজি</b>
+      <span class="qhc-meta">১১৪ সূরা · ৬২৩৬ আয়াত · ড. আবূ বকর মুহাম্মাদ যাকারিয়ার অনুবাদ ও সংক্ষিপ্ত তাফসীর</span>
+    </span>
+    <span class="qhc-go" aria-hidden="true">পড়ুন →</span>
+  </a>
+
+</section>
 <div id="sec-start"></div>
 
 <section style="padding-top:0"><div class="wrap">

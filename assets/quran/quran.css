@@ -6,6 +6,9 @@
    ============================================================ */
 
 .q-wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+/* the reader gets the whole window; the sidebar is capped instead of the
+   whole page — otherwise the sura list eats the space the ayat need */
+.q-full{margin:0 auto;padding:0 22px;max-width:1600px}
 
 /* ---------- intro ---------- */
 .q-intro{padding:38px 0 10px}
@@ -44,16 +47,33 @@ html[data-theme="light"] .q-toolbar{background:rgba(250,253,254,.94);box-shadow:
   background:rgba(255,255,255,.04);color:var(--text);font:inherit;font-size:13px}
 
 /* ---------- layout ---------- */
-.q-layout{display:grid;grid-template-columns:288px minmax(0,1fr);gap:22px;align-items:start;padding:22px 0 40px}
+.q-layout{display:grid;grid-template-columns:clamp(232px,20vw,300px) minmax(0,1fr);
+  gap:clamp(16px,2vw,30px);align-items:start;padding:22px 0 40px}
+/* the dimmer is a mobile overlay only — if it stayed in the flow it would
+   become a third grid cell and push the reading pane under the sidebar */
+.q-backdrop{display:none}
+.q-aside{grid-column:1}
+.q-main{grid-column:2;min-width:0;max-width:78ch}
 
 /* ---------- sura list ---------- */
 .q-aside{position:sticky;top:150px;max-height:calc(100vh - 170px);display:flex;flex-direction:column;
-  border:1px solid var(--line);border-radius:18px;background:var(--card);overflow:hidden}
+  border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  /* an opaque surface of its own: the page background used to show straight
+     through and made 114 sura names unreadable */
+  background:linear-gradient(180deg,#08161f,#06121a);
+  box-shadow:0 18px 50px -28px rgba(0,0,0,.85)}
+html[data-theme="light"] .q-aside{background:linear-gradient(180deg,#ffffff,#f4f8fa);
+  box-shadow:0 18px 40px -28px rgba(31,59,76,.3)}
 .q-aside-head{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;
   justify-content:space-between;gap:8px;flex:0 0 auto}
 .q-aside-head b{font-size:14px}
 .q-aside-head small{color:var(--muted);font-size:12px}
-.q-list{overflow:auto;overscroll-behavior:contain;padding:7px;display:flex;flex-direction:column;gap:3px}
+.q-aside-filter{padding:9px 10px;border-bottom:1px solid var(--line);flex:0 0 auto}
+.q-aside-filter input{width:100%;padding:8px 10px;border-radius:9px;border:1px solid var(--line);
+  background:rgba(255,255,255,.05);color:var(--text);font:inherit;font-size:13px}
+.q-aside-filter input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,184,28,.14)}
+.q-list{overflow:auto;overscroll-behavior:contain;padding:7px;display:flex;flex-direction:column;gap:3px;
+  scrollbar-gutter:stable}
 .q-list::-webkit-scrollbar{width:8px}
 .q-list::-webkit-scrollbar-thumb{background:rgba(245,184,28,.28);border-radius:8px}
 .q-sura{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;
@@ -159,17 +179,22 @@ html[data-theme="light"] .q-toolbar{background:rgba(250,253,254,.94);box-shadow:
 .q-drawer-btn{display:none}
 @media(max-width:960px){
   .q-layout{grid-template-columns:1fr;gap:14px}
-  .q-aside{position:fixed;inset:0 0 0 auto;width:min(340px,88vw);max-height:none;z-index:200;
+  .q-aside{grid-column:auto;position:fixed;inset:0 0 0 auto;width:min(340px,88vw);max-height:none;z-index:200;
+    background:linear-gradient(180deg,#08161f,#050f16);
     border-radius:0;transform:translateX(102%);transition:transform .38s cubic-bezier(.22,1,.36,1);
     box-shadow:-20px 0 60px rgba(0,0,0,.5)}
+  .q-main{grid-column:auto}
+  html[data-theme="light"] .q-aside{background:#fff}
   .q-aside.open{transform:none}
   .q-aside-head{padding:14px}
   .q-list{padding:10px}
   .q-drawer-btn{display:inline-flex}
-  .q-backdrop{position:fixed;inset:0;background:rgba(2,9,14,.62);z-index:190;opacity:0;
+  .q-backdrop{display:block;position:fixed;inset:0;background:rgba(2,9,14,.62);z-index:190;opacity:0;
     visibility:hidden;transition:opacity .3s,visibility .3s}
   .q-backdrop.on{opacity:1;visibility:visible}
-  .q-toolbar{top:64px;padding:9px}
+  .q-toolbar{top:auto;bottom:0;margin:0 -12px;border-radius:14px 14px 0 0;padding:9px 12px;
+    background:rgba(4,12,16,.97);z-index:60;box-shadow:0 -14px 34px -20px rgba(0,0,0,.9)}
+  html[data-theme="light"] .q-toolbar{background:rgba(250,253,254,.97)}
   .q-sura-head{padding:16px}
   .q-verse{padding:13px 12px}
   .q-verse-tools{opacity:1}
