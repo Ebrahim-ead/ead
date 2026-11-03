@@ -82,6 +82,22 @@
     backdropEl = $("#q-backdrop");
     if (!listEl || !mainEl) return;
 
+    /* Drawer mode is decided here, not left to a media query alone: on a
+       laptop the sura list stays a plain column and can never float over
+       the ayat. ?drawer=1 / ?drawer=0 force either layout for checking. */
+    (function drawerMode() {
+      var mq = window.matchMedia("(max-width: 960px)");
+      var forced = /[?&]drawer=(0|1)/.exec(location.search);
+      function sync() {
+        var narrow = forced ? forced[1] === "1" : mq.matches;
+        document.documentElement.classList.toggle("q-drawer", narrow);
+        if (!narrow) closeDrawer();
+      }
+      sync();
+      if (mq.addEventListener) mq.addEventListener("change", sync);
+      else if (mq.addListener) mq.addListener(sync);
+    })();
+
     applySettings();
     wireToolbar();
 

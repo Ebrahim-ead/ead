@@ -52,8 +52,25 @@ html[data-theme="light"] .q-toolbar{background:rgba(250,253,254,.94);box-shadow:
 /* the dimmer is a mobile overlay only — if it stayed in the flow it would
    become a third grid cell and push the reading pane under the sidebar */
 .q-backdrop{display:none}
-.q-aside{grid-column:1}
+.q-aside{grid-column:1;background:#08161f}
 .q-main{grid-column:2;min-width:0;max-width:78ch}
+/* nothing may make the reader scroll sideways */
+.q-full{overflow-x:clip}
+
+/* Drawer mode is a state JS puts on <html>, not a guess made by a media
+   query alone. Outside it the sura list is a plain column — pinned back into
+   the flow with !important so no half-applied rule can float it over the
+   ayat, which is exactly what was seen on the laptop. */
+html:not(.q-drawer) .q-aside{position:sticky!important;inset:auto!important;
+  top:150px!important;bottom:auto!important;left:auto!important;right:auto!important;
+  transform:none!important;opacity:1!important;visibility:visible!important;
+  width:auto!important;max-width:100%!important;height:auto!important;
+  max-height:calc(100vh - 170px)!important;z-index:auto!important;display:flex!important}
+html:not(.q-drawer) .q-backdrop{display:none!important}
+html:not(.q-drawer) .q-aside{background:#08161f!important}
+html:not(.q-drawer)[data-theme="light"] .q-aside{background:#ffffff!important}
+html.q-drawer .q-aside{display:none}
+html.q-drawer .q-aside.open{display:flex}
 
 /* ---------- sura list ---------- */
 .q-aside{position:sticky;top:150px;max-height:calc(100vh - 170px);display:flex;flex-direction:column;
@@ -179,19 +196,11 @@ html[data-theme="light"] .q-aside{background:linear-gradient(180deg,#ffffff,#f4f
 .q-drawer-btn{display:none}
 @media(max-width:960px){
   .q-layout{grid-template-columns:1fr;gap:14px}
-  .q-aside{grid-column:auto;position:fixed;inset:0 0 0 auto;width:min(340px,88vw);max-height:none;z-index:200;
-    background:linear-gradient(180deg,#08161f,#050f16);
-    border-radius:0;transform:translateX(102%);transition:transform .38s cubic-bezier(.22,1,.36,1);
-    box-shadow:-20px 0 60px rgba(0,0,0,.5)}
-  .q-main{grid-column:auto}
-  html[data-theme="light"] .q-aside{background:#fff}
-  .q-aside.open{transform:none}
+  .q-aside{grid-column:auto}
+  .q-main{grid-column:auto;max-width:none}
   .q-aside-head{padding:14px}
   .q-list{padding:10px}
   .q-drawer-btn{display:inline-flex}
-  .q-backdrop{display:block;position:fixed;inset:0;background:rgba(2,9,14,.62);z-index:190;opacity:0;
-    visibility:hidden;transition:opacity .3s,visibility .3s}
-  .q-backdrop.on{opacity:1;visibility:visible}
   .q-toolbar{top:auto;bottom:0;margin:0 -12px;border-radius:14px 14px 0 0;padding:9px 12px;
     background:rgba(4,12,16,.97);z-index:60;box-shadow:0 -14px 34px -20px rgba(0,0,0,.9)}
   html[data-theme="light"] .q-toolbar{background:rgba(250,253,254,.97)}
@@ -200,6 +209,18 @@ html[data-theme="light"] .q-aside{background:linear-gradient(180deg,#ffffff,#f4f
   .q-verse-tools{opacity:1}
   .q-ar{font-size:calc(var(--q-ar-size,27px) * .92);line-height:2.05}
 }
+/* ---- drawer: only when it is really open ---- */
+html.q-drawer .q-aside,
+html.q-drawer .q-aside.open{
+  position:fixed;inset:0 0 0 auto;width:min(360px,90vw);height:100%;max-height:none;
+  z-index:200;border-radius:0;transform:none;opacity:1;visibility:visible;
+  flex-direction:column;box-shadow:-20px 0 60px rgba(0,0,0,.5);background:#08161f;
+  isolation:isolate;backdrop-filter:none;-webkit-backdrop-filter:none}
+html.q-drawer[data-theme="light"] .q-aside{background:#ffffff}
+html.q-drawer .q-backdrop{display:block;position:fixed;inset:0;background:rgba(2,9,14,.66);
+  z-index:190;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+html.q-drawer .q-backdrop.on{opacity:1;visibility:visible}
+
 @media(max-width:560px){
   .q-wrap{padding:0 12px}
   .q-intro{padding:26px 0 6px}
