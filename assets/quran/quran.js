@@ -26,6 +26,13 @@
   function bn(n) {
     return String(n).replace(/[0-9]/g, function (d) { return bnDigits[+d]; });
   }
+  /* ০-৯ → 0-9, যাতে বাংলা অঙ্কে লেখা রেফারেন্সও পড়া যায় */
+  function fromBengali(t) {
+    return String(t).replace(/[০-৯]/g, function (d) {
+      return String("০১২৩৪৫৬৭৮৯".indexOf(d));
+    });
+  }
+
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
@@ -268,8 +275,13 @@
       });
   }
 
+  /* ডেটার প্রতিটি সূরার প্রথম আয়াতই বিসমিল্লাহ দিয়ে শুরু (সূরা ১ সহ),
+     তাই আলাদা বাসমালা ব্লক ছাপালে একই কথা দুইবার দেখায়। সূরা ৯-এ নেই।
+     ভবিষ্যতে বাসমালা আলাদা থাকা সংস্করণে এলে ব্লকটি নিজে থেকেই ফিরবে। */
+  var BASMALA = /^\s*بِسْمِ/;
   function paint(n, meta, d, jumpTo) {
-    var basmala = n !== 1 && n !== 9;
+    var first = (d.verses && d.verses[0] && d.verses[0].ar) || "";
+    var basmala = n !== 9 && !BASMALA.test(first);
 
     var head = '<div class="q-sura-head"><div class="top">' +
       '<h2>' + bn(n) + '. ' + esc(meta.bn) + '</h2>' +
@@ -471,7 +483,8 @@
 
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") closeDrawer();
-      if (e.target.matches("input,textarea,select")) return;
+      var t = e.target;
+      if (t && t.matches && t.matches("input,textarea,select,[contenteditable]")) return;
       if (e.key === "ArrowRight" && current < 114) loadSura(current + 1);
       if (e.key === "ArrowLeft" && current > 1) loadSura(current - 1);
     });
@@ -529,8 +542,13 @@
       resultsEl.setAttribute("hidden", ""); resultsEl.innerHTML = ""; return;
     }
 
-    var ref = q.match(/^\s*(\d{1,3})\s*[:\s]\s*(\d{1,3})\s*$/);
-    if (ref) { loadSura(+ref[1], +ref[2]); resultsEl.setAttribute("hidden", ""); return; }
+    /* পাঠক বাংলা অঙ্কেই লিখবেন — ২:২৫৫ আর 2:255 দুটোই চেনা দরকার */
+    var ref = fromBengali(q).match(/^\s*(\d{1,3})\s*[:\s]\s*(\d{1,3})\s*$/);
+    if (ref && +ref[1] >= 1 && +ref[1] <= 114) {
+      loadSura(+ref[1], +ref[2]);
+      resultsEl.setAttribute("hidden", "");
+      return;
+    }
 
     /* sura by name */
     var nameHits = index.suras.filter(function (s) {
@@ -621,8 +639,8 @@
       head = '<div class="q-empty" style="padding:4px 10px 8px">' +
         bn(hits.length) + 'টি আয়াতে পাওয়া গেছে (পুরো কুরআনে)</div>';
       if (hits.length > cap) {
-        foot = '<div class="q-empty">আরও ' + bn(hits.length - cap) +
-          'টি ফলাফল আছে — শব্দটা আরেকটু নির্দিষ্ট করুন।</div>';
+        foot = '<div class="q-empty">প্রথম ' + bn(cap) + 'টি দেখানো হচ্ছে · আরও ' +
+          bn(hits.length - cap) + 'টি আছে — শব্দটা আরেকটু নির্দিষ্ট করুন।</div>';
       }
     }
 
