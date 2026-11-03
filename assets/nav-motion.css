@@ -1,0 +1,131 @@
+/* ============================================================
+   nav-motion.css — shared header navigation motion
+   One "glide" pill travels between the links, with a hairline
+   that follows it, and a soft gold fleck that trails the
+   pointer. Desktop only (min-width:1081px); the mobile drawer
+   keeps its own entrance motion.
+   Loaded by every page, so it stays in one place.
+   ============================================================ */
+
+@media (min-width:1081px){
+
+  /* the nav becomes the positioning context for the indicator */
+  .nav{
+    position:relative;
+    isolation:isolate;           /* keeps the -1 layers inside the nav */
+    --nav-glide-x:12px;
+    --nav-glide-w:0px;
+    --nav-glide-o:0;
+  }
+
+  /* ---------- the travelling pill ---------- */
+  .nav::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;margin-block:auto;
+    height:34px;width:var(--nav-glide-w);
+    border-radius:12px;
+    background:
+      radial-gradient(60% 130% at 50% 0%,rgba(255,214,106,.20),transparent 70%),
+      linear-gradient(100deg,rgba(245,184,28,.14),rgba(245,184,28,.045) 62%,rgba(255,255,255,.02));
+    border:1px solid rgba(245,184,28,.24);
+    box-shadow:inset 0 1px rgba(255,231,168,.16),0 6px 18px -9px rgba(0,0,0,.6);
+    opacity:var(--nav-glide-o);
+    transform:translate3d(var(--nav-glide-x),0,0);
+    transition:transform .46s cubic-bezier(.22,.86,.24,1),
+               width .46s cubic-bezier(.22,.86,.24,1),
+               opacity .28s ease;
+    pointer-events:none;
+    z-index:-1;                  /* sits under the labels, over the header */
+  }
+
+  /* ---------- the hairline under the pill ---------- */
+  .nav::after{
+    content:"";position:absolute;left:0;bottom:1px;
+    height:2px;border-radius:2px;
+    width:calc(var(--nav-glide-w) - 24px);
+    background:linear-gradient(90deg,rgba(245,184,28,0),var(--gold) 20%,var(--gold2) 50%,rgba(245,184,28,0));
+    opacity:calc(var(--nav-glide-o) * .85);
+    transform:translate3d(calc(var(--nav-glide-x) + 12px),0,0);
+    transition:transform .54s cubic-bezier(.22,.86,.24,1),
+               width .54s cubic-bezier(.22,.86,.24,1),
+               opacity .3s ease;
+    pointer-events:none;
+    z-index:-1;
+  }
+
+  /* once the script is running, the per-link underline and the flat
+     hover wash are superseded by the shared indicator. If the script
+     never runs, the old underline stays as a no-JS fallback. */
+  .nav[data-glide] a::after{display:none}
+  .nav[data-glide] a:hover{background:transparent}
+
+  .nav a{
+    transition:color .3s cubic-bezier(.22,.86,.24,1),
+               opacity .3s cubic-bezier(.22,.86,.24,1),
+               transform .34s cubic-bezier(.22,.86,.24,1);
+    isolation:isolate;
+  }
+  .nav a:hover{transform:translateY(-1px)}
+  .nav a:active{transform:translateY(0) scale(.985)}
+  .nav a.on{text-shadow:0 0 18px rgba(245,184,28,.28)}
+
+  /* the pill warms up while the pointer is inside the menu, and the
+     links the pointer is not on recede a little */
+  .nav:hover::before{border-color:rgba(245,184,28,.34)}
+  .nav:hover a:not(:hover){opacity:.62}
+  .nav:hover a.on:not(:hover){opacity:.82}
+}
+
+/* ---------- pointer-following fleck (fine pointer only) ---------- */
+@media (hover:hover) and (pointer:fine) and (min-width:1081px){
+  .nav a::before{
+    content:"";position:absolute;
+    left:var(--px,50%);top:var(--py,50%);
+    width:104px;height:104px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,214,106,.20),rgba(255,214,106,.06) 46%,transparent 68%);
+    opacity:0;
+    transform:translate(-50%,-50%) scale(.55);
+    transition:opacity .3s ease,transform .26s cubic-bezier(.22,.86,.24,1);
+    pointer-events:none;z-index:-1;
+  }
+  .nav a:hover::before,.nav a:focus-visible::before{
+    opacity:1;transform:translate(-50%,-50%) scale(1);
+  }
+}
+
+/* ---------- light theme ---------- */
+@media (min-width:1081px){
+  html[data-theme="light"] .nav::before{
+    background:
+      radial-gradient(60% 130% at 50% 0%,rgba(255,255,255,.92),transparent 72%),
+      linear-gradient(100deg,rgba(245,184,28,.26),rgba(245,184,28,.10) 62%,rgba(255,255,255,.42));
+    border-color:rgba(154,101,0,.30);
+    box-shadow:inset 0 1px rgba(255,255,255,.85),0 8px 18px -10px rgba(97,71,20,.38);
+  }
+  html[data-theme="light"] .nav::after{
+    background:linear-gradient(90deg,rgba(155,101,0,0),var(--gold) 20%,rgba(184,128,10,.6) 55%,rgba(155,101,0,0));
+  }
+  html[data-theme="light"] .nav[data-glide] a:hover,
+  html[data-theme="light"] .nav[data-glide] a:focus-visible{background:transparent}
+  html[data-theme="light"] .nav a.on{text-shadow:none}
+  html[data-theme="light"] .nav:hover::before{border-color:rgba(154,101,0,.42)}
+}
+@media (hover:hover) and (pointer:fine) and (min-width:1081px){
+  html[data-theme="light"] .nav a::before{
+    background:radial-gradient(circle,rgba(245,184,28,.24),rgba(245,184,28,.07) 46%,transparent 68%);
+  }
+}
+
+/* ---------- below the drawer breakpoint: nothing to do ---------- */
+@media (max-width:1080px){
+  .nav::before,.nav::after{display:none}
+}
+
+/* ---------- respect reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  .nav::before,.nav::after,.nav a,.nav a::before{
+    transition:none!important;animation:none!important;
+  }
+  .nav a:hover,.nav a:active{transform:none!important}
+  .nav:hover a:not(:hover){opacity:1!important}
+  .nav a:hover::before{opacity:.55;transform:translate(-50%,-50%) scale(1)!important}
+}
