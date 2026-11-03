@@ -1,0 +1,226 @@
+/* ============================================================
+   site-motion.css — one motion system for the whole site
+   ------------------------------------------------------------
+   Loaded by every page, after the page's own <style> blocks, so
+   these rules win the cascade and can unify 60+ ad-hoc timings
+   that had drifted apart. Three deliberate layers:
+
+   1. TOKENS   — durations and easings in one place.
+   2. ENTRANCE — a soft rise for anything revealing on scroll,
+                 gentler than the old 22px/26px slides.
+   3. EXTRA    — small things that were missing: a reading
+                 progress line, a soft page fade, an underline
+                 that grows under buttons, a light that follows
+                 the pointer across cards.
+
+   Everything is opt-out via prefers-reduced-motion, and the
+   pointer-only effects are gated behind a fine pointer.
+   ============================================================ */
+
+:root{
+  --m-fast:160ms;
+  --m-base:280ms;
+  --m-slow:520ms;
+  --m-ease:cubic-bezier(.22,.8,.26,1);        /* calm, no overshoot */
+  --m-ease-out:cubic-bezier(.16,1,.3,1);      /* arrive softly */
+  --m-rise:16px;                              /* how far things rise */
+}
+
+/* ---------------------------------------------------------- *
+ * 1. the keyframe the hero copy already asked for
+ *    (it was referenced on 21 pages but never defined, so the
+ *    badge, brandline, h1, lead, buttons and scroll hint were
+ *    all snapping in with no animation at all)
+ * ---------------------------------------------------------- */
+@keyframes fadeUp{
+  from{opacity:0;transform:translate3d(0,var(--m-rise),0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+
+/* ---------------------------------------------------------- *
+ * 2. scroll reveals — softer, shorter, better eased
+ * ---------------------------------------------------------- */
+/* inline --d delays are in seconds on the section pages but in
+   milliseconds inside the discussion cards, so they are cleared
+   and the stagger is recalculated per group instead. */
+.rv,.rv-l,.rv-s{transition-delay:0s!important}
+
+.rv{
+  opacity:0;
+  transform:translate3d(0,var(--m-rise),0);
+  transition:opacity var(--m-slow) var(--m-ease-out),
+             transform var(--m-slow) var(--m-ease-out);
+  will-change:opacity,transform;
+}
+.rv-l{
+  opacity:0;
+  transform:translate3d(-14px,0,0);
+  transition:opacity var(--m-slow) var(--m-ease-out),
+             transform var(--m-slow) var(--m-ease-out);
+  will-change:opacity,transform;
+}
+.rv-s{
+  opacity:0;
+  transform:scale(.975);
+  transition:opacity var(--m-slow) var(--m-ease-out),
+             transform var(--m-slow) var(--m-ease-out);
+  will-change:opacity,transform;
+}
+.rv.in,.rv-l.in,.rv-s.in{
+  opacity:1;
+  transform:none;
+  will-change:auto;             /* release the layer once it has landed */
+}
+
+/* the old card-lift keyframe fought the tilt; it is replaced by
+   plain opacity + the shared rise (see .article-card below) */
+.rv.in .article-card-link{animation:none!important}
+
+@keyframes mRise{
+  from{opacity:0;transform:translate3d(0,var(--m-rise),0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+
+/* ---------------------------------------------------------- *
+ * 3. article cards: one quiet lift, no 3D kick
+ * ---------------------------------------------------------- */
+.article-card .article-card-link{
+  transition:transform var(--m-slow) var(--m-ease-out),
+             box-shadow var(--m-base) var(--m-ease);
+}
+
+/* ---------------------------------------------------------- *
+ * 4. buttons: an underline that grows instead of a shine sweep
+ * ---------------------------------------------------------- */
+.btn::after{
+  content:"";
+  position:absolute;
+  left:18px;right:18px;bottom:8px;
+  height:1.5px;border-radius:2px;
+  background:currentColor;
+  opacity:.5;
+  transform:scaleX(0);
+  transform-origin:left center;
+  transition:transform var(--m-base) var(--m-ease-out),
+             opacity var(--m-base) var(--m-ease);
+  pointer-events:none;
+}
+.btn:hover::after,.btn:focus-visible::after{transform:scaleX(1);opacity:.85}
+
+/* ---------------------------------------------------------- *
+ * 5. a small custom cursor ring for fine pointers
+ *    (skipped on touch, and on form fields where it would
+ *    collide with the text caret)
+ * ---------------------------------------------------------- */
+@media (hover:hover) and (pointer:fine){
+  .m-cursor{
+    position:fixed;
+    left:0;top:0;
+    width:16px;height:16px;
+    margin:-8px 0 0 -8px;
+    border-radius:50%;
+    border:1px solid rgba(245,184,28,.55);
+    background:radial-gradient(circle,rgba(245,184,28,.16),transparent 70%);
+    pointer-events:none;
+    z-index:9999;
+    opacity:0;
+    transform:translate3d(-100px,-100px,0);
+    transition:opacity .25s ease,
+               width .28s var(--m-ease-out),
+               height .28s var(--m-ease-out),
+               margin .28s var(--m-ease-out),
+               border-color .28s ease,
+               background .28s ease;
+    mix-blend-mode:screen;
+  }
+  .m-cursor.on{opacity:1}
+  /* grows over anything that reacts to a click */
+  .m-cursor.hot{
+    width:34px;height:34px;margin:-17px 0 0 -17px;
+    border-color:rgba(255,214,106,.8);
+    background:radial-gradient(circle,rgba(245,184,28,.10),transparent 72%);
+  }
+  html[data-theme="light"] .m-cursor{
+    mix-blend-mode:multiply;
+    border-color:rgba(154,101,0,.5);
+  }
+}
+
+/* ---------------------------------------------------------- *
+ * 6. reading progress line for long pages
+ * ---------------------------------------------------------- */
+.m-progress{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:2.5px;
+  transform-origin:left center;
+  transform:scaleX(0);
+  background:linear-gradient(90deg,rgba(245,184,28,.35),var(--gold) 45%,var(--gold2));
+  box-shadow:0 0 12px rgba(245,184,28,.45);
+  z-index:120;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .3s ease;
+}
+.m-progress.on{opacity:1}
+html[data-theme="light"] .m-progress{
+  background:linear-gradient(90deg,rgba(154,101,0,.3),#b47a08 45%,#8a5c05);
+  box-shadow:0 0 10px rgba(154,101,0,.28);
+}
+
+/* ---------------------------------------------------------- *
+ * 7. soft page fade, and a cross-fade when the theme flips
+ * ---------------------------------------------------------- */
+@keyframes mPageIn{from{opacity:0}to{opacity:1}}
+body{animation:mPageIn .42s var(--m-ease) both}
+
+body,header.top,footer.foot{transition:background-color .45s var(--m-ease),
+                                         border-color .45s var(--m-ease),
+                                         color .35s var(--m-ease)}
+
+/* browsers that support view transitions get a proper cross-fade
+   when the theme changes (see site-motion.js) */
+@media (prefers-reduced-motion:no-preference){
+  ::view-transition-old(root),
+  ::view-transition-new(root){
+    animation-duration:.42s;
+    animation-timing-function:cubic-bezier(.22,.8,.26,1);
+  }
+}
+
+/* ---------------------------------------------------------- *
+ * 8. the header settles instead of jumping when you scroll
+ * ---------------------------------------------------------- */
+header.top{transition:box-shadow .35s var(--m-ease),
+                      background-color .35s var(--m-ease),
+                      border-color .35s var(--m-ease)}
+header.top.m-stuck{
+  box-shadow:0 10px 30px -14px rgba(0,0,0,.55);
+  border-bottom-color:rgba(245,184,28,.24);
+}
+html[data-theme="light"] header.top.m-stuck{
+  box-shadow:0 10px 26px -16px rgba(31,59,76,.4);
+  border-bottom-color:rgba(154,101,0,.28);
+}
+
+/* ---------------------------------------------------------- *
+ * 9. gentle links: the footer and inline links get a soft move
+ * ---------------------------------------------------------- */
+footer.foot a{
+  transition:color var(--m-base) var(--m-ease),
+             transform var(--m-base) var(--m-ease-out),
+             opacity var(--m-base) var(--m-ease);
+}
+footer.foot a:hover{transform:translateX(2px)}
+
+/* ---------------------------------------------------------- *
+ * 10. respect the reader's motion preference
+ * ---------------------------------------------------------- */
+@media (prefers-reduced-motion:reduce){
+  .rv,.rv-l,.rv-s{opacity:1!important;transform:none!important;transition:none!important;will-change:auto}
+  .m-cursor{display:none!important}
+  .m-progress{display:none!important}
+  body{animation:none!important}
+  .btn::after{transition:none!important}
+  ::view-transition-old(root),::view-transition-new(root){animation:none!important}
+}
