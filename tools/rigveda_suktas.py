@@ -28,6 +28,8 @@ DATA = ROOT / "assets/grantho/data/rigveda"
 SUKTAS = {1: 191, 2: 43, 3: 62, 4: 58, 5: 87, 6: 75, 7: 104,
           8: 103, 9: 114, 10: 191}
 
+BN_DIGITS = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
+
 DANDA = re.compile(r"(?<=[।॥])\s+")
 MIN_PADA = 22          # এর চেয়ে ছোট টুকরো আলাদা শ্লোক হিসেবে গড়ি না
 
@@ -75,6 +77,37 @@ def main(apply=False):
         order = [v["n"] for v in obj.get("verses", [])]
         ns = SUKTAS.get(m, 0)
         bounds = plan_bounds(len(order), ns)
+        # সূক্ত-পরিচয় মন্ত্রেই থাকলে («১.» … «৭.» বা seg ফিল্ড) সেটাই আসল সীমানা।
+        # নইলে আগের মতো মোট মন্ত্র ÷ সূক্ত-সংখ্যা ধরে আনুমানিক।
+        ids = []
+        for n in order:
+            sg = verses[n].get("seg")
+            if sg:
+                ids.append(int(sg))
+                continue
+            t = (verses[n].get("bn") or "")[:6]
+            mm = re.match(r"^\s*([০-৯0-9]{1,3})\s*[।.]", t)
+            ids.append(int(mm.group(1).translate(BN_DIGITS)) if mm else None)
+        groups, cur_g, ok = [], [], True
+        for n, i in zip(order, ids):
+            if i is None:
+                ok = False
+                break
+            if i == 1 and cur_g:
+                groups.append(cur_g)
+                cur_g = []
+            cur_g.append(i)
+        if cur_g:
+            groups.append(cur_g)
+        real = ok and len(groups) >= 2 and all(
+            g == list(range(1, len(g) + 1)) for g in groups)
+        if real:
+            bounds, pos = [], 0
+            for g in groups:
+                bounds.append((order[pos], order[pos + len(g) - 1]))
+                pos += len(g)
+            print(f"   · মণ্ডল {m}: সূক্ত-পরিচয় মন্ত্রেই পাওয়া গেল → "
+                  f"{len(bounds)} সূক্ত (অনুমান লাগেনি)")
         suktas, shl_total = [], 0
         for k, (a, b) in enumerate(bounds, 1):
             cuts, shl = {}, 0

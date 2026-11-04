@@ -174,10 +174,15 @@ def to_devanagari(line):
     return line.translate(BN2DEV)
 
 VERSE_TAIL = re.compile(r"[॥|৷]{1,2}\s*([০-৯०-९]{1,3})\s*[॥|]{0,2}\s*$")
-NUMHEAD = re.compile(r"^([০-৯]{1,3})\s*[।\.]\s*(.+)$")
+NUMHEAD = re.compile(r"^([০-৯0-9]{1,3})\s*[।\.]\s*(.+)$")
+# «১.» / «১২.» / «৭।» — মন্ত্র-ক্রমের সূচক; ইংরেজি ফুলস্টপও চলে
+_NUM_SEG = re.compile(r"^[০-৯0-9]{1,3}\s*[।\.]\s*\S")
+_NUM_SEG_FULL = re.compile(r"^([০-৯0-9]{1,3})\s*[।\.]\s*(\S.*)$")
+_FOOTNOTE = re.compile(r"^\(\s*[০-৯0-9]{1,3}\s*\)")
+_DIVIDER = re.compile(r"[—–\-\s]{3,}")
 LBL = re.compile(r"^(অন্বয়|সরলার্থ|বঙ্গানুবাদ|অনুবাদ|মন্তব্য|ভাষ্য|টীকা|সূক্তস্য\s*বিনিয়োগ|ব্যাখ্যা)\s*[:ঃ।\-–—]*\s*")
 MTRA = re.compile(r"^মন্ত্র\s*[:\-–—]?\s*")
-ARTH = re.compile(r"^অর্থ\s*[:ঃ]?\s*[\-–—]*\s*")
+ARTH = re.compile(r"^অর্থ\s*[:ঃ]\s*[\-–—]*\s*|^অর্থ\s*[\-–—]\s*")
 BN_VERB = re.compile(r"হয়|করে|থেকে|জন্য|এবং|উচিত|বললেন|গেল|মধ্যে|দ্বারা|"
                      r"তিনি|তাঁর|ব্যক্তি|হইয়া|করি|নহে|হবে|ছিল|আছে|নাই")
 
@@ -224,14 +229,20 @@ def parse_verses(txt, bn_meaning=False):
     if not bn_meaning:
         dev = len(re.findall(r"[\u0900-\u0963\u0966-\u097F]", txt))
         multiline = len([x for x in txt.splitlines() if len(x.strip()) > 12])
-        if dev < 200 and multiline > 30:
+        # «১. …» ধাঁচে সংখ্যায়িত বাংলা অনুচ্ছেদ = মন্ত্রের অনুবাদ-ই পাঠ
+        # (ঋগ্বেদ ১০ম মণ্ডলের পাতাগুলো এমন)
+        numbered_bn = len([x for x in txt.splitlines()
+                           if _NUM_SEG_FULL.match(x.strip())
+                           and re.search(r"[অ-হ]", x)])
+        if dev < 200 and (multiline > 30 or numbered_bn >= 3):
             bn_meaning = True          # সংস্কৃত মূল নেই ⇒ বাংলা-লিপিতেই পাঠ
     txt = txt.replace("।।", "॥").replace("||", "॥").replace("\u09f7", "॥")
     txt = re.sub(r"([॥৷]\s*[০-৯०-९]{1,3}\s*[॥৷])\s*(?=\S)", r"\1\n", txt)
     if "অন্বয়" not in txt and "সরলার্থ" not in txt:
         txt = re.sub(r"\s+(?=[০-৯]{1,3}\s*।\s)", "\n", txt)
     labelled = ("অন্বয়" in txt or "সরলার্থ" in txt or "মন্ত্র :" in txt
-                or "মন্ত্র:" in txt or "অর্থ" in txt or "টীকা" in txt
+                or "মন্ত্র:" in txt or "টীকা" in txt
+                or bool(re.search(r"(^|\n)\s*অর্থ\s*[:ঃ\-–—]", txt))
                 or bool(re.search(r"(বঙ্গানুবাদ|অনুবাদ)\s*[–—\-]", txt)))
 
     out, cur = [], None
@@ -325,15 +336,41 @@ def parse_verses(txt, bn_meaning=False):
                 continue
             if ln.startswith("[") or ln[:14].strip().startswith("ঋষি"):
                 continue
+            if _FOOTNOTE.match(ln) or _DIVIDER.fullmatch(ln):
+                # «(১) …» ফুটনোট / «————» বিভাজক — মন্ত্রের পাঠ নয়
+                if cur is not None:
+                    cur["part"] = "note"
+                    cur["note"].append(ln)
+                    started = True
+                continue
             _lbl = LBL.match(ln)
             if not started and not _lbl and (
                     is_heading(ln) or ln.startswith("[") or "সম্পাদনা" in ln
                     or "কাণ্ড :" in ln and len(ln) < 60):
                 continue                      # শিরোনাম/সূচি লাইন
             if bn_meaning and not _lbl:
+                # «১.» / «৭।» শুরু = নতুন মন্ত্রের অনুবাদ (ঋগ্বেদ ১০ম মণ্ডল ইত্যাদি)।
+                # সংখ্যাটি কেবল ক্রম-সূচক, তাই নিজেই একটি শ্লোক শুরু করে।
+                _nm = _NUM_SEG_FULL.match(ln)
+                if _nm and not DEV_RE.search(ln) and not VERSE_TAIL.search(ln):
+                    if pend:
+                        flush_pending(pend, False, True)
+                        pend = []
+                    add_verse([])
+                    cur["n"] = to_int(_nm.group(1))
+                    cur["seg"] = to_int(_nm.group(1))   # সূক্ত-পরিচয় (উৎসেই আছে)
+                    cur["part"] = "bn"
+                    body = _nm.group(2).strip()
+                    if body:
+                        cur["bn"].append(body)
+                    started = True
+                    continue
+                # সংখ্যায়িত অনুচ্ছেদের ভেতরে «অর্থাৎ/করে» থাকলেই তাকে প্রবন্ধ
+                # ধরে ফেলা হতো ⇒ ঋগ্বেদ ১০ম মণ্ডলে সব মন্ত্র চুপচাপ হারিয়ে যেত।
                 _bn_prose = (not VERSE_TAIL.search(ln)) or bool(
                     re.search(r"ইত্যাদি|অর্থাৎ|এবং|হয়|করে|করছি|হতে|জন্য|নিমিত্ত|"
                               r"অভিলক্ষ্য|অবলোকন|উদ্দেশ্য", ln)) or ln.startswith("(")
+                _bn_prose = _bn_prose and not _nm
                 if ((DEV_RE.search(ln) or VERSE_TAIL.search(ln)) and not _bn_prose) or (
                         looks_sanskrit(ln) and not _bn_prose and cur is not None
                         and not cur["bn"] and cur["sk"]):
@@ -408,6 +445,13 @@ def parse_verses(txt, bn_meaning=False):
                 continue
             if ln.startswith("[") or ln[:14].strip().startswith("ঋষি"):
                 continue
+            if _FOOTNOTE.match(ln) or _DIVIDER.fullmatch(ln):
+                # «(১) …» ফুটনোট / «————» বিভাজক — মন্ত্রের পাঠ নয়
+                if cur is not None:
+                    cur["part"] = "note"
+                    cur["note"].append(ln)
+                    started = True
+                continue
             if ln.startswith("[") or "ঋষি" in ln[:30] or ln.startswith("লেখক"):
                 continue                      # ঋষি/দেবতা/ছন্দ-ব্লক
             nm = NUMHEAD.match(ln)
@@ -444,6 +488,7 @@ def parse_verses(txt, bn_meaning=False):
                 add_verse([])
                 cur["part"] = "bn"
                 cur["n"] = to_int(nm.group(1))
+                cur["seg"] = to_int(nm.group(1))     # সূক্ত-পরিচয়
                 cur["bn"].append(nm.group(2).strip())
                 started = True
                 continue
@@ -475,8 +520,11 @@ def parse_verses(txt, bn_meaning=False):
         else:
             auto += 1
             n = auto
-        res.append({"n": n, "sk": sk, "anv": " ".join(v["anv"]).strip(),
-                    "bn": bn, "bnNote": " ".join(v["note"]).strip()})
+        _r = {"n": n, "sk": sk, "anv": " ".join(v["anv"]).strip(),
+              "bn": bn, "bnNote": " ".join(v["note"]).strip()}
+        if v.get("seg"):
+            _r["seg"] = v["seg"]          # কোন সূক্তের মন্ত্র (উৎস-সংখ্যা)
+        res.append(_r)
     return res
 
 
@@ -697,6 +745,8 @@ def write_chapter(out_dir, idx, title, verses, url):
     vs = []
     for v in verses:
         d = {"n": v["n"], "sk": v["sk"], "bn": v["bn"], "spk": "", "bnSrc": SRC}
+        if v.get("seg"):
+            d["seg"] = v["seg"]
         if v.get("bnNote"):
             d["bnNote"] = v["bnNote"]
         if v.get("anv"):
