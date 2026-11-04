@@ -125,6 +125,10 @@ html[data-theme="light"] .h-aside{background:linear-gradient(180deg,#ffffff,#f4f
 .h-ch .txt{min-width:0;flex:1}
 .h-ch .bn{display:block;font-size:13px;font-weight:600;line-height:1.4}
 .h-ch .meta{display:block;font-size:10.8px;color:var(--muted);line-height:1.45}
+/* হাদিস সংখ্যার নিচে রেঞ্জ — সংখ্যাটার চেয়ে একটু চাপা, যাতে নামটাই আগে চোখে পড়ে */
+.h-ch .h-range{font-size:10.4px;color:#7c98a9;letter-spacing:.2px;
+  font-variant-numeric:tabular-nums}
+html[data-theme="light"] .h-ch .h-range{color:#6a8296}
 
 /* ---------- reading pane ---------- */
 .h-main{min-width:0}

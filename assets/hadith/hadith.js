@@ -144,7 +144,9 @@
         'data-ch="' + c.id + '"' + (c.id === chapterId ? ' aria-current="true"' : "") + '>' +
         '<span class="num">' + bn(c.id) + '</span>' +
         '<span class="txt"><span class="bn">' + esc(name) + '</span>' +
-        '<span class="meta">' + bn(c.count) + ' হাদিস</span></span></button>';
+        '<span class="meta">' + bn(c.count) + ' হাদিস</span>' +
+        (c.from && c.to ? '<span class="meta h-range">' + bn(c.from) + ' – ' + bn(c.to) + ' নং</span>' : '') +
+        '</span></button>';
     }).join("");
     listEl.querySelectorAll("[data-ch]").forEach(function (btn) {
       btn.addEventListener("click", function () { loadChapter(+btn.dataset.ch); });
