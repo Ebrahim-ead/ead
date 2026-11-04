@@ -1,0 +1,120 @@
+name: Nightly Fetch + Build (ebanglalibrary)
+
+# রাতভর নিজে থেকে চলে: পাঠ নামায় → সাইট-পাতা বানায় → কমিট করে।
+# প্রতিটি ধাপ fail হলেও বাকিগুলো চলে; শেষে আবার নিজেকে চালু করে (সিরিজ চলতে থাকে)।
+
+on:
+  push:
+    paths:
+      - '.github/workflows/night-fetch.yml'
+      - 'tools/fetch_ebl.py'
+      - 'tools/build_pages.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: night-fetch
+  cancel-in-progress: false
+
+jobs:
+  night:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: ঠিক করা (git)
+        run: |
+          git config user.name  "grantho-bot"
+          git config user.email "bot@users.noreply.github.com"
+
+      - name: ১) বেদ — শুক্ল/কৃষ্ণ যজুর্বেদ
+        continue-on-error: true
+        run: |
+          python3 -u tools/fetch_ebl.py --slug yajurveda-shukla --title "শুক্ল যজুর্বেদ সংহিতা" \
+            --word মন্ত্র --match "শুক্ল যজুর্বেদ|শুক্ল যজুর্বেদ সংহিতা" --book-auto --max 400 2>&1 | tail -25
+
+      - name: ২) পুরাণ — ব্রহ্ম
+        continue-on-error: true
+        run: |
+          python3 -u tools/fetch_ebl.py --slug brahma --title "ব্রহ্ম পুরাণ" \
+            --word শ্লোক --match "ব্রহ্ম পুরাণ" --book-auto --max 400 2>&1 | tail -20
+
+      - name: ৩) পুরাণ — গরুড় (বাকি অধ্যায়)
+        continue-on-error: true
+        run: |
+          python3 -u tools/fetch_ebl.py --slug garuda --title "গরুড় পুরাণ" \
+            --word শ্লোক --match "গরুড় পুরাণ|গরুড পুরাণ" --book-auto --max 400 2>&1 | tail -20
+
+      - name: ৪) পুরাণ — ভবিষ্য (বাকি অধ্যায়)
+        continue-on-error: true
+        run: |
+          python3 -u tools/fetch_ebl.py --slug bhabishya --title "ভবিষ্য পুরাণ" \
+            --word শ্লোক --match "ভবিষ্য পুরাণ" --book-auto --max 400 2>&1 | tail -20
+
+      - name: ৫) উপনিষদ — ঐতরেয়
+        continue-on-error: true
+        run: |
+          python3 -u tools/fetch_ebl.py --slug upanishad-aitareya --title "ঐতরেয় উপনিষদ" \
+            --word মন্ত্র --match "ঐতরেয় উপনিষদ" --series --max 40 2>&1 | tail -12
+
+      - name: ৬) উপনিষদ — বৃহদারণ্যক
+        continue-on-error: true
+        run: |
+          python3 -u tools/fetch_ebl.py --slug upanishad-brihadaranyaka --title "বৃহদারণ্যক উপনিষদ" \
+            --word মন্ত্র --match "বৃহদারণ্যক উপনিষদ" --series --max 40 2>&1 | tail -12
+
+      - name: ৭) অথর্ববেদ (বাকি কাণ্ড)
+        continue-on-error: true
+        run: |
+          python3 -u tools/fetch_ebl.py --slug atharvaveda --title "অথর্ববেদ সংহিতা" \
+            --word মন্ত্র --match "অথর্ববেদ সংহিতা|অথর্ববেদ" --book-auto --max 400 2>&1 | tail -20
+
+      - name: ৮) সামবেদ (বাকি অধ্যায়)
+        continue-on-error: true
+        run: |
+          python3 -u tools/fetch_ebl.py --slug samaveda --title "সামবেদ সংহিতা" \
+            --word মন্ত্র --match "সামবেদ সংহিতা|সামবেদ" --book-auto --max 400 2>&1 | tail -20
+
+      - name: ৯) রিপোর্ট
+        if: always()
+        run: |
+          echo "=== রিপোর্ট ==="
+          for r in assets/grantho/data/_fetch_report_*.txt; do echo "--- $r"; head -2 "$r"; done 2>/dev/null || true
+
+      - name: ১০) সাইট-পাতা বিল্ড
+        if: always()
+        continue-on-error: true
+        run: |
+          python3 -u tools/build_pages.py 2>&1 | tail -30
+          git add grantho assets/grantho/data || true
+          git commit -m "পাতা: ডেটা থেকে স্বয়ংক্রিয় বিল্ড ($(date -u +%H:%M))" || echo "কোনো পরিবর্তন নেই"
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || echo "push skipped"
+
+      - name: ১১) আবার নিজেকে চালু (রাতের সিরিজ)
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          N=$(date -u +%H)
+          echo "এখন UTC ঘণ্টা: $N"
+          # রাতের সিরিজ: UTC ১৬–২৩ ও ০০–০২ (ঢাকা সময় ~২২টা–৮টা)
+          if [ "$N" -ge 16 ] || [ "$N" -le 2 ]; then
+            sleep 20
+            gh workflow run night-fetch.yml --ref "${GITHUB_REF_NAME}" || echo "পুনরায় চালু করা গেল না"
+          else
+            echo "দিনের বেলা — সিরিজ থামানো হলো"
+          fi

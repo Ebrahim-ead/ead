@@ -1,11 +1,7 @@
 name: Fetch Bengali (ebanglalibrary)
 
 on:
-  push:
-    paths:
-      - '.github/workflows/fetch-ebl.yml'
-      - 'tools/fetch_ebl.py'
-  workflow_dispatch:
+  workflow_dispatch:      # (নতুন পাইপলাইন: .github/workflows/night-fetch.yml)
 
 permissions:
   contents: write
