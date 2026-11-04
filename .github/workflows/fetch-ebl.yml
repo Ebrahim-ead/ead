@@ -97,6 +97,11 @@ jobs:
               "\n".join(out) + "\n")
           print("\n".join(out))
           PY
+          # সাথে সাথে main-এ পাঠাই — পরের ধাপ ব্যর্থ হলেও ফল থেকে যায়
+          git add -f assets/grantho/data/_debug/probe.txt
+          git commit -m "উৎস-যাচাই: probe ($(date -u +%H:%M))" || true
+          git fetch origin main --depth=1 || true
+          git push origin HEAD:main || echo "probe push হলো না"
 
       - name: ঋগ্বেদ — ১০ম মণ্ডল (বাকি সূক্ত)
         if: env.TARGET != 'gita'
