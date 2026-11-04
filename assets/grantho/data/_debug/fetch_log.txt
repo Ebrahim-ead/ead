@@ -1,61 +1,152 @@
-কীওয়ার্ড: ভবিষ্য পুরাণ
-বই-পাতা: ['tps://www.ebanglalibrary.com/books/ভবিষ্য-পুরাণ-অনুবাদ-স্বা/']
-সূচিতে লেসন: 50
-নামানো হবে 50টি পাতা
-[1] https://www.ebanglalibrary.com/lessons/কথা-প্রস্তাবনা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[2] https://www.ebanglalibrary.com/lessons/সৃষ্টি-বর্ণন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[3] https://www.ebanglalibrary.com/lessons/সর্বসংস্কার-বর্ণন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[4] https://www.ebanglalibrary.com/lessons/সাবিত্রী-মাহাত্ম্য/
-   ✗ মন্ত্র পাওয়া যায়নি
-[5] https://www.ebanglalibrary.com/lessons/স্ত্রী-শুভাশুভ-লক্ষণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[6] ps://www.ebanglalibrary.com/lessons/তৃতীয়া-কল্প-বিধি-বর্ণন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[7] https://www.ebanglalibrary.com/lessons/চতুর্থী-কল্প-বর্ণন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[8] s://www.ebanglalibrary.com/lessons/পঞ্চমী-কল্পে-নাগপঞ্চমী-ব/
-   ✗ মন্ত্র পাওয়া যায়নি
-[9] ttps://www.ebanglalibrary.com/lessons/ধাতুগত-বিষ-লক্ষণ-সমূহ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[10] s://www.ebanglalibrary.com/lessons/ষষ্ঠীকল্পে-কাৰ্ত্তিক-ষষ্/
-   ✓ 1 শ্লোক
-[11] s://www.ebanglalibrary.com/lessons/ষষ্ঠীকল্পে-ব্রাহ্মণ্য-বি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[12] tps://www.ebanglalibrary.com/lessons/সপ্তমী-কল্প-ব্ৰত-বৰ্ণন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[13] s://www.ebanglalibrary.com/lessons/সপ্তমী-কল্প-বর্ণনে-কৃষ্ণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[14] s://www.ebanglalibrary.com/lessons/আদিত্য-নিত্যারাধনবিধি-বর/
-   ✓ 1 শ্লোক
-[15] s://www.ebanglalibrary.com/lessons/রথ-সপ্তমী-মাহাত্ম্য-বর্ণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[16] s://www.ebanglalibrary.com/lessons/সূর্যযোগ-মাহাত্ম্য-বর্ণন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[17] ps://www.ebanglalibrary.com/lessons/সূর্যের-বিরাট-রূপ-বর্ণন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[18] s://www.ebanglalibrary.com/lessons/আদিত্যবার-মাহাত্ম্য-বর্ণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[19] ps://www.ebanglalibrary.com/lessons/সৌরধর্ম-মাহাত্ম্য-বর্ণন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[20] s://www.ebanglalibrary.com/lessons/ব্রহ্মকৃত-সূর্যস্তুতি-বর/
-   ✗ মন্ত্র পাওয়া যায়নি
-[21] https://www.ebanglalibrary.com/lessons/বিবাহ-বিধি-বর্ণন/
-Traceback (most recent call last):
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 634, in <module>
-    main()
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 630, in main
-    return main_run(args)
-           ^^^^^^^^^^^^^^
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 575, in main_run
-    vs = parse_verses(txt)
-         ^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 188, in parse_verses
-    cur["part"] = {"অন্বয়": "anv", "সরলার্থ": "bn", "মন্তব্য": "note",
-    ~~~^^^^^^^^
-TypeError: 'NoneType' object does not support item assignment
+কীওয়ার্ড: সামবেদ সংহিতা
+বই-পাতা: ['tps://www.ebanglalibrary.com/books/সামবেদ-সংহিতা-অনুবাদ-পরি/', 'ttps://www.ebanglalibrary.com/books/সামবেদ-সংহিতা-বঙ্গানুবা/']
+সূচিতে লেসন: 48
+নামানো হবে 48টি পাতা
+[1] s://www.ebanglalibrary.com/lessons/০১ম-অধ্যায়-আগ্নেয়-কাণ্/
+   ✓ 11 মন্ত্র
+[2] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০২/
+   ✓ 10 মন্ত্র
+[3] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৩/
+   ✓ 15 মন্ত্র
+[4] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৪/
+   ✓ 12 মন্ত্র
+[5] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৫/
+   ✓ 11 মন্ত্র
+[6] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৬/
+   ✓ 8 মন্ত্র
+[7] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৭/
+   ✓ 10 মন্ত্র
+[8] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৮/
+   ✓ 8 মন্ত্র
+[9] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৯/
+   ✓ 12 মন্ত্র
+[10] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১০/
+   ✓ 6 মন্ত্র
+[11] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১১/
+   ✓ 10 মন্ত্র
+[12] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১২/
+   ✓ 8 মন্ত্র
+[13] s://www.ebanglalibrary.com/lessons/০২য়-অধ্যায়-ঐন্দ্রকাণ্ড/
+   ✓ 13 মন্ত্র
+[14] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০২/
+   ✓ 10 মন্ত্র
+[15] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৩/
+   ✓ 11 মন্ত্র
+[16] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৪/
+   ✓ 2 মন্ত্র
+[17] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৫/
+   ✓ 3 মন্ত্র
+[18] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৬/
+   ✓ 2 মন্ত্র
+[19] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৭/
+   ✓ 1 মন্ত্র
+[20] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৮/
+   ✓ 1 মন্ত্র
+[21] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৯/
+   ✓ 1 মন্ত্র
+[22] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১০/
+   ✓ 3 মন্ত্র
+[23] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১১/
+   ✓ 2 মন্ত্র
+[24] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১২/
+   ✓ 2 মন্ত্র
+[25] s://www.ebanglalibrary.com/lessons/০৩য়-অধ্যায়-ঐন্দ্র-কান্/
+   ✓ 1 মন্ত্র
+[26] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০২/
+   ✓ 1 মন্ত্র
+[27] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৩/
+   ✓ 1 মন্ত্র
+[28] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৪/
+   ✓ 1 মন্ত্র
+[29] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৫/
+   ✓ 1 মন্ত্র
+[30] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৬/
+   ✓ 1 মন্ত্র
+[31] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৭/
+   ✓ 1 মন্ত্র
+[32] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৮/
+   ✓ 1 মন্ত্র
+[33] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৯/
+   ✓ 1 মন্ত্র
+[34] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১০/
+   ✓ 1 মন্ত্র
+[35] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১১/
+   ✓ 1 মন্ত্র
+[36] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১২/
+   ✓ 1 মন্ত্র
+[37] s://www.ebanglalibrary.com/lessons/৪র্থ-অধ্যায়-ঐন্দ্র-কান্/
+   ✓ 1 মন্ত্র
+[38] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০২/
+   ✓ 1 মন্ত্র
+[39] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৩/
+   ✓ 1 মন্ত্র
+[40] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৪/
+   ✓ 1 মন্ত্র
+[41] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৫/
+   ✓ 1 মন্ত্র
+[42] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৬/
+   ✓ 1 মন্ত্র
+[43] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৭/
+   ✓ 1 মন্ত্র
+[44] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৮/
+   ✓ 1 মন্ত্র
+[45] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৯/
+   ✓ 1 মন্ত্র
+[46] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১০/
+   ✓ 1 মন্ত্র
+[47] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১১/
+   ✓ 1 মন্ত্র
+[48] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১২/
+   ✓ 2 মন্ত্র
+samaveda: বাংলা 197/197
+  1. সামবেদ সংহিতা — ০১ম অধ্যায় আগ্নেয় কাণ্: 11/11
+  2. সামবেদ সংহিতা — সামবেদ ০১।০২: 10/10
+  3. সামবেদ সংহিতা — সামবেদ ০১।০৩: 15/15
+  4. সামবেদ সংহিতা — সামবেদ ০১।০৪: 12/12
+  5. সামবেদ সংহিতা — সামবেদ ০১।০৫: 11/11
+  6. সামবেদ সংহিতা — সামবেদ ০১।০৬: 8/8
+  7. সামবেদ সংহিতা — সামবেদ ০১।০৭: 10/10
+  8. সামবেদ সংহিতা — সামবেদ ০১।০৮: 8/8
+  9. সামবেদ সংহিতা — সামবেদ ০১।০৯: 12/12
+  10. সামবেদ সংহিতা — সামবেদ ০১।১০: 6/6
+  11. সামবেদ সংহিতা — সামবেদ ০১।১১: 10/10
+  12. সামবেদ সংহিতা — সামবেদ ০১।১২: 8/8
+  13. সামবেদ সংহিতা — ০২য় অধ্যায় ঐন্দ্রকাণ্ড: 13/13
+  14. সামবেদ সংহিতা — সামবেদ ০২।০২: 10/10
+  15. সামবেদ সংহিতা — সামবেদ ০২।০৩: 11/11
+  16. সামবেদ সংহিতা — সামবেদ ০২।০৪: 2/2
+  17. সামবেদ সংহিতা — সামবেদ ০২।০৫: 3/3
+  18. সামবেদ সংহিতা — সামবেদ ০২।০৬: 2/2
+  19. সামবেদ সংহিতা — সামবেদ ০২।০৭: 1/1
+  20. সামবেদ সংহিতা — সামবেদ ০২।০৮: 1/1
+  21. সামবেদ সংহিতা — সামবেদ ০২।০৯: 1/1
+  22. সামবেদ সংহিতা — সামবেদ ০২।১০: 3/3
+  23. সামবেদ সংহিতা — সামবেদ ০২।১১: 2/2
+  24. সামবেদ সংহিতা — সামবেদ ০২।১২: 2/2
+  25. সামবেদ সংহিতা — ০৩য় অধ্যায় ঐন্দ্র কান্: 1/1
+  26. সামবেদ সংহিতা — সামবেদ ০৩।০২: 1/1
+  27. সামবেদ সংহিতা — সামবেদ ০৩।০৩: 1/1
+  28. সামবেদ সংহিতা — সামবেদ ০৩।০৪: 1/1
+  29. সামবেদ সংহিতা — সামবেদ ০৩।০৫: 1/1
+  30. সামবেদ সংহিতা — সামবেদ ০৩।০৬: 1/1
+  31. সামবেদ সংহিতা — সামবেদ ০৩।০৭: 1/1
+  32. সামবেদ সংহিতা — সামবেদ ০৩।০৮: 1/1
+  33. সামবেদ সংহিতা — সামবেদ ০৩।০৯: 1/1
+  34. সামবেদ সংহিতা — সামবেদ ০৩।১০: 1/1
+  35. সামবেদ সংহিতা — সামবেদ ০৩।১১: 1/1
+  36. সামবেদ সংহিতা — সামবেদ ০৩।১২: 1/1
+  37. সামবেদ সংহিতা — ৪র্থ অধ্যায় ঐন্দ্র কান্: 1/1
+  38. সামবেদ সংহিতা — সামবেদ ০৪।০২: 1/1
+  39. সামবেদ সংহিতা — সামবেদ ০৪।০৩: 1/1
+  40. সামবেদ সংহিতা — সামবেদ ০৪।০৪: 1/1
+  41. সামবেদ সংহিতা — সামবেদ ০৪।০৫: 1/1
+  42. সামবেদ সংহিতা — সামবেদ ০৪।০৬: 1/1
+  43. সামবেদ সংহিতা — সামবেদ ০৪।০৭: 1/1
+  44. সামবেদ সংহিতা — সামবেদ ০৪।০৮: 1/1
+  45. সামবেদ সংহিতা — সামবেদ ০৪।০৯: 1/1
+  46. সামবেদ সংহিতা — সামবেদ ০৪।১০: 1/1
+  47. সামবেদ সংহিতা — সামবেদ ০৪।১১: 1/1
+  48. সামবেদ সংহিতা — সামবেদ ০৪।১২: 2/2
 কীওয়ার্ড: গরুড় পুরাণ
 বই-পাতা: ['https://www.ebanglalibrary.com/books/গরুড়-পুরাণ-সংস্কৃত/', 'https://www.ebanglalibrary.com/books/গরুড়-পুরাণ-অসম্পূর্ণ/']
 সূচিতে লেসন: 32
@@ -159,152 +250,145 @@ garuda: বাংলা 60/60
   32. গরুড় পুরাণ — ৩ ৩ গরুডপুরাণ অধ্যায় ২১ ৩০: 5/5
 বই-পাতা: []
 বই-পাতা পাওয়া গেল না: ব্রহ্ম পুরাণ|ব্রহ্মপুরাণ
-কীওয়ার্ড: সামবেদ সংহিতা
-বই-পাতা: ['tps://www.ebanglalibrary.com/books/সামবেদ-সংহিতা-অনুবাদ-পরি/', 'ttps://www.ebanglalibrary.com/books/সামবেদ-সংহিতা-বঙ্গানুবা/']
-সূচিতে লেসন: 48
-নামানো হবে 48টি পাতা
-[1] s://www.ebanglalibrary.com/lessons/০১ম-অধ্যায়-আগ্নেয়-কাণ্/
-   ✓ 11 মন্ত্র
-[2] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০২/
-   ✓ 10 মন্ত্র
-[3] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৩/
-   ✓ 15 মন্ত্র
-[4] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৪/
-   ✓ 12 মন্ত্র
-[5] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৫/
-   ✓ 11 মন্ত্র
-[6] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৬/
-   ✓ 8 মন্ত্র
-[7] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৭/
-   ✓ 10 মন্ত্র
-[8] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৮/
-   ✓ 8 মন্ত্র
-[9] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৯/
-   ✓ 12 মন্ত্র
-[10] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১০/
-   ✓ 7 মন্ত্র
-[11] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১১/
-   ✓ 10 মন্ত্র
-[12] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১২/
-   ✓ 9 মন্ত্র
-[13] s://www.ebanglalibrary.com/lessons/০২য়-অধ্যায়-ঐন্দ্রকাণ্ড/
-   ✓ 13 মন্ত্র
-[14] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০২/
-   ✓ 10 মন্ত্র
-[15] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৩/
-   ✓ 11 মন্ত্র
-[16] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৪/
-   ✓ 2 মন্ত্র
-[17] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৫/
-   ✓ 3 মন্ত্র
-[18] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৬/
-   ✓ 2 মন্ত্র
-[19] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৭/
-   ✓ 1 মন্ত্র
-[20] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৮/
-   ✓ 1 মন্ত্র
-[21] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৯/
-   ✓ 1 মন্ত্র
-[22] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১০/
-   ✓ 3 মন্ত্র
-[23] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১১/
-   ✓ 2 মন্ত্র
-[24] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১২/
-   ✓ 2 মন্ত্র
-[25] s://www.ebanglalibrary.com/lessons/০৩য়-অধ্যায়-ঐন্দ্র-কান্/
-   ✓ 1 মন্ত্র
-[26] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০২/
-   ✓ 1 মন্ত্র
-[27] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৩/
-   ✓ 1 মন্ত্র
-[28] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৪/
-   ✓ 1 মন্ত্র
-[29] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৫/
-   ✓ 1 মন্ত্র
-[30] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৬/
-   ✓ 1 মন্ত্র
-[31] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৭/
-   ✓ 1 মন্ত্র
-[32] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৮/
-   ✓ 1 মন্ত্র
-[33] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৯/
-   ✓ 1 মন্ত্র
-[34] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১০/
-   ✓ 1 মন্ত্র
-[35] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১১/
-   ✓ 1 মন্ত্র
-[36] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১২/
-   ✓ 1 মন্ত্র
-[37] s://www.ebanglalibrary.com/lessons/৪র্থ-অধ্যায়-ঐন্দ্র-কান্/
-   ✓ 1 মন্ত্র
-[38] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০২/
-   ✓ 1 মন্ত্র
-[39] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৩/
-   ✓ 1 মন্ত্র
-[40] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৪/
-   ✓ 1 মন্ত্র
-[41] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৫/
-   ✓ 1 মন্ত্র
-[42] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৬/
-   ✓ 1 মন্ত্র
-[43] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৭/
-   ✓ 1 মন্ত্র
-[44] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৮/
-   ✓ 1 মন্ত্র
-[45] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৯/
-   ✓ 1 মন্ত্র
-[46] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১০/
-   ✓ 1 মন্ত্র
-[47] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১১/
-   ✓ 1 মন্ত্র
-[48] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১২/
-   ✓ 2 মন্ত্র
-samaveda: বাংলা 199/199
-  1. সামবেদ সংহিতা — ০১ম অধ্যায় আগ্নেয় কাণ্: 11/11
-  2. সামবেদ সংহিতা — সামবেদ ০১।০২: 10/10
-  3. সামবেদ সংহিতা — সামবেদ ০১।০৩: 15/15
-  4. সামবেদ সংহিতা — সামবেদ ০১।০৪: 12/12
-  5. সামবেদ সংহিতা — সামবেদ ০১।০৫: 11/11
-  6. সামবেদ সংহিতা — সামবেদ ০১।০৬: 8/8
-  7. সামবেদ সংহিতা — সামবেদ ০১।০৭: 10/10
-  8. সামবেদ সংহিতা — সামবেদ ০১।০৮: 8/8
-  9. সামবেদ সংহিতা — সামবেদ ০১।০৯: 12/12
-  10. সামবেদ সংহিতা — সামবেদ ০১।১০: 7/7
-  11. সামবেদ সংহিতা — সামবেদ ০১।১১: 10/10
-  12. সামবেদ সংহিতা — সামবেদ ০১।১২: 9/9
-  13. সামবেদ সংহিতা — ০২য় অধ্যায় ঐন্দ্রকাণ্ড: 13/13
-  14. সামবেদ সংহিতা — সামবেদ ০২।০২: 10/10
-  15. সামবেদ সংহিতা — সামবেদ ০২।০৩: 11/11
-  16. সামবেদ সংহিতা — সামবেদ ০২।০৪: 2/2
-  17. সামবেদ সংহিতা — সামবেদ ০২।০৫: 3/3
-  18. সামবেদ সংহিতা — সামবেদ ০২।০৬: 2/2
-  19. সামবেদ সংহিতা — সামবেদ ০২।০৭: 1/1
-  20. সামবেদ সংহিতা — সামবেদ ০২।০৮: 1/1
-  21. সামবেদ সংহিতা — সামবেদ ০২।০৯: 1/1
-  22. সামবেদ সংহিতা — সামবেদ ০২।১০: 3/3
-  23. সামবেদ সংহিতা — সামবেদ ০২।১১: 2/2
-  24. সামবেদ সংহিতা — সামবেদ ০২।১২: 2/2
-  25. সামবেদ সংহিতা — ০৩য় অধ্যায় ঐন্দ্র কান্: 1/1
-  26. সামবেদ সংহিতা — সামবেদ ০৩।০২: 1/1
-  27. সামবেদ সংহিতা — সামবেদ ০৩।০৩: 1/1
-  28. সামবেদ সংহিতা — সামবেদ ০৩।০৪: 1/1
-  29. সামবেদ সংহিতা — সামবেদ ০৩।০৫: 1/1
-  30. সামবেদ সংহিতা — সামবেদ ০৩।০৬: 1/1
-  31. সামবেদ সংহিতা — সামবেদ ০৩।০৭: 1/1
-  32. সামবেদ সংহিতা — সামবেদ ০৩।০৮: 1/1
-  33. সামবেদ সংহিতা — সামবেদ ০৩।০৯: 1/1
-  34. সামবেদ সংহিতা — সামবেদ ০৩।১০: 1/1
-  35. সামবেদ সংহিতা — সামবেদ ০৩।১১: 1/1
-  36. সামবেদ সংহিতা — সামবেদ ০৩।১২: 1/1
-  37. সামবেদ সংহিতা — ৪র্থ অধ্যায় ঐন্দ্র কান্: 1/1
-  38. সামবেদ সংহিতা — সামবেদ ০৪।০২: 1/1
-  39. সামবেদ সংহিতা — সামবেদ ০৪।০৩: 1/1
-  40. সামবেদ সংহিতা — সামবেদ ০৪।০৪: 1/1
-  41. সামবেদ সংহিতা — সামবেদ ০৪।০৫: 1/1
-  42. সামবেদ সংহিতা — সামবেদ ০৪।০৬: 1/1
-  43. সামবেদ সংহিতা — সামবেদ ০৪।০৭: 1/1
-  44. সামবেদ সংহিতা — সামবেদ ০৪।০৮: 1/1
-  45. সামবেদ সংহিতা — সামবেদ ০৪।০৯: 1/1
-  46. সামবেদ সংহিতা — সামবেদ ০৪।১০: 1/1
-  47. সামবেদ সংহিতা — সামবেদ ০৪।১১: 1/1
-  48. সামবেদ সংহিতা — সামবেদ ০৪।১২: 2/2
+কীওয়ার্ড: ভবিষ্য পুরাণ
+বই-পাতা: ['tps://www.ebanglalibrary.com/books/ভবিষ্য-পুরাণ-অনুবাদ-স্বা/']
+সূচিতে লেসন: 50
+নামানো হবে 50টি পাতা
+[5] https://www.ebanglalibrary.com/lessons/কথা-প্রস্তাবনা/
+   ! ValueError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[6] https://www.ebanglalibrary.com/lessons/সৃষ্টি-বর্ণন/
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[7] https://www.ebanglalibrary.com/lessons/সর্বসংস্কার-বর্ণন/
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[8] https://www.ebanglalibrary.com/lessons/সাবিত্রী-মাহাত্ম্য/
+   ! ValueError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[9] https://www.ebanglalibrary.com/lessons/স্ত্রী-শুভাশুভ-লক্ষণ/
+   ! ValueError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[10] ps://www.ebanglalibrary.com/lessons/তৃতীয়া-কল্প-বিধি-বর্ণন/
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[11] https://www.ebanglalibrary.com/lessons/চতুর্থী-কল্প-বর্ণন/
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 2 শ্লোক
+[12] s://www.ebanglalibrary.com/lessons/পঞ্চমী-কল্পে-নাগপঞ্চমী-ব/
+   ! ValueError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[13] ttps://www.ebanglalibrary.com/lessons/ধাতুগত-বিষ-লক্ষণ-সমূহ/
+   ! ValueError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[14] s://www.ebanglalibrary.com/lessons/ষষ্ঠীকল্পে-কাৰ্ত্তিক-ষষ্/
+   ! ValueError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 2 শ্লোক
+[15] s://www.ebanglalibrary.com/lessons/ষষ্ঠীকল্পে-ব্রাহ্মণ্য-বি/
+   ! ValueError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[16] tps://www.ebanglalibrary.com/lessons/সপ্তমী-কল্প-ব্ৰত-বৰ্ণন/
+   ! ValueError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[17] s://www.ebanglalibrary.com/lessons/সপ্তমী-কল্প-বর্ণনে-কৃষ্ণ/
+   ! ValueError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[18] s://www.ebanglalibrary.com/lessons/আদিত্য-নিত্যারাধনবিধি-বর/
+   ! ValueError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 2 শ্লোক
+[19] s://www.ebanglalibrary.com/lessons/রথ-সপ্তমী-মাহাত্ম্য-বর্ণ/
+   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[20] s://www.ebanglalibrary.com/lessons/সূর্যযোগ-মাহাত্ম্য-বর্ণন/
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[21] ps://www.ebanglalibrary.com/lessons/সূর্যের-বিরাট-রূপ-বর্ণন/
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[22] s://www.ebanglalibrary.com/lessons/আদিত্যবার-মাহাত্ম্য-বর্ণ/
+   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[23] ps://www.ebanglalibrary.com/lessons/সৌরধর্ম-মাহাত্ম্য-বর্ণন/
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[24] s://www.ebanglalibrary.com/lessons/ব্রহ্মকৃত-সূর্যস্তুতি-বর/
+   ! ValueError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[25] https://www.ebanglalibrary.com/lessons/বিবাহ-বিধি-বর্ণন/
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+Traceback (most recent call last):
+  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 670, in <module>
+    main()
+  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 666, in main
+    return main_run(args)
+           ^^^^^^^^^^^^^^
+  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 611, in main_run
+    vs = parse_verses(txt)
+         ^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 197, in parse_verses
+    cur["part"] = {"অন্বয়": "anv", "সরলার্থ": "bn", "মন্তব্য": "note",
+    ~~~^^^^^^^^
+TypeError: 'NoneType' object does not support item assignment
