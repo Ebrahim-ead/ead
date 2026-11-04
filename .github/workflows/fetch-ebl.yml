@@ -52,23 +52,6 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
-      - name: Debug (অথর্ববেদ সূচি)
-        continue-on-error: true
-        run: |
-          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg2.txt
-          import sys, re, urllib.parse
-          sys.path.insert(0, "tools")
-          import fetch_ebl as f
-          for kw in ["অথর্ববেদ সংহিতা", "অথর্ববেদ"]:
-              allu = f.sitemap_urls(f.LESSON_SITEMAPS + f.TOPIC_SITEMAPS, kw)
-              print("====", kw, len(allu))
-              for u in allu[:5]:
-                  print("   ", urllib.parse.unquote(u)[-70:])
-              if allu:
-                  toc = f.toc_links(allu[0])
-                  print("    টপিক:", len(toc), [urllib.parse.unquote(x)[-28:] for x in toc[:3]])
-          PY
-
       - name: Fetch (উপনিষদ + পুরাণ)
         continue-on-error: true
         run: |
@@ -81,7 +64,8 @@ jobs:
           }
           # ---- অথর্ববেদ: কোর্স-পাতার ভেতরের সব অধ্যায় (টপিক)
           run --slug atharvaveda --title "অথর্ববেদ সংহিতা" --word মন্ত্র \
-              --match "অথর্ববেদ সংহিতা" --toc --max 60
+              --url "https://www.ebanglalibrary.com/lessons/অথর্ববেদ-সংহিতা-১৮।০৩-অষ/" \
+              --toc --max 80
 
           echo "শেষ $(date -u +%H:%M:%S)"
 
