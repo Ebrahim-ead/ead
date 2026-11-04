@@ -52,21 +52,33 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
-      - name: Debug (সাইটম্যাপ)
+      - name: Debug (শৃঙ্খল + ঐতরেয় গঠন)
         continue-on-error: true
         run: |
-          mkdir -p assets/grantho/data/_debug
           python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
-          import sys; sys.path.insert(0, "tools")
-          import fetch_ebl as f, urllib.parse, re
-          allu = f.sitemap_urls(f.TOPIC_SITEMAPS + f.LESSON_SITEMAPS, "কেন উপনিষদ")
-          print("allu:", len(allu), [urllib.parse.unquote(u)[-40:] for u in allu[:4]])
+          import sys, re, urllib.parse
+          sys.path.insert(0, "tools")
+          import fetch_ebl as f
+          for nm in ["কেন", "ঈশ", "প্রশ্ন", "মুণ্ডক", "মাণ্ডূক্য", "তৈত্তিরীয়", "ঐতরেয়"]:
+              allu = f.sitemap_urls(f.TOPIC_SITEMAPS + f.LESSON_SITEMAPS, nm + " উপনিষদ")
+              print("==", nm, len(allu), [urllib.parse.unquote(u)[-30:] for u in allu])
+              if allu:
+                  u = sorted(allu, key=lambda x: (0 if ("/lessons/" + nm) in urllib.parse.unquote(x) else 1, len(x)))[0]
+                  for hop in range(5):
+                      h = f.get(u)
+                      if not h:
+                          print("   load-fail", urllib.parse.unquote(u)[-35:]); break
+                      nxt = f.lesson_next(h)
+                      print("   hop", hop, urllib.parse.unquote(u)[-35:], "->", (urllib.parse.unquote(nxt)[-35:] if nxt else None))
+                      if not nxt: break
+                      u = nxt
+          print("=== ঐতরেয় পাতা ===")
+          allu = f.sitemap_urls(f.TOPIC_SITEMAPS + f.LESSON_SITEMAPS, "ঐতরেয় উপনিষদ")
           if allu:
-              u = allu[0]
-              h = f.get(u)
-              print("page:", None if h is None else len(h))
-              if h:
-                  print("Next Lesson?", "Next Lesson" in h, "| Next Page?", "Next Page" in h)
+              t = f.fetch_paged(allu[0])
+              for ln in [x.strip() for x in t.split("
+") if x.strip()][:40]:
+                  print("  |", ln[:110])
           PY
 
       - name: Fetch (উপনিষদ + পুরাণ)
