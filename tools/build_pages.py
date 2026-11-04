@@ -69,7 +69,31 @@ BOOKS = {
     ),
 }
 
+BOOKS["yajurveda-shukla"] = dict(
+    kind="veda", title=("শুক্ল যজুর্বেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
+    kicker="হিন্দু · বেদ · শুক্ল যজুর্বেদ", crumb="শুক্ল যজুর্বেদ সংহিতা",
+    intro="শুক্ল যজুর্বেদের বাংলা অনুবাদসহ পাঠ — ebanglalibrary.com।",
+    word="মন্ত্র", chword="অধ্যায়",
+    src="বাংলা অনুবাদ ও মূল পাঠ ebanglalibrary.com থেকে।",
+    excerpt="যজ্ঞের বিধি ও মন্ত্রের বেদ — শুক্ল শাখার বাংলা অনুবাদসহ।")
+BOOKS["yajurveda-krishna"] = dict(
+    kind="veda", title=("কৃষ্ণ যজুর্বেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
+    kicker="হিন্দু · বেদ · কৃষ্ণ যজুর্বেদ", crumb="কৃষ্ণ যজুর্বেদ সংহিতা",
+    intro="কৃষ্ণ যজুর্বেদের বাংলা অনুবাদসহ পাঠ — ebanglalibrary.com।",
+    word="মন্ত্র", chword="অধ্যায়",
+    src="বাংলা অনুবাদ ও মূল পাঠ ebanglalibrary.com থেকে।",
+    excerpt="যজ্ঞের বিধি ও মন্ত্রের বেদ — কৃষ্ণ শাখার বাংলা অনুবাদসহ।")
+BOOKS["brahma"] = dict(
+    kind="purana", title=("ব্রহ্ম পুরাণ", ""), hub="purana.html", hubname="পুরাণ",
+    kicker="হিন্দু · পুরাণ · ব্রহ্ম", crumb="ব্রহ্ম পুরাণ",
+    intro="ব্রহ্ম পুরাণের বাংলা অনুবাদ — অষ্টাদশ পুরাণ সমগ্র (পৃথ্বীরাজ সেন)।",
+    word="শ্লোক", chword="অধ্যায়",
+    src="বাংলা অনুবাদ ebanglalibrary.com থেকে (অষ্টাদশ পুরাণ সমগ্র, সম্পাদনা: পৃথ্বীরাজ সেন)।",
+    excerpt="সৃষ্টি, ব্রহ্মাণ্ড ও তীর্থ-মাহাত্ম্যের পুরাণ — বাংলা অনুবাদসহ।")
+
 UPA = {
+    "upanishad-aitareya": ("ঐতরেয় উপনিষদ", "জগৎসৃষ্টি, আত্মার প্রবেশ ও «প্রজ্ঞানং ব্রহ্ম» — ঐতরেয় আরণ্যকের উপনিষদ।"),
+    "upanishad-brihadaranyaka": ("বৃহদারণ্যক উপনিষদ", "«অহং ব্রহ্মাস্মি» — বৃহত্তম প্রধান উপনিষদ, যাজ্ঞবল্ক্য-মৈত্রেয়ীর সংলাপ।"),
     "upanishad-isha": ("ঈশ উপনিষদ", "ব্রহ্মেই জগৎ পরিব্যাপ্ত — কর্ম, জ্ঞান ও মৃত্যুর পরে গতির প্রশ্নে অষ্টাদশ মন্ত্রের সংক্ষিপ্ততম প্রধান উপনিষদ।"),
     "upanishad-kena": ("কেন উপনিষদ", "«কার ইচ্ছায় মন চলে?» — ব্রহ্মকে ইন্দ্রিয়ের অতীত বলে চিনিয়ে দেওয়া চার খণ্ডের উপনিষদ।"),
     "upanishad-prashna": ("প্রশ্ন উপনিষদ", "ছয় প্রশ্নকর্তা শিষ্যের ছয় প্রশ্নে প্রাণ, রশ্মি ও ওঁ-তত্ত্বের উত্তর।"),
@@ -207,10 +231,13 @@ def main():
 
     # ---- পুরাণ
     puranas = []
-    for slug in ("garuda", "bhabishya"):
+    for slug in ("garuda", "bhabishya", "brahma"):
         meta = BOOKS[slug]
         idx = load(slug)
         if not idx:
+            continue
+        if not idx.get("withBn"):
+            print(f"{slug}: বাংলা নেই — বাদ")
             continue
         r = make_page(slug, idx, meta)
         puranas.append((slug, r, meta))

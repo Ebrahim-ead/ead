@@ -4,6 +4,9 @@ name: Nightly Fetch + Build (ebanglalibrary)
 # প্রতিটি ধাপ fail হলেও বাকিগুলো চলে; শেষে আবার নিজেকে চালু করে (সিরিজ চলতে থাকে)।
 
 on:
+  schedule:
+    # প্রতি ৩০ মিনিটে একবার রাতের জানালায় (UTC ১৬–২৩, ০০–০২) — টোকেন-চালু ব্যর্থ হলেও চলবে
+    - cron: '*/30 16-23,0-2 * * *'
   push:
     paths:
       - '.github/workflows/night-fetch.yml'

@@ -48,6 +48,10 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
+      - name: সাইট-বিল্ড
+        continue-on-error: true
+        run: python3 -u tools/build_pages.py 2>&1 | tail -20
+
       - name: Fetch (উপনিষদ + পুরাণ)
         continue-on-error: true
         run: |
