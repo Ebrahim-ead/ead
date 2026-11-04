@@ -1,0 +1,91 @@
+{
+ "_commit": "35cb4a495ffacbcb0acd72b76af1ee355aa0a2eb",
+ "_note": "এটি ভালো-জানা ডেটার হিসাব; এর চেয়ে ১৫%-এর বেশি ছোট হলে guard_data.py ফিরিয়ে আনে।",
+ "slugs": {
+  "atharvaveda": {
+   "total": 621,
+   "withBn": 621,
+   "chapters": 50
+  },
+  "bhabishya": {
+   "total": 105,
+   "withBn": 87,
+   "chapters": 94
+  },
+  "brahma": {
+   "total": 3,
+   "withBn": 0,
+   "chapters": 3
+  },
+  "chandogya": {
+   "total": 499,
+   "withBn": 499,
+   "chapters": 7
+  },
+  "garuda": {
+   "total": 105,
+   "withBn": 87,
+   "chapters": 94
+  },
+  "gita": {
+   "total": 701,
+   "withBn": 700,
+   "chapters": 18
+  },
+  "katha": {
+   "total": 119,
+   "withBn": 119,
+   "chapters": 6
+  },
+  "rigveda": {
+   "total": 9222,
+   "withBn": 9222,
+   "chapters": 9
+  },
+  "samaveda": {
+   "total": 179,
+   "withBn": 174,
+   "chapters": 26
+  },
+  "shvetashvatara": {
+   "total": 113,
+   "withBn": 113,
+   "chapters": 6
+  },
+  "upanishad-isha": {
+   "total": 19,
+   "withBn": 19,
+   "chapters": 1
+  },
+  "upanishad-kena": {
+   "total": 36,
+   "withBn": 36,
+   "chapters": 1
+  },
+  "upanishad-mandukya": {
+   "total": 218,
+   "withBn": 218,
+   "chapters": 1
+  },
+  "upanishad-mundaka": {
+   "total": 65,
+   "withBn": 65,
+   "chapters": 1
+  },
+  "upanishad-prashna": {
+   "total": 68,
+   "withBn": 68,
+   "chapters": 1
+  },
+  "upanishad-taittiriya": {
+   "total": 12,
+   "withBn": 12,
+   "chapters": 1
+  },
+  "yajurveda-shukla": {
+   "total": 5,
+   "withBn": 5,
+   "chapters": 1
+  }
+ }
+}
