@@ -515,14 +515,14 @@ def sitemap_urls(sitemaps, keyword, want=("topics", "lessons", "books")):
 
 
 def book_lessons(book_url):
-    """বই-পাতার সূচি থেকে লেসন-সংযোগ (ক্রম অপরিবর্তিত)।"""
+    """বই-পাতার সূচি থেকে লেসন/টপিক-সংযোগ (ক্রম অপরিবর্তিত)।"""
     h = get(book_url)
     if not h:
         return []
     out, seen = [], set()
-    for m in re.finditer(r'href="(https://www\.ebanglalibrary\.com/lessons/[^"#?]+)"', h):
+    for m in re.finditer(r'href="(https://www\.ebanglalibrary\.com/(?:lessons|topics)/[^"#?]+)"', h):
         u = htmllib.unescape(m.group(1))
-        if u not in seen:
+        if u not in seen and u.rstrip("/") != book_url.rstrip("/"):
             seen.add(u)
             out.append(u)
     return out
@@ -803,16 +803,21 @@ def main_run(args):
         if not url0:
             sys.exit("সূচি-পাতা পাওয়া গেল না: " + args.match)
         lessons = book_lessons(url0) or [url0]
-        print("লেসন:", len(lessons), flush=True)
+        print("লেসন/টপিক:", len(lessons), flush=True)
         sel, seen = [], set()
         for lu in lessons:
+            if "/topics/" in urllib.parse.unquote(lu):
+                if lu not in seen:
+                    seen.add(lu)
+                    sel.append(lu)          # নিজেই শ্লোক-পাতা
+                    continue
             for t in toc_links(lu):
-                if "/topics/" in urllib.parse.unquote(t) and t not in seen:
+                if t not in seen:
                     seen.add(t)
                     sel.append(t)
             time.sleep(0.2)
         if not sel:
-            sel = [t for lu in lessons for t in toc_links(lu) if t not in seen]
+            sel = lessons
         print("টপিক:", len(sel), flush=True)
         items = [(i, u) for i, u in enumerate(sel, start=args.start)]
         if args.max:

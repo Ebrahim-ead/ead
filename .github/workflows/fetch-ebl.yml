@@ -70,7 +70,7 @@ jobs:
               --match "ভবিষ্য পুরাণ পৃথ্বীরাজ" --book-toc --max 400
           # ---- সামবেদ (পরিতোষ ঠাকুর)
           run --slug samaveda --title "সামবেদ সংহিতা" --word মন্ত্র \
-              --match "সামবেদ সংহিতা পরিতোষ" --book-toc --max 400
+              --match "সামবেদ সংহিতা" --book-toc --max 400
 
           echo "শেষ $(date -u +%H:%M:%S)"
 
