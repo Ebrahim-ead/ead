@@ -190,8 +190,13 @@ def lesson_next(h):
 
 
 # ---------------- সংগ্রহ ----------------
-def sitemap_urls(sitemaps, keyword, want=("topics", "lessons")):
-    pat = keyword.lower()
+def norm(x):
+    """স্পেস ও হাইফেন বাদ দিয়ে মেলানোর রূপ।"""
+    return re.sub(r"[\s\-–—/]+", "", x.lower())
+
+
+def sitemap_urls(sitemaps, keyword, want=("topics", "lessons", "books")):
+    pat = norm(keyword)
     urls, seen = [], set()
     for sm in sitemaps:
         x = get(sm)
@@ -201,11 +206,25 @@ def sitemap_urls(sitemaps, keyword, want=("topics", "lessons")):
             u = htmllib.unescape(loc).strip()
             if not any(w in u for w in want):
                 continue
-            dec = urllib.parse.unquote(u).lower()
+            dec = norm(urllib.parse.unquote(u))
             if pat in dec and u not in seen:
                 seen.add(u)
                 urls.append(u)
     return urls
+
+
+def book_lessons(book_url):
+    """বই-পাতার সূচি থেকে লেসন-সংযোগ (ক্রম অপরিবর্তিত)।"""
+    h = get(book_url)
+    if not h:
+        return []
+    out, seen = [], set()
+    for m in re.finditer(r'href="(https://www\.ebanglalibrary\.com/lessons/[^"#?]+)"', h):
+        u = htmllib.unescape(m.group(1))
+        if u not in seen:
+            seen.add(u)
+            out.append(u)
+    return out
 
 
 def ordinal_of(url):
@@ -260,6 +279,7 @@ def main():
     ap.add_argument("--discover", action="store_true")
     ap.add_argument("--by-ordinal", action="store_true")
     ap.add_argument("--chain", action="store_true")
+    ap.add_argument("--book", action="store_true", help="বই-পাতার সূচি থেকে সব লেসন")
     ap.add_argument("--max", type=int, default=0)
     ap.add_argument("--start", type=int, default=1)
     ap.add_argument("--dump", type=int, default=0)
@@ -297,7 +317,11 @@ def main():
         return
 
     # ---- তালিকা বানানো ----
-    if args.chain:
+    if args.book:
+        items = [(i, u) for i, u in enumerate(book_lessons(args.url), start=args.start)]
+        if args.max:
+            items = items[: args.max]
+    elif args.chain:
         urls = [args.url] if args.url else []
         if not urls:
             cands = sitemap_urls(LESSON_SITEMAPS, args.match)
