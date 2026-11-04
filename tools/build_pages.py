@@ -15,6 +15,12 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 DATA = ROOT / "assets/grantho/data"
 OUT = ROOT / "grantho/hindu"
 
+# ---- সাইটে এখন কোন গ্রন্থ থাকবে -------------------------------------------
+# ব্যবহারকারীর সিদ্ধান্ত (২০২৬-১১-০৫): «শুধুমাত্র ভগবত গীতা আর চারটা বেদের
+# ভিতর শুধুমাত্র ঋগ্বেদ রাখো; বাকি সবগুলো বাদ দাও।» তাই ডেটা/কার্ড কেবল
+# এই দুটিরই তৈরি হয় — অন্য কোনো index.json পড়া হয় না।
+ACTIVE = ("gita", "rigveda")
+
 BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
 BN_MAP = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
 
@@ -109,7 +115,17 @@ UPA = {
     "upanishad-aitareya": ("ঐতরেয় উপনিষদ", "জগৎসৃষ্টি, আত্মার প্রবেশ ও «প্রজ্ঞানং ব্রহ্ম» — ঐতরেয় আরণ্যকের উপনিষদ।"),
 }
 
-TEMPLATE = (OUT / "samaveda.html").read_text(encoding="utf-8")
+# টেমপ্লেট: আগে সামবেদ-পাতা (মূল নকশা), না থাকলে যেকোনো বানানো গ্রন্থ-পাতা।
+# সামবেদ সাইট থেকে সরানো হয়েছে, তাই এখানেও নির্ভরতা রাখা যাবে না।
+def _pick_template():
+    for cand in ("samaveda.html", "rigveda.html", "gita.html"):
+        p = OUT / cand
+        if p.exists():
+            return p.read_text(encoding="utf-8")
+    raise SystemExit("টেমপ্লেট-পাতা পাওয়া গেল না (samaveda/rigveda/gita)")
+
+
+TEMPLATE = _pick_template()
 
 
 def load(slug):
@@ -215,7 +231,8 @@ def main():
     made = []
     # ---- বেদ
     vedas = []
-    for slug in ("rigveda", "samaveda", "yajurveda-shukla", "yajurveda-krishna", "atharvaveda"):
+    for slug in [x for x in ("rigveda", "samaveda", "yajurveda-shukla",
+                             "yajurveda-krishna", "atharvaveda") if x in ACTIVE]:
         meta = BOOKS.get(slug)
         idx = load(slug)
         if not meta or not idx:
@@ -241,7 +258,7 @@ def main():
             grid += card(f"{slug}.html", k, t,
                          f'{commas(r["withbn"])} {m["word"]} · {commas(r["nch"])} {m["chword"]} · বাংলা অনুবাদসহ',
                          m["excerpt"])
-        elif slug in ("yajurveda-shukla", "yajurveda-krishna"):
+        elif slug in ACTIVE and slug in ("yajurveda-shukla", "yajurveda-krishna"):
             k, t = labels[slug]
             grid += card("", k, t, "শুক্ল ও কৃষ্ণ — দুই শাখা",
                          "যজ্ঞের বিধি ও মন্ত্রের বেদ — উৎস থেকে পাঠ নামানো হচ্ছে।", soon=True)
@@ -249,7 +266,7 @@ def main():
 
     # ---- পুরাণ
     puranas = []
-    for slug in ("garuda", "bhabishya", "brahma"):
+    for slug in (x for x in ("garuda", "bhabishya", "brahma") if x in ACTIVE):
         meta = BOOKS[slug]
         idx = load(slug)
         if not idx:
@@ -273,7 +290,7 @@ def main():
     # ---- উপনিষদ
     upa_cards, upa_total = "", 0
     for slug in list(UPA):
-        idx = load(slug)
+        idx = load(slug) if slug in ACTIVE else None
         if not idx:
             continue
         name, ex = UPA[slug]
@@ -290,7 +307,7 @@ def main():
                           f'{commas(r["withbn"])} মন্ত্র · {commas(r["nch"])} খণ্ড', ex)
         print(f"{slug}: {r['withbn']}")
     # শ্বেতাশ্বতর/কঠ/ছান্দোগ্য হাতে-বানানো পাতা — সেগুলো আগে রাখি
-    if upa_cards:
+    if upa_cards and (OUT / "upanishad.html").exists():
         s = (OUT / "upanishad.html").read_text(encoding="utf-8")
         fixed = []
         for href in ("shvetashvatara.html", "katha.html", "chandogya.html"):
@@ -313,9 +330,17 @@ def main():
         s = hp.read_text(encoding="utf-8")
         ved = sum(r["withbn"] for _, r, _ in vedas)
         pur = sum(r["withbn"] for _, r, _ in puranas)
-        s = re.sub(r'<p class="article-card-subtitle">৯টি উপনিষদ · [^<]*</p>',
-                   f'<p class="article-card-subtitle">{bn(len([s for s in UPA if load(s)]))}টি উপনিষদ · {commas(upa_total)} মন্ত্র</p>', s) \
-            if '<p class="article-card-subtitle">৯টি উপনিষদ' in s else s
+        g = load("gita")
+        if g and 'href="hindu/gita.html"' in s:
+            s = re.sub(r'(href="hindu/gita\.html">.*?<p class="article-card-subtitle">)[^<]*',
+                       lambda m: m.group(1) + f'{commas(g["withBn"])} শ্লোক · '
+                       f'{commas(len(g["chapters"]))} অধ্যায়', s, count=1, flags=re.S)
+        if ved and 'href="hindu/rigveda.html"' in s:
+            rv = next((r for sl, r, _ in vedas if sl == "rigveda"), None)
+            if rv:
+                s = re.sub(r'(href="hindu/rigveda\.html">.*?<p class="article-card-subtitle">)[^<]*',
+                           lambda m: m.group(1) + f'{commas(rv["withbn"])} মন্ত্র · '
+                           f'{commas(rv["nch"])} মণ্ডল', s, count=1, flags=re.S)
         hp.write_text(s, encoding="utf-8")
         print("হিন্দু-হাব:", ved, "/", pur)
     return 0

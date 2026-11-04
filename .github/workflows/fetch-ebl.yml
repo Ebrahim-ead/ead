@@ -1,7 +1,24 @@
-name: Fetch Bengali (ebanglalibrary)
+name: Fetch (ebanglalibrary)
+
+# উৎস থেকে পাঠ নামায় ও ডেটা আপডেট করে, তারপর সাইটে প্রকাশ করে।
+# পরিধি (ব্যবহারকারীর সিদ্ধান্ত): কেবল গীতা + ঋগ্বেদ।
+#   · গীতা সম্পূর্ণ (৭০১ শ্লোক) — নতুন কিছু নামানোর দরকার নেই।
+#   · ঋগ্বেদ ১–৯ মণ্ডল সম্পূর্ণ; বাকি **১০ম মণ্ডল** (১৯১২ সূক্ত/মন্ত্র)।
 
 on:
-  workflow_dispatch:      # (নতুন পাইপলাইন: .github/workflows/night-fetch.yml)
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'কী নামাব'
+        type: choice
+        default: rigveda10
+        options: [rigveda10, gita, all]
+      max:
+        description: 'সর্বোচ্চ কতটি সূক্ত (০ = সব)'
+        default: '0'
+  schedule:
+    # রাতে একবার — ১০ম মণ্ডলের বাকি অংশ ধীরে ধীরে যোগ হবে
+    - cron: '40 19 * * *'
 
 permissions:
   contents: write
@@ -15,105 +32,81 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 350
     env:
-      # ---- : URL-আবিষ্কার + ছান্দোগ্য (৮ অধ্যায়) ----
-      KW: 'অথর্ববেদ সংহিতা,গরুড় পুরাণ,ভবিষ্য পুরাণ,সামবেদ সংহিতা,ঋগ্বেদ ০'
-      SLUG: 'rigveda'
-      TITLE: 'ঋগ্বেদ সংহিতা'
-      MATCH: 'ঋগ্বেদ ০'
-      ORDINAL: '0'
-      CHAIN: '0'
-      BOOK: '0'
-      GROUPNUM: '1'
-      URL: ''
-      MAXN: '0'
-      STARTN: '1'
-      WORD: 'সূক্ত'
-      DUMPN: '0'
+      PYTHONUNBUFFERED: '1'
+      BOT_BRANCH: arena/bot-fetch
+      TARGET: ${{ inputs.target || 'rigveda10' }}
+      MAXV: ${{ inputs.max || '0' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Discover (URL তালিকা)
-        continue-on-error: true
-        run: |
-          mkdir -p assets/grantho/data/_debug
-          : > assets/grantho/data/_debug/urls.txt
-          IFS=',' read -ra arr <<< "$KW"
-          for k in "${arr[@]}"; do
-            echo "=== $k ===" >> assets/grantho/data/_debug/urls.txt
-            python3 tools/fetch_ebl.py --discover --match "$k" 2>&1 | tee -a assets/grantho/data/_debug/urls.txt
-            echo >> assets/grantho/data/_debug/urls.txt
-          done
-          wc -l assets/grantho/data/_debug/urls.txt
-
-      - name: সাইট-বিল্ড
-        continue-on-error: true
-        run: python3 -u tools/build_pages.py 2>&1 | tail -20
-
-      - name: Fetch (উপনিষদ + পুরাণ)
-        continue-on-error: true
-        run: |
-          set -x
-          : > /tmp/fetch.log
-          run() {
-            echo "### $*"
-            python3 -u tools/fetch_ebl.py "$@" 2>&1 | tee -a /tmp/fetch.log
-            sleep 1
-          }
-          # ---- গরুড় পুরাণ (পৃথ্বীরাজ সেন)
-          run --slug garuda --title "গরুড় পুরাণ" --word শ্লোক \
-              --match "গরুড় পুরাণ|গরুড পুরাণ" --book-auto --max 400
-          # ---- ভবিষ্য পুরাণ
-          run --slug bhabishya --title "ভবিষ্য পুরাণ" --word শ্লোক \
-              --match "ভবিষ্য পুরাণ" --book-auto --max 400
-          # ---- ব্রহ্ম পুরাণ
-          run --slug brahma --title "ব্রহ্ম পুরাণ" --word শ্লোক \
-              --match "ব্রহ্ম পুরাণ" --book-auto --max 400
-          # ---- সামবেদ (পরিতোষ ঠাকুর)
-          run --slug samaveda --title "সামবেদ সংহিতা" --word মন্ত্র \
-              --match "সামবেদ সংহিতা|সামবেদ" --book-auto --max 400
-          # ---- অথর্ববেদ (দিলীপ মুখোপাধ্যায়)
-          run --slug atharvaveda --title "অথর্ববেদ সংহিতা" --word মন্ত্র \
-              --match "অথর্ববেদ সংহিতা|অথর্ববেদ" --book-auto --max 400
-
-          echo "শেষ $(date -u +%H:%M:%S)"
-
-      - name: Report
-        if: always()
-        run: |
-          mkdir -p assets/grantho/data/_debug
-          cp /tmp/fetch.log assets/grantho/data/_debug/fetch_log.txt 2>/dev/null || true
-          echo "ক্যাশ ফাইল:"; ls -la assets/grantho/data/_debug/ || true
-          echo "=== log tail ==="
-          tail -40 /tmp/fetch.log 2>/dev/null || true
-          echo "=== report ==="
-          cat "assets/grantho/data/_fetch_report_${SLUG}.txt" 2>/dev/null || echo "(no report)"
-          echo "=== all reports ==="
-          for r in assets/grantho/data/_fetch_report_*.txt; do cat "$r"; echo; done 2>/dev/null || true
-          echo "=== sample ch1 ==="
-          python3 - <<'PY' || true
-          import json, os
-          f = "assets/grantho/data/%s/ch1.json" % os.environ["SLUG"]
-          if os.path.exists(f):
-              o = json.load(open(f, encoding="utf-8"))
-              print("count:", o["count"], "| bn:", o["bn"])
-              for v in o["verses"][:2]:
-                  print("N:", v["n"])
-                  print("SK:", (v.get("sk") or "")[:260])
-                  print("BN:", (v.get("bn") or "")[:260])
-                  print("--")
-          else:
-              print("(no ch1.json)")
-          PY
-
-      - name: Commit & push
-        if: always()
+      - name: git
         run: |
           git config user.name  "grantho-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add assets/grantho/data || true
-          git commit -m "ebanglalibrary: ${SLUG} ($(date -u +%H:%M))" || echo "no changes"
-          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
-          git push origin "HEAD:${GITHUB_REF_NAME}" || echo "push skipped"
+
+      # ── ঋগ্বেদ ১০ম মণ্ডল ────────────────────────────────────────────────
+      # সূত্র-পাতার নাম «ঋগ্বেদ-১০।০১» … «ঋগ্বেদ-১০।১৯১» — সংখ্যা ধরে মিলিয়ে
+      # একবারে পুরো মণ্ডল ধরা হয়। --only-unsaved থাকায় প্রতিবার কেবল নতুন
+      # সূক্তগুলোই নামে, আর write_index_guarded পুরনো ১–৯ মণ্ডল অটুট রাখে।
+      - name: ঋগ্বেদ — ১০ম মণ্ডল (বাকি সূক্ত)
+        if: env.TARGET != 'gita'
+        run: |
+          ARGS=""
+          if [ "$MAXV" != "0" ]; then ARGS="--max $MAXV"; fi
+          python3 -u tools/fetch_ebl.py --slug rigveda --title "ঋগ্বেদ সংহিতা" \
+            --word সূক্ত --match "ঋগ্বেদ ১০" --by-ordinal --want 10 \
+            --only-unsaved $ARGS 2>&1 | tail -30
+
+      # ── গীতা (যাচাই/পুনরুদ্ধার) ─────────────────────────────────────────
+      - name: গীতা — যাচাই
+        if: env.TARGET == 'gita' || env.TARGET == 'all'
+        run: |
+          python3 - <<'PY'
+          import json
+          d = json.load(open('assets/grantho/data/gita/index.json', encoding='utf-8'))
+          print(f"গীতা: {d['withBn']}/{d['total']} শ্লোক · {len(d['chapters'])} অধ্যায়")
+          PY
+
+      - name: রিপোর্ট
+        if: always()
+        run: |
+          for r in assets/grantho/data/_fetch_report_*.txt; do
+            [ -e "$r" ] || continue
+            echo "--- $r"; head -3 "$r"
+          done
+
+      # বিল্ড ব্যর্থ হলে (ডেটা হঠাৎ ছোট) কিছুই কমিট/প্রকাশ হবে না
+      - name: সাইট-পাতা বিল্ড
+        if: always()
+        run: python3 -u tools/build_pages.py 2>&1 | tail -20
+
+      - name: কমিট + প্রকাশ (PR → main, auto-merge)
+        if: always() && success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add grantho assets/grantho/data || true
+          if git diff --cached --quiet; then
+            echo "কোনো পরিবর্তন নেই — প্রকাশ লাগবে না"; exit 0
+          fi
+          git commit -m "ঋগ্বেদ ১০ম মণ্ডল: স্বয়ংক্রিয় আপডেট ($(date -u +%d/%m %H:%M) UTC)" || true
+          git fetch origin main --depth=1 || true
+          git rebase origin/main || git rebase --abort || true
+          git push origin "HEAD:refs/heads/${BOT_BRANCH}"
+          NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
+          if [ -z "$NUM" ]; then
+            gh pr create --base main --head "${BOT_BRANCH}" \
+              --title "ঋগ্বেদ: ১০ম মণ্ডলের নতুন সূক্ত ($(date -u +%d/%m %H:%M) UTC)" \
+              --body "স্বয়ংক্রিয় ফেচ — ১০ম মণ্ডলের নতুন সূক্ত যোগ ও পাতা-বিল্ড।" || true
+            sleep 5
+            NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
+          fi
+          echo "PR: ${NUM:-নেই}"
+          [ -n "$NUM" ] && gh pr merge "$NUM" --merge
