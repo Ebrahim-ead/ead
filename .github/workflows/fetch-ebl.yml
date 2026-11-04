@@ -95,6 +95,30 @@ jobs:
                   print("        bn=%s" % (v["bn"] or "—")[:60])
           PY
 
+      - name: Debug (কাঁচা পাঠ)
+        continue-on-error: true
+        run: |
+          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
+          import sys, re, urllib.parse
+          sys.path.insert(0, "tools")
+          import fetch_ebl as f
+          for label, kw, want in [("অথর্ববেদ", "অথর্ববেদ সংহিতা", "lessons"),
+                                  ("গরুড় পুরাণ", "গরুড় পুরাণ পৃথ্বীরাজ", "lessons")]:
+              allu = f.sitemap_urls(f.LESSON_SITEMAPS + f.TOPIC_SITEMAPS, kw, (want,))
+              u = sorted(allu, key=lambda x: (len(urllib.parse.unquote(x)), x))[0] if allu else None
+              print("=====", label, "|", (urllib.parse.unquote(u)[-55:] if u else "নেই"), "| মোট:", len(allu))
+              if not u:
+                  continue
+              h = f.get(u) or ""
+              print("html:", len(h), "| দেবনাগরী:", len(re.findall(r"[\u0900-\u097F]", h)),
+                    "| দাঁড়ি-লাইন:", len(re.findall(r"॥", h)))
+              t = f.fetch_paged(u)
+              lines = [x.strip() for x in t.splitlines() if x.strip()]
+              print("টেক্সট লাইন:", len(lines))
+              for ln in lines[:45]:
+                  print("  |", ln[:120])
+          PY
+
       - name: Fetch (উপনিষদ + পুরাণ)
         continue-on-error: true
         run: |
