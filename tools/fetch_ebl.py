@@ -589,7 +589,7 @@ def mandala_links(m):
             continue
         for u in toc_links(toc) + [toc]:
             t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
-            g = re.match(r"^\D*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})$", t)
+            g = re.match(r"^[^০-৯0-9]*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})$", t)
             if g and to_int(g.group(1)) == m:
                 found[to_int(g.group(2))] = u
         # pagina-শৃঙ্খল ধরে বাকি পাতা (ld-topic-page=2,3…)
@@ -607,13 +607,13 @@ def mandala_links(m):
             for g in re.finditer(r'href="([^"]*?/(?:topics|lessons)/[^"#?]+)"', h):
                 u = htmllib.unescape(g.group(1))
                 t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
-                mm2 = re.match(r"^\D*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})$", t)
+                mm2 = re.match(r"^[^০-৯0-9]*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})$", t)
                 if mm2 and to_int(mm2.group(1)) == m:
                     found[to_int(mm2.group(2))] = u
             nxt = next_page_link(h)
         for u in toc_links(toc):
             t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
-            g = re.match(r"^\D*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})$", t)
+            g = re.match(r"^[^০-৯0-9]*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})$", t)
             if g and to_int(g.group(1)) == m:
                 found.setdefault(to_int(g.group(2)), u)
         if found:
@@ -637,7 +637,7 @@ def toc_links(page_url):
 def ordinal_of(url):
     """পাতার ক্রম-সংখ্যা: আগে শিরোনামের «০২।০৫» ধাঁচ, নইলে «প্রথম/দ্বিতীয়» শব্দ।"""
     t = urllib.parse.unquote(url.rstrip("/").split("/")[-1])
-    m = re.match(r"^\D*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})", t)
+    m = re.match(r"^[^০-৯0-9]*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})", t)
     if m:
         a = to_int(m.group(1))
         b = to_int(m.group(2))
@@ -1213,7 +1213,7 @@ def main_run(args):
             if num:
                 for u in allu:
                     t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
-                    m = re.match(r"^\D*?([০-৯]{1,2})\s*।", t)
+                    m = re.match(r"^[^০-৯0-9]*?([০-৯]{1,2})\s*।", t)
                     if m and to_int(m.group(1)) == to_int(num):
                         o, _ = ordinal_of(u)
                         if o and o not in seen_o:
@@ -1224,7 +1224,7 @@ def main_run(args):
                     if "/topics/" not in u:
                         continue
                     t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
-                    m = re.match(r"^\D*?([০-৯]{1,2})\s*।", t)
+                    m = re.match(r"^[^০-৯0-9]*?([০-৯]{1,2})\s*।", t)
                     if m and to_int(m.group(1)) == to_int(num):
                         o, _ = ordinal_of(u)
                         if o and o not in seen_o:
@@ -1266,7 +1266,7 @@ def main_run(args):
         keep = []
         for i, u in items:
             t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
-            m = re.match(r"^\D*?[০-৯]{1,2}\s*।\s*([০-৯]{1,3})", t)
+            m = re.match(r"^[^০-৯0-9]*?[০-৯]{1,2}\s*।\s*([০-৯]{1,3})", t)
             if m and to_int(m.group(1)) in have:
                 continue
             keep.append((i, u))
