@@ -19,6 +19,12 @@ on:
   schedule:
     # রাতে একবার — ১০ম মণ্ডলের বাকি অংশ ধীরে ধীরে যোগ হবে
     - cron: '40 19 * * *'
+  push:
+    # এই ফাইল বা ফেচার বদলালে সঙ্গে সঙ্গে একবার চালাও (main-এ merge হলেই)
+    branches: [main]
+    paths:
+      - '.github/workflows/fetch-ebl.yml'
+      - 'tools/fetch_ebl.py'
 
 permissions:
   contents: write
