@@ -456,10 +456,15 @@ def main_run(args):
 
     # ---- তালিকা বানানো ----
     if args.book_auto:
-        books = [u for u in sitemap_urls(COURSE_SITEMAPS + LESSON_SITEMAPS
-                                         + TOPIC_SITEMAPS, args.match,
-                                         ("books", "courses"))
-                 if "/books/" in u]
+        books = []
+        for m in [x.strip() for x in args.match.split("|") if x.strip()]:
+            books = [u for u in sitemap_urls(COURSE_SITEMAPS + LESSON_SITEMAPS
+                                             + TOPIC_SITEMAPS, m,
+                                             ("books", "courses"))
+                     if "/books/" in u]
+            if books:
+                print("কীওয়ার্ড:", m)
+                break
         print("বই-পাতা:", [urllib.parse.unquote(b)[-60:] for b in books[:3]])
         if not books:
             sys.exit("বই-পাতা পাওয়া গেল না: " + args.match)

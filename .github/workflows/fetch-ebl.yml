@@ -63,13 +63,13 @@ jobs:
           }
           : > /tmp/fetch.log
           run --slug bhabishya --title "ভবিষ্য পুরাণ" --word শ্লোক \
-              --match "ভবিষ্য পুরাণ পৃথ্বীরাজ" --book-auto --max 120
+              --match "ভবিষ্য পুরাণ|ভবিষ্যপুরাণ" --book-auto --max 120
           run --slug garuda --title "গরুড় পুরাণ" --word শ্লোক \
-              --match "গরুড় পুরাণ পৃথ্বীরাজ" --book-auto --max 120
+              --match "গরুড় পুরাণ|গরুড পুরাণ" --book-auto --max 120
           run --slug brahma --title "ব্রহ্ম পুরাণ" --word শ্লোক \
-              --match "ব্রহ্ম পুরাণ পৃথ্বীরাজ" --book-auto --max 120
+              --match "ব্রহ্ম পুরাণ|ব্রহ্মপুরাণ" --book-auto --max 120
           run --slug samaveda --title "সামবেদ সংহিতা" --word মন্ত্র \
-              --match "সামবেদ সংহিতা পরিতোষ" --book-auto --max 120
+              --match "সামবেদ সংহিতা|সামবেদ" --book-auto --max 120
           echo "শেষ $(date -u +%H:%M:%S)"
 
       - name: Report
