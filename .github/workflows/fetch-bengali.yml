@@ -1,16 +1,9 @@
 name: fetch-bengali
 
 # vivekavani.com থেকে বাংলা বঙ্গানুবাদ ব্যাচে নামিয়ে ডেটা-ফাইলে লেখে।
-# চালানো: এই ফাইল বদলে push করলেই রান হয় (বা Actions ট্যাব থেকে Run workflow)।
+# চালানো: এই ফাইল বা tools/fetch_bengali.py বদলে push করলেই রান হয়।
 on:
   workflow_dispatch:
-    inputs:
-      only:
-        description: 'শুধু এই গ্রন্থ (katha|chandogya|all)'
-        default: 'chandogya'
-      dump:
-        description: 'ডাম্প-মোড: প্রথম N পোস্টের লেখা _debug/ ফোল্ডারে (০ = বন্ধ)'
-        default: '0'
   push:
     paths:
       - '.github/workflows/fetch-bengali.yml'
@@ -22,7 +15,10 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
+    env:
+      TARGET: ${{ github.event.inputs.target || 'chandogya' }}
+      DUMPN: ${{ github.event.inputs.dump || '0' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,12 +29,24 @@ jobs:
           python-version: '3.12'
 
       - name: Run fetcher
-        env:
-          TARGET: ${{ inputs.only || 'chandogya' }}
-          DUMP: ${{ inputs.dump || '0' }}
-        run: python3 tools/fetch_bengali.py --target "$TARGET" --out assets/grantho/data --dump "${DUMP:-0}"
+        run: |
+          ARGS="--target $TARGET --out assets/grantho/data"
+          if [ "$DUMPN" != "0" ] && [ -n "$DUMPN" ]; then ARGS="$ARGS --dump $DUMPN"; fi
+          echo "চালাচ্ছি: python3 tools/fetch_bengali.py $ARGS"
+          python3 tools/fetch_bengali.py $ARGS 2>&1 | tee /tmp/fetch.log
+
+      - name: Report
+        if: always()
+        run: |
+          echo '### fetch log'
+          tail -40 /tmp/fetch.log 2>/dev/null || echo 'কোনো লগ নেই'
+          echo '### রিপোর্ট'
+          cat assets/grantho/data/_fetch_report.txt 2>/dev/null || echo '—'
+          echo '### ডাম্প-ফাইল'
+          ls -1 assets/grantho/data/_debug 2>/dev/null | head -20 || echo '—'
 
       - name: Commit & push
+        if: always()
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -49,6 +57,3 @@ jobs:
             git commit -m "বাংলা বঙ্গানুবাদ: ব্যাচ-ডাউনলোড ($(date -u +%Y-%m-%d))"
             git push
           fi
-
-      - name: Summary
-        run: cat assets/grantho/data/_fetch_report.txt || ls assets/grantho/data/_debug | head
