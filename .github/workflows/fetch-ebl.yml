@@ -52,32 +52,21 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
-      - name: Debug (শৃঙ্খল + ঐতরেয় গঠন)
+      - name: Debug (পাতার গঠন)
         continue-on-error: true
         run: |
           python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
           import sys, re, urllib.parse
           sys.path.insert(0, "tools")
           import fetch_ebl as f
-          for nm in ["কেন", "ঈশ", "প্রশ্ন", "মুণ্ডক", "মাণ্ডূক্য", "তৈত্তিরীয়", "ঐতরেয়"]:
-              allu = f.sitemap_urls(f.TOPIC_SITEMAPS + f.LESSON_SITEMAPS, nm + " উপনিষদ")
-              print("==", nm, len(allu), [urllib.parse.unquote(u)[-30:] for u in allu])
-              if allu:
-                  u = sorted(allu, key=lambda x: (0 if ("/lessons/" + nm) in urllib.parse.unquote(x) else 1, len(x)))[0]
-                  for hop in range(5):
-                      h = f.get(u)
-                      if not h:
-                          print("   load-fail", urllib.parse.unquote(u)[-35:]); break
-                      nxt = f.lesson_next(h)
-                      print("   hop", hop, urllib.parse.unquote(u)[-35:], "->", (urllib.parse.unquote(nxt)[-35:] if nxt else None))
-                      if not nxt: break
-                      u = nxt
-          print("=== ঐতরেয় পাতা ===")
-          allu = f.sitemap_urls(f.TOPIC_SITEMAPS + f.LESSON_SITEMAPS, "ঐতরেয় উপনিষদ")
-          if allu:
-              t = f.fetch_paged(allu[0])
-              for ln in [x.strip() for x in t.splitlines() if x.strip()][:40]:
-                  print("  |", ln[:110])
+          u = "https://www.ebanglalibrary.com/lessons/" + urllib.parse.quote("কেন-উপনিষদ") + "/"
+          h = f.get(u) or ""
+          print("HTML দৈর্ঘ্য:", len(h), "| দেবনাগরী অক্ষর:", len(re.findall(r"[\u0900-\u097F]", h)))
+          t = f.fetch_paged(u)
+          lines = [x.strip() for x in t.splitlines() if x.strip()]
+          print("টেক্সট লাইন:", len(lines))
+          for ln in lines[:45]:
+              print("  |", ln[:120])
           PY
 
       - name: Fetch (উপনিষদ + পুরাণ)
