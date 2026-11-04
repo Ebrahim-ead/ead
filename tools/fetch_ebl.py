@@ -799,10 +799,16 @@ def main_run(args):
         print("সূচি:", urllib.parse.unquote(url0)[-60:], flush=True)
         toc = toc_links(url0)
         _k = norm((args.match.split() or [""])[0])
-        if _k:
-            _own = [u for u in toc if _k in norm(urllib.parse.unquote(u))]
-            if len(_own) >= 3:
-                toc = _own
+        # ভূমিকা/ইতিহাস-জাতীয় সূচি-টপিক বাদ; পাঠ-পাতা (কাণ্ড/মণ্ডল/অধ্যায়/০৭।০৫) রাখি
+        def _is_text_page(u):
+            t = urllib.parse.unquote(u)
+            if _k and _k in norm(t):
+                return True
+            return bool(re.search(r"[০-৯]{1,2}\s*।\s*[০-৯]{1,2}", t)
+                        or re.search(r"কাণ্ড|মণ্ডল|অধ্যায়|সূক্ত|বল্লী|খণ্ড", t))
+        _tp = [u for u in toc if _is_text_page(u)]
+        if len(_tp) >= 3:
+            toc = _tp
         print("ভেতরের টপিক/লেসন:", len(toc), flush=True)
         items = [(i, u) for i, u in enumerate(toc, start=args.start)]
         if args.max:
