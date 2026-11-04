@@ -542,8 +542,6 @@ def main_run(args):
         print("\n".join(rep))
 
 
-if __name__ == "__main__":
-    main()
 
 
 def main():  # noqa: F811  (CLI প্রবেশ-বিন্দু)
@@ -573,3 +571,7 @@ def main():  # noqa: F811  (CLI প্রবেশ-বিন্দু)
             print(" ", urllib.parse.unquote(u))
         return
     return main_run(args)
+
+
+if __name__ == "__main__":
+    main()
