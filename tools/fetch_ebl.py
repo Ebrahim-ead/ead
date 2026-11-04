@@ -320,8 +320,11 @@ def parse_verses(txt, bn_meaning=False):
                     or "কাণ্ড :" in ln and len(ln) < 60):
                 continue                      # শিরোনাম/সূচি লাইন
             if bn_meaning and not _lbl:
-                if DEV_RE.search(ln) or VERSE_TAIL.search(ln) or (
-                        looks_sanskrit(ln) and cur is not None
+                _bn_prose = (not VERSE_TAIL.search(ln)) or bool(
+                    re.search(r"ইত্যাদি|অর্থাৎ|এবং|হয়|করে|করছি|হতে|জন্য|নিমিত্ত|"
+                              r"অভিলক্ষ্য|অবলোকন|উদ্দেশ্য", ln)) or ln.startswith("(")
+                if ((DEV_RE.search(ln) or VERSE_TAIL.search(ln)) and not _bn_prose) or (
+                        looks_sanskrit(ln) and not _bn_prose and cur is not None
                         and not cur["bn"] and cur["sk"]):
                     flush_pending(pend, False, False)
                     pend = []
@@ -331,7 +334,11 @@ def parse_verses(txt, bn_meaning=False):
                     else:
                         add_verse([ln])
                 else:
-                    pend.append(ln)
+                    # বাংলা-পাঠ: শ্লোক-লক্ষণহীন বাংলা লাইন ⇒ চলতি শ্লোকের অনুবাদ-ধারাবাহিকতা
+                    if cur is not None:
+                        cur["part"] = "bn"
+                        cur["bn"].append(ln)
+                    pend = []
                 continue
             m = MTRA.match(ln)
             if m:
