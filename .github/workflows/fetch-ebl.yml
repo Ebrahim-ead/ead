@@ -52,28 +52,38 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
-      - name: Debug (কাঁচা পাঠ ২)
+      - name: Debug (কাঁচা পাঠ ডাম্প)
         continue-on-error: true
         run: |
           python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg3.txt
-          import sys, re, urllib.parse
+          import sys, os, re, urllib.parse
           sys.path.insert(0, "tools")
           import fetch_ebl as f
-          urls = [
-            "https://www.ebanglalibrary.com/lessons/অথর্ববেদ-সংহিতা-১৮।০৩-অষ/",
-            "https://www.ebanglalibrary.com/topics/০৭।০৫-সপ্তম-কাণ্ড-পঞ্চম-অন/",
-            "https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০১/",
+          os.makedirs("assets/grantho/data/_debug/raw", exist_ok=True)
+          jobs = [
+              ("atharva", "অথর্ববেদ সংহিতা", "lessons"),
+              ("garuda", "গরুড় পুরাণ পৃথ্বীরাজ", "lessons"),
+              ("bhabishya", "ভবিষ্য পুরাণ", "lessons"),
+              ("samaveda", "সামবেদ সংহিতা", "lessons"),
+              ("yajurveda", "যজুর্বেদ সংহিতা", "lessons"),
+              ("rigveda", "ঋগ্বেদ ০১", "topics"),
           ]
-          for u in urls:
-              h = f.get(u)
-              if not h:
-                  print("=====", "লোড হয়নি:", urllib.parse.unquote(u)[-40:]); continue
-              t = f.fetch_paged(u)
-              lines = [x.strip() for x in t.splitlines() if x.strip()]
-              print("=====", urllib.parse.unquote(u)[-45:], "| লাইন:", len(lines),
-                    "| দেবনাগরী:", len(re.findall(r"[\u0900-\u097F]", t)), "| ॥:", t.count("॥"))
-              for ln in lines[:32]:
-                  print("  |", ln[:120])
+          for tag, kw, want in jobs:
+              allu = f.sitemap_urls(f.LESSON_SITEMAPS + f.TOPIC_SITEMAPS, kw, (want,))
+              if not allu:
+                  print("=====", tag, "সাইটম্যাপে নেই"); continue
+              url0 = sorted(allu, key=lambda x: len(urllib.parse.unquote(x)))[0]
+              print("=====", tag, "|", urllib.parse.unquote(url0)[-50:], "| মোট:", len(allu))
+              toc = f.toc_links(url0)
+              print("   ভেতরের টপিক:", len(toc))
+              picks = [url0] + toc[:2]
+              for k, u in enumerate(picks):
+                  t = f.fetch_paged(u)
+                  fn = "assets/grantho/data/_debug/raw/%s_%d.txt" % (tag, k)
+                  open(fn, "w", encoding="utf-8").write(t)
+                  print("   →", fn, "| লাইন:", len([x for x in t.splitlines() if x.strip()]),
+                        "| দেবনাগরী:", len(re.findall(r"[\u0900-\u097F]", t)),
+                        "| ॥:", t.count("॥"), "| :", t.count(":"))
           PY
 
       - name: Fetch (উপনিষদ + পুরাণ)
