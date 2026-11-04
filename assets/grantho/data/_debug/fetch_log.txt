@@ -910,24 +910,130 @@ bhabishya: বাংলা 87/105
   177. ভবিষ্য পুরাণ — ১৩ মৃত্যুপথযাত্রীর সেবা: 0/1
   178. ভবিষ্য পুরাণ — ১৪ বৃষোৎসর্গ শ্রাদ্ধের শ: 0/3
   179. ভবিষ্য পুরাণ — ১৫ পঞ্চপিশাচের কাহিনি: 1/1
-লেসন/টপিক: 8
-টপিক: 9
-নামানো হবে 9টি পাতা
-[1] https://www.ebanglalibrary.com/lessons/প্রাক্কথন/
+কীওয়ার্ড: সামবেদ সংহিতা
+বই-পাতা: ['tps://www.ebanglalibrary.com/books/সামবেদ-সংহিতা-অনুবাদ-পরি/', 'ttps://www.ebanglalibrary.com/books/সামবেদ-সংহিতা-বঙ্গানুবা/']
+সূচিতে লেসন: 48
+নামানো হবে 48টি পাতা
+[1] s://www.ebanglalibrary.com/lessons/০১ম-অধ্যায়-আগ্নেয়-কাণ্/
+   ✓ 10 মন্ত্র
+[2] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০২/
+   ✓ 10 মন্ত্র
+[3] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৩/
+   ✓ 13 মন্ত্র
+[4] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৪/
+   ✓ 10 মন্ত্র
+[5] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৫/
+   ✓ 9 মন্ত্র
+[6] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৬/
+   ✓ 9 মন্ত্র
+[7] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৭/
+   ✓ 9 মন্ত্র
+[8] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৮/
+   ✓ 9 মন্ত্র
+[9] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৯/
+   ✓ 10 মন্ত্র
+[10] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১০/
+   ✓ 7 মন্ত্র
+[11] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১১/
+   ✓ 10 মন্ত্র
+[12] https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১২/
+   ✓ 9 মন্ত্র
+[13] s://www.ebanglalibrary.com/lessons/০২য়-অধ্যায়-ঐন্দ্রকাণ্ড/
+   ✓ 10 মন্ত্র
+[14] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০২/
+   ✓ 10 মন্ত্র
+[15] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৩/
+   ✓ 10 মন্ত্র
+[16] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৪/
+   ✓ 1 মন্ত্র
+[17] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৫/
+   ✓ 2 মন্ত্র
+[18] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৬/
+   ✓ 2 মন্ত্র
+[19] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৭/
    ✗ মন্ত্র পাওয়া যায়নি
-[2] s://www.ebanglalibrary.com/lessons/এক-ঋগ্বেদ-সংহিতা-প্রসঙ্গ/
+[20] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৮/
    ✗ মন্ত্র পাওয়া যায়নি
-[3] tps://www.ebanglalibrary.com/lessons/দুই-সামবেদ-সংহিতার-কথা/
+[21] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৯/
+   ✓ 3 মন্ত্র
+[22] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১০/
+   ✓ 2 মন্ত্র
+[23] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১১/
+   ✓ 1 মন্ত্র
+[24] https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১২/
+   ✓ 2 মন্ত্র
+[25] s://www.ebanglalibrary.com/lessons/০৩য়-অধ্যায়-ঐন্দ্র-কান্/
    ✗ মন্ত্র পাওয়া যায়নি
-[4] s://www.ebanglalibrary.com/lessons/তিন-যজুর্বেদ-সংহিতার-কথা/
+[26] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০২/
    ✗ মন্ত্র পাওয়া যায়নি
-[5] s://www.ebanglalibrary.com/lessons/চার-অথর্ববেদ-সংহিতার-কথা/
+[27] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৩/
    ✗ মন্ত্র পাওয়া যায়নি
-[6] https://www.ebanglalibrary.com/lessons/পাঁচ-ব্রাহ্মণসাহিত্য/
+[28] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৪/
    ✗ মন্ত্র পাওয়া যায়নি
-[7] https://www.ebanglalibrary.com/lessons/ছয়-আরণ্যক-সাহিত্য/
+[29] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৫/
    ✗ মন্ত্র পাওয়া যায়নি
-[8] https://www.ebanglalibrary.com/lessons/সাত-উপনিষদ্-কথা/
+[30] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৬/
    ✗ মন্ত্র পাওয়া যায়নি
-[9] ps://www.ebanglalibrary.com/lessons/আট-বেদাঙ্গসূত্র-প্রসঙ্গ/
+[31] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৭/
    ✗ মন্ত্র পাওয়া যায়নি
+[32] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৮/
+   ✗ মন্ত্র পাওয়া যায়নি
+[33] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৯/
+   ✗ মন্ত্র পাওয়া যায়নি
+[34] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১০/
+   ✓ 2 মন্ত্র
+[35] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১১/
+   ✗ মন্ত্র পাওয়া যায়নি
+[36] https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১২/
+   ✗ মন্ত্র পাওয়া যায়নি
+[37] s://www.ebanglalibrary.com/lessons/৪র্থ-অধ্যায়-ঐন্দ্র-কান্/
+   ✗ মন্ত্র পাওয়া যায়নি
+[38] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০২/
+   ✓ 9 মন্ত্র
+[39] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৩/
+   ✗ মন্ত্র পাওয়া যায়নি
+[40] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৪/
+   ✗ মন্ত্র পাওয়া যায়নি
+[41] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৫/
+   ✗ মন্ত্র পাওয়া যায়নি
+[42] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৬/
+   ✓ 9 মন্ত্র
+[43] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৭/
+   ✗ মন্ত্র পাওয়া যায়নি
+[44] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৮/
+   ✗ মন্ত্র পাওয়া যায়নি
+[45] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৯/
+   ✗ মন্ত্র পাওয়া যায়নি
+[46] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১০/
+   ✗ মন্ত্র পাওয়া যায়নি
+[47] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১১/
+   ✗ মন্ত্র পাওয়া যায়নি
+[48] https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১২/
+   ✓ 1 মন্ত্র
+samaveda: বাংলা 174/179
+  1. সামবেদ সংহিতা — ০১ম অধ্যায় আগ্নেয় কাণ্: 10/10
+  2. সামবেদ সংহিতা — সামবেদ ০১।০২: 10/10
+  3. সামবেদ সংহিতা — সামবেদ ০১।০৩: 13/13
+  4. সামবেদ সংহিতা — সামবেদ ০১।০৪: 10/10
+  5. সামবেদ সংহিতা — সামবেদ ০১।০৫: 9/9
+  6. সামবেদ সংহিতা — সামবেদ ০১।০৬: 8/9
+  7. সামবেদ সংহিতা — সামবেদ ০১।০৭: 9/9
+  8. সামবেদ সংহিতা — সামবেদ ০১।০৮: 8/9
+  9. সামবেদ সংহিতা — সামবেদ ০১।০৯: 10/10
+  10. সামবেদ সংহিতা — সামবেদ ০১।১০: 6/7
+  11. সামবেদ সংহিতা — সামবেদ ০১।১১: 10/10
+  12. সামবেদ সংহিতা — সামবেদ ০১।১২: 8/9
+  13. সামবেদ সংহিতা — ০২য় অধ্যায় ঐন্দ্রকাণ্ড: 10/10
+  14. সামবেদ সংহিতা — সামবেদ ০২।০২: 9/10
+  15. সামবেদ সংহিতা — সামবেদ ০২।০৩: 10/10
+  16. সামবেদ সংহিতা — সামবেদ ০২।০৪: 1/1
+  17. সামবেদ সংহিতা — সামবেদ ০২।০৫: 2/2
+  18. সামবেদ সংহিতা — সামবেদ ০২।০৬: 2/2
+  21. সামবেদ সংহিতা — সামবেদ ০২।০৯: 3/3
+  22. সামবেদ সংহিতা — সামবেদ ০২।১০: 2/2
+  23. সামবেদ সংহিতা — সামবেদ ০২।১১: 1/1
+  24. সামবেদ সংহিতা — সামবেদ ০২।১২: 2/2
+  34. সামবেদ সংহিতা — সামবেদ ০৩।১০: 2/2
+  38. সামবেদ সংহিতা — সামবেদ ০৪।০২: 9/9
+  42. সামবেদ সংহিতা — সামবেদ ০৪।০৬: 9/9
+  48. সামবেদ সংহিতা — সামবেদ ০৪।১২: 1/1
