@@ -186,9 +186,25 @@ def main():
     ap.add_argument("--target", default="chandogya")
     ap.add_argument("--out", default="assets/grantho/data")
     ap.add_argument("--limit", type=int, default=0, help="পরীক্ষার জন্য পোস্ট-সংখ্যা সীমা")
+    ap.add_argument("--dump", type=int, default=0, help="প্রথম N পোস্টের পরিষ্কার লেখা _debug/ ফোল্ডারে রাখে")
     args = ap.parse_args()
 
     slugname, query, rx, has_upach = target_spec(args.target)
+
+    if args.dump:
+        dbg = os.path.join(args.out, "_debug")
+        os.makedirs(dbg, exist_ok=True)
+        slugs = collect_slugs(query, rx)
+        print(f"ডাম্প: {len(slugs)} পোস্ট-তালিকা")
+        for i, (sl, pid) in enumerate(sorted(slugs.items())[: args.dump]):
+            data = get(f"{API}/{pid}?_fields=slug,content")
+            raw = (data or {}).get("content", {}).get("rendered", "")
+            txt = clean_html(raw)
+            open(os.path.join(dbg, f"{sl}.txt"), "w", encoding="utf-8").write(txt[:6000])
+            open(os.path.join(dbg, f"{sl}.html"), "w", encoding="utf-8").write(raw[:20000])
+        open(os.path.join(dbg, "_list.txt"), "w", encoding="utf-8").write("\n".join(sorted(slugs)))
+        return
+
     files = chapter_files(args.out, slugname)
     build = not files
     if build:

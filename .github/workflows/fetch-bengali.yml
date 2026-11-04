@@ -8,6 +8,9 @@ on:
       only:
         description: 'শুধু এই গ্রন্থ (katha|chandogya|all)'
         default: 'chandogya'
+      dump:
+        description: 'ডাম্প-মোড: প্রথম N পোস্টের লেখা _debug/ ফোল্ডারে (০ = বন্ধ)'
+        default: '0'
   push:
     paths:
       - '.github/workflows/fetch-bengali.yml'
@@ -32,7 +35,8 @@ jobs:
       - name: Run fetcher
         env:
           TARGET: ${{ inputs.only || 'chandogya' }}
-        run: python3 tools/fetch_bengali.py --target "$TARGET" --out assets/grantho/data
+          DUMP: ${{ inputs.dump || '0' }}
+        run: python3 tools/fetch_bengali.py --target "$TARGET" --out assets/grantho/data --dump "${DUMP:-0}"
 
       - name: Commit & push
         run: |
@@ -47,4 +51,4 @@ jobs:
           fi
 
       - name: Summary
-        run: cat assets/grantho/data/_fetch_report.txt || true
+        run: cat assets/grantho/data/_fetch_report.txt || ls assets/grantho/data/_debug | head
