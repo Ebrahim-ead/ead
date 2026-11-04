@@ -1,3 +1,38 @@
-allu: 2 ['w.ebanglalibrary.com/lessons/কেন-উপনিষদ/', 'ebanglalibrary.com/lessons/কেন-উপনিষদ-2/']
-page: 171300
-Next Lesson? True | Next Page? False
+== কেন 2 ['ibrary.com/lessons/কেন-উপনিষদ/', 'rary.com/lessons/কেন-উপনিষদ-2/']
+   hop 0 nglalibrary.com/lessons/কেন-উপনিষদ/ -> alibrary.com/lessons/প্রশ্ন-উপনিষদ/
+   hop 1 alibrary.com/lessons/প্রশ্ন-উপনিষদ/ -> alibrary.com/lessons/মুণ্ডক-উপনিষদ/
+   hop 2 alibrary.com/lessons/মুণ্ডক-উপনিষদ/ -> brary.com/lessons/মাণ্ডূক্য-উপনিষদ/
+   hop 3 brary.com/lessons/মাণ্ডূক্য-উপনিষদ/ -> rary.com/lessons/তৈত্তিরীয়-উপনিষদ/
+   hop 4 rary.com/lessons/তৈত্তিরীয়-উপনিষদ/ -> ary.com/lessons/শ্বেতাশ্বতর-উপনিষদ/
+== ঈশ 2 ['library.com/lessons/ঈশ-উপনিষদ/', 'brary.com/lessons/ঈশ-উপনিষদ-2/']
+   hop 0 anglalibrary.com/lessons/ঈশ-উপনিষদ/ -> #
+   ! URLError — https:// (চেষ্টা 1)
+   ! URLError — https:// (চেষ্টা 2)
+   ! URLError — https:// (চেষ্টা 3)
+   ! URLError — https:// (চেষ্টা 4)
+   load-fail #
+== প্রশ্ন 2 ['ary.com/lessons/প্রশ্ন-উপনিষদ/', 'y.com/lessons/প্রশ্ন-উপনিষদ-2/']
+   hop 0 alibrary.com/lessons/প্রশ্ন-উপনিষদ/ -> alibrary.com/lessons/মুণ্ডক-উপনিষদ/
+   hop 1 alibrary.com/lessons/মুণ্ডক-উপনিষদ/ -> brary.com/lessons/মাণ্ডূক্য-উপনিষদ/
+   hop 2 brary.com/lessons/মাণ্ডূক্য-উপনিষদ/ -> rary.com/lessons/তৈত্তিরীয়-উপনিষদ/
+   hop 3 rary.com/lessons/তৈত্তিরীয়-উপনিষদ/ -> ary.com/lessons/শ্বেতাশ্বতর-উপনিষদ/
+   hop 4 ary.com/lessons/শ্বেতাশ্বতর-উপনিষদ/ -> None
+== মুণ্ডক 2 ['ary.com/lessons/মুণ্ডক-উপনিষদ/', 'y.com/lessons/মুণ্ডক-উপনিষদ-2/']
+   hop 0 alibrary.com/lessons/মুণ্ডক-উপনিষদ/ -> brary.com/lessons/মাণ্ডূক্য-উপনিষদ/
+   hop 1 brary.com/lessons/মাণ্ডূক্য-উপনিষদ/ -> rary.com/lessons/তৈত্তিরীয়-উপনিষদ/
+   hop 2 rary.com/lessons/তৈত্তিরীয়-উপনিষদ/ -> ary.com/lessons/শ্বেতাশ্বতর-উপনিষদ/
+   hop 3 ary.com/lessons/শ্বেতাশ্বতর-উপনিষদ/ -> None
+== মাণ্ডূক্য 1 ['.com/lessons/মাণ্ডূক্য-উপনিষদ/']
+   hop 0 brary.com/lessons/মাণ্ডূক্য-উপনিষদ/ -> rary.com/lessons/তৈত্তিরীয়-উপনিষদ/
+   hop 1 rary.com/lessons/তৈত্তিরীয়-উপনিষদ/ -> ary.com/lessons/শ্বেতাশ্বতর-উপনিষদ/
+   hop 2 ary.com/lessons/শ্বেতাশ্বতর-উপনিষদ/ -> None
+== তৈত্তিরীয় 2 ['com/lessons/তৈত্তিরীয়-উপনিষদ/', 'm/lessons/তৈত্তিরীয়-উপনিষদ-2/']
+   hop 0 rary.com/lessons/তৈত্তিরীয়-উপনিষদ/ -> ary.com/lessons/শ্বেতাশ্বতর-উপনিষদ/
+   hop 1 ary.com/lessons/শ্বেতাশ্বতর-উপনিষদ/ -> None
+== ঐতরেয় 1 ['ary.com/lessons/ঐতরেয়-উপনিষদ/']
+   hop 0 alibrary.com/lessons/ঐতরেয়-উপনিষদ/ -> y.com/lessons/শ্বেতাশ্বতর-উপনিষদ-2/
+   hop 1 y.com/lessons/শ্বেতাশ্বতর-উপনিষদ-2/ -> brary.com/lessons/ছান্দোগ্য-উপনিষদ/
+   hop 2 brary.com/lessons/ছান্দোগ্য-উপনিষদ/ -> None
+=== ঐতরেয় পাতা ===
+  | উপনিষদ – অখণ্ড সংস্করণ (অসম্পূর্ণ)
+  | ঐতরেয় উপনিষদ
