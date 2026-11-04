@@ -37,6 +37,7 @@ SRC = "বাংলা অনুবাদ — ebanglalibrary.com"
 
 TOPIC_SITEMAPS = [f"{BASE}/wp-sitemap-posts-sfwd-topic-{i}.xml" for i in range(1, 17)]
 LESSON_SITEMAPS = [f"{BASE}/wp-sitemap-posts-sfwd-lessons-{i}.xml" for i in range(1, 30)]
+COURSE_SITEMAPS = [f"{BASE}/wp-sitemap-posts-sfwd-courses-{i}.xml" for i in range(1, 6)]
 
 BN_DIGITS = "০১২৩৪৫৬৭৮৯"
 DEV_RE = re.compile("[\u0900-\u0963\u0966-\u097F]")  # দাঁড়ি (।॥) বাদ
@@ -455,8 +456,9 @@ def main_run(args):
 
     # ---- তালিকা বানানো ----
     if args.book_auto:
-        books = [u for u in sitemap_urls(LESSON_SITEMAPS + TOPIC_SITEMAPS,
-                                         args.match, ("books",))
+        books = [u for u in sitemap_urls(COURSE_SITEMAPS + LESSON_SITEMAPS
+                                         + TOPIC_SITEMAPS, args.match,
+                                         ("books", "courses"))
                  if "/books/" in u]
         print("বই-পাতা:", [urllib.parse.unquote(b)[-60:] for b in books[:3]])
         if not books:
