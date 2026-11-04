@@ -67,8 +67,35 @@ jobs:
           ARGS=""
           if [ "$MAXV" != "0" ]; then ARGS="--max $MAXV"; fi
           python3 -u tools/fetch_ebl.py --slug rigveda --title "ঋগ্বেদ সংহিতা" \
-            --word সূক্ত --match "ঋগ্বেদ ১০" --by-ordinal --want 10 \
-            --only-unsaved $ARGS 2>&1 | tail -30
+            --word সূক্ত --match "ঋগ্বেদ" --by-ordinal --want 10 \
+            --into-chapter 10 --only-unsaved $ARGS 2>&1 | tail -40
+
+      # প্রথম চেষ্টায় সূচি না মিললে একবার হালকা করে (২৫০ সূক্ত) আবার
+      - name: ঋগ্বেদ ১০ম মণ্ডল — ফল না এলে একবার পুনরায়
+        if: env.TARGET != 'gita'
+        run: |
+          python3 - <<'PY'
+          import json
+          try:
+              d = json.load(open('assets/grantho/data/rigveda/index.json', encoding='utf-8'))
+          except Exception:
+              d = {}
+          ch10 = next((c for c in d.get('chapters', []) if c['id'] == 10), None)
+          print('মণ্ডল ১০:', ch10['count'] if ch10 else 0, 'মন্ত্র')
+          PY
+          COUNT=$(python3 -c "
+          import json
+          d=json.load(open('assets/grantho/data/rigveda/index.json',encoding='utf-8'))
+          c=next((x for x in d['chapters'] if x['id']==10),None)
+          print(c['count'] if c else 0)")
+          if [ "$COUNT" = "0" ]; then
+            echo "— প্রথম চেষ্টা ফল দেয়নি; সূচি-পাতার ভেতর থেকে আবার"
+            python3 -u tools/fetch_ebl.py --slug rigveda --title "ঋগ্বেদ সংহিতা" \
+              --word সূক্ত --match "ঋগ্বেদ ১০" --by-ordinal --want 10 \
+              --into-chapter 10 --only-unsaved --max 250 2>&1 | tail -20
+          else
+            echo "✓ মণ্ডল ১০-এ $COUNT মন্ত্র আছে"
+          fi
 
       # ── গীতা (যাচাই/পুনরুদ্ধার) ─────────────────────────────────────────
       - name: গীতা — যাচাই
