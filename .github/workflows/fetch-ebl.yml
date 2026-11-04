@@ -52,6 +52,20 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
+      - name: Debug (সাইটম্যাপ-তালিকা)
+        continue-on-error: true
+        run: |
+          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg4.txt
+          import sys, urllib.parse
+          sys.path.insert(0, "tools")
+          import fetch_ebl as f
+          for kw in ["গরুড় পুরাণ", "ভবিষ্য পুরাণ", "সামবেদ সংহিতা পরিতোষ"]:
+              allu = f.sitemap_urls(f.TOPIC_SITEMAPS + f.LESSON_SITEMAPS, kw)
+              print("==== ", kw, len(allu))
+              for u in allu[:25]:
+                  print("   ", urllib.parse.unquote(u)[-70:])
+          PY
+
       - name: Fetch (উপনিষদ + পুরাণ)
         continue-on-error: true
         run: |
