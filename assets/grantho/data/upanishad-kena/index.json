@@ -1,0 +1,20 @@
+{
+ "slug": "upanishad-kena",
+ "bn": "কেন উপনিষদ",
+ "en": "Upanishad-Kena",
+ "total": 36,
+ "withBn": 36,
+ "chapters": [
+  {
+   "id": 1,
+   "bn": "কেন উপনিষদ",
+   "count": 36,
+   "from": 1,
+   "to": 36,
+   "withBn": 36
+  }
+ ],
+ "verseWord": "মন্ত্র",
+ "bnSrc": "বাংলা অনুবাদ — ebanglalibrary.com",
+ "note": "মূল সংস্কৃত পাঠ ও বাংলা অনুবাদ — ebanglalibrary.com"
+}
