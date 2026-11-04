@@ -79,6 +79,9 @@ def safe_url(u):
         ""))
 
 
+_DOWN = {"n": 0}
+
+
 def get(url, tries=4, timeout=60):
     url = safe_url(url)
     if url in _CACHE:
@@ -95,11 +98,18 @@ def get(url, tries=4, timeout=60):
         except urllib.error.HTTPError as e:
             if e.code == 404:
                 return None
+            if e.code in (403, 429, 503):
+                _DOWN["n"] += 1          # সাইট ব্লক/লোড — বেশিবার হলে থামি
             print(f"   ! HTTP {e.code} — {url[-50:]} (চেষ্টা {i+1})")
             time.sleep(min(30, 4 * (i + 1)))
         except Exception as e:
+            _DOWN["n"] += 1
             print(f"   ! {type(e).__name__} — {url[-50:]} (চেষ্টা {i+1})")
             time.sleep(min(30, 4 * (i + 1)))
+        if _DOWN["n"] >= 25:
+            print("\n⛔ উৎস সাইট বারবার ব্যর্থ (২৫ বার) — এই রান থামানো হলো "
+                  "যাতে ঘণ্টার পর ঘণ্টা নষ্ট না হয়।", flush=True)
+            raise SystemExit(4)
     return None
 
 
@@ -543,7 +553,13 @@ def toc_links(page_url):
 
 
 def ordinal_of(url):
-    t = urllib.parse.unquote(url)
+    """পাতার ক্রম-সংখ্যা: আগে শিরোনামের «০২।০৫» ধাঁচ, নইলে «প্রথম/দ্বিতীয়» শব্দ।"""
+    t = urllib.parse.unquote(url.rstrip("/").split("/")[-1])
+    m = re.match(r"^\D*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})", t)
+    if m:
+        a = to_int(m.group(1))
+        b = to_int(m.group(2))
+        return (a if a is not None else 0) * 1000 + (b or 0), m.group(0)
     for k, v in ORD.items():
         if k in t:
             return v, k
@@ -595,6 +611,77 @@ def write_chapter(out_dir, idx, title, verses, url):
         json.dump(obj, f, ensure_ascii=False, separators=(",", ":"))
     return {"id": idx, "bn": title, "count": len(vs), "from": 1, "to": len(vs),
             "withBn": sum(1 for v in vs if v["bn"]), "url": url}
+
+
+def split_oversized(v, limit=4000):
+    """এক «শ্লোকে» গোটা অধ্যায় ঠাসা থাকলে দাঁড়ি ধরে ভাগ করি।
+
+    কেন: পুরাণের পাঠে শ্লোকের শেষে «॥১॥» না থাকলে পার্সার পুরো অধ্যায়কে এক
+    শ্লোকে ঢুকিয়ে দিত (একটাই «মন্ত্র», ৩২,০০০ অক্ষর) — ফলে শ্লোক-সংখ্যা
+    এক-তৃতীয়াংশে নেমে যেত আর পড়াও যেত না।
+    """
+    bn = (v.get("bn") or "").strip()
+    if len(bn) <= limit and len(v.get("sk") or "") <= limit:
+        return [v]
+    parts = [x.strip() for x in re.split(r"(?<=[।॥])\s+", bn) if x.strip()]
+    chunks, buf = [], ""
+    for x in parts:
+        if buf and len(buf) + len(x) > limit:
+            chunks.append(buf.strip())
+            buf = x
+        else:
+            buf = (buf + " " + x).strip()
+    if buf:
+        chunks.append(buf.strip())
+    if len(chunks) <= 1:
+        cut, chunks = bn, []
+        while len(cut) > limit:
+            sp = cut.rfind(" ", 0, limit)
+            sp = sp if sp > limit // 2 else limit
+            chunks.append(cut[:sp].strip())
+            cut = cut[sp:].strip()
+        if cut:
+            chunks.append(cut)
+    sk = (v.get("sk") or "").strip()
+    out = []
+    for i, c in enumerate(chunks, 1):
+        nv = dict(v)
+        nv["bn"] = c
+        nv["sk"] = sk if i == 1 else ""
+        out.append(nv)
+    if len(out) > 1:
+        print(f"   ⚠ এক শ্লোকে ঠাসা পাঠ {len(out)} ভাগে ভাগ করা হলো "
+              f"({len(bn)} → ≤{limit} অক্ষর)", flush=True)
+    return out
+
+
+def untangle_books(out_dir, foreign, own, own_words):
+    """অন্য গ্রন্থের পাঠ এই slug-এ ঢুকে থাকলে বাদ দিই।
+
+    কেন: `--book-auto` বই-খোঁজায় ভুল মিললে (গরুড় ↔ ভবিষ্য পুরাণের একই
+    অধ্যায়-নাম) দুই বইয়ের শ্লোক এক index-এ মিশে যেত।
+    """
+    n_bad = 0
+    keep = []
+    for c in own:
+        p = os.path.join(out_dir, f"ch{c['id']}.json")
+        try:
+            with open(p, encoding="utf-8") as f:
+                ch = json.load(f)
+        except Exception:
+            keep.append(c)          # ফাইল নেই ⇒ বিচার করা যায় না, রাখি
+            continue
+        txt = " ".join((x.get("bn") or "")[:120] for x in ch.get("verses", [])[:3])
+        bad = sum(txt.count(w) for w in foreign if w)
+        good = sum(txt.count(w) for w in own_words if w)
+        if bad and bad >= good:
+            n_bad += 1
+            continue
+        keep.append(c)
+    if n_bad:
+        print(f"   ⚠ অন্য গ্রন্থের পাঠ ধরা পড়ল {n_bad}টি অধ্যায়ে — বাদ দেওয়া হলো",
+              flush=True)
+    return keep
 
 
 def classify(url):
@@ -741,15 +828,19 @@ def _chapters_by_src(out_dir):
     return (old or {}).get("chapters", []) or []
 
 
-def write_index_guarded(out_dir, slug, title, chapters, word):
+def write_index_guarded(out_dir, slug, title, chapters, word, own_words=None):
     """ইনডেক্স লেখার আগে সুরক্ষা-বলয়।
 
     কেন: উৎস-পাতা ধরে ফেচ কখনো অর্ধেক ধরে (সাইট ডাউন, লিংক বদল, ক্রস-গ্রন্থ লিক)।
     তখনই পুরনো ভালো ডেটা মুছে ছোট ডেটা বসে যেত আর কমিট হয়ে যেত — ২০২৬-১১-০৪-এ
-    বেশ কয়েকবার তাই হয়েছে। নিয়ম:
+    একাধিকবার তাই হয়েছে (গরুড় ১০৫ → ২১ শ্লোক)।
+
+    নিয়ম:
       ১) একই উৎস-পাতা দুইবার নয় (পাঠের পুনরাবৃত্তি)।
-      ২) নতুন মোট < পুরনো মোট হলে ছোট ফল কখনো লেখা হবে না।
-      ৩) হঠাৎ ৪০%-এর বেশি কমলে পুরনো অধ্যায় ধরে রেখে (merge) তবেই লেখা হবে।
+      ২) আগের অধ্যায় হারায় না — নতুন ফলে না থাকলে পুরনোটা ধরে রাখা হয়
+         (তাই «শুধু ১০ম মণ্ডল নামাও» নিরাপদ)।
+      ৩) যে অধ্যায় দুই জায়গাতেই আছে, তার শ্লোক কমলে পুরনোটা জেতে।
+      ৪) সব মিলিয়ে মোট শ্লোক আগের চেয়ে কম হলে কিছুই লেখা হয় না।
     """
     seen, uniq = set(), []
     for c in chapters:
@@ -762,28 +853,33 @@ def write_index_guarded(out_dir, slug, title, chapters, word):
     if len(uniq) != len(chapters):
         print(f"   ⚠ একই উৎস-পাতা {len(chapters) - len(uniq)}টি বাদ "
               f"(পাঠের পুনরাবৃত্তি)", flush=True)
+
+    # ক্রস-গ্রন্থ লিক: একই সাইটে গরুড় ও ভবিষ্য পুরাণের অধ্যায়-নাম হুবহু এক,
+    # তাই বই-খোঁজায় ভুল হলে দুই বইয়ের পাঠ মিশে যায়।
+    foreign = [w for w in (own_words or []) if w and w not in (title or "")]
+    if foreign and uniq:
+        uniq = untangle_books(out_dir, foreign, uniq, [title] if title else [])
+
     if not uniq:
         print("   ⛔ বাতিল: কোনো অধ্যায় পাওয়া যায়নি", flush=True)
         return None
 
-    new_total = sum(c["count"] for c in uniq)
     old = _existing(out_dir)
-    old_total = (old or {}).get("total", 0)
-    if old_total:
-        if new_total < old_total * 0.5:
-            print(f"   ⛔ বাতিল: নতুন ফল মাত্র {new_total}, আগের {old_total} — "
-                  f"ফেচ ব্যর্থ ধরে নিয়ে পুরনো index.json অটুট", flush=True)
-            return None
-        if new_total < old_total * 0.85:
-            kept = {_source_slug(c.get("url", "")) for c in uniq}
-            extra = [c for c in _chapters_by_src(out_dir)
-                     if _source_slug(c.get("url", "")) not in kept
-                     and not any(c["id"] == u["id"] for u in uniq)]
-            if extra:
-                print(f"   ⚠ ফল ছোট ({new_total}/{old_total}) — পুরনো "
-                      f"{len(extra)}টি অধ্যায় ধরে রাখা হলো", flush=True)
-                uniq = uniq + extra
-                new_total = sum(c["count"] for c in uniq)
+    if old and old.get("chapters"):
+        by_id = {c["id"]: c for c in uniq}
+        for oc in old["chapters"]:
+            nc = by_id.get(oc["id"])
+            if nc is None:
+                print(f"   ⊕ অধ্যায় {oc['id']} নতুন ফলে নেই — পুরনোটা রাখা হলো "
+                      f"({oc['count']} {word})", flush=True)
+                by_id[oc["id"]] = oc
+            elif nc["count"] < oc["count"]:
+                print(f"   ⚠ অধ্যায় {oc['id']}: {oc['count']} → {nc['count']} "
+                      f"{word} — কমে গেছে, পুরনোটা রাখা হলো", flush=True)
+                by_id[oc["id"]] = oc
+        uniq = sorted(by_id.values(), key=lambda c: c["id"])
+        new_total = sum(c["count"] for c in uniq)
+        old_total = old.get("total", 0)
         if new_total < old_total:
             print(f"   ⛔ বাতিল: নতুন মোট {new_total} < আগের {old_total} — "
                   f"পুরনো index.json অটুট", flush=True)
@@ -809,7 +905,21 @@ def build_index(out_dir, slug, title, chapters, word):
     return idx
 
 
+def book_words(args):
+    """গ্রন্থ-চেনার শব্দ — ম্যাচ-কীওয়ার্ড ও শিরোনাম থেকে।"""
+    ws = []
+    for chunk in (args.match or "").split("|"):
+        for w in re.split(r"[\s,]+", chunk.strip()):
+            if len(w) > 3 and w not in ws:
+                ws.append(w)
+    for w in re.split(r"[\s—–\-]+", args.title or ""):
+        if len(w) > 3 and w not in ws:
+            ws.append(w)
+    return ws
+
+
 def main_run(args):
+    own_words = book_words(args)
     if getattr(args, "auto", False):
         return run_auto(args)
 
@@ -1014,14 +1124,27 @@ def main_run(args):
             for _, u in items:
                 print("   ·", urllib.parse.unquote(u)[-55:])
         elif args.by_ordinal:
+            # আগে শিরোনামের সংখ্যা («ঋগ্বেদ-০২।০৫») ধরে মিলাই — ওয়েবে
+            # «প্রথম/দ্বিতীয়» শব্দ না থাকলে পুরনো পথ কিছুই পেত না।
+            num = (args.want or "").split("।")[0].strip()
             pairs, seen_o = [], set()
-            for u in allu:
-                if "/topics/" not in u:
-                    continue
-                o, _ = ordinal_of(u)
-                if o and o not in seen_o:
-                    seen_o.add(o)
-                    pairs.append((o, u))
+            if num:
+                for u in allu:
+                    t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
+                    m = re.match(r"^\D*?([০-৯]{1,2})\s*।", t)
+                    if m and to_int(m.group(1)) == to_int(num):
+                        o, _ = ordinal_of(u)
+                        if o and o not in seen_o:
+                            seen_o.add(o)
+                            pairs.append((o, u))
+            if not pairs:                     # পুরনো পথ (প্রথম/দ্বিতীয়…)
+                for u in allu:
+                    if "/topics/" not in u:
+                        continue
+                    o, _ = ordinal_of(u)
+                    if o and o not in seen_o:
+                        seen_o.add(o)
+                        pairs.append((o, u))
             pairs.sort()
             items = [(o, u) for o, u in pairs]
             print("ক্রম:", [o for o, _ in pairs])
@@ -1030,8 +1153,94 @@ def main_run(args):
         if args.max:
             items = items[: args.max]
 
+    if args.only_unsaved and not args.into_chapter:
+        have = set()
+        old = _existing(out_dir)
+        for c in (old or {}).get("chapters", []):
+            have.add(c.get("id"))
+        keep = []
+        for i, u in items:
+            t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
+            m = re.match(r"^\D*?[০-৯]{1,2}\s*।\s*([০-৯]{1,3})", t)
+            if m and to_int(m.group(1)) in have:
+                continue
+            keep.append((i, u))
+        print(f"আগেই আছে {len(items) - len(keep)}টি; নতুন নামাব "
+              f"{len(keep)}টি", flush=True)
+        items = keep
+
     print(f"নামানো হবে {len(items)}টি পাতা")
     chapters = []
+
+    # ---- সব পাতা এক খণ্ডে (যেমন ঋগ্বেদের ১০ম মণ্ডল) ----
+    # দত্তের সংস্করণে মণ্ডলভিত্তিক ফাইল; তাই প্রতি সূক্ত আলাদা খণ্ড নয়, সব
+    # মন্ত্র একটি ch<N>.json-এ ক্রমে জমা হয়।
+    if args.into_chapter:
+        n_ch = args.into_chapter
+        have = _existing(out_dir) or {}
+        prev = next((c for c in have.get("chapters", []) if c["id"] == n_ch), None)
+        offset = prev["count"] if prev else 0
+        done_pages = set()
+        if prev:
+            try:
+                with open(os.path.join(out_dir, f"ch{n_ch}.json"), encoding="utf-8") as f:
+                    done_pages = set(json.load(f).get("pages", []))
+            except Exception:
+                done_pages = set()
+        if args.only_unsaved and done_pages:
+            skip = [u for _, u in items
+                    if urllib.parse.unquote(u.rstrip("/").split("/")[-1]) in done_pages]
+            items = [(i, u) for i, u in items if u not in skip]
+            print(f"আগেই আছে {len(skip)}টি সূক্ত-পাতা; নতুন {len(items)}টি", flush=True)
+        if not items:
+            print("✓ নতুন কিছু নেই — ১০ম মণ্ডল ইতিমধ্যেই হালনাগাদ")
+            return
+        verses, done = [], 0
+        for idx_, u in items:
+            txt = fetch_paged(u)
+            vs = parse_verses(txt)
+            if not vs:
+                print(f"   ✗ {idx_}: মন্ত্র পাওয়া যায়নি")
+                continue
+            label = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
+            for v in vs:
+                for part in split_oversized(v):
+                    part = dict(part)
+                    part["n"] = offset + len(verses) + 1
+                    verses.append(part)
+            done += 1
+            print(f"   ✓ {label}: {len(vs)} মন্ত্র (মোট {len(verses)})", flush=True)
+            if args.max and done >= args.max:
+                break
+            time.sleep(0.4)
+        if not verses:
+            print("⛔ কোনো মন্ত্র পাওয়া গেল না — কিছু লেখা হবে না")
+            sys.exit(3)
+        title = args.title or args.slug
+        ch = write_chapter(out_dir, n_ch, title, verses, BASE + "/topics/…")
+        # কোন কোন উৎস-পাতা থেকে জমানো হলো — পরে যেন একই পাতা দুইবার না নামে
+        try:
+            pg = os.path.join(out_dir, f"ch{n_ch}.json")
+            with open(pg, encoding="utf-8") as f:
+                obj = json.load(f)
+            obj["pages"] = sorted(done_pages | {
+                urllib.parse.unquote(u.rstrip("/").split("/")[-1])
+                for _, u in items})
+            obj["bn"] = f"{title} — মণ্ডল {n_ch}" if args.slug == "rigveda" else obj["bn"]
+            with open(pg, "w", encoding="utf-8") as f:
+                json.dump(obj, f, ensure_ascii=False, separators=(",", ":"))
+            ch["bn"] = obj["bn"]
+        except Exception as e:
+            print("   ! পাতা-তালিকা রাখা গেল না:", e)
+        if args.slug:
+            idxd = write_index_guarded(out_dir, args.slug, title, [ch],
+                                       args.word, own_words)
+            if not idxd:
+                print("⛔ ইনডেক্স লেখা হয়নি — পুরনো ডেটা অটুট")
+                sys.exit(3)
+            print(f"{args.slug}: বাংলা {idxd['withBn']}/{idxd['total']} · "
+                  f"{len(idxd['chapters'])} খণ্ড")
+        return
 
     if args.group_by_num:
         # শিরোনাম-সংখ্যা ধরে ভাগ: (অধ্যায়, উপক্রম) অনুসারে সাজিয়ে এক ফাইলে জমা
@@ -1147,6 +1356,13 @@ def main():  # noqa: F811  (CLI প্রবেশ-বিন্দু)
     ap.add_argument("--max", type=int, default=0)
     ap.add_argument("--start", type=int, default=1)
     ap.add_argument("--dump", type=int, default=0)
+    ap.add_argument("--only-unsaved", action="store_true",
+                    help="কেবল যেসব খণ্ড এখনো ডেটায় নেই সেগুলো নামাও "
+                         "(আগের ডেটা অটুট থাকে)")
+    ap.add_argument("--into-chapter", type=int, default=0,
+                    help="সব নামানো পাতা একটি খণ্ডে (যেমন মণ্ডল ১০) জমা করো")
+    ap.add_argument("--want", default="",
+                    help='কেবল এই মণ্ডল/পর্বের পাতা, যেমন "১০" বা "১০।০৫"')
     args = ap.parse_args()
     if args.auto:
         return run_auto(args)
