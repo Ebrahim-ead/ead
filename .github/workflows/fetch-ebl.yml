@@ -55,7 +55,8 @@ jobs:
       - name: Debug (সাইটম্যাপ)
         continue-on-error: true
         run: |
-          python3 - <<'PY'
+          mkdir -p assets/grantho/data/_debug
+          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
           import sys; sys.path.insert(0, "tools")
           import fetch_ebl as f, urllib.parse, re
           allu = f.sitemap_urls(f.TOPIC_SITEMAPS + f.LESSON_SITEMAPS, "কেন উপনিষদ")
