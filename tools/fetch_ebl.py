@@ -717,6 +717,83 @@ def run_auto(args):
             print("  ✗ ভুল:", e, flush=True)
 
 
+def _source_slug(url):
+    """URL থেকে উৎস-পাতার শেষ অংশ — একই পাঠ দুইবার লেখা ঠেকাতে।"""
+    u = urllib.parse.unquote(url or "").rstrip("/")
+    return u.split("/")[-1] if u else ""
+
+
+def _existing(out_dir):
+    """আগের index.json-এ যা আছে — নতুন ফল এর চেয়ে ছোট হলে তা নয়।"""
+    p = os.path.join(out_dir, "index.json")
+    if not os.path.exists(p):
+        return None
+    try:
+        with open(p, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+
+def _chapters_by_src(out_dir):
+    """আগের chapters — উৎস-পাতার নাম ধরে মিলিয়ে দেখার জন্য।"""
+    old = _existing(out_dir)
+    return (old or {}).get("chapters", []) or []
+
+
+def write_index_guarded(out_dir, slug, title, chapters, word):
+    """ইনডেক্স লেখার আগে সুরক্ষা-বলয়।
+
+    কেন: উৎস-পাতা ধরে ফেচ কখনো অর্ধেক ধরে (সাইট ডাউন, লিংক বদল, ক্রস-গ্রন্থ লিক)।
+    তখনই পুরনো ভালো ডেটা মুছে ছোট ডেটা বসে যেত আর কমিট হয়ে যেত — ২০২৬-১১-০৪-এ
+    বেশ কয়েকবার তাই হয়েছে। নিয়ম:
+      ১) একই উৎস-পাতা দুইবার নয় (পাঠের পুনরাবৃত্তি)।
+      ২) নতুন মোট < পুরনো মোট হলে ছোট ফল কখনো লেখা হবে না।
+      ৩) হঠাৎ ৪০%-এর বেশি কমলে পুরনো অধ্যায় ধরে রেখে (merge) তবেই লেখা হবে।
+    """
+    seen, uniq = set(), []
+    for c in chapters:
+        k = _source_slug(c.get("url", ""))
+        if k and k in seen:
+            continue
+        if k:
+            seen.add(k)
+        uniq.append(c)
+    if len(uniq) != len(chapters):
+        print(f"   ⚠ একই উৎস-পাতা {len(chapters) - len(uniq)}টি বাদ "
+              f"(পাঠের পুনরাবৃত্তি)", flush=True)
+    if not uniq:
+        print("   ⛔ বাতিল: কোনো অধ্যায় পাওয়া যায়নি", flush=True)
+        return None
+
+    new_total = sum(c["count"] for c in uniq)
+    old = _existing(out_dir)
+    old_total = (old or {}).get("total", 0)
+    if old_total:
+        if new_total < old_total * 0.5:
+            print(f"   ⛔ বাতিল: নতুন ফল মাত্র {new_total}, আগের {old_total} — "
+                  f"ফেচ ব্যর্থ ধরে নিয়ে পুরনো index.json অটুট", flush=True)
+            return None
+        if new_total < old_total * 0.85:
+            kept = {_source_slug(c.get("url", "")) for c in uniq}
+            extra = [c for c in _chapters_by_src(out_dir)
+                     if _source_slug(c.get("url", "")) not in kept
+                     and not any(c["id"] == u["id"] for u in uniq)]
+            if extra:
+                print(f"   ⚠ ফল ছোট ({new_total}/{old_total}) — পুরনো "
+                      f"{len(extra)}টি অধ্যায় ধরে রাখা হলো", flush=True)
+                uniq = uniq + extra
+                new_total = sum(c["count"] for c in uniq)
+        if new_total < old_total:
+            print(f"   ⛔ বাতিল: নতুন মোট {new_total} < আগের {old_total} — "
+                  f"পুরনো index.json অটুট", flush=True)
+            return None
+
+    # বাদ-পড়া ch<N>.json ফাইল মুছি না: index-এ না থাকলে সাইটে দেখায় না, কিন্তু
+    # ভুলে হারানো ডেটা ফিরিয়ে আনা সহজ থাকে।
+    return build_index(out_dir, slug, title, uniq, word)
+
+
 def build_index(out_dir, slug, title, chapters, word):
     byc = {c["id"]: c for c in chapters}
     chs = [byc[k] for k in sorted(byc)]
@@ -991,8 +1068,13 @@ def main_run(args):
             chapters.append(write_chapter(out_dir, a, title, bucket[a],
                                           BASE + "/topics/…"))
         if args.slug and chapters:
-            idx = build_index(out_dir, args.slug, args.title or args.slug,
-                              chapters, args.word)
+            idx = write_index_guarded(out_dir, args.slug, args.title or args.slug,
+                                      chapters, args.word)
+            if not idx:
+                print("\n" + "=" * 60)
+                print("⛔ এই রানে ইনডেক্স লেখা হয়নি — পুরনো ডেটাই অটুট আছে।")
+                print("=" * 60)
+                return
             rep = [f"{args.slug}: বাংলা {idx['withBn']}/{idx['total']}"]
             rep += [f"  {c['id']}. {c['bn'][:44]}: {c['withBn']}/{c['count']}"
                     for c in idx["chapters"]]
@@ -1020,7 +1102,13 @@ def main_run(args):
         time.sleep(0.4)
 
     if args.slug and chapters:
-        idx = build_index(out_dir, args.slug, args.title or args.slug, chapters, args.word)
+        idx = write_index_guarded(out_dir, args.slug, args.title or args.slug,
+                                  chapters, args.word)
+        if not idx:
+            print("\n" + "=" * 60)
+            print("⛔ এই রানে ইনডেক্স লেখা হয়নি — পুরনো ডেটাই অটুট আছে।")
+            print("=" * 60)
+            sys.exit(3)
         rep = [f"{args.slug}: বাংলা {idx['withBn']}/{idx['total']}"]
         rep += [f"  {c['id']}. {c['bn'][:44]}: {c['withBn']}/{c['count']}"
                 for c in idx["chapters"]]
