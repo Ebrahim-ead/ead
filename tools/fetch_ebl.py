@@ -577,6 +577,22 @@ def mandala_links(m):
     """
     found = {}
     print(f"   মণ্ডল {m}: সূচি-পাতা খুঁজছি…", flush=True)
+    # সাইট একই পাতা বারবার চাইলে ফাঁকা ফেরাতে পারে (রানে ঠিক তাই হয়েছে:
+    # প্রথমবার ৩৩৭,০১৭ অক্ষর, পরে ০)। তাই সাইটম্যাপে আগেই পাওয়া সূক্ত-পাতা
+    # থাকলে সেগুলোই ব্যবহার করি — আর কোনো অনুরোধ লাগে না।
+    pre = []
+    for u in _ALL:
+        if "/topics/" not in u:
+            continue
+        t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
+        g = re.match(r"^[^০-৯0-9]*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})$", t)
+        if g and to_int(g.group(1)) == m:
+            pre.append(u)
+    if pre:
+        print(f"   (সাইটম্যাপে আগেই পাওয়া {len(pre)}টি সূক্ত-পাতা ব্যবহার করছি)",
+              flush=True)
+        return sorted(pre, key=lambda u: ordinal_of(u)[0] or 0)
+
     # আগে এই মণ্ডলের নিজের সূচি, তারপর অন্য মণ্ডলগুলো — বেশি চেষ্টা = বেশি
     # ব্লক, তাই মোট ৬টি ঠিকানার বেশি নয়।
     def _mine(t):
