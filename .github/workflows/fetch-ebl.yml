@@ -21,16 +21,17 @@ jobs:
     env:
       # ---- প্রথম রান: URL-আবিষ্কার + ছান্দোগ্য (৮ অধ্যায়) ----
       KW: 'ছান্দোগ্য,ভবিষ্য পুরাণ,গরুড় পুরাণ,ব্রহ্ম পুরাণ,ঋগ্বেদ,সামবেদ,অথর্ববেদ,কঠ উপনিষদ,উপনিষদ অখণ্ড,শুক্ল যজুর্বেদ,কৃষ্ণ যজুর্বেদ'
-      SLUG: 'chandogya'
-      TITLE: 'ছান্দোগ্য উপনিষদ'
-      MATCH: 'ছান্দোগ্য উপনিষদ'
-      ORDINAL: '1'
+      SLUG: 'rigveda'
+      TITLE: 'ঋগ্বেদ'
+      MATCH: 'ঋগ্বেদ ০'
+      ORDINAL: '0'
       CHAIN: '0'
       BOOK: '0'
+      GROUPNUM: '1'
       URL: ''
       MAXN: '0'
       STARTN: '1'
-      WORD: 'মন্ত্র'
+      WORD: 'সূক্ত'
       DUMPN: '0'
     steps:
       - uses: actions/checkout@v4
@@ -59,6 +60,7 @@ jobs:
           [ "$ORDINAL" = "1" ] && ARGS+=(--by-ordinal)
           [ "$CHAIN" = "1" ] && ARGS+=(--chain)
           [ "$BOOK" = "1" ] && ARGS+=(--book --url "$URL")
+          [ "$GROUPNUM" = "1" ] && ARGS+=(--group-by-num)
           [ "$MAXN" != "0" ] && ARGS+=(--max "$MAXN")
           [ "$DUMPN" != "0" ] && ARGS+=(--dump "$DUMPN")
           python3 tools/fetch_ebl.py "${ARGS[@]}" 2>&1 | tee /tmp/fetch.log

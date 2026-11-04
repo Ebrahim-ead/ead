@@ -168,11 +168,14 @@ def parse_verses(txt):
         tail = TAIL_MARK.search(sk[-40:]) if sk else None
         if tail:
             n = to_int(tail.group(1))
-        if not n or (last and n <= last and v["gidx"] and v["gidx"] - last > 3):
-            n = (last + 1) if last else (n or 1)
+        if not n or (last and n <= last):
+            n = last + 1
         last = n
+        bn = re.sub(r"^\s*(Bookmark|Previous|Next)\s+", "", bn)
+        bn = re.sub(r"\s*Bookmark\s*$", "", bn)
+        note = re.sub(r"\s*Bookmark\s*$", "", " ".join(v["note"]).strip())
         out.append({"n": n, "sk": sk, "anv": " ".join(v["anv"]).strip(),
-                    "bn": bn, "bnNote": " ".join(v["note"]).strip()})
+                    "bn": bn, "bnNote": note})
     return out
 
 
@@ -280,6 +283,8 @@ def main():
     ap.add_argument("--by-ordinal", action="store_true")
     ap.add_argument("--chain", action="store_true")
     ap.add_argument("--book", action="store_true", help="বই-পাতার সূচি থেকে সব লেসন")
+    ap.add_argument("--group-by-num", action="store_true",
+                    help="পাতার শিরোনামে «০৬।১৩» থাকলে প্রথম সংখ্যা = অধ্যায়")
     ap.add_argument("--max", type=int, default=0)
     ap.add_argument("--start", type=int, default=1)
     ap.add_argument("--dump", type=int, default=0)
@@ -344,13 +349,17 @@ def main():
     else:
         allu = sitemap_urls(TOPIC_SITEMAPS + LESSON_SITEMAPS, args.match)
         if args.by_ordinal:
-            pairs = []
+            pairs, seen_o = [], set()
             for u in allu:
+                if "/topics/" not in u:
+                    continue
                 o, _ = ordinal_of(u)
-                if o:
+                if o and o not in seen_o:
+                    seen_o.add(o)
                     pairs.append((o, u))
             pairs.sort()
             items = [(o, u) for o, u in pairs]
+            print("ক্রম:", [o for o, _ in pairs])
         else:
             items = [(i, u) for i, u in enumerate(allu, start=args.start)]
         if args.max:
@@ -358,6 +367,54 @@ def main():
 
     print(f"নামানো হবে {len(items)}টি পাতা")
     chapters = []
+
+    if args.group_by_num:
+        # শিরোনাম-সংখ্যা ধরে ভাগ: (অধ্যায়, উপক্রম) অনুসারে সাজিয়ে এক ফাইলে জমা
+        pairs = []
+        for u in (u for _, u in items):
+            t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
+            nums = re.findall(r"([০-৯]{1,3})\s*[।.]\s*([০-৯]{1,3})", t)
+            if nums:
+                a, b = to_int(nums[0][0]), to_int(nums[0][1])
+                pairs.append((a, b, u))
+        pairs.sort()
+        print(f"সংখ্যা-শিরোনাম পাওয়া গেল {len(pairs)}টিতে")
+        bucket, curv, curch = {}, None, None
+        for a, b, u in pairs:
+            if a != curch:
+                curch = a
+                bucket.setdefault(a, [])
+                curv = 0
+            h = get(u)
+            vs = parse_verses(page_text(h))
+            if not vs:
+                print(f"   ✗ {a}.{b}")
+                continue
+            for v in vs:
+                curv += 1
+                v = dict(v)
+                v["n"] = curv
+                bucket[a].append(v)
+            print(f"   ✓ {a}.{b}: {len(vs)}")
+            time.sleep(0.25)
+        for a in sorted(bucket):
+            if not bucket[a]:
+                continue
+            title = f"{args.title} — {a}" if args.title else f"অধ্যায় {a}"
+            chapters.append(write_chapter(out_dir, a, title, bucket[a],
+                                          BASE + "/topics/…"))
+        if args.slug and chapters:
+            idx = build_index(out_dir, args.slug, args.title or args.slug,
+                              chapters, args.word)
+            rep = [f"{args.slug}: বাংলা {idx['withBn']}/{idx['total']}"]
+            rep += [f"  {c['id']}. {c['bn'][:44]}: {c['withBn']}/{c['count']}"
+                    for c in idx["chapters"]]
+            with open(os.path.join(args.out, f"_fetch_report_{args.slug}.txt"), "w",
+                      encoding="utf-8") as f:
+                f.write("\n".join(rep) + "\n")
+            print("\n".join(rep))
+        return
+
     for idx, u in items:
         print(f"[{idx}] {urllib.parse.unquote(u)[-60:]}")
         h = get(u)
@@ -366,7 +423,12 @@ def main():
         if not vs:
             print("   ✗ মন্ত্র পাওয়া যায়নি")
             continue
-        title = f"{args.title} {idx}".strip() if args.title else f"অধ্যায় {idx}"
+        tail_t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
+        tail_t = re.sub(r"[-–_]+", " ", tail_t).strip()
+        if args.title:
+            title = f"{args.title} — {tail_t}"
+        else:
+            title = tail_t or f"অধ্যায় {idx}"
         chapters.append(write_chapter(out_dir, idx, title, vs, u))
         print(f"   ✓ {len(vs)} {args.word}")
         time.sleep(0.4)
