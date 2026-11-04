@@ -194,6 +194,11 @@ def looks_sanskrit(ln):
     return not BN_STOP.search(ln)
 
 
+def is_heading(ln):
+    """সূচি/শিরোনাম-জাতীয় ছোট লাইন (দাঁড়ি নেই, ক্রিয়াপদ নেই)।"""
+    return len(ln) < 26 and not re.search(r"[।॥,]", ln)
+
+
 def parse_verses(txt):
     """পাতার পাঠ → [{'n','sk','anv','bn','bnNote'}]।
 
@@ -213,7 +218,9 @@ def parse_verses(txt):
 
     def add_verse(sk_lines):
         nonlocal cur
-        v = {"sk": [x for x in sk_lines if x], "anv": [], "bn": [], "note": [],
+        sk_lines = [x for x in sk_lines
+                    if x and not (x.startswith("ইতি") and "সমাপ্ত" in x)]
+        v = {"sk": sk_lines, "anv": [], "bn": [], "note": [],
              "part": "anv", "n": None}
         t = last_of(v["sk"])
         if t:
@@ -250,6 +257,8 @@ def parse_verses(txt):
                 return
         while i > 0:
             cand = pend[i - 1]
+            if is_heading(cand):
+                break
             if looks_sanskrit(cand) or (len(cand) < 170 and not BN_STOP.search(cand)
                                         and re.search(r"[অ-হ]", cand)):
                 i -= 1
@@ -323,7 +332,7 @@ def parse_verses(txt):
             if is_dev or is_bn_sk:
                 if cur is None or cur["bn"]:
                     add_verse([])
-                cur["sk"].append(ln if is_dev else to_devanagari(ln))
+                cur["sk"].append(ln)
                 if cur["n"] is None:
                     t = VERSE_TAIL.search(ln)
                     if t:
