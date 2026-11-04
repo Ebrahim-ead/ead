@@ -63,13 +63,13 @@ jobs:
             sleep 1
           }
           # ---- বাকি উপনিষদ: লেসন-সিরিজ (প্রতি লেসন = এক খণ্ড)
-          run --slug upanishad-kena --title "কেন উপনিষদ" --word মন্ত্র --match "কেন উপনিষদ" --chain --max 2
-          run --slug upanishad-isha --title "ঈশ উপনিষদ" --word মন্ত্র --match "ঈশ উপনিষদ" --chain --max 2
-          run --slug upanishad-prashna --title "প্রশ্ন উপনিষদ" --word মন্ত্র --match "প্রশ্ন উপনিষদ" --chain --max 2
-          run --slug upanishad-mundaka --title "মুণ্ডক উপনিষদ" --word মন্ত্র --match "মুণ্ডক উপনিষদ" --chain --max 2
-          run --slug upanishad-mandukya --title "মাণ্ডূক্য উপনিষদ" --word মন্ত্র --match "মাণ্ডূক্য উপনিষদ" --chain --max 2
-          run --slug upanishad-taittiriya --title "তৈত্তিরীয় উপনিষদ" --word মন্ত্র --match "তৈত্তিরীয় উপনিষদ" --chain --max 2
-          run --slug upanishad-aitareya --title "ঐতরেয় উপনিষদ" --word মন্ত্র --match "ঐতরেয় উপনিষদ" --chain --max 2
+          run --slug upanishad-kena --title "কেন উপনিষদ" --word মন্ত্র --match "কেন উপনিষদ" --series --max 40
+          run --slug upanishad-isha --title "ঈশ উপনিষদ" --word মন্ত্র --match "ঈশ উপনিষদ" --series --max 40
+          run --slug upanishad-prashna --title "প্রশ্ন উপনিষদ" --word মন্ত্র --match "প্রশ্ন উপনিষদ" --series --max 40
+          run --slug upanishad-mundaka --title "মুণ্ডক উপনিষদ" --word মন্ত্র --match "মুণ্ডক উপনিষদ" --series --max 40
+          run --slug upanishad-mandukya --title "মাণ্ডূক্য উপনিষদ" --word মন্ত্র --match "মাণ্ডূক্য উপনিষদ" --series --max 40
+          run --slug upanishad-taittiriya --title "তৈত্তিরীয় উপনিষদ" --word মন্ত্র --match "তৈত্তিরীয় উপনিষদ" --series --max 40
+          run --slug upanishad-aitareya --title "ঐতরেয় উপনিষদ" --word মন্ত্র --match "ঐতরেয় উপনিষদ" --series --max 40
 
           echo "শেষ $(date -u +%H:%M:%S)"
 

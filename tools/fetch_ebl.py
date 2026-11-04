@@ -713,6 +713,22 @@ def main_run(args):
         items = [(i, u) for i, u in enumerate(book_lessons(args.url), start=args.start)]
         if args.max:
             items = items[: args.max]
+    elif args.series:
+        pre = (args.match.split() or [""])[0].replace(" ", "-")
+        allu = sitemap_urls(TOPIC_SITEMAPS + LESSON_SITEMAPS, args.match)
+        sel = [u for u in allu
+               if ("/lessons/" + pre) in urllib.parse.unquote(u)
+               or ("/topics/" + pre) in urllib.parse.unquote(u)]
+        if not sel:
+            sel = allu
+        sel = sorted(set(sel), key=lambda x: (0 if "/lessons/" in urllib.parse.unquote(x) else 1,
+                                              len(urllib.parse.unquote(x)), x))
+        items = [(i, u) for i, u in enumerate(sel, start=args.start)]
+        print("সিরিজ:", len(items), "পাতা")
+        for _, u in items:
+            print("   ·", urllib.parse.unquote(u)[-55:])
+        if args.max:
+            items = items[: args.max]
     elif args.chain:
         urls = [args.url] if args.url else []
         key = "/lessons/" + (args.match.split() or [""])[0].replace(" ", "-")
@@ -873,6 +889,8 @@ def main():  # noqa: F811  (CLI প্রবেশ-বিন্দু)
     ap.add_argument("--discover", action="store_true")
     ap.add_argument("--by-ordinal", action="store_true")
     ap.add_argument("--chain", action="store_true")
+    ap.add_argument("--series", action="store_true",
+                    help="একই গ্রন্থের সব লেসন/টপিক পাতা (base, -2, -3 …)")
     ap.add_argument("--book", action="store_true")
     ap.add_argument("--book-auto", action="store_true",
                     help="--match দিয়ে বই-পাতা খুঁজে তার সূচি থেকে সব লেসন")
