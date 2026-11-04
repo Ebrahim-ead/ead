@@ -76,8 +76,7 @@ jobs:
           allu = f.sitemap_urls(f.TOPIC_SITEMAPS + f.LESSON_SITEMAPS, "ঐতরেয় উপনিষদ")
           if allu:
               t = f.fetch_paged(allu[0])
-              for ln in [x.strip() for x in t.split("
-") if x.strip()][:40]:
+              for ln in [x.strip() for x in t.splitlines() if x.strip()][:40]:
                   print("  |", ln[:110])
           PY
 
