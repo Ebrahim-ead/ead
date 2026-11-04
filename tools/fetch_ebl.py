@@ -645,7 +645,30 @@ def main_run(args):
         items = [(i, u) for i, u in enumerate(chain, start=args.start)]
     else:
         allu = sitemap_urls(TOPIC_SITEMAPS + LESSON_SITEMAPS, args.match)
-        if args.by_ordinal:
+        if args.chain or (args.by_ordinal and not any("/topics/" in u for u in allu)):
+            # লেসন-পাতার সিরিজ: প্রথম লেসন থেকে «Next Lesson» শৃঙ্খলে সব পাতা
+            urls = sorted(allu, key=lambda x: (len(x), x))
+            chain, seen = [], set()
+            key = urllib.parse.quote((args.match.split() or [""])[0].replace(" ", "-"))
+            u = urls[0] if urls else None
+            while u and u not in seen and (not args.max or len(chain) < args.max):
+                if key and key not in u:      # অন্য গ্রন্থের লেসনে ঢুকে পড়া রোধ
+                    break
+                seen.add(u)
+                h = get(u)
+                if not h:
+                    break
+                chain.append(u)
+                nu = lesson_next(h)
+                if not nu or nu in seen:
+                    break
+                u = nu
+                time.sleep(0.3)
+            items = [(i, u) for i, u in enumerate(chain, start=args.start)]
+            print("শৃঙ্খল:", len(items), "পাতা")
+            for _, u in items:
+                print("   ·", urllib.parse.unquote(u)[-55:])
+        elif args.by_ordinal:
             pairs, seen_o = [], set()
             for u in allu:
                 if "/topics/" not in u:
