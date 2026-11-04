@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 350
     env:
       # ---- প্রথম রান: URL-আবিষ্কার + ছান্দোগ্য (৮ অধ্যায়) ----
-      KW: 'ভবিষ্য পুরাণ,গরুড় পুরাণ,ব্রহ্ম পুরাণ,সামবেদ,অথর্ববেদ,শুক্ল যজুর্বেদ,কৃষ্ণ যজুর্বেদ'
+      KW: 'ভবিষ্য পুরাণ'
       SLUG: 'rigveda'
       TITLE: 'ঋগ্বেদ'
       MATCH: 'ঋগ্বেদ ০'
@@ -52,25 +52,25 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
-      - name: Fetch
+      - name: Fetch (পুরাণ + বেদ, ধাপে ধাপে)
         continue-on-error: true
         run: |
           set -x
-          if [ "$AUTO" = "1" ]; then
-            echo "AUTO শুরু $(date -u +%H:%M:%S)"
-            set +e
-            timeout 900 python3 -u tools/fetch_ebl.py --auto 2>&1 | tee /tmp/fetch.log
-            echo "AUTO শেষ $(date -u +%H:%M:%S) — exit ${PIPESTATUS[0]}"
-            exit 0
-          fi
-          ARGS=(--slug "$SLUG" --title "$TITLE" --match "$MATCH" --word "$WORD" --start "$STARTN")
-          [ "$ORDINAL" = "1" ] && ARGS+=(--by-ordinal)
-          [ "$CHAIN" = "1" ] && ARGS+=(--chain)
-          [ "$BOOK" = "1" ] && ARGS+=(--book --url "$URL")
-          [ "$GROUPNUM" = "1" ] && ARGS+=(--group-by-num)
-          [ "$MAXN" != "0" ] && ARGS+=(--max "$MAXN")
-          [ "$DUMPN" != "0" ] && ARGS+=(--dump "$DUMPN")
-          python3 tools/fetch_ebl.py "${ARGS[@]}" 2>&1 | tee /tmp/fetch.log
+          run() {
+            echo "### $*"
+            python3 -u tools/fetch_ebl.py "$@" 2>&1 | tee -a /tmp/fetch.log
+            sleep 2
+          }
+          : > /tmp/fetch.log
+          run --slug bhabishya --title "ভবিষ্য পুরাণ" --word শ্লোক \
+              --match "ভবিষ্য পুরাণ পৃথ্বীরাজ" --book-auto --max 120
+          run --slug garuda --title "গরুড় পুরাণ" --word শ্লোক \
+              --match "গরুড় পুরাণ পৃথ্বীরাজ" --book-auto --max 120
+          run --slug brahma --title "ব্রহ্ম পুরাণ" --word শ্লোক \
+              --match "ব্রহ্ম পুরাণ পৃথ্বীরাজ" --book-auto --max 120
+          run --slug samaveda --title "সামবেদ সংহিতা" --word মন্ত্র \
+              --match "সামবেদ সংহিতা পরিতোষ" --book-auto --max 120
+          echo "শেষ $(date -u +%H:%M:%S)"
 
       - name: Report
         if: always()

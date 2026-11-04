@@ -430,7 +430,8 @@ def main_run(args):
 
     out_dir = os.path.join(args.out, args.slug) if args.slug else ""
 
-    if args.url:                                     # একক পাতা (পরীক্ষা/ডাম্প)
+    if args.url and not (args.book or args.chain or args.group_by_num):
+        # একক পাতা (পরীক্ষা/ডাম্প)
         h = get(args.url)
         txt = page_text(h)
         vs = parse_verses(txt)
@@ -453,7 +454,21 @@ def main_run(args):
         return
 
     # ---- তালিকা বানানো ----
-    if args.book:
+    if args.book_auto:
+        books = [u for u in sitemap_urls(LESSON_SITEMAPS + TOPIC_SITEMAPS,
+                                         args.match, ("books",))
+                 if "/books/" in u]
+        print("বই-পাতা:", [urllib.parse.unquote(b)[-60:] for b in books[:3]])
+        if not books:
+            sys.exit("বই-পাতা পাওয়া গেল না: " + args.match)
+        lessons = []
+        for b in books[:1]:
+            lessons = book_lessons(b)
+        print(f"সূচিতে লেসন: {len(lessons)}")
+        items = [(i, u) for i, u in enumerate(lessons, start=args.start)]
+        if args.max:
+            items = items[: args.max]
+    elif args.book:
         items = [(i, u) for i, u in enumerate(book_lessons(args.url), start=args.start)]
         if args.max:
             items = items[: args.max]
@@ -589,6 +604,8 @@ def main():  # noqa: F811  (CLI প্রবেশ-বিন্দু)
     ap.add_argument("--by-ordinal", action="store_true")
     ap.add_argument("--chain", action="store_true")
     ap.add_argument("--book", action="store_true")
+    ap.add_argument("--book-auto", action="store_true",
+                    help="--match দিয়ে বই-পাতা খুঁজে তার সূচি থেকে সব লেসন")
     ap.add_argument("--auto", action="store_true")
     ap.add_argument("--group-by-num", action="store_true")
     ap.add_argument("--max", type=int, default=0)
