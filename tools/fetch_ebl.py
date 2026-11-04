@@ -858,7 +858,7 @@ def main_run(args):
         tail_t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
         tail_t = re.sub(r"[-–_]+", " ", tail_t).strip()
         if args.title:
-            title = f"{args.title} — {tail_t}"
+            title = args.title if norm(tail_t) in norm(args.title) else f"{args.title} — {tail_t}"
         else:
             title = tail_t or f"অধ্যায় {idx}"
         chapters.append(write_chapter(out_dir, idx, title, vs, u))

@@ -52,6 +52,24 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
+      - name: Debug (ঐতরেয়/তৈত্তিরীয় পাতা)
+        continue-on-error: true
+        run: |
+          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
+          import sys, re, urllib.parse
+          sys.path.insert(0, "tools")
+          import fetch_ebl as f
+          for slug in ["ঐতরেয়-উপনিষদ", "তৈত্তিরীয়-উপনিষদ-2"]:
+              u = "https://www.ebanglalibrary.com/lessons/" + urllib.parse.quote(slug) + "/"
+              h = f.get(u) or ""
+              t = f.fetch_paged(u)
+              lines = [x.strip() for x in t.splitlines() if x.strip()]
+              print("==", slug, "| html:", len(h), "| লাইন:", len(lines),
+                    "| Next Page:", "Next Page" in h)
+              for ln in lines[:30]:
+                  print("   |", ln[:110])
+          PY
+
       - name: Fetch (উপনিষদ + পুরাণ)
         continue-on-error: true
         run: |
