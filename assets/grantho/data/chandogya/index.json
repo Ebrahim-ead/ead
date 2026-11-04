@@ -1,0 +1,68 @@
+{
+ "slug": "chandogya",
+ "bn": "ছান্দোগ্য উপনিষদ",
+ "en": "Chandogya",
+ "total": 499,
+ "withBn": 499,
+ "chapters": [
+  {
+   "id": 1,
+   "bn": "ছান্দোগ্য উপনিষদ 1",
+   "count": 100,
+   "from": 1,
+   "to": 100,
+   "withBn": 100
+  },
+  {
+   "id": 3,
+   "bn": "ছান্দোগ্য উপনিষদ 3",
+   "count": 88,
+   "from": 1,
+   "to": 88,
+   "withBn": 88
+  },
+  {
+   "id": 4,
+   "bn": "ছান্দোগ্য উপনিষদ 4",
+   "count": 75,
+   "from": 1,
+   "to": 75,
+   "withBn": 75
+  },
+  {
+   "id": 5,
+   "bn": "ছান্দোগ্য উপনিষদ 5",
+   "count": 72,
+   "from": 1,
+   "to": 72,
+   "withBn": 72
+  },
+  {
+   "id": 6,
+   "bn": "ছান্দোগ্য উপনিষদ 6",
+   "count": 56,
+   "from": 1,
+   "to": 56,
+   "withBn": 56
+  },
+  {
+   "id": 7,
+   "bn": "ছান্দোগ্য উপনিষদ 7",
+   "count": 50,
+   "from": 1,
+   "to": 50,
+   "withBn": 50
+  },
+  {
+   "id": 8,
+   "bn": "ছান্দোগ্য উপনিষদ 8",
+   "count": 58,
+   "from": 1,
+   "to": 58,
+   "withBn": 58
+  }
+ ],
+ "verseWord": "মন্ত্র",
+ "bnSrc": "বাংলা অনুবাদ — ebanglalibrary.com",
+ "note": "মূল সংস্কৃত পাঠ ও বাংলা অনুবাদ — ebanglalibrary.com"
+}

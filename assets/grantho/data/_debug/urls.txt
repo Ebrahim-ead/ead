@@ -12,16 +12,17 @@
   https://www.ebanglalibrary.com/lessons/ছান্দোগ্য-উপনিষদ/
 
 === ভবিষ্য পুরাণ ===
-মিলেছে 0
-
-=== বাংলা বেদ ===
-মিলেছে 0
+মিলেছে 2
+  https://www.ebanglalibrary.com/topics/০১-ভবিষ্য-পুরাণের-সৃষ্টি/
+  https://www.ebanglalibrary.com/lessons/ভবিষ্য-পুরাণ-পৃথ্বীরাজ-স/
 
 === গরুড় পুরাণ ===
-মিলেছে 0
+মিলেছে 1
+  https://www.ebanglalibrary.com/lessons/গরুড়-পুরাণ-পৃথ্বীরাজ-সে/
 
 === ব্রহ্ম পুরাণ ===
-মিলেছে 0
+মিলেছে 1
+  https://www.ebanglalibrary.com/lessons/ব্রহ্ম-পুরাণ-পৃথ্বীরাজ-স/
 
 === ঋগ্বেদ ===
 মিলেছে 1049
@@ -1156,5 +1157,56 @@
   https://www.ebanglalibrary.com/lessons/৪-অথর্ববেদ-সংহিতা-চতুর্/
 
 === কঠ উপনিষদ ===
+মিলেছে 1
+  https://www.ebanglalibrary.com/lessons/কঠ-উপনিষদ/
+
+=== উপনিষদ অখণ্ড ===
 মিলেছে 0
+
+=== শুক্ল যজুর্বেদ ===
+মিলেছে 40
+  https://www.ebanglalibrary.com/lessons/০১-শুক্লযজুর্বেদ-পূর্বা/
+  https://www.ebanglalibrary.com/lessons/০২-শুক্লযজুর্বেদ-দ্বিতী/
+  https://www.ebanglalibrary.com/lessons/০৩-শুক্লযজুর্বেদ-তৃতীয়/
+  https://www.ebanglalibrary.com/lessons/০৪-শুক্লযজুর্বেদ-চতুর্থ/
+  https://www.ebanglalibrary.com/lessons/০৫-শুক্লযজুর্বেদ-পঞ্চম-অ/
+  https://www.ebanglalibrary.com/lessons/০৬-শুক্লযজুর্বেদ-ষষ্ঠ-অধ/
+  https://www.ebanglalibrary.com/lessons/০৭-শুক্লযজুর্বেদ-সপ্তম-অ/
+  https://www.ebanglalibrary.com/lessons/০৮-শুক্লযজুর্বেদ-অষ্টম-অ/
+  https://www.ebanglalibrary.com/lessons/০৯-শুক্লযজুর্বেদ-নবম-অধ্/
+  https://www.ebanglalibrary.com/lessons/১০-শুক্লযজুর্বেদ-দশম-অধ্/
+  https://www.ebanglalibrary.com/lessons/১১-শুক্লযজুর্বেদ-একাদশ-অ/
+  https://www.ebanglalibrary.com/lessons/১২-শুক্লযজুর্বেদ-দ্বাদশ/
+  https://www.ebanglalibrary.com/lessons/১৩-শুক্লযজুর্বেদ-ত্রয়ো/
+  https://www.ebanglalibrary.com/lessons/১৪-শুক্লযজুর্বেদ-চতুর্দ/
+  https://www.ebanglalibrary.com/lessons/১৫-শুক্লযজুর্বেদ-পঞ্চদশ/
+  https://www.ebanglalibrary.com/lessons/১৬-শুক্লযজুর্বেদ-ষোড়শ-অ/
+  https://www.ebanglalibrary.com/lessons/১৭-শুক্লযজুর্বেদ-সপ্তদশ/
+  https://www.ebanglalibrary.com/lessons/১৮-শুক্লযজুর্বেদ-অষ্টাদ/
+  https://www.ebanglalibrary.com/lessons/১৯-শুক্লযজুর্বেদ-ঊনবিংশ/
+  https://www.ebanglalibrary.com/lessons/২০-শুক্লযজুর্বেদ-বিংশ-অধ/
+  https://www.ebanglalibrary.com/lessons/২১-শুক্লযজুর্বেদ-সংহিতা/
+  https://www.ebanglalibrary.com/lessons/২২-শুক্লযজুর্বেদ-দ্বাবি/
+  https://www.ebanglalibrary.com/lessons/২৩-শুক্লযজুর্বেদ-ত্রয়ো/
+  https://www.ebanglalibrary.com/lessons/২৪-শুক্লযজুর্বেদ-চতুর্ব/
+  https://www.ebanglalibrary.com/lessons/২৫-শুক্লযজুর্বেদ-পঞ্চবি/
+  https://www.ebanglalibrary.com/lessons/২৬-শুক্লযজুর্বেদ-ষড়বিং/
+  https://www.ebanglalibrary.com/lessons/২৭-শুক্লযজুর্বেদ-সপ্তবি/
+  https://www.ebanglalibrary.com/lessons/২৮-শুক্লযজুর্বেদ-অষ্টাব/
+  https://www.ebanglalibrary.com/lessons/২৯-শুক্লযজুর্বেদ-ঊনত্রি/
+  https://www.ebanglalibrary.com/lessons/৩০-শুক্লযজুর্বেদ-ত্রিংশ/
+  https://www.ebanglalibrary.com/lessons/৩১-শুক্লযজুর্বেদ-একত্রি/
+  https://www.ebanglalibrary.com/lessons/৩২-শুক্লযজুর্বেদ-দ্বাত্/
+  https://www.ebanglalibrary.com/lessons/৩৩-শুক্লযজুর্বেদ-ত্রয়স/
+  https://www.ebanglalibrary.com/lessons/৩৪-শুক্লযজুর্বেদ-চতুস্ত/
+  https://www.ebanglalibrary.com/lessons/৩৫-শুক্লযজুর্বেদ-পঞ্চত্/
+  https://www.ebanglalibrary.com/lessons/৩৬-শুক্লযজুর্বেদ-ষটত্র/
+  https://www.ebanglalibrary.com/lessons/৩৭-শুক্লযজুর্বেদ-সপ্তত্/
+  https://www.ebanglalibrary.com/lessons/৩৮-শুক্লযজুর্বেদ-অষ্টত্/
+  https://www.ebanglalibrary.com/lessons/৩৯-শুক্লযজুর্বেদ-ঊনচত্ব/
+  https://www.ebanglalibrary.com/lessons/৪০-শুক্লযজুর্বেদ-চত্বার/
+
+=== কৃষ্ণ যজুর্বেদ ===
+মিলেছে 1
+  https://www.ebanglalibrary.com/lessons/কৃষ্ণ-যজুর্বেদ-যারা-রচেছ/
 
