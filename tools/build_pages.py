@@ -6,6 +6,7 @@
 কোনো index.json না থাকলে বা শূন্য হলে সেই গ্রন্থের পাতা/কার্ড তৈরি হয় না।
 """
 import json
+import os
 import pathlib
 import re
 import sys
@@ -15,6 +16,11 @@ DATA = ROOT / "assets/grantho/data"
 OUT = ROOT / "grantho/hindu"
 
 BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
+BN_MAP = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
+
+
+class Shrink(Exception):
+    """ডেটা হঠাৎ অনেক ছোট হয়ে গেছে — পাতা বানিয়ে সাইট খারাপ করব না।"""
 
 
 def bn(n):
@@ -152,6 +158,18 @@ def make_page(slug, idx, meta):
 
     label = f"{main} {sub}".strip()
     fulldesc = f'{label}-র {commas(withbn)}টি {meta["word"]} বাংলা অনুবাদসহ — ebanglalibrary.com।'
+    # সতর্কতা: দশার-অভাবে হঠাৎ বড় পতন (যেমন ৯২২২ → ২১ শ্লোক) সাইটে বসিয়ে দেব না।
+    env = os.environ.get("GRANTHO_ALLOW_SHRINK", "").strip().lower() in ("1", "true", "yes")
+    if not env and (OUT / f"{slug}.html").exists():
+        old_html = (OUT / f"{slug}.html").read_text(encoding="utf-8")
+        m = re.search(r'<span class="g-fact"><b>([০-৯,]+)</b>\s*' + re.escape(meta["word"]),
+                      old_html)
+        if m:
+            prev = int(m.group(1).replace(",", "").translate(BN_MAP))
+            if prev and withbn < prev * 0.85:
+                raise Shrink(f"{slug}: পুরনো পাতায় {prev}, নতুন ডেটায় {withbn} — "
+                             f"হঠাৎ বড় পতন")
+
     h = re.sub(r'<title>[^<]*</title>', f'<title>{label} — {commas(withbn)} {meta["word"]}, বাংলা অনুবাদসহ | Ebrahim Ead</title>', h, count=1)
     for pat, val in ((r'(<meta name="description" content=")[^"]*(")', fulldesc),
                      (r'(<meta property="og:title" content=")[^"]*(")',
@@ -304,4 +322,12 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Shrink as e:
+        print("\n" + "=" * 60)
+        print(f"⛔ বিল্ড থামানো হলো — {e}")
+        print("ডেটা যাচাই না করে কিছু কমিট/প্রকাশ হবে না। জোর করে বিল্ড করতে:")
+        print("   GRANTHO_ALLOW_SHRINK=1 python3 tools/build_pages.py")
+        print("=" * 60)
+        sys.exit(1)
