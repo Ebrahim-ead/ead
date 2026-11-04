@@ -1,0 +1,84 @@
+{
+ "slug": "rigveda",
+ "bn": "ঋগ্বেদ",
+ "en": "Rigveda",
+ "total": 9222,
+ "withBn": 9222,
+ "chapters": [
+  {
+   "id": 1,
+   "bn": "ঋগ্বেদ — 1",
+   "count": 2299,
+   "from": 1,
+   "to": 2299,
+   "withBn": 2299
+  },
+  {
+   "id": 2,
+   "bn": "ঋগ্বেদ — 2",
+   "count": 460,
+   "from": 1,
+   "to": 460,
+   "withBn": 460
+  },
+  {
+   "id": 3,
+   "bn": "ঋগ্বেদ — 3",
+   "count": 668,
+   "from": 1,
+   "to": 668,
+   "withBn": 668
+  },
+  {
+   "id": 4,
+   "bn": "ঋগ্বেদ — 4",
+   "count": 631,
+   "from": 1,
+   "to": 631,
+   "withBn": 631
+  },
+  {
+   "id": 5,
+   "bn": "ঋগ্বেদ — 5",
+   "count": 767,
+   "from": 1,
+   "to": 767,
+   "withBn": 767
+  },
+  {
+   "id": 6,
+   "bn": "ঋগ্বেদ — 6",
+   "count": 757,
+   "from": 1,
+   "to": 757,
+   "withBn": 757
+  },
+  {
+   "id": 7,
+   "bn": "ঋগ্বেদ — 7",
+   "count": 834,
+   "from": 1,
+   "to": 834,
+   "withBn": 834
+  },
+  {
+   "id": 8,
+   "bn": "ঋগ্বেদ — 8",
+   "count": 1702,
+   "from": 1,
+   "to": 1702,
+   "withBn": 1702
+  },
+  {
+   "id": 9,
+   "bn": "ঋগ্বেদ — 9",
+   "count": 1104,
+   "from": 1,
+   "to": 1104,
+   "withBn": 1104
+  }
+ ],
+ "verseWord": "সূক্ত",
+ "bnSrc": "বাংলা অনুবাদ — ebanglalibrary.com",
+ "note": "মূল সংস্কৃত পাঠ ও বাংলা অনুবাদ — ebanglalibrary.com"
+}
