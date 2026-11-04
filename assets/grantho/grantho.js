@@ -15,7 +15,20 @@
   if (!root) return;
 
   var SLUG = root.dataset.granth || "gita";
-  var BASE = root.dataset.base || "assets/grantho/data/" + SLUG + "/";
+  /* data-base না থাকলে পেজের নিজের ঠিকানা থেকে পথ বের করি।
+     এখানে পেজ যেমনই থাকুক, ঠিক সংখ্যক ../ বসিয়ে সাইটের মূল ফোল্ডারে
+     পৌঁছাব। রেপো-রুট /ead/ নিজেও একটা সাব-পাথ, তাই শেষ সেগমেন্টটা
+     ('ead') বাদ দিই — বাকি প্রতিটি ফোল্ডারের জন্য একটা ../।
+       /ead/grantho/hindu/gita.html → ["ead","grantho","hindu"] → ২টি ../
+       /ead/grantho/islam.html      → ["ead","grantho"]          → ১টি ../
+       /ead/hadith.html             → ["ead"]                     → ০টি ../ */
+  function autoBase() {
+    var dir = location.pathname.replace(/[^\/]*$/, "");
+    var segs = dir.split("/").filter(Boolean).slice(1);
+    return "../".repeat(segs.length) + "assets/grantho/data/" + SLUG + "/";
+  }
+
+  var BASE = root.dataset.base || autoBase();
   var KEY = "grantho." + SLUG + ".v1";
 
   var listEl   = document.getElementById("g-chapter-list");
