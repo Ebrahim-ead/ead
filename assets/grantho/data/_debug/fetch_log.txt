@@ -1,62 +1,142 @@
-সিরিজ: 2 পাতা
-   · https://www.ebanglalibrary.com/lessons/কেন-উপনিষদ/
-   · https://www.ebanglalibrary.com/lessons/কেন-উপনিষদ-2/
-নামানো হবে 2টি পাতা
-[1] https://www.ebanglalibrary.com/lessons/কেন-উপনিষদ/
-   ✓ 36 মন্ত্র
-[2] https://www.ebanglalibrary.com/lessons/কেন-উপনিষদ-2/
+সূচি: ps://www.ebanglalibrary.com/lessons/৪-অথর্ববেদ-সংহিতা-চতুর্/
+ভেতরের টপিক/লেসন: 131
+নামানো হবে 60টি পাতা
+[1] ps://www.ebanglalibrary.com/lessons/৪-অথর্ববেদ-সংহিতা-চতুর্/
+   ✓ 1 মন্ত্র
+[2] s://www.ebanglalibrary.com/lessons/১-ঋগ্বেদ-সংহিতা-প্রথম-অধ/
+   ✓ 1 মন্ত্র
+[3] https://www.ebanglalibrary.com/topics/০১-ঋগ্বেদ/
    ✗ মন্ত্র পাওয়া যায়নি
-upanishad-kena: বাংলা 36/36
-  1. কেন উপনিষদ: 36/36
-সিরিজ: 2 পাতা
-   · https://www.ebanglalibrary.com/lessons/ঈশ-উপনিষদ/
-   · https://www.ebanglalibrary.com/lessons/ঈশ-উপনিষদ-2/
-নামানো হবে 2টি পাতা
-[1] https://www.ebanglalibrary.com/lessons/ঈশ-উপনিষদ/
-   ✓ 19 মন্ত্র
-[2] https://www.ebanglalibrary.com/lessons/ঈশ-উপনিষদ-2/
+[4] https://www.ebanglalibrary.com/topics/০২-রচনাকাল/
    ✗ মন্ত্র পাওয়া যায়নি
-upanishad-isha: বাংলা 19/19
-  1. ঈশ উপনিষদ: 19/19
-সিরিজ: 2 পাতা
-   · https://www.ebanglalibrary.com/lessons/প্রশ্ন-উপনিষদ/
-   · https://www.ebanglalibrary.com/lessons/প্রশ্ন-উপনিষদ-2/
-নামানো হবে 2টি পাতা
-[1] https://www.ebanglalibrary.com/lessons/প্রশ্ন-উপনিষদ/
-   ✓ 68 মন্ত্র
-[2] https://www.ebanglalibrary.com/lessons/প্রশ্ন-উপনিষদ-2/
+[5] https://www.ebanglalibrary.com/topics/০৩-ভাষ্যকার/
    ✗ মন্ত্র পাওয়া যায়নি
-upanishad-prashna: বাংলা 68/68
-  1. প্রশ্ন উপনিষদ: 68/68
-সিরিজ: 2 পাতা
-   · https://www.ebanglalibrary.com/lessons/মুণ্ডক-উপনিষদ/
-   · https://www.ebanglalibrary.com/lessons/মুণ্ডক-উপনিষদ-2/
-নামানো হবে 2টি পাতা
-[1] https://www.ebanglalibrary.com/lessons/মুণ্ডক-উপনিষদ/
-   ✓ 65 মন্ত্র
-[2] https://www.ebanglalibrary.com/lessons/মুণ্ডক-উপনিষদ-2/
+[6] ps://www.ebanglalibrary.com/topics/০৪-সূক্তসমূহের-প্রকৃতি-ও/
+   ✓ 2 মন্ত্র
+[7] tps://www.ebanglalibrary.com/topics/০৫-স্তোত্রগীতি-সম্বন্ধে/
    ✗ মন্ত্র পাওয়া যায়নি
-upanishad-mundaka: বাংলা 65/65
-  1. মুণ্ডক উপনিষদ: 65/65
-সিরিজ: 1 পাতা
-   · ttps://www.ebanglalibrary.com/lessons/মাণ্ডূক্য-উপনিষদ/
-নামানো হবে 1টি পাতা
-[1] https://www.ebanglalibrary.com/lessons/মাণ্ডূক্য-উপনিষদ/
-   ✓ 218 মন্ত্র
-upanishad-mandukya: বাংলা 218/218
-  1. মাণ্ডূক্য উপনিষদ: 218/218
-সিরিজ: 2 পাতা
-   · tps://www.ebanglalibrary.com/lessons/তৈত্তিরীয়-উপনিষদ/
-   · s://www.ebanglalibrary.com/lessons/তৈত্তিরীয়-উপনিষদ-2/
-নামানো হবে 2টি পাতা
-[1] https://www.ebanglalibrary.com/lessons/তৈত্তিরীয়-উপনিষদ/
-   ✓ 12 মন্ত্র
-[2] https://www.ebanglalibrary.com/lessons/তৈত্তিরীয়-উপনিষদ-2/
+[8] https://www.ebanglalibrary.com/topics/০৬-রচনা-প্রকরণ/
    ✗ মন্ত্র পাওয়া যায়নি
-upanishad-taittiriya: বাংলা 12/12
-  1. তৈত্তিরীয় উপনিষদ: 12/12
-সিরিজ: 1 পাতা
-   · https://www.ebanglalibrary.com/lessons/ঐতরেয়-উপনিষদ/
-নামানো হবে 1টি পাতা
-[1] https://www.ebanglalibrary.com/lessons/ঐতরেয়-উপনিষদ/
+[9] ttps://www.ebanglalibrary.com/topics/০৭-সূক্তের-শ্রেণীবিভাগ/
    ✗ মন্ত্র পাওয়া যায়নি
+[10] https://www.ebanglalibrary.com/topics/০৮-সংবাদসূক্ত/
+   ✗ মন্ত্র পাওয়া যায়নি
+[11] https://www.ebanglalibrary.com/topics/০৯-দানস্তুতি/
+   ✗ মন্ত্র পাওয়া যায়নি
+[12] https://www.ebanglalibrary.com/topics/১০-বালখিল্য/
+   ✓ 2 মন্ত্র
+[13] https://www.ebanglalibrary.com/topics/১১-খিলসূক্ত/
+   ✓ 2 মন্ত্র
+[14] https://www.ebanglalibrary.com/topics/১২-অন্যান্য-সূক্তাবলী/
+   ✓ 2 মন্ত্র
+[15] https://www.ebanglalibrary.com/topics/১৩-নিবিদ্/
+   ✗ মন্ত্র পাওয়া যায়নি
+[16] https://www.ebanglalibrary.com/topics/১৪-আপ্রী-সূক্ত/
+   ✗ মন্ত্র পাওয়া যায়নি
+[17] https://www.ebanglalibrary.com/topics/১৫-সোমমণ্ডল/
+   ✗ মন্ত্র পাওয়া যায়নি
+[18] https://www.ebanglalibrary.com/topics/১৬-সর্বেশ্বেরবাদ/
+   ✗ মন্ত্র পাওয়া যায়নি
+[19] https://www.ebanglalibrary.com/topics/১৭-একেশ্বরবাদ/
+   ✗ মন্ত্র পাওয়া যায়নি
+[20] tps://www.ebanglalibrary.com/topics/১৮-উপাখ্যান-ও-প্ৰহেলিকা/
+   ✗ মন্ত্র পাওয়া যায়নি
+[21] https://www.ebanglalibrary.com/topics/১৯-সূর্যাসূক্ত/
+   ✓ 2 মন্ত্র
+[22] https://www.ebanglalibrary.com/topics/২০-দূতকারের-অনুশোচনা/
+   ✗ মন্ত্র পাওয়া যায়নি
+[23] https://www.ebanglalibrary.com/topics/২১-যমসংহিতা/
+   ✓ 2 মন্ত্র
+[24] https://www.ebanglalibrary.com/topics/২২-মণ্ডূকসূক্ত/
+   ✓ 2 মন্ত্র
+[25] ps://www.ebanglalibrary.com/topics/২৩-রাত্রিসূক্ত-ও-অরণ্যান/
+   ✓ 2 মন্ত্র
+[26] s://www.ebanglalibrary.com/topics/২৪-ঋগ্বেদ-লোকায়ত-না-ধর্ম/
+   ✗ মন্ত্র পাওয়া যায়নি
+[27] https://www.ebanglalibrary.com/topics/২৫-রচনারীতি-ভাষা/
+   ✗ মন্ত্র পাওয়া যায়নি
+[28] https://www.ebanglalibrary.com/topics/২৬-স্বর/
+   ✗ মন্ত্র পাওয়া যায়নি
+[29] ps://www.ebanglalibrary.com/topics/২৭-মৌখিক-সাহিত্যরূপে-ঋগ্/
+   ✗ মন্ত্র পাওয়া যায়নি
+[30] https://www.ebanglalibrary.com/topics/২৮-চিত্রকল্প/
+   ✗ মন্ত্র পাওয়া যায়নি
+[31] https://www.ebanglalibrary.com/topics/২৯-বৰ্ণনা/
+   ✗ মন্ত্র পাওয়া যায়নি
+[32] https://www.ebanglalibrary.com/topics/৩০-ধর্ম-ও-দর্শন/
+   ✗ মন্ত্র পাওয়া যায়নি
+[33] https://www.ebanglalibrary.com/topics/৩১-নীতিবোধ/
+   ✓ 2 মন্ত্র
+[34] https://www.ebanglalibrary.com/topics/৩২-প্ৰত্নকথা/
+   ✗ মন্ত্র পাওয়া যায়নি
+[35] ps://www.ebanglalibrary.com/lessons/২-সামবেদ-সংহিতা-দ্বিতীয/
+   ✓ 1 মন্ত্র
+[36] https://www.ebanglalibrary.com/topics/০১-সামবেদ-সংহিতা/
+   ✗ মন্ত্র পাওয়া যায়নি
+[37] https://www.ebanglalibrary.com/topics/০২-ছন্দ-ও-ভাষা/
+   ✓ 2 মন্ত্র
+[38] https://www.ebanglalibrary.com/topics/০৩-ধ্বনি-ও-স্বরগ্রাম/
+   ✗ মন্ত্র পাওয়া যায়নি
+[39] https://www.ebanglalibrary.com/topics/০৪-সামবেদ-ও-সোমযাগ/
+   ✗ মন্ত্র পাওয়া যায়নি
+[40] https://www.ebanglalibrary.com/topics/০৫-চন্দ্ররূপে-সোম/
+   ✓ 2 মন্ত্র
+[41] https://www.ebanglalibrary.com/topics/০৬-সামবেদের-উৎস/
+   ✗ মন্ত্র পাওয়া যায়নি
+[42] ps://www.ebanglalibrary.com/lessons/৩-যজুর্বেদ-সংহিতা-তৃতীয/
+   ✓ 1 মন্ত্র
+[43] https://www.ebanglalibrary.com/topics/০১-যজুর্বেদ-সংহিতা/
+   ✗ মন্ত্র পাওয়া যায়নি
+[44] https://www.ebanglalibrary.com/topics/০২-রচনাকাল-2/
+   ✓ 2 মন্ত্র
+[45] https://www.ebanglalibrary.com/topics/০৩-বিষয়বস্তু/
+   ✗ মন্ত্র পাওয়া যায়নি
+[46] https://www.ebanglalibrary.com/topics/০৪-অনুষ্ঠান-চৰ্যা/
+   ✗ মন্ত্র পাওয়া যায়নি
+[47] https://www.ebanglalibrary.com/topics/০৫-সমাজ/
+   ✗ মন্ত্র পাওয়া যায়নি
+[48] https://www.ebanglalibrary.com/topics/০৬-আঙ্গিক-ও-ভাষা/
+   ✗ মন্ত্র পাওয়া যায়নি
+[49] https://www.ebanglalibrary.com/topics/০৭-ইন্দ্ৰজাল/
+   ✗ মন্ত্র পাওয়া যায়নি
+[50] ps://www.ebanglalibrary.com/topics/০১-পাঠভেদ-অথর্ববেদ-সংহিত/
+   ✓ 2 মন্ত্র
+[51] ps://www.ebanglalibrary.com/topics/০২-মূলপাঠ-অথর্ববেদ-সংহিত/
+   ✗ মন্ত্র পাওয়া যায়নি
+[52] ps://www.ebanglalibrary.com/topics/০৩-রচয়িতা-অথর্ববেদ-সংহি/
+   ✗ মন্ত্র পাওয়া যায়নি
+[53] ps://www.ebanglalibrary.com/topics/০৪-বিষয়বস্তু-অথর্ববেদ-স/
+   ✓ 2 মন্ত্র
+[54] ps://www.ebanglalibrary.com/topics/০৫-বৈদিক-ঐতিহ্যে-অথৰ্ববে/
+   ✗ মন্ত্র পাওয়া যায়নি
+[55] ps://www.ebanglalibrary.com/topics/০৬-রচনাকাল-অথর্ববেদ-সংহি/
+   ✗ মন্ত্র পাওয়া যায়নি
+[56] ps://www.ebanglalibrary.com/topics/০৭-সূক্তসমূহের-শ্রেণী-বি/
+   ✗ মন্ত্র পাওয়া যায়নি
+[57] tps://www.ebanglalibrary.com/topics/০৮-সমাজ-অথর্ববেদ-সংহিতা/
+   ✗ মন্ত্র পাওয়া যায়নি
+[58] https://www.ebanglalibrary.com/topics/০৯-দেবসঙ্ঘ/
+   ✗ মন্ত্র পাওয়া যায়নি
+[59] ps://www.ebanglalibrary.com/topics/১০-দর্শন-অথর্ববেদ-সংহিতা/
+   ✗ মন্ত্র পাওয়া যায়নি
+[60] https://www.ebanglalibrary.com/topics/১১-ব্রাত্য-সূক্ত/
+   ✗ মন্ত্র পাওয়া যায়নি
+atharvaveda: বাংলা 32/32
+  1. অথর্ববেদ সংহিতা — ৪ অথর্ববেদ সংহিতা চতুর্: 1/1
+  2. অথর্ববেদ সংহিতা — ১ ঋগ্বেদ সংহিতা প্রথম অধ: 1/1
+  6. অথর্ববেদ সংহিতা — ০৪ সূক্তসমূহের প্রকৃতি ও: 2/2
+  12. অথর্ববেদ সংহিতা — ১০ বালখিল্য: 2/2
+  13. অথর্ববেদ সংহিতা — ১১ খিলসূক্ত: 2/2
+  14. অথর্ববেদ সংহিতা — ১২ অন্যান্য সূক্তাবলী: 2/2
+  21. অথর্ববেদ সংহিতা — ১৯ সূর্যাসূক্ত: 2/2
+  23. অথর্ববেদ সংহিতা — ২১ যমসংহিতা: 2/2
+  24. অথর্ববেদ সংহিতা — ২২ মণ্ডূকসূক্ত: 2/2
+  25. অথর্ববেদ সংহিতা — ২৩ রাত্রিসূক্ত ও অরণ্যান: 2/2
+  33. অথর্ববেদ সংহিতা — ৩১ নীতিবোধ: 2/2
+  35. অথর্ববেদ সংহিতা — ২ সামবেদ সংহিতা দ্বিতীয: 1/1
+  37. অথর্ববেদ সংহিতা — ০২ ছন্দ ও ভাষা: 2/2
+  40. অথর্ববেদ সংহিতা — ০৫ চন্দ্ররূপে সোম: 2/2
+  42. অথর্ববেদ সংহিতা — ৩ যজুর্বেদ সংহিতা তৃতীয: 1/1
+  44. অথর্ববেদ সংহিতা — ০২ রচনাকাল 2: 2/2
+  50. অথর্ববেদ সংহিতা — ০১ পাঠভেদ অথর্ববেদ সংহিত: 2/2
+  53. অথর্ববেদ সংহিতা — ০৪ বিষয়বস্তু অথর্ববেদ স: 2/2
