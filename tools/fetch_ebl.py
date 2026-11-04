@@ -334,6 +334,7 @@ def classify(url):
 
 def run_auto(args):
     """আবিষ্কার → গ্রন্থ-শনাক্ত → নামানো, এক রানে।"""
+    print(">>> run_auto শুরু", flush=True)
     skip = set(x.strip() for x in os.environ.get("EBL_SKIP", "").split(",") if x.strip())
     only = set(x.strip() for x in os.environ.get("EBL_ONLY", "").split(",") if x.strip())
     cache_p = os.path.join(args.out, "_debug", "sitemap.json")
@@ -366,10 +367,11 @@ def run_auto(args):
             continue
         if k not in targets:
             targets[k] = c
-            print(f"শনাক্ত: {k} ← {urllib.parse.unquote(u)[-70:]}")
+            print(f"শনাক্ত: {k} ← {urllib.parse.unquote(u)[-70:]}", flush=True)
         seen.add(k)
+    print("লক্ষ্য:", list(targets), flush=True)
     for k, c in targets.items():
-        print(f"\n===== {c['title']} ({k}) — {c['mode']} =====")
+        print(f"\n===== {c['title']} ({k}) — {c['mode']} =====", flush=True)
         sub = argparse.Namespace(**vars(args))
         sub.slug = c["slug"]
         sub.title = c["title"]
@@ -395,7 +397,9 @@ def run_auto(args):
         try:
             main_run(sub)
         except Exception as e:
-            print("  ✗ ভুল:", e)
+            import traceback
+            traceback.print_exc()
+            print("  ✗ ভুল:", e, flush=True)
 
 
 def build_index(out_dir, slug, title, chapters, word):
