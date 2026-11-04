@@ -38,6 +38,7 @@ TOPIC_SITEMAPS = [f"{BASE}/wp-sitemap-posts-sfwd-topic-{i}.xml" for i in range(1
 LESSON_SITEMAPS = [f"{BASE}/wp-sitemap-posts-sfwd-lessons-{i}.xml" for i in range(1, 30)]
 
 BN_DIGITS = "০১২৩৪৫৬৭৮৯"
+DEV_RE = re.compile("[\u0900-\u0963\u0966-\u097F]")  # দাঁড়ি (।॥) বাদ
 DEV_DIGITS = "०१२३४५६७८९"
 ORD = {"প্রথম": 1, "দ্বিতীয়": 2, "দ্বিতীয়ো": 2, "তৃতীয়": 3, "চতুর্থ": 4,
        "পঞ্চম": 5, "ষষ্ঠ": 6, "সপ্তম": 7, "অষ্টম": 8, "নবম": 9, "দশম": 10,
@@ -122,6 +123,9 @@ def page_text(h):
 
 def parse_verses(txt):
     verses, cur, counter = [], None, 0
+    # পাতায় «অন্বয়/সরলার্থ» লেবেল থাকলে কঠোর লেবেল-ভিত্তিক পাঠ;
+    # না থাকলে (ঋগ্বেদ-ধাঁচ) অনুচ্ছেদই অনুবাদ।
+    has_labels = ("অন্বয়" in txt) or ("সরলার্থ" in txt)
 
     def close():
         nonlocal cur
@@ -142,7 +146,10 @@ def parse_verses(txt):
             cur = {"n": counter, "gidx": to_int(m.group(1)), "sk": [], "anv": [],
                    "bn": [], "note": [], "part": "sk"}
             if m.group(2):
-                cur["sk"].append(m.group(2))
+                rest = m.group(2)
+                if not has_labels and not DEV_RE.search(rest) and len(rest) > 25:
+                    cur["part"] = "bn"      # সংখ্যার পরেই বাংলা (ঋগ্বেদ-ধাঁচ)
+                cur[cur["part"]].append(rest)
             continue
         if cur is None:
             continue
@@ -154,6 +161,9 @@ def parse_verses(txt):
             if rest:
                 cur[cur["part"]].append(rest)
             continue
+        if (not has_labels and cur["part"] == "sk"
+                and not DEV_RE.search(ln) and len(ln) > 25):
+            cur["part"] = "bn"          # সংস্কৃতহীন পাতা: সরল অনুচ্ছেদই অনুবাদ
         cur[cur["part"]].append(ln)
     close()
 
@@ -161,7 +171,7 @@ def parse_verses(txt):
     for v in verses:
         sk = " ".join(v["sk"]).strip()
         bn = " ".join(v["bn"]).strip()
-        if not bn or len(bn) < 6:
+        if not bn or len(bn) < 15:
             continue
         # স্থানীয় মন্ত্র-সংখ্যা: সংস্কৃতের শেষ «॥ ১॥»
         n = None
