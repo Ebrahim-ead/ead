@@ -650,6 +650,9 @@ def main_run(args):
             urls = sorted(allu, key=lambda x: (len(x), x))
             chain, seen = [], set()
             key = urllib.parse.quote((args.match.split() or [""])[0].replace(" ", "-"))
+            print("ডিবাগ — মিল:", len(allu), "| কি:", key,
+                  "| প্রথম:", [urllib.parse.unquote(u)[-38:] for u in urls[:3]],
+                  "| সরানো হয়েছে:", any("/topics/" in u for u in allu))
             u = urls[0] if urls else None
             while u and u not in seen and (not args.max or len(chain) < args.max):
                 if key and key not in urllib.parse.unquote(u) \
