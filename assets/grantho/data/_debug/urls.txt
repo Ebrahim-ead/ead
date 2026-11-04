@@ -1,49 +1,140 @@
 === ভবিষ্য পুরাণ ===
-Traceback (most recent call last):
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 546, in <module>
-    main()
-    ^^^^
-NameError: name 'main' is not defined. Did you mean: 'min'?
+মিলেছে 2
+  https://www.ebanglalibrary.com/topics/০১-ভবিষ্য-পুরাণের-সৃষ্টি/
+  https://www.ebanglalibrary.com/lessons/ভবিষ্য-পুরাণ-পৃথ্বীরাজ-স/
 
 === গরুড় পুরাণ ===
-Traceback (most recent call last):
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 546, in <module>
-    main()
-    ^^^^
-NameError: name 'main' is not defined. Did you mean: 'min'?
+মিলেছে 1
+  https://www.ebanglalibrary.com/lessons/গরুড়-পুরাণ-পৃথ্বীরাজ-সে/
 
 === ব্রহ্ম পুরাণ ===
-Traceback (most recent call last):
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 546, in <module>
-    main()
-    ^^^^
-NameError: name 'main' is not defined. Did you mean: 'min'?
+মিলেছে 1
+  https://www.ebanglalibrary.com/lessons/ব্রহ্ম-পুরাণ-পৃথ্বীরাজ-স/
 
 === সামবেদ ===
-Traceback (most recent call last):
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 546, in <module>
-    main()
-    ^^^^
-NameError: name 'main' is not defined. Did you mean: 'min'?
+মিলেছে 62
+  https://www.ebanglalibrary.com/topics/০১-সামবেদ-সংহিতা/
+  https://www.ebanglalibrary.com/topics/০৪-সামবেদ-ও-সোমযাগ/
+  https://www.ebanglalibrary.com/topics/০৬-সামবেদের-উৎস/
+  https://www.ebanglalibrary.com/topics/০১-সামবেদীয়-গর্ভধারন/
+  https://www.ebanglalibrary.com/topics/০২-সামবেদীয়-পুংসবন/
+  https://www.ebanglalibrary.com/topics/০৩-সামবেদীয়-সীমন্তোন্নয়/
+  https://www.ebanglalibrary.com/topics/০৪-সামবেদীয়-শোষ্যন্তীকর/
+  https://www.ebanglalibrary.com/topics/০৫-সামবেদীয়-জাতকৰ্ম/
+  https://www.ebanglalibrary.com/topics/০৬-সামবেদীয়-নিষ্ক্রমণ/
+  https://www.ebanglalibrary.com/topics/০৭-সামবেদীয়-নামকরণ/
+  https://www.ebanglalibrary.com/topics/০৮-সামবেদীয়-কুমারস্য-পৌষ/
+  https://www.ebanglalibrary.com/topics/০৯-সামবেদীয়-অন্নপ্রাশন/
+  https://www.ebanglalibrary.com/topics/১০-সামবেদীয়-পুত্ৰমূৰ্দ্/
+  https://www.ebanglalibrary.com/topics/১১-সামবেদীয়-চূড়াকরণ/
+  https://www.ebanglalibrary.com/topics/১২-সামবেদীয়-উপনয়ন/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১০/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১২/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০২/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৩/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৪/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৫/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৬/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৭/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৮/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০১।০৯/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১০/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০১।১১/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০২/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১২/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৩/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৪/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৫/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৬/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৭/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৮/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০২।০৯/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১০/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০২।১১/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১২/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১১/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।১০/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৯/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৮/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৭/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৬/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৫/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৪/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০৩/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৩।০২/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১২/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।১১/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৯/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৮/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৭/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৬/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৫/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৪/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০৩/
+  https://www.ebanglalibrary.com/lessons/সামবেদ-০৪।০২/
+  https://www.ebanglalibrary.com/lessons/দুই-সামবেদ-সংহিতার-কথা/
+  https://www.ebanglalibrary.com/lessons/সামবেদীয়-দশসংস্কার/
+  https://www.ebanglalibrary.com/lessons/২-সামবেদ-সংহিতা-দ্বিতীয/
 
 === অথর্ববেদ ===
-Traceback (most recent call last):
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 546, in <module>
-    main()
-    ^^^^
-NameError: name 'main' is not defined. Did you mean: 'min'?
+মিলেছে 12
+  https://www.ebanglalibrary.com/topics/০১-পাঠভেদ-অথর্ববেদ-সংহিত/
+  https://www.ebanglalibrary.com/topics/০২-মূলপাঠ-অথর্ববেদ-সংহিত/
+  https://www.ebanglalibrary.com/topics/০৩-রচয়িতা-অথর্ববেদ-সংহি/
+  https://www.ebanglalibrary.com/topics/০৪-বিষয়বস্তু-অথর্ববেদ-স/
+  https://www.ebanglalibrary.com/topics/০৬-রচনাকাল-অথর্ববেদ-সংহি/
+  https://www.ebanglalibrary.com/topics/০৮-সমাজ-অথর্ববেদ-সংহিতা/
+  https://www.ebanglalibrary.com/topics/১০-দর্শন-অথর্ববেদ-সংহিতা/
+  https://www.ebanglalibrary.com/topics/১৬-কাব্যগুণ-অথর্ববেদ-সংহ/
+  https://www.ebanglalibrary.com/lessons/অথর্ববেদ-সংহিতা-১৮।০৩-অষ/
+  https://www.ebanglalibrary.com/lessons/অথর্ববেদের-প্রার্থনা/
+  https://www.ebanglalibrary.com/lessons/চার-অথর্ববেদ-সংহিতার-কথা/
+  https://www.ebanglalibrary.com/lessons/৪-অথর্ববেদ-সংহিতা-চতুর্/
 
 === শুক্ল যজুর্বেদ ===
-Traceback (most recent call last):
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 546, in <module>
-    main()
-    ^^^^
-NameError: name 'main' is not defined. Did you mean: 'min'?
+মিলেছে 40
+  https://www.ebanglalibrary.com/lessons/০১-শুক্লযজুর্বেদ-পূর্বা/
+  https://www.ebanglalibrary.com/lessons/০২-শুক্লযজুর্বেদ-দ্বিতী/
+  https://www.ebanglalibrary.com/lessons/০৩-শুক্লযজুর্বেদ-তৃতীয়/
+  https://www.ebanglalibrary.com/lessons/০৪-শুক্লযজুর্বেদ-চতুর্থ/
+  https://www.ebanglalibrary.com/lessons/০৫-শুক্লযজুর্বেদ-পঞ্চম-অ/
+  https://www.ebanglalibrary.com/lessons/০৬-শুক্লযজুর্বেদ-ষষ্ঠ-অধ/
+  https://www.ebanglalibrary.com/lessons/০৭-শুক্লযজুর্বেদ-সপ্তম-অ/
+  https://www.ebanglalibrary.com/lessons/০৮-শুক্লযজুর্বেদ-অষ্টম-অ/
+  https://www.ebanglalibrary.com/lessons/০৯-শুক্লযজুর্বেদ-নবম-অধ্/
+  https://www.ebanglalibrary.com/lessons/১০-শুক্লযজুর্বেদ-দশম-অধ্/
+  https://www.ebanglalibrary.com/lessons/১১-শুক্লযজুর্বেদ-একাদশ-অ/
+  https://www.ebanglalibrary.com/lessons/১২-শুক্লযজুর্বেদ-দ্বাদশ/
+  https://www.ebanglalibrary.com/lessons/১৩-শুক্লযজুর্বেদ-ত্রয়ো/
+  https://www.ebanglalibrary.com/lessons/১৪-শুক্লযজুর্বেদ-চতুর্দ/
+  https://www.ebanglalibrary.com/lessons/১৫-শুক্লযজুর্বেদ-পঞ্চদশ/
+  https://www.ebanglalibrary.com/lessons/১৬-শুক্লযজুর্বেদ-ষোড়শ-অ/
+  https://www.ebanglalibrary.com/lessons/১৭-শুক্লযজুর্বেদ-সপ্তদশ/
+  https://www.ebanglalibrary.com/lessons/১৮-শুক্লযজুর্বেদ-অষ্টাদ/
+  https://www.ebanglalibrary.com/lessons/১৯-শুক্লযজুর্বেদ-ঊনবিংশ/
+  https://www.ebanglalibrary.com/lessons/২০-শুক্লযজুর্বেদ-বিংশ-অধ/
+  https://www.ebanglalibrary.com/lessons/২১-শুক্লযজুর্বেদ-সংহিতা/
+  https://www.ebanglalibrary.com/lessons/২২-শুক্লযজুর্বেদ-দ্বাবি/
+  https://www.ebanglalibrary.com/lessons/২৩-শুক্লযজুর্বেদ-ত্রয়ো/
+  https://www.ebanglalibrary.com/lessons/২৪-শুক্লযজুর্বেদ-চতুর্ব/
+  https://www.ebanglalibrary.com/lessons/২৫-শুক্লযজুর্বেদ-পঞ্চবি/
+  https://www.ebanglalibrary.com/lessons/২৬-শুক্লযজুর্বেদ-ষড়বিং/
+  https://www.ebanglalibrary.com/lessons/২৭-শুক্লযজুর্বেদ-সপ্তবি/
+  https://www.ebanglalibrary.com/lessons/২৮-শুক্লযজুর্বেদ-অষ্টাব/
+  https://www.ebanglalibrary.com/lessons/২৯-শুক্লযজুর্বেদ-ঊনত্রি/
+  https://www.ebanglalibrary.com/lessons/৩০-শুক্লযজুর্বেদ-ত্রিংশ/
+  https://www.ebanglalibrary.com/lessons/৩১-শুক্লযজুর্বেদ-একত্রি/
+  https://www.ebanglalibrary.com/lessons/৩২-শুক্লযজুর্বেদ-দ্বাত্/
+  https://www.ebanglalibrary.com/lessons/৩৩-শুক্লযজুর্বেদ-ত্রয়স/
+  https://www.ebanglalibrary.com/lessons/৩৪-শুক্লযজুর্বেদ-চতুস্ত/
+  https://www.ebanglalibrary.com/lessons/৩৫-শুক্লযজুর্বেদ-পঞ্চত্/
+  https://www.ebanglalibrary.com/lessons/৩৬-শুক্লযজুর্বেদ-ষটত্র/
+  https://www.ebanglalibrary.com/lessons/৩৭-শুক্লযজুর্বেদ-সপ্তত্/
+  https://www.ebanglalibrary.com/lessons/৩৮-শুক্লযজুর্বেদ-অষ্টত্/
+  https://www.ebanglalibrary.com/lessons/৩৯-শুক্লযজুর্বেদ-ঊনচত্ব/
+  https://www.ebanglalibrary.com/lessons/৪০-শুক্লযজুর্বেদ-চত্বার/
 
 === কৃষ্ণ যজুর্বেদ ===
-Traceback (most recent call last):
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 546, in <module>
-    main()
-    ^^^^
-NameError: name 'main' is not defined. Did you mean: 'min'?
+মিলেছে 1
+  https://www.ebanglalibrary.com/lessons/কৃষ্ণ-যজুর্বেদ-যারা-রচেছ/
 
