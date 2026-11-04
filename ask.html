@@ -201,7 +201,13 @@ section{padding:62px 0;position:relative}
   border-top:1px dashed var(--line);padding-top:14px}
 .reslabel{color:var(--muted);font-size:14px}
 .reslabel b{color:var(--gold2)}
-select.mini{border:1px solid var(--line);background:#07131c;border-radius:11px;padding:7px 11px;cursor:pointer}
+select.mini{border:1px solid var(--line);background:#07131c;border-radius:11px;padding:7px 11px;cursor:pointer;
+  color:#e9f2f7;color-scheme:dark;transition:border-color .2s}
+html[data-theme="light"] select.mini{color-scheme:light}
+select.mini:hover{border-color:rgba(245,184,28,.5)}
+/* without an explicit palette the popup list renders white on white */
+select.mini option{background:#0b1a24;color:#e9f2f7}
+select.mini option:checked,select.mini option:hover{background:#153044;color:#ffd15c}
 .qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:20px}
 .qcard{position:relative;display:flex;flex-direction:column;gap:9px;border:1px solid var(--line);border-radius:15px;padding:16px 17px 14px;will-change:transform;
   background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.014));
@@ -244,7 +250,14 @@ select.mini{border:1px solid var(--line);background:#07131c;border-radius:11px;p
 label{display:block;font-size:14px;margin-bottom:7px;color:#d8e5f3;font-weight:600}
 label small{color:var(--muted);font-weight:400}
 .askbox input,.askbox select,.askbox textarea{width:100%;padding:13px 14px;border-radius:13px;border:1px solid var(--line);
-  background:rgba(3,10,15,.7);outline:none;transition:border-color .3s,box-shadow .3s}
+  background:rgba(3,10,15,.7);color:var(--text);outline:none;transition:border-color .3s,box-shadow .3s}
+/* the popup list is drawn by the browser in white unless we colour it */
+.askbox select{cursor:pointer;background:#07131c;color:#e9f2f7}
+.askbox select option{background:#0b1a24;color:#e9f2f7;font-size:14px;padding:8px 10px}
+.askbox select option:checked,.askbox select option:hover{background:#153044;color:#ffd15c}
+html[data-theme="light"] .askbox select{background:#fff;color:var(--text)}
+html[data-theme="light"] .askbox select option{background:#fff;color:var(--text)}
+html[data-theme="light"] .askbox select option:checked,html[data-theme="light"] .askbox select option:hover{background:#f0f6fa;color:var(--gold3)}
 .askbox input:focus,.askbox select:focus,.askbox textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(245,184,28,.12)}
 .askbox textarea{min-height:150px;resize:vertical}
 .askbtn{margin-top:16px;border:0;border-radius:14px;padding:14px 28px;font-weight:700;cursor:pointer;
