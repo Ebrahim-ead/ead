@@ -1,288 +1,29 @@
 সূচি: ps://www.ebanglalibrary.com/lessons/৪-অথর্ববেদ-সংহিতা-চতুর্/
-ভেতরের টপিক/লেসন: 131
-নামানো হবে 120টি পাতা
+ভেতরের টপিক/লেসন: 9
+নামানো হবে 9টি পাতা
 [1] ps://www.ebanglalibrary.com/lessons/৪-অথর্ববেদ-সংহিতা-চতুর্/
    ✓ 1 মন্ত্র
-[2] s://www.ebanglalibrary.com/lessons/১-ঋগ্বেদ-সংহিতা-প্রথম-অধ/
+[2] ps://www.ebanglalibrary.com/topics/০১-পাঠভেদ-অথর্ববেদ-সংহিত/
+   ✓ 2 মন্ত্র
+[3] ps://www.ebanglalibrary.com/topics/০২-মূলপাঠ-অথর্ববেদ-সংহিত/
+   ✗ মন্ত্র পাওয়া যায়নি
+[4] ps://www.ebanglalibrary.com/topics/০৩-রচয়িতা-অথর্ববেদ-সংহি/
+   ✗ মন্ত্র পাওয়া যায়নি
+[5] ps://www.ebanglalibrary.com/topics/০৪-বিষয়বস্তু-অথর্ববেদ-স/
+   ✓ 2 মন্ত্র
+[6] ps://www.ebanglalibrary.com/topics/০৬-রচনাকাল-অথর্ববেদ-সংহি/
+   ✗ মন্ত্র পাওয়া যায়নি
+[7] tps://www.ebanglalibrary.com/topics/০৮-সমাজ-অথর্ববেদ-সংহিতা/
    ✓ 1 মন্ত্র
-[3] https://www.ebanglalibrary.com/topics/০১-ঋগ্বেদ/
-   ✓ 1 মন্ত্র
-[4] https://www.ebanglalibrary.com/topics/০২-রচনাকাল/
+[8] ps://www.ebanglalibrary.com/topics/১০-দর্শন-অথর্ববেদ-সংহিতা/
    ✗ মন্ত্র পাওয়া যায়নি
-[5] https://www.ebanglalibrary.com/topics/০৩-ভাষ্যকার/
+[9] ps://www.ebanglalibrary.com/topics/১৬-কাব্যগুণ-অথর্ববেদ-সংহ/
    ✗ মন্ত্র পাওয়া যায়নি
-[6] ps://www.ebanglalibrary.com/topics/০৪-সূক্তসমূহের-প্রকৃতি-ও/
-   ✓ 2 মন্ত্র
-[7] tps://www.ebanglalibrary.com/topics/০৫-স্তোত্রগীতি-সম্বন্ধে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[8] https://www.ebanglalibrary.com/topics/০৬-রচনা-প্রকরণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[9] ttps://www.ebanglalibrary.com/topics/০৭-সূক্তের-শ্রেণীবিভাগ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[10] https://www.ebanglalibrary.com/topics/০৮-সংবাদসূক্ত/
-   ✗ মন্ত্র পাওয়া যায়নি
-[11] https://www.ebanglalibrary.com/topics/০৯-দানস্তুতি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[12] https://www.ebanglalibrary.com/topics/১০-বালখিল্য/
-   ✓ 2 মন্ত্র
-[13] https://www.ebanglalibrary.com/topics/১১-খিলসূক্ত/
-   ✓ 2 মন্ত্র
-[14] https://www.ebanglalibrary.com/topics/১২-অন্যান্য-সূক্তাবলী/
-   ✓ 2 মন্ত্র
-[15] https://www.ebanglalibrary.com/topics/১৩-নিবিদ্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[16] https://www.ebanglalibrary.com/topics/১৪-আপ্রী-সূক্ত/
-   ✗ মন্ত্র পাওয়া যায়নি
-[17] https://www.ebanglalibrary.com/topics/১৫-সোমমণ্ডল/
-   ✗ মন্ত্র পাওয়া যায়নি
-[18] https://www.ebanglalibrary.com/topics/১৬-সর্বেশ্বেরবাদ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[19] https://www.ebanglalibrary.com/topics/১৭-একেশ্বরবাদ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[20] tps://www.ebanglalibrary.com/topics/১৮-উপাখ্যান-ও-প্ৰহেলিকা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[21] https://www.ebanglalibrary.com/topics/১৯-সূর্যাসূক্ত/
-   ✓ 2 মন্ত্র
-[22] https://www.ebanglalibrary.com/topics/২০-দূতকারের-অনুশোচনা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[23] https://www.ebanglalibrary.com/topics/২১-যমসংহিতা/
-   ✓ 2 মন্ত্র
-[24] https://www.ebanglalibrary.com/topics/২২-মণ্ডূকসূক্ত/
-   ✓ 2 মন্ত্র
-[25] ps://www.ebanglalibrary.com/topics/২৩-রাত্রিসূক্ত-ও-অরণ্যান/
-   ✓ 2 মন্ত্র
-[26] s://www.ebanglalibrary.com/topics/২৪-ঋগ্বেদ-লোকায়ত-না-ধর্ম/
-   ✗ মন্ত্র পাওয়া যায়নি
-[27] https://www.ebanglalibrary.com/topics/২৫-রচনারীতি-ভাষা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[28] https://www.ebanglalibrary.com/topics/২৬-স্বর/
-   ✗ মন্ত্র পাওয়া যায়নি
-[29] ps://www.ebanglalibrary.com/topics/২৭-মৌখিক-সাহিত্যরূপে-ঋগ্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[30] https://www.ebanglalibrary.com/topics/২৮-চিত্রকল্প/
-   ✗ মন্ত্র পাওয়া যায়নি
-[31] https://www.ebanglalibrary.com/topics/২৯-বৰ্ণনা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[32] https://www.ebanglalibrary.com/topics/৩০-ধর্ম-ও-দর্শন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[33] https://www.ebanglalibrary.com/topics/৩১-নীতিবোধ/
-   ✓ 2 মন্ত্র
-[34] https://www.ebanglalibrary.com/topics/৩২-প্ৰত্নকথা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[35] ps://www.ebanglalibrary.com/lessons/২-সামবেদ-সংহিতা-দ্বিতীয/
-   ✓ 1 মন্ত্র
-[36] https://www.ebanglalibrary.com/topics/০১-সামবেদ-সংহিতা/
-   ✓ 1 মন্ত্র
-[37] https://www.ebanglalibrary.com/topics/০২-ছন্দ-ও-ভাষা/
-   ✓ 2 মন্ত্র
-[38] https://www.ebanglalibrary.com/topics/০৩-ধ্বনি-ও-স্বরগ্রাম/
-   ✗ মন্ত্র পাওয়া যায়নি
-[39] https://www.ebanglalibrary.com/topics/০৪-সামবেদ-ও-সোমযাগ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[40] https://www.ebanglalibrary.com/topics/০৫-চন্দ্ররূপে-সোম/
-   ✓ 2 মন্ত্র
-[41] https://www.ebanglalibrary.com/topics/০৬-সামবেদের-উৎস/
-   ✗ মন্ত্র পাওয়া যায়নি
-[42] ps://www.ebanglalibrary.com/lessons/৩-যজুর্বেদ-সংহিতা-তৃতীয/
-   ✓ 1 মন্ত্র
-[43] https://www.ebanglalibrary.com/topics/০১-যজুর্বেদ-সংহিতা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[44] https://www.ebanglalibrary.com/topics/০২-রচনাকাল-2/
-   ✓ 2 মন্ত্র
-[45] https://www.ebanglalibrary.com/topics/০৩-বিষয়বস্তু/
-   ✗ মন্ত্র পাওয়া যায়নি
-[46] https://www.ebanglalibrary.com/topics/০৪-অনুষ্ঠান-চৰ্যা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[47] https://www.ebanglalibrary.com/topics/০৫-সমাজ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[48] https://www.ebanglalibrary.com/topics/০৬-আঙ্গিক-ও-ভাষা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[49] https://www.ebanglalibrary.com/topics/০৭-ইন্দ্ৰজাল/
-   ✓ 1 মন্ত্র
-[50] ps://www.ebanglalibrary.com/topics/০১-পাঠভেদ-অথর্ববেদ-সংহিত/
-   ✓ 2 মন্ত্র
-[51] ps://www.ebanglalibrary.com/topics/০২-মূলপাঠ-অথর্ববেদ-সংহিত/
-   ✗ মন্ত্র পাওয়া যায়নি
-[52] ps://www.ebanglalibrary.com/topics/০৩-রচয়িতা-অথর্ববেদ-সংহি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[53] ps://www.ebanglalibrary.com/topics/০৪-বিষয়বস্তু-অথর্ববেদ-স/
-   ✓ 2 মন্ত্র
-[54] ps://www.ebanglalibrary.com/topics/০৫-বৈদিক-ঐতিহ্যে-অথৰ্ববে/
-   ✓ 1 মন্ত্র
-[55] ps://www.ebanglalibrary.com/topics/০৬-রচনাকাল-অথর্ববেদ-সংহি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[56] ps://www.ebanglalibrary.com/topics/০৭-সূক্তসমূহের-শ্রেণী-বি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[57] tps://www.ebanglalibrary.com/topics/০৮-সমাজ-অথর্ববেদ-সংহিতা/
-   ✓ 1 মন্ত্র
-[58] https://www.ebanglalibrary.com/topics/০৯-দেবসঙ্ঘ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[59] ps://www.ebanglalibrary.com/topics/১০-দর্শন-অথর্ববেদ-সংহিতা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[60] https://www.ebanglalibrary.com/topics/১১-ব্রাত্য-সূক্ত/
-   ✗ মন্ত্র পাওয়া যায়নি
-[61] tps://www.ebanglalibrary.com/topics/১২-মৃগার-ও-কুন্তাপসূক্ত/
-   ✗ মন্ত্র পাওয়া যায়নি
-[62] https://www.ebanglalibrary.com/topics/১৩-ধর্মবিশ্বাস/
-   ✗ মন্ত্র পাওয়া যায়নি
-[63] https://www.ebanglalibrary.com/topics/১৪-ইন্দ্ৰজাল-বা-জাদু/
-   ✗ মন্ত্র পাওয়া যায়নি
-[64] https://www.ebanglalibrary.com/topics/১৫-আঙ্গিক-ও-ভাষা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[65] ps://www.ebanglalibrary.com/topics/১৬-কাব্যগুণ-অথর্ববেদ-সংহ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[66] ps://www.ebanglalibrary.com/lessons/৫-ব্রাহ্মণ-পঞ্চম-অধ্যায/
-   ✓ 1 মন্ত্র
-[67] https://www.ebanglalibrary.com/topics/০১-ব্রাহ্মণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[68] https://www.ebanglalibrary.com/topics/০২-পাঠভেদ-ব্রাহ্মণ/
-   ✓ 1 মন্ত্র
-[69] https://www.ebanglalibrary.com/topics/০৩-গৌণরচনা-ব্রাহ্মণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[70] s://www.ebanglalibrary.com/topics/০৪-আঙ্গিক-ও-ভাষা-ব্রাহ্মণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[71] https://www.ebanglalibrary.com/topics/০৫-দেবকাহিনী/
-   ✗ মন্ত্র পাওয়া যায়নি
-[72] https://www.ebanglalibrary.com/topics/০৬-ইন্দ্ৰজাল-বা-জাদু/
-   ✗ মন্ত্র পাওয়া যায়নি
-[73] https://www.ebanglalibrary.com/topics/০৭-দেবসঙ্ঘ/
-   ✓ 2 মন্ত্র
-[74] https://www.ebanglalibrary.com/topics/০৮-সমাজ-ব্রাহ্মণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[75] https://www.ebanglalibrary.com/topics/০৯-ইতিহাস-ব্রাহ্মণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[76] https://www.ebanglalibrary.com/topics/১০-রাজ-পদবী/
-   ✗ মন্ত্র পাওয়া যায়নি
-[77] https://www.ebanglalibrary.com/topics/১১-অর্থনীতি-ব্রাহ্মণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[78] https://www.ebanglalibrary.com/topics/১২-পরিবার-ব্রাহ্মণ/
-   ✓ 2 মন্ত্র
-[79] https://www.ebanglalibrary.com/topics/১৩-নারী-ব্রাহ্মণ/
-   ✓ 2 মন্ত্র
-[80] https://www.ebanglalibrary.com/topics/১৪-জাতিভেদ-ব্রাহ্মণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[81] ps://www.ebanglalibrary.com/topics/১৫-সামাজিক-আচার-ব্রাহ্মণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[82] https://www.ebanglalibrary.com/topics/১৬-দেবতা-ও-অসুর/
-   ✗ মন্ত্র পাওয়া যায়নি
-[83] https://www.ebanglalibrary.com/topics/১৭-নীতিবোধ-ব্রাহ্মণ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[84] ttps://www.ebanglalibrary.com/lessons/৬-আরণ্যক-ষষ্ঠ-অধ্যায়/
-   ✓ 1 মন্ত্র
-[85] https://www.ebanglalibrary.com/topics/০১-আরণ্যক/
-   ✗ মন্ত্র পাওয়া যায়নি
-[86] https://www.ebanglalibrary.com/topics/০২-বিষয়বস্তু-আরণ্যক/
-   ✓ 2 মন্ত্র
-[87] https://www.ebanglalibrary.com/topics/০৩-আঙ্গিক-আরণ্যক/
-   ✓ 2 মন্ত্র
-[88] https://www.ebanglalibrary.com/topics/০৪-সমাজচিত্র-আরণ্যক/
-   ✗ মন্ত্র পাওয়া যায়নি
-[89] https://www.ebanglalibrary.com/topics/০৫-দেবসঙ্ঘ-আরণ্যক/
-   ✓ 2 মন্ত্র
-[90] ttps://www.ebanglalibrary.com/topics/০৬-জ্ঞান-ও-জ্ঞানতত্ত্ব/
-   ✗ মন্ত্র পাওয়া যায়নি
-[91] tps://www.ebanglalibrary.com/lessons/৭-উপনিষদ-সপ্তম-অধ্যায়/
-   ✓ 1 মন্ত্র
-[92] https://www.ebanglalibrary.com/topics/০১-উপনিষদ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[93] https://www.ebanglalibrary.com/topics/০২-বিষয়বস্তু-উপনিষদ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[94] https://www.ebanglalibrary.com/topics/০৩-রচয়িতা-উপনিষদ/
-   ✓ 2 মন্ত্র
-[95] tps://www.ebanglalibrary.com/topics/০৪-আঙ্গিক-ও-ভাষা-উপনিষদ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[96] tps://www.ebanglalibrary.com/topics/০৫-শিক্ষাব্যবস্থা-উপনিষ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[97] ps://www.ebanglalibrary.com/topics/০৬-আর্থনীতিক-জীবন-উপনিষদ/
-   ✓ 2 মন্ত্র
-[98] ps://www.ebanglalibrary.com/topics/০৭-পারিবারিক-চিত্র-উপনিষ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[99] https://www.ebanglalibrary.com/topics/০৮-নীতিবোধ-উপনিষদ/
-   ✓ 2 মন্ত্র
-[100] s://www.ebanglalibrary.com/topics/০৯-ব্ৰাহ্মণ-ও-ক্ষত্ৰিয়-উ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[101] https://www.ebanglalibrary.com/topics/১০-দেবসঙ্ঘ-উপনিষদ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[102] ps://www.ebanglalibrary.com/topics/১১-যজ্ঞানুষ্ঠানের-নবতর-ব/
-   ✗ মন্ত্র পাওয়া যায়নি
-[103] ps://www.ebanglalibrary.com/topics/১২-অতীন্দ্ৰিয়বাদী-ও-অধ্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[104] s://www.ebanglalibrary.com/topics/১৩-নতুন-উপাসনা-পদ্ধতি-প্র/
-   ✗ মন্ত্র পাওয়া যায়নি
-[105] s://www.ebanglalibrary.com/topics/১৪-পুনর্জন্ম-ও-মুক্তি-উপন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[106] https://www.ebanglalibrary.com/topics/১৫-কাব্য-উপনিষদ/
-   ✓ 2 মন্ত্র
-[107] ps://www.ebanglalibrary.com/lessons/৮-বেদাঙ্গসূত্র-অষ্টম-অধ/
-   ✓ 1 মন্ত্র
-[108] https://www.ebanglalibrary.com/topics/০১-বেদাঙ্গসূত্র/
-   ✓ 2 মন্ত্র
-[109] tps://www.ebanglalibrary.com/topics/০২-রচনাকাল-বেদাঙ্গসূত্র/
-   ✗ মন্ত্র পাওয়া যায়নি
-[110] s://www.ebanglalibrary.com/topics/০৩-আঙ্গিক-ও-ভাষা-বেদাঙ্গস/
-   ✗ মন্ত্র পাওয়া যায়নি
-[111] ttps://www.ebanglalibrary.com/topics/০৪-শিক্ষা-বেদাঙ্গসূত্র/
-   ✗ মন্ত্র পাওয়া যায়নি
-[112] tps://www.ebanglalibrary.com/topics/০৫-ব্যাকরণ-বেদাঙ্গসূত্র/
-   ✗ মন্ত্র পাওয়া যায়নি
-[113] tps://www.ebanglalibrary.com/topics/০৬-নিরুক্ত-বেদাঙ্গসূত্র/
-   ✗ মন্ত্র পাওয়া যায়নি
-[114] tps://www.ebanglalibrary.com/topics/০৭-জ্যোতিষ-বেদাঙ্গসূত্র/
-   ✓ 2 মন্ত্র
-[115] ps://www.ebanglalibrary.com/topics/০৮-বিবিধ-সূত্র-বেদাঙ্গসূ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[116] tps://www.ebanglalibrary.com/topics/০৯-কল্পসূত্র-বেদাঙ্গসূত/
-   ✗ মন্ত্র পাওয়া যায়নি
-[117] https://www.ebanglalibrary.com/topics/১০-সহায়ক-সূত্র/
-   ✗ মন্ত্র পাওয়া যায়নি
-[118] https://www.ebanglalibrary.com/topics/১১-গৃহ্যসূত্র/
-   ✗ মন্ত্র পাওয়া যায়নি
-[119] ps://www.ebanglalibrary.com/topics/১২-রচনা-পরিচয়-গৃহ্যসূত্/
-   ✓ 2 মন্ত্র
-[120] https://www.ebanglalibrary.com/topics/১৩-রচনাকাল-গৃহ্যসূত্র/
-   ✗ মন্ত্র পাওয়া যায়নি
-atharvaveda: বাংলা 63/68
+atharvaveda: বাংলা 5/6
   1. অথর্ববেদ সংহিতা — ৪ অথর্ববেদ সংহিতা চতুর্: 1/1
-  2. অথর্ববেদ সংহিতা — ১ ঋগ্বেদ সংহিতা প্রথম অধ: 1/1
-  3. অথর্ববেদ সংহিতা — ০১ ঋগ্বেদ: 0/1
-  6. অথর্ববেদ সংহিতা — ০৪ সূক্তসমূহের প্রকৃতি ও: 2/2
-  12. অথর্ববেদ সংহিতা — ১০ বালখিল্য: 2/2
-  13. অথর্ববেদ সংহিতা — ১১ খিলসূক্ত: 2/2
-  14. অথর্ববেদ সংহিতা — ১২ অন্যান্য সূক্তাবলী: 2/2
-  21. অথর্ববেদ সংহিতা — ১৯ সূর্যাসূক্ত: 2/2
-  23. অথর্ববেদ সংহিতা — ২১ যমসংহিতা: 2/2
-  24. অথর্ববেদ সংহিতা — ২২ মণ্ডূকসূক্ত: 2/2
-  25. অথর্ববেদ সংহিতা — ২৩ রাত্রিসূক্ত ও অরণ্যান: 2/2
-  33. অথর্ববেদ সংহিতা — ৩১ নীতিবোধ: 2/2
-  35. অথর্ববেদ সংহিতা — ২ সামবেদ সংহিতা দ্বিতীয: 1/1
-  36. অথর্ববেদ সংহিতা — ০১ সামবেদ সংহিতা: 0/1
-  37. অথর্ববেদ সংহিতা — ০২ ছন্দ ও ভাষা: 2/2
-  40. অথর্ববেদ সংহিতা — ০৫ চন্দ্ররূপে সোম: 2/2
-  42. অথর্ববেদ সংহিতা — ৩ যজুর্বেদ সংহিতা তৃতীয: 1/1
-  44. অথর্ববেদ সংহিতা — ০২ রচনাকাল 2: 2/2
-  49. অথর্ববেদ সংহিতা — ০৭ ইন্দ্ৰজাল: 0/1
-  50. অথর্ববেদ সংহিতা — ০১ পাঠভেদ অথর্ববেদ সংহিত: 2/2
-  53. অথর্ববেদ সংহিতা — ০৪ বিষয়বস্তু অথর্ববেদ স: 2/2
-  54. অথর্ববেদ সংহিতা — ০৫ বৈদিক ঐতিহ্যে অথৰ্ববে: 0/1
-  57. অথর্ববেদ সংহিতা — ০৮ সমাজ অথর্ববেদ সংহিতা: 0/1
-  66. অথর্ববেদ সংহিতা — ৫ ব্রাহ্মণ পঞ্চম অধ্যায: 1/1
-  68. অথর্ববেদ সংহিতা — ০২ পাঠভেদ ব্রাহ্মণ: 1/1
-  73. অথর্ববেদ সংহিতা — ০৭ দেবসঙ্ঘ: 2/2
-  78. অথর্ববেদ সংহিতা — ১২ পরিবার ব্রাহ্মণ: 2/2
-  79. অথর্ববেদ সংহিতা — ১৩ নারী ব্রাহ্মণ: 2/2
-  84. অথর্ববেদ সংহিতা — ৬ আরণ্যক ষষ্ঠ অধ্যায়: 1/1
-  86. অথর্ববেদ সংহিতা — ০২ বিষয়বস্তু আরণ্যক: 2/2
-  87. অথর্ববেদ সংহিতা — ০৩ আঙ্গিক আরণ্যক: 2/2
-  89. অথর্ববেদ সংহিতা — ০৫ দেবসঙ্ঘ আরণ্যক: 2/2
-  91. অথর্ববেদ সংহিতা — ৭ উপনিষদ সপ্তম অধ্যায়: 1/1
-  94. অথর্ববেদ সংহিতা — ০৩ রচয়িতা উপনিষদ: 2/2
-  97. অথর্ববেদ সংহিতা — ০৬ আর্থনীতিক জীবন উপনিষদ: 2/2
-  99. অথর্ববেদ সংহিতা — ০৮ নীতিবোধ উপনিষদ: 2/2
-  106. অথর্ববেদ সংহিতা — ১৫ কাব্য উপনিষদ: 2/2
-  107. অথর্ববেদ সংহিতা — ৮ বেদাঙ্গসূত্র অষ্টম অধ: 1/1
-  108. অথর্ববেদ সংহিতা — ০১ বেদাঙ্গসূত্র: 2/2
-  114. অথর্ববেদ সংহিতা — ০৭ জ্যোতিষ বেদাঙ্গসূত্র: 2/2
-  119. অথর্ববেদ সংহিতা — ১২ রচনা পরিচয় গৃহ্যসূত্: 2/2
+  2. অথর্ববেদ সংহিতা — ০১ পাঠভেদ অথর্ববেদ সংহিত: 2/2
+  5. অথর্ববেদ সংহিতা — ০৪ বিষয়বস্তু অথর্ববেদ স: 2/2
+  7. অথর্ববেদ সংহিতা — ০৮ সমাজ অথর্ববেদ সংহিতা: 0/1
 সূচি: s://www.ebanglalibrary.com/lessons/গরুড়-পুরাণ-পৃথ্বীরাজ-সে/
 ভেতরের টপিক/লেসন: 179
 নামানো হবে 179টি পাতা
@@ -1279,31 +1020,19 @@ bhabishya: বাংলা 87/147
   177. ভবিষ্য পুরাণ — ১৩ মৃত্যুপথযাত্রীর সেবা: 0/1
   178. ভবিষ্য পুরাণ — ১৪ বৃষোৎসর্গ শ্রাদ্ধের শ: 0/3
   179. ভবিষ্য পুরাণ — ১৫ পঞ্চপিশাচের কাহিনি: 1/1
-সূচি: tps://www.ebanglalibrary.com/lessons/দুই-সামবেদ-সংহিতার-কথা/
-ভেতরের টপিক/লেসন: 9
-নামানো হবে 9টি পাতা
-[1] tps://www.ebanglalibrary.com/lessons/দুই-সামবেদ-সংহিতার-কথা/
-   ✓ 1 মন্ত্র
-[2] https://www.ebanglalibrary.com/lessons/প্রাক্কথন/
+সূচি: s://www.ebanglalibrary.com/lessons/ব্রহ্ম-পুরাণ-পৃথ্বীরাজ-স/
+ভেতরের টপিক/লেসন: 4
+নামানো হবে 4টি পাতা
+[1] s://www.ebanglalibrary.com/lessons/ব্রহ্ম-পুরাণ-পৃথ্বীরাজ-স/
    ✗ মন্ত্র পাওয়া যায়নি
-[3] s://www.ebanglalibrary.com/lessons/এক-ঋগ্বেদ-সংহিতা-প্রসঙ্গ/
+[2] ps://www.ebanglalibrary.com/lessons/ব্রহ্মাণ্ড-পুরাণ-পৃথ্বী/
    ✗ মন্ত্র পাওয়া যায়নি
-[4] s://www.ebanglalibrary.com/lessons/তিন-যজুর্বেদ-সংহিতার-কথা/
-   ✓ 1 মন্ত্র
-[5] s://www.ebanglalibrary.com/lessons/চার-অথর্ববেদ-সংহিতার-কথা/
-   ✓ 1 মন্ত্র
-[6] https://www.ebanglalibrary.com/lessons/পাঁচ-ব্রাহ্মণসাহিত্য/
+[3] ps://www.ebanglalibrary.com/lessons/ব্রহ্মবৈবর্ত-পুরাণ-পৃথ্/
    ✗ মন্ত্র পাওয়া যায়নি
-[7] https://www.ebanglalibrary.com/lessons/ছয়-আরণ্যক-সাহিত্য/
-   ✓ 1 মন্ত্র
-[8] https://www.ebanglalibrary.com/lessons/সাত-উপনিষদ্-কথা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[9] ps://www.ebanglalibrary.com/lessons/আট-বেদাঙ্গসূত্র-প্রসঙ্গ/
-   ✗ মন্ত্র পাওয়া যায়নি
-samaveda: বাংলা 0/4
-  1. সামবেদ সংহিতা — দুই সামবেদ সংহিতার কথা: 0/1
-  4. সামবেদ সংহিতা — তিন যজুর্বেদ সংহিতার কথা: 0/1
-  5. সামবেদ সংহিতা — চার অথর্ববেদ সংহিতার কথা: 0/1
-  7. সামবেদ সংহিতা — ছয় আরণ্যক সাহিত্য: 0/1
+[4] https://www.ebanglalibrary.com/topics/১-ব্রহ্ম-খণ্ড/
+   ✓ 1 শ্লোক
+brahma: বাংলা 0/1
+  4. ব্রহ্ম পুরাণ — ১ ব্রহ্ম খণ্ড: 0/1
+সূচি-পাতা পাওয়া গেল না: সামবেদ সংহিতা পরিতোষ
 ক্রম: []
 নামানো হবে 0টি পাতা
