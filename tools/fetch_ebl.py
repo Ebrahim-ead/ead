@@ -208,6 +208,11 @@ def parse_verses(txt, bn_meaning=False):
       গ. পুরাণ: সংস্কৃত প্যারা → বাংলা প্যারা (লেবেলহীন)
       ঘ. ঋগ্বেদ: সংখ্যাযুক্ত বাংলা অনুচ্ছেদ
     """
+    if not bn_meaning:
+        dev = len(re.findall(r"[\u0900-\u0963\u0966-\u097F]", txt))
+        multiline = len([x for x in txt.splitlines() if len(x.strip()) > 12])
+        if dev < 200 and multiline > 30:
+            bn_meaning = True          # সংস্কৃত মূল নেই ⇒ বাংলা-লিপিতেই পাঠ
     txt = txt.replace("।।", "॥").replace("||", "॥")
     if "অন্বয়" not in txt and "সরলার্থ" not in txt:
         txt = re.sub(r"\s+(?=[০-৯]{1,3}\s*।\s)", "\n", txt)

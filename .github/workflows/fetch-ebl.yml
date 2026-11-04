@@ -70,6 +70,31 @@ jobs:
                   print("   |", ln[:110])
           PY
 
+      - name: Debug (নমুনা পাতা)
+        continue-on-error: true
+        run: |
+          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
+          import sys, re, urllib.parse
+          sys.path.insert(0, "tools")
+          import fetch_ebl as f
+          targets = [("অথর্ববেদ", "অথর্ববেদ সংহিতা", "lessons"),
+                     ("গরুড় পুরাণ", "গরুড় পুরাণ", "lessons"),
+                     ("ঋগ্বেদ", "ঋগ্বেদ ০৬", "topics")]
+          for label, kw, want in targets:
+              allu = f.sitemap_urls(f.LESSON_SITEMAPS + f.TOPIC_SITEMAPS, kw, (want,))
+              u = sorted(allu, key=lambda x: (len(urllib.parse.unquote(x)), x))[0] if allu else None
+              print("=====", label, "|", (urllib.parse.unquote(u)[-55:] if u else "নেই"))
+              if not u:
+                  continue
+              t = f.fetch_paged(u)
+              vs = f.parse_verses(t)
+              print("মন্ত্র:", len(vs), "| sk:", sum(1 for v in vs if v["sk"]),
+                    "| bn:", sum(1 for v in vs if v["bn"]))
+              for v in vs[:4]:
+                  print("   n=%s | sk=%s" % (v["n"], (v["sk"] or "—")[:60]))
+                  print("        bn=%s" % (v["bn"] or "—")[:60])
+          PY
+
       - name: Fetch (উপনিষদ + পুরাণ)
         continue-on-error: true
         run: |
