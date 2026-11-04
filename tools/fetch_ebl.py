@@ -321,6 +321,8 @@ def classify(url):
 
 def run_auto(args):
     """আবিষ্কার → গ্রন্থ-শনাক্ত → নামানো, এক রানে।"""
+    skip = set(x.strip() for x in os.environ.get("EBL_SKIP", "").split(",") if x.strip())
+    only = set(x.strip() for x in os.environ.get("EBL_ONLY", "").split(",") if x.strip())
     cands = []
     for sm in TOPIC_SITEMAPS + LESSON_SITEMAPS:
         x = get(sm)
@@ -335,6 +337,8 @@ def run_auto(args):
         if not c:
             continue
         k = c["slug"]
+        if k in skip or (only and k not in only):
+            continue
         if k not in targets:
             targets[k] = c
             print(f"শনাক্ত: {k} ← {urllib.parse.unquote(u)[-70:]}")
