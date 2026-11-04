@@ -2,7 +2,7 @@
  "slug": "bhabishya",
  "bn": "ভবিষ্য পুরাণ",
  "en": "Bhabishya",
- "total": 4,
+ "total": 1,
  "withBn": 1,
  "chapters": [
   {
@@ -12,30 +12,6 @@
    "from": 1,
    "to": 1,
    "withBn": 1
-  },
-  {
-   "id": 3,
-   "bn": "ভবিষ্য পুরাণ — ১ ব্রহ্ম খণ্ড",
-   "count": 1,
-   "from": 1,
-   "to": 1,
-   "withBn": 0
-  },
-  {
-   "id": 4,
-   "bn": "ভবিষ্য পুরাণ — ২ প্রকৃতি খণ্ড",
-   "count": 1,
-   "from": 1,
-   "to": 1,
-   "withBn": 0
-  },
-  {
-   "id": 5,
-   "bn": "ভবিষ্য পুরাণ — ৪ শ্রীকৃষ্ণ জন্ম খণ্ড",
-   "count": 1,
-   "from": 1,
-   "to": 1,
-   "withBn": 0
   }
  ],
  "verseWord": "শ্লোক",
