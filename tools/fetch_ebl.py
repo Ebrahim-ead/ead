@@ -569,10 +569,20 @@ RV_MANDALA_TOC = [
 
 
 def mandala_links(m):
-    """একটি মণ্ডলের সূক্ত-পাতার তালিকা — যত উপায়ে পাওয়া যায় সব চেষ্টা।"""
-    num = f"{m:02d}"
+    """একটি মণ্ডলের সূক্ত-পাতার তালিকা — যত উপায়ে পাওয়া যায় সব চেষ্টা।
+
+    উৎস সাইট ব্লক করলে (TLS/403) কিছুই পাওয়া যায় না — তখন খালি তালিকা
+    ফেরে, রান ভেঙে পড়ে না, আর বাকি ধাপ (বিল্ড/প্রকাশ) শুধু নতুন কিছু
+    পেলে কাজ করে।
+    """
     found = {}
-    for toc in RV_MANDALA_TOC:
+    print(f"   মণ্ডল {m}: সূচি-পাতা খুঁজছি…", flush=True)
+    # আগে এই মণ্ডলের নিজের সূচি, তারপর অন্য মণ্ডলগুলো — বেশি চেষ্টা = বেশি
+    # ব্লক, তাই মোট ৬টি ঠিকানার বেশি নয়।
+    def _mine(t):
+        mm = re.search(r"ঋগ্বেদ-(\d{2})", urllib.parse.unquote(t))
+        return 0 if mm and to_int(mm.group(1)) == m else 1
+    for toc in sorted(RV_MANDALA_TOC, key=_mine)[:6]:
         head = urllib.parse.unquote(toc)
         mm = re.search(r"ঋগ্বেদ-(\d{2})", head)
         if not mm or to_int(mm.group(1)) != m:
@@ -601,6 +611,11 @@ def mandala_links(m):
                 if mm2 and to_int(mm2.group(1)) == m:
                     found[to_int(mm2.group(2))] = u
             nxt = next_page_link(h)
+        for u in toc_links(toc):
+            t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
+            g = re.match(r"^\D*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})$", t)
+            if g and to_int(g.group(1)) == m:
+                found.setdefault(to_int(g.group(2)), u)
         if found:
             break
     return [found[k] for k in sorted(found)]
@@ -1284,6 +1299,7 @@ def main_run(args):
             print(f"আগেই আছে {len(skip)}টি সূক্ত-পাতা; নতুন {len(items)}টি", flush=True)
         if not items:
             print("✓ নতুন কিছু নেই — ১০ম মণ্ডল ইতিমধ্যেই হালনাগাদ")
+            print(f"   (সাইটম্যাপে দেখা URL: {len(_ALL)})", flush=True)
             return
         verses, done = [], 0
         for idx_, u in items:
