@@ -61,6 +61,23 @@ jobs:
       # সূত্র-পাতার নাম «ঋগ্বেদ-১০।০১» … «ঋগ্বেদ-১০।১৯১» — সংখ্যা ধরে মিলিয়ে
       # একবারে পুরো মণ্ডল ধরা হয়। --only-unsaved থাকায় প্রতিবার কেবল নতুন
       # সূক্তগুলোই নামে, আর write_index_guarded পুরনো ১–৯ মণ্ডল অটুট রাখে।
+      - name: ঋগ্বেদ — সূচি-পাতা চেনা
+        env:
+          PYTHONPATH: tools
+        run: |
+          python3 - <<'PY'
+          import sys
+          sys.path.insert(0, 'tools')
+          import fetch_ebl as F
+          for m in (10, 9):
+              urls = F.mandala_links(m)
+              print(f"মণ্ডল {m}: {len(urls)} সূক্ত-পাতা")
+              for u in urls[:3]:
+                  print("   ·", u.split('/topics/')[-1])
+          for toc in F.RV_MANDALA_TOC[:4]:
+              print("সূচি চেষ্টা:", toc, "→", "OK" if F.get(toc) else "নেই")
+          PY
+
       - name: ঋগ্বেদ — ১০ম মণ্ডল (বাকি সূক্ত)
         if: env.TARGET != 'gita'
         run: |

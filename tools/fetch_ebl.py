@@ -559,6 +559,53 @@ def book_lessons(book_url):
 
 
 
+# ঋগ্বেদের মণ্ডল। সাইটে টপিক-পাতা «ঋগ্বেদ-১০।০১» ধাঁচে, কিন্তু মণ্ডলভিত্তিক
+# সূচি (১০ম মণ্ডল) সব সময় সাইটম্যাপে/লিংকে ধরা পড়ে না — তাই সরাসরি চেষ্টা করি।
+RV_MANDALA_TOC = [
+    f"{BASE}/topics/ঋগ্বেদ-{m:02d}।০১/" for m in range(1, 11)
+] + [
+    f"{BASE}/topics/ঋগ্বেদ-{m:02d}/" for m in range(1, 11)
+]
+
+
+def mandala_links(m):
+    """একটি মণ্ডলের সূক্ত-পাতার তালিকা — যত উপায়ে পাওয়া যায় সব চেষ্টা।"""
+    num = f"{m:02d}"
+    found = {}
+    for toc in RV_MANDALA_TOC:
+        head = urllib.parse.unquote(toc)
+        mm = re.search(r"ঋগ্বেদ-(\d{2})", head)
+        if not mm or to_int(mm.group(1)) != m:
+            continue
+        for u in toc_links(toc) + [toc]:
+            t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
+            g = re.match(r"^\D*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})$", t)
+            if g and to_int(g.group(1)) == m:
+                found[to_int(g.group(2))] = u
+        # pagina-শৃঙ্খল ধরে বাকি পাতা (ld-topic-page=2,3…)
+        seen, nxt = set(), None
+        h = get(toc)
+        if h:
+            nxt = next_page_link(h)
+        guard = 0
+        while nxt and guard < 40 and nxt not in seen:
+            seen.add(nxt)
+            guard += 1
+            h = get(nxt)
+            if not h:
+                break
+            for g in re.finditer(r'href="([^"]*?/(?:topics|lessons)/[^"#?]+)"', h):
+                u = htmllib.unescape(g.group(1))
+                t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
+                mm2 = re.match(r"^\D*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})$", t)
+                if mm2 and to_int(mm2.group(1)) == m:
+                    found[to_int(mm2.group(2))] = u
+            nxt = next_page_link(h)
+        if found:
+            break
+    return [found[k] for k in sorted(found)]
+
+
 def toc_links(page_url):
     """কোর্স/লেসন পাতার ভেতরের টপিক-তালিকা (ক্রম অপরিবর্তিত)।"""
     h = get(page_url) or ""
@@ -1170,6 +1217,15 @@ def main_run(args):
                             pairs.append((o, u))
                 if pairs:
                     print(f"   (মণ্ডল {num}: সূচি থেকেই {len(pairs)}টি সূক্ত-পাতা)",
+                          flush=True)
+            if not pairs and num:             # মণ্ডলভিত্তিক সূচি সরাসরি
+                for u in mandala_links(to_int(num)):
+                    o, _ = ordinal_of(u)
+                    if o and o not in seen_o:
+                        seen_o.add(o)
+                        pairs.append((o, u))
+                if pairs:
+                    print(f"   (মণ্ডল {num}: সূচি-পাতা থেকে {len(pairs)}টি সূক্ত-পাতা)",
                           flush=True)
             if not pairs:                     # পুরনো পথ (প্রথম/দ্বিতীয়…)
                 for u in allu:
