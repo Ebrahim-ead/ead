@@ -18,4 +18,15 @@ home | https://www.ebanglalibrary.com/ | OK len=153778 | links=0
 সাইটম্যাপে ঋগ্বেদ: 1033 · সব URL: 30673
 মণ্ডল ১০ (সাইটম্যাপ): 191 · মণ্ডল ৯ (সাইটম্যাপ): 0
 mandala_links(10) → 0
+regex(পূর্ণ) মিলেছে: 191/191
+   ঋগ্বেদ-১০।০৮২ | regex=OK | ordinal=10082
+   ঋগ্বেদ-১০।০৮১ | regex=OK | ordinal=10081
+   ঋগ্বেদ-১০।০৮৩ | regex=OK | ordinal=10083
+   ঋগ্বেদ-১০।০৮৪ | regex=OK | ordinal=10084
+   ঋগ্বেদ-১০।০৮৫ | regex=OK | ordinal=10085
+   ঋগ্বেদ-১০।০৮৬ | regex=OK | ordinal=10086
+   ঋগ্বেদ-১০।১৮৯ | regex=OK | ordinal=10189
+   ঋগ্বেদ-১০।১৯০ | regex=OK | ordinal=10190
+   ঋগ্বেদ-১০।১৯১ | regex=OK | ordinal=10191
+প্রথম লিংকের repr: 'ঋগ্বেদ-১০।০৮২'
 সাইট-ব্যর্থতা গণনা: 0
