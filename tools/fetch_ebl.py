@@ -355,6 +355,13 @@ def write_chapter(out_dir, idx, title, verses, url):
 def classify(url):
     """URL দেখে গ্রন্থ-ধরন ঠিক করে (slug, শিরোনাম, পদ্ধতি, ম্যাচ-কীওয়ার্ড)।"""
     t = urllib.parse.unquote(url)
+    for nm, sl in (("ঈশ", "isha"), ("কেন", "kena"), ("প্রশ্ন", "prashna"),
+                   ("মুণ্ডক", "mundaka"), ("মাণ্ডূক্য", "mandukya"),
+                   ("তৈত্তিরীয়", "taittiriya"), ("ঐতরেয়", "aitareya"),
+                   ("বৃহদারণ্যক", "brihadaranyaka")):
+        if nm in t and "উপনিষদ" in t:
+            return dict(slug="upanishad-" + sl, title=nm + " উপনিষদ",
+                        mode="ordinal", match=nm + " উপনিষদ", word="মন্ত্র")
     if re.search(r"ভবিষ্য[- ]?পুরাণ", t) and "/lessons/" in t:
         return dict(slug="bhabishya", title="ভবিষ্য পুরাণ", mode="book",
                     match="ভবিষ্য পুরাণ পৃথ্বীরাজ", word="শ্লোক")
@@ -382,6 +389,13 @@ def classify(url):
     if re.search(r"কৃষ্ণ[- ]?যজুর্বেদ", t) and ("/books/" in t or "/lessons/" in t):
         return dict(slug="yajurveda-krishna", title="কৃষ্ণ যজুর্বেদ সংহিতা",
                     mode="book", match="কৃষ্ণ যজুর্বেদ সংহিতা", word="মন্ত্র")
+    for nm, sl in (("ঈশ", "isha"), ("কেন", "kena"), ("প্রশ্ন", "prashna"),
+                   ("মুণ্ডক", "mundaka"), ("মাণ্ডূক্য", "mandukya"),
+                   ("তৈত্তিরীয়", "taittiriya"), ("ঐতরেয়", "aitareya"),
+                   ("বৃহদারণ্যক", "brihadaranyaka")):
+        if re.search(nm + r"\s*উপনিষদ", t) and ("/lessons/" in t or "/topics/" in t):
+            return dict(slug="upanishad-" + sl, title=f"{nm} উপনিষদ",
+                        mode="ordinal", match=nm + " উপনিষদ", word="মন্ত্র")
     if re.search(r"ছান্দোগ্য", t) and "/topics/" in t:
         return dict(slug="chandogya", title="ছান্দোগ্য উপনিষদ", mode="ordinal",
                     match="ছান্দোগ্য উপনিষদ", word="মন্ত্র")

@@ -52,7 +52,7 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
-      - name: Fetch (পুরাণ + বেদ, ধাপে ধাপে)
+      - name: Fetch (উপনিষদ + পুরাণ)
         continue-on-error: true
         run: |
           set -x
@@ -60,16 +60,24 @@ jobs:
           run() {
             echo "### $*"
             python3 -u tools/fetch_ebl.py "$@" 2>&1 | tee -a /tmp/fetch.log
-            sleep 2
+            sleep 1
           }
-          run --slug samaveda --title "সামবেদ সংহিতা" --word মন্ত্র \
-              --match "সামবেদ সংহিতা|সামবেদ" --book-auto --max 150
-          run --slug garuda --title "গরুড় পুরাণ" --word শ্লোক \
-              --match "গরুড় পুরাণ|গরুড পুরাণ" --book-auto --max 150
-          run --slug brahma --title "ব্রহ্ম পুরাণ" --word শ্লোক \
-              --match "ব্রহ্ম পুরাণ|ব্রহ্মপুরাণ" --book-auto --max 60
-          run --slug bhabishya --title "ভবিষ্য পুরাণ" --word শ্লোক \
-              --match "ভবিষ্য পুরাণ|ভবিষ্যপুরাণ" --book-auto --max 60 --start 5
+          # ---- বাকি উপনিষদ (ঈশ/কেন/প্রশ্ন/মুণ্ডক/মাণ্ডূক্য/তৈত্তিরীয়/ঐতরেয়)
+          run --slug upanishad-kena --title "কেন উপনিষদ" --word মন্ত্র \
+              --match "কেন উপনিষদ" --by-ordinal --max 30
+          run --slug upanishad-isha --title "ঈশ উপনিষদ" --word মন্ত্র \
+              --match "ঈশ উপনিষদ" --by-ordinal --max 30
+          run --slug upanishad-prashna --title "প্রশ্ন উপনিষদ" --word মন্ত্র \
+              --match "প্রশ্ন উপনিষদ" --by-ordinal --max 30
+          run --slug upanishad-mundaka --title "মুণ্ডক উপনিষদ" --word মন্ত্র \
+              --match "মুণ্ডক উপনিষদ" --by-ordinal --max 30
+          run --slug upanishad-mandukya --title "মাণ্ডূক্য উপনিষদ" --word মন্ত্র \
+              --match "মাণ্ডূক্য উপনিষদ" --by-ordinal --max 30
+          run --slug upanishad-taittiriya --title "তৈত্তিরীয় উপনিষদ" --word মন্ত্র \
+              --match "তৈত্তিরীয় উপনিষদ" --by-ordinal --max 30
+          run --slug upanishad-aitareya --title "ঐতরেয় উপনিষদ" --word মন্ত্র \
+              --match "ঐতরেয় উপনিষদ" --by-ordinal --max 30
+
           echo "শেষ $(date -u +%H:%M:%S)"
 
       - name: Report
