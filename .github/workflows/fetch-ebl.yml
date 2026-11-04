@@ -61,21 +61,41 @@ jobs:
       # সূত্র-পাতার নাম «ঋগ্বেদ-১০।০১» … «ঋগ্বেদ-১০।১৯১» — সংখ্যা ধরে মিলিয়ে
       # একবারে পুরো মণ্ডল ধরা হয়। --only-unsaved থাকায় প্রতিবার কেবল নতুন
       # সূক্তগুলোই নামে, আর write_index_guarded পুরনো ১–৯ মণ্ডল অটুট রাখে।
-      - name: ঋগ্বেদ — সূচি-পাতা চেনা
-        env:
-          PYTHONPATH: tools
+      # লগ দেখা যায় না — তাই রান নিজেই ফল লিখে রাখে (assets/grantho/data/_debug/probe.txt)
+      - name: ঋগ্বেদ — উৎস যাচাই (ফাইলে লিখে রাখে)
         run: |
-          python3 - <<'PY'
-          import sys
+          mkdir -p assets/grantho/data/_debug
+          python3 -u - <<'PY'
+          import sys, urllib.parse
           sys.path.insert(0, 'tools')
           import fetch_ebl as F
-          for m in (10, 9):
-              urls = F.mandala_links(m)
-              print(f"মণ্ডল {m}: {len(urls)} সূক্ত-পাতা")
-              for u in urls[:3]:
-                  print("   ·", u.split('/topics/')[-1])
-          for toc in F.RV_MANDALA_TOC[:4]:
-              print("সূচি চেষ্টা:", toc, "→", "OK" if F.get(toc) else "নেই")
+
+          out = []
+          def rec(label, url):
+              h = F.get(url, tries=1, timeout=25)
+              t = F.toc_links(url) if h else []
+              out.append(f"{label} | {urllib.parse.unquote(url)} | "
+                         f"{('OK len=%d' % len(h)) if h else 'FAIL'} | links={len(t)}")
+              for u in t[:4]:
+                  out.append("     · " + urllib.parse.unquote(u))
+              print(out[-1])
+
+          rec('toc-10।০১', f"{F.BASE}/topics/ঋগ্বেদ-১০।০১/")
+          rec('toc-10।01', f"{F.BASE}/topics/ঋগ্বেদ-১০।01/")
+          rec('toc-10',    f"{F.BASE}/topics/ঋগ্বেদ-১০/")
+          rec('toc-09।০১', f"{F.BASE}/topics/ঋগ্বেদ-০৯।০১/")
+          rec('home', F.BASE + "/")
+          urls = F.sitemap_urls(F.TOPIC_SITEMAPS, "ঋগ্বেদ")
+          out.append(f"সাইটম্যাপে ঋগ্বেদ: {len(urls)} · সব URL: {len(F._ALL)}")
+          m10 = [u for u in F._ALL if "ঋগ্বেদ-১০।" in urllib.parse.unquote(u)]
+          m9 = [u for u in F._ALL if "ঋগ্বেদ-৯।" in urllib.parse.unquote(u)]
+          out.append(f"মণ্ডল ১০ (সাইটম্যাপ): {len(m10)} · মণ্ডল ৯ (সাইটম্যাপ): {len(m9)}")
+          got = F.mandala_links(10)
+          out.append(f"mandala_links(10) → {len(got)}")
+          out.append(f"সাইট-ব্যর্থতা গণনা: {F._DOWN['n']}")
+          open('assets/grantho/data/_debug/probe.txt', 'w', encoding='utf-8').write(
+              "\n".join(out) + "\n")
+          print("\n".join(out))
           PY
 
       - name: ঋগ্বেদ — ১০ম মণ্ডল (বাকি সূক্ত)
@@ -142,7 +162,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git add grantho assets/grantho/data || true
+          git add grantho assets/grantho/data assets/grantho/data/_debug/probe.txt 2>/dev/null || git add grantho assets/grantho/data || true
           if git diff --cached --quiet; then
             echo "কোনো পরিবর্তন নেই — প্রকাশ লাগবে না"; exit 0
           fi
