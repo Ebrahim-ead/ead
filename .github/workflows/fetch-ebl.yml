@@ -52,6 +52,22 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
+      - name: Debug (সাইটম্যাপ)
+        continue-on-error: true
+        run: |
+          python3 - <<'PY'
+          import sys; sys.path.insert(0, "tools")
+          import fetch_ebl as f, urllib.parse, re
+          allu = f.sitemap_urls(f.TOPIC_SITEMAPS + f.LESSON_SITEMAPS, "কেন উপনিষদ")
+          print("allu:", len(allu), [urllib.parse.unquote(u)[-40:] for u in allu[:4]])
+          if allu:
+              u = allu[0]
+              h = f.get(u)
+              print("page:", None if h is None else len(h))
+              if h:
+                  print("Next Lesson?", "Next Lesson" in h, "| Next Page?", "Next Page" in h)
+          PY
+
       - name: Fetch (উপনিষদ + পুরাণ)
         continue-on-error: true
         run: |
