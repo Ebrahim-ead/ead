@@ -652,7 +652,7 @@ def main_run(args):
             key = urllib.parse.quote((args.match.split() or [""])[0].replace(" ", "-"))
             u = urls[0] if urls else None
             while u and u not in seen and (not args.max or len(chain) < args.max):
-                if key and key not in u:      # অন্য গ্রন্থের লেসনে ঢুকে পড়া রোধ
+                if key and key not in u:      # অন্য গ্রন্থের সিরিজে ঢুকে পড়া রোধ
                     break
                 seen.add(u)
                 h = get(u)
