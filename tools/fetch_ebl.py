@@ -208,12 +208,15 @@ def parse_verses(txt, bn_meaning=False):
       গ. পুরাণ: সংস্কৃত প্যারা → বাংলা প্যারা (লেবেলহীন)
       ঘ. ঋগ্বেদ: সংখ্যাযুক্ত বাংলা অনুচ্ছেদ
     """
+    if re.search(r"বঙ্গানুবাদ\s*[–—\-]|অনুবাদঃ", txt):
+        bn_meaning = True              # অথর্ববেদ/ঋগ্বেদ ধাঁচ: অনুবাদই পাঠ
     if not bn_meaning:
         dev = len(re.findall(r"[\u0900-\u0963\u0966-\u097F]", txt))
         multiline = len([x for x in txt.splitlines() if len(x.strip()) > 12])
         if dev < 200 and multiline > 30:
             bn_meaning = True          # সংস্কৃত মূল নেই ⇒ বাংলা-লিপিতেই পাঠ
     txt = txt.replace("।।", "॥").replace("||", "॥").replace("\u09f7", "॥")
+    txt = re.sub(r"([॥৷]\s*[০-৯०-९]{1,3}\s*[॥৷])\s*(?=\S)", r"\1\n", txt)
     if "অন্বয়" not in txt and "সরলার্থ" not in txt:
         txt = re.sub(r"\s+(?=[০-৯]{1,3}\s*।\s)", "\n", txt)
     labelled = ("অন্বয়" in txt or "সরলার্থ" in txt or "মন্ত্র :" in txt
@@ -227,7 +230,7 @@ def parse_verses(txt, bn_meaning=False):
         groups, acc = [], []
         for ln in lines:
             acc.append(ln)
-            m = re.search(r"[॥]\s*([০-৯०-९]{1,3})(?:\s*[-–]\s*[০-৯०-९]{1,3})?\s*[॥]\s*$", ln)
+            m = re.search(r"[॥]\s*([০-৯०-९]{1,3})(?:\s*[-–]\s*[০-৯०-९]{1,3})?\s*[॥]", ln)
             if m:
                 groups.append(acc)
                 acc = []
@@ -312,13 +315,18 @@ def parse_verses(txt, bn_meaning=False):
             if ln.startswith("[") or ln[:14].strip().startswith("ঋষি"):
                 continue
             _lbl = LBL.match(ln)
+            if not started and not _lbl and (
+                    is_heading(ln) or ln.startswith("[") or "সম্পাদনা" in ln
+                    or "কাণ্ড :" in ln and len(ln) < 60):
+                continue                      # শিরোনাম/সূচি লাইন
             if bn_meaning and not _lbl:
                 if DEV_RE.search(ln) or VERSE_TAIL.search(ln) or (
                         looks_sanskrit(ln) and cur is not None
                         and not cur["bn"] and cur["sk"]):
                     flush_pending(pend, False, False)
                     pend = []
-                    if cur is not None and not cur["bn"] and cur["sk"]:
+                    # নতুন শ্লোক: আগের শ্লোকে অনুবাদ থাকলে ⇒ নতুন মন্ত্র
+                    if cur is not None and cur["sk"] and not cur["bn"]:
                         cur["sk"].append(ln)      # একই শ্লোকের পরের পঙক্তি
                     else:
                         add_verse([ln])
