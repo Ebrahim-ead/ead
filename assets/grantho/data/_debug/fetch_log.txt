@@ -255,140 +255,318 @@ garuda: বাংলা 60/60
 সূচিতে লেসন: 50
 নামানো হবে 50টি পাতা
 [5] https://www.ebanglalibrary.com/lessons/কথা-প্রস্তাবনা/
-   ! ValueError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [6] https://www.ebanglalibrary.com/lessons/সৃষ্টি-বর্ণন/
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [7] https://www.ebanglalibrary.com/lessons/সর্বসংস্কার-বর্ণন/
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [8] https://www.ebanglalibrary.com/lessons/সাবিত্রী-মাহাত্ম্য/
-   ! ValueError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 1 শ্লোক
 [9] https://www.ebanglalibrary.com/lessons/স্ত্রী-শুভাশুভ-লক্ষণ/
-   ! ValueError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 1 শ্লোক
 [10] ps://www.ebanglalibrary.com/lessons/তৃতীয়া-কল্প-বিধি-বর্ণন/
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 1 শ্লোক
 [11] https://www.ebanglalibrary.com/lessons/চতুর্থী-কল্প-বর্ণন/
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 2 শ্লোক
 [12] s://www.ebanglalibrary.com/lessons/পঞ্চমী-কল্পে-নাগপঞ্চমী-ব/
-   ! ValueError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [13] ttps://www.ebanglalibrary.com/lessons/ধাতুগত-বিষ-লক্ষণ-সমূহ/
-   ! ValueError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [14] s://www.ebanglalibrary.com/lessons/ষষ্ঠীকল্পে-কাৰ্ত্তিক-ষষ্/
-   ! ValueError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 2 শ্লোক
 [15] s://www.ebanglalibrary.com/lessons/ষষ্ঠীকল্পে-ব্রাহ্মণ্য-বি/
-   ! ValueError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [16] tps://www.ebanglalibrary.com/lessons/সপ্তমী-কল্প-ব্ৰত-বৰ্ণন/
-   ! ValueError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [17] s://www.ebanglalibrary.com/lessons/সপ্তমী-কল্প-বর্ণনে-কৃষ্ণ/
-   ! ValueError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [18] s://www.ebanglalibrary.com/lessons/আদিত্য-নিত্যারাধনবিধি-বর/
-   ! ValueError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 2 শ্লোক
 [19] s://www.ebanglalibrary.com/lessons/রথ-সপ্তমী-মাহাত্ম্য-বর্ণ/
-   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [20] s://www.ebanglalibrary.com/lessons/সূর্যযোগ-মাহাত্ম্য-বর্ণন/
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [21] ps://www.ebanglalibrary.com/lessons/সূর্যের-বিরাট-রূপ-বর্ণন/
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [22] s://www.ebanglalibrary.com/lessons/আদিত্যবার-মাহাত্ম্য-বর্ণ/
-   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [23] ps://www.ebanglalibrary.com/lessons/সৌরধর্ম-মাহাত্ম্য-বর্ণন/
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
 [24] s://www.ebanglalibrary.com/lessons/ব্রহ্মকৃত-সূর্যস্তুতি-বর/
-   ! ValueError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
+   ! URLError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 1 শ্লোক
 [25] https://www.ebanglalibrary.com/lessons/বিবাহ-বিধি-বর্ণন/
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
-   ! ValueError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
-Traceback (most recent call last):
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 670, in <module>
-    main()
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 666, in main
-    return main_run(args)
-           ^^^^^^^^^^^^^^
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 611, in main_run
-    vs = parse_verses(txt)
-         ^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/ead/ead/tools/fetch_ebl.py", line 197, in parse_verses
-    cur["part"] = {"অন্বয়": "anv", "সরলার্থ": "bn", "মন্তব্য": "note",
-    ~~~^^^^^^^^
-TypeError: 'NoneType' object does not support item assignment
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[26] s://www.ebanglalibrary.com/lessons/স্ত্রীগণের-গৃহধর্ম-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[27] https://www.ebanglalibrary.com/lessons/স্ত্রীধর্ম-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[28] https://www.ebanglalibrary.com/lessons/ধর্ম-স্বরূপ-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[29] ps://www.ebanglalibrary.com/lessons/ব্রহ্মাণ্ডোৎপত্তি-বিস্ত/
+   ! URLError — a6%bf%e0%a6%b8%e0%a7%8d%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%bf%e0%a6%b8%e0%a7%8d%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%bf%e0%a6%b8%e0%a7%8d%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%bf%e0%a6%b8%e0%a7%8d%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[30] s://www.ebanglalibrary.com/lessons/পুরাণ-ইতিহাস-শ্রবণ-মাহাত/
+   ! URLError — a6%be%e0%a6%b9%e0%a6%be%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%be%e0%a6%b9%e0%a6%be%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%be%e0%a6%b9%e0%a6%be%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%be%e0%a6%b9%e0%a6%be%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 3 শ্লোক
+[31] s://www.ebanglalibrary.com/lessons/পূর্তকর্ম-তথা-বৃক্ষ-রোপণ/
+   ! URLError — a6%b0%e0%a7%8b%e0%a6%aa%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8b%e0%a6%aa%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8b%e0%a6%aa%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8b%e0%a6%aa%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[32] ps://www.ebanglalibrary.com/lessons/বিবিধ-বিধিকুণ্ড-নির্ণয়/
+   ! URLError — a7%8d%e0%a6%a3%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%a3%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%a3%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%a3%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[33] s://www.ebanglalibrary.com/lessons/হোমাবসানে-ষোড়শোপচার-বর্/
+   ! URLError — 6%b0-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[34] s://www.ebanglalibrary.com/lessons/যজ্ঞ-ভেদে-বহ্নিনাম-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[35] s://www.ebanglalibrary.com/lessons/স্রুবাদর্বী-পাত্র-নির্মা/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%ae%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%ae%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%ae%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%ae%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[36] s://www.ebanglalibrary.com/lessons/ব্রাহ্মণ-লক্ষণ-তথা-ব্রাহ/
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%be%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%be%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%be%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%be%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[37] tps://www.ebanglalibrary.com/lessons/গুরুজন-মাহাত্ম্য-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[38] tps://www.ebanglalibrary.com/lessons/আহুতি-হোম-সংখ্যা-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[39] https://www.ebanglalibrary.com/lessons/কুন্ড-সংস্কার-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[40] s://www.ebanglalibrary.com/lessons/বিবিধ-মন্ডল-নিৰ্মাণ-বৰ্ণ/
+   ! URLError — a6%ac%e0%a7%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a7%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a7%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a7%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[41] s://www.ebanglalibrary.com/lessons/সুদর্শনান্ত-নরপতি-রাজ্যক/
+   ! URLError — a6%9c%e0%a7%8d%e0%a6%af%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%9c%e0%a7%8d%e0%a6%af%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%9c%e0%a7%8d%e0%a6%af%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%9c%e0%a7%8d%e0%a6%af%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[42] ps://www.ebanglalibrary.com/lessons/ত্রেতাযুগীয়ভূপ-বৃত্তান/
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[43] s://www.ebanglalibrary.com/lessons/দ্বাপরযুগীয়-ভূপ-বৃত্তান/
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[44] s://www.ebanglalibrary.com/lessons/ম্লেচ্ছযজ্ঞ-বৃত্তান্ত-তথ/
+   ! URLError — 7%8d%e0%a6%a4-%e0%a6%a4%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%a4-%e0%a6%a4%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%a4-%e0%a6%a4%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%a4-%e0%a6%a4%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[45] https://www.ebanglalibrary.com/lessons/ম্লেচ্ছবংশ-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[46] s://www.ebanglalibrary.com/lessons/আর্যাবর্তে-ম্লেচ্ছগণের-আ/
+   ! URLError — 6%a3%e0%a7%87%e0%a6%b0-%e0%a6%86/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a3%e0%a7%87%e0%a6%b0-%e0%a6%86/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a3%e0%a7%87%e0%a6%b0-%e0%a6%86/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a3%e0%a7%87%e0%a6%b0-%e0%a6%86/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[47] s://www.ebanglalibrary.com/lessons/কলিঞ্জর-অজমেরপুরাদি-বর্ণ/
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[48] https://www.ebanglalibrary.com/lessons/পদ্মাবতী-কথা-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[49] s://www.ebanglalibrary.com/lessons/মধুমতী-বরনির্ণয়-কথা-বর্/
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[50] ttps://www.ebanglalibrary.com/lessons/সত্যনারায়ণ-কথা-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[51] s://www.ebanglalibrary.com/lessons/সত্যনারায়ণ-ব্রতে-চন্দ্র/
+   ! URLError — a7%8d%e0%a6%a6%e0%a7%8d%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%a6%e0%a7%8d%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%a6%e0%a7%8d%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%a6%e0%a7%8d%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[52] ps://www.ebanglalibrary.com/lessons/সত্যনারায়ণ-ব্ৰতে-ভিন্ন/
+   ! URLError — a6%bf%e0%a6%a8%e0%a7%8d%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%bf%e0%a6%a8%e0%a7%8d%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%bf%e0%a6%a8%e0%a7%8d%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%bf%e0%a6%a8%e0%a7%8d%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[53] s://www.ebanglalibrary.com/lessons/শতানন্দ-ব্রাহ্মণ-কথা-বর্/
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[54] https://www.ebanglalibrary.com/lessons/সাধু-বণিক-কথা-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+bhabishya: বাংলা 20/20
+  8. ভবিষ্য পুরাণ — সাবিত্রী মাহাত্ম্য: 1/1
+  9. ভবিষ্য পুরাণ — স্ত্রী শুভাশুভ লক্ষণ: 1/1
+  10. ভবিষ্য পুরাণ — তৃতীয়া কল্প বিধি বর্ণন: 1/1
+  11. ভবিষ্য পুরাণ — চতুর্থী কল্প বর্ণন: 2/2
+  14. ভবিষ্য পুরাণ — ষষ্ঠীকল্পে কাৰ্ত্তিক ষষ্: 2/2
+  18. ভবিষ্য পুরাণ — আদিত্য নিত্যারাধনবিধি বর: 2/2
+  24. ভবিষ্য পুরাণ — ব্রহ্মকৃত সূর্যস্তুতি বর: 1/1
+  25. ভবিষ্য পুরাণ — বিবাহ বিধি বর্ণন: 1/1
+  26. ভবিষ্য পুরাণ — স্ত্রীগণের গৃহধর্ম বর্ণন: 1/1
+  29. ভবিষ্য পুরাণ — ব্রহ্মাণ্ডোৎপত্তি বিস্ত: 1/1
+  30. ভবিষ্য পুরাণ — পুরাণ ইতিহাস শ্রবণ মাহাত: 3/3
+  36. ভবিষ্য পুরাণ — ব্রাহ্মণ লক্ষণ তথা ব্রাহ: 1/1
+  37. ভবিষ্য পুরাণ — গুরুজন মাহাত্ম্য বর্ণন: 1/1
+  42. ভবিষ্য পুরাণ — ত্রেতাযুগীয়ভূপ বৃত্তান: 1/1
+  52. ভবিষ্য পুরাণ — সত্যনারায়ণ ব্ৰতে ভিন্ন: 1/1
