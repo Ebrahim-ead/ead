@@ -106,7 +106,33 @@ jobs:
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
           git push origin "HEAD:${GITHUB_REF_NAME}" || echo "push skipped"
 
-      - name: ১১) আবার নিজেকে চালু (রাতের সিরিজ)
+      - name: ১১) সাইটে প্রকাশ (PR → main, অটো-মার্জ)
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch origin main || true
+          if git diff --quiet origin/main -- grantho assets/grantho/data; then
+            echo "main-এর সঙ্গে কোনো পার্থক্য নেই — PR লাগবে না"
+            exit 0
+          fi
+          NUM=$(gh pr list --head "${GITHUB_REF_NAME}" --state open --json number -q '.[0].number' || true)
+          if [ -z "$NUM" ]; then
+            gh pr create --base main --head "${GITHUB_REF_NAME}" \
+              --title "বাংলা অনুবাদ: স্বয়ংক্রিয় আপডেট ($(date -u +%d/%m\ %H:%M) UTC)" \
+              --body "রাতের স্বয়ংক্রিয় রান — নতুন বাংলা অনুবাদ ও পাতা-বিল্ড।" || true
+            sleep 5
+            NUM=$(gh pr list --head "${GITHUB_REF_NAME}" --state open --json number -q '.[0].number' || true)
+          fi
+          echo "PR: $NUM"
+          if [ -n "$NUM" ]; then
+            gh pr merge "$NUM" --merge || echo "মার্জ ব্যর্থ"
+          else
+            echo "PR নেই"
+          fi
+
+      - name: ১২) আবার নিজেকে চালু (রাতের সিরিজ)
         if: always()
         continue-on-error: true
         env:
