@@ -52,94 +52,21 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
-      - name: Debug (ঐতরেয়/তৈত্তিরীয় পাতা)
+      - name: Debug (অথর্ববেদ সূচি)
         continue-on-error: true
         run: |
-          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
+          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg2.txt
           import sys, re, urllib.parse
           sys.path.insert(0, "tools")
           import fetch_ebl as f
-          for slug in ["ঐতরেয়-উপনিষদ", "তৈত্তিরীয়-উপনিষদ-2"]:
-              u = "https://www.ebanglalibrary.com/lessons/" + urllib.parse.quote(slug) + "/"
-              h = f.get(u) or ""
-              t = f.fetch_paged(u)
-              lines = [x.strip() for x in t.splitlines() if x.strip()]
-              print("==", slug, "| html:", len(h), "| লাইন:", len(lines),
-                    "| Next Page:", "Next Page" in h)
-              for ln in lines[:30]:
-                  print("   |", ln[:110])
-          PY
-
-      - name: Debug (নমুনা পাতা)
-        continue-on-error: true
-        run: |
-          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
-          import sys, re, urllib.parse
-          sys.path.insert(0, "tools")
-          import fetch_ebl as f
-          targets = [("অথর্ববেদ", "অথর্ববেদ সংহিতা", "lessons"),
-                     ("গরুড় পুরাণ", "গরুড় পুরাণ", "lessons"),
-                     ("ঋগ্বেদ", "ঋগ্বেদ ০৬", "topics")]
-          for label, kw, want in targets:
-              allu = f.sitemap_urls(f.LESSON_SITEMAPS + f.TOPIC_SITEMAPS, kw, (want,))
-              u = sorted(allu, key=lambda x: (len(urllib.parse.unquote(x)), x))[0] if allu else None
-              print("=====", label, "|", (urllib.parse.unquote(u)[-55:] if u else "নেই"))
-              if not u:
-                  continue
-              t = f.fetch_paged(u)
-              vs = f.parse_verses(t)
-              print("মন্ত্র:", len(vs), "| sk:", sum(1 for v in vs if v["sk"]),
-                    "| bn:", sum(1 for v in vs if v["bn"]))
-              for v in vs[:4]:
-                  print("   n=%s | sk=%s" % (v["n"], (v["sk"] or "—")[:60]))
-                  print("        bn=%s" % (v["bn"] or "—")[:60])
-          PY
-
-      - name: Debug (কাঁচা পাঠ)
-        continue-on-error: true
-        run: |
-          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
-          import sys, re, urllib.parse
-          sys.path.insert(0, "tools")
-          import fetch_ebl as f
-          for label, kw, want in [("অথর্ববেদ", "অথর্ববেদ সংহিতা", "lessons"),
-                                  ("গরুড় পুরাণ", "গরুড় পুরাণ পৃথ্বীরাজ", "lessons")]:
-              allu = f.sitemap_urls(f.LESSON_SITEMAPS + f.TOPIC_SITEMAPS, kw, (want,))
-              u = sorted(allu, key=lambda x: (len(urllib.parse.unquote(x)), x))[0] if allu else None
-              print("=====", label, "|", (urllib.parse.unquote(u)[-55:] if u else "নেই"), "| মোট:", len(allu))
-              if not u:
-                  continue
-              h = f.get(u) or ""
-              print("html:", len(h), "| দেবনাগরী:", len(re.findall(r"[\u0900-\u097F]", h)),
-                    "| দাঁড়ি-লাইন:", len(re.findall(r"॥", h)))
-              t = f.fetch_paged(u)
-              lines = [x.strip() for x in t.splitlines() if x.strip()]
-              print("টেক্সট লাইন:", len(lines))
-              for ln in lines[:45]:
-                  print("  |", ln[:120])
-          PY
-
-      - name: Debug (পুরাণ অধ্যায়-পাতা)
-        continue-on-error: true
-        run: |
-          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
-          import sys, re, urllib.parse
-          sys.path.insert(0, "tools")
-          import fetch_ebl as f
-          cands = f.sitemap_urls(f.LESSON_SITEMAPS + f.TOPIC_SITEMAPS, "গরুড় পুরাণ পৃথ্বীরাজ")
-          url0 = sorted(cands, key=lambda x: len(urllib.parse.unquote(x)))[0]
-          toc = f.toc_links(url0)
-          print("সূচি-টপিক:", len(toc))
-          print("প্রথম কয়েক:", [urllib.parse.unquote(u)[-40:] for u in toc[:3]])
-          if toc:
-              u = toc[0]
-              t = f.fetch_paged(u)
-              lines = [x.strip() for x in t.splitlines() if x.strip()]
-              print("টেক্সট লাইন:", len(lines), "| ॥:", t.count("॥"))
-              vs = f.parse_verses(t)
-              print("পার্স:", len(vs), "| sk:", sum(1 for v in vs if v["sk"]), "| bn:", sum(1 for v in vs if v["bn"]))
-              for ln in lines[:35]:
-                  print("  |", ln[:120])
+          for kw in ["অথর্ববেদ সংহিতা", "অথর্ববেদ"]:
+              allu = f.sitemap_urls(f.LESSON_SITEMAPS + f.TOPIC_SITEMAPS, kw)
+              print("====", kw, len(allu))
+              for u in allu[:5]:
+                  print("   ", urllib.parse.unquote(u)[-70:])
+              if allu:
+                  toc = f.toc_links(allu[0])
+                  print("    টপিক:", len(toc), [urllib.parse.unquote(x)[-28:] for x in toc[:3]])
           PY
 
       - name: Fetch (উপনিষদ + পুরাণ)
