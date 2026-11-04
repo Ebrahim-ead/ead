@@ -71,9 +71,12 @@ jobs:
           # ---- ভবিষ্য পুরাণ
           run --slug bhabishya --title "ভবিষ্য পুরাণ" --word শ্লোক \
               --match "ভবিষ্য পুরাণ" --toc --max 200
+          # ---- ব্রহ্ম পুরাণ
+          run --slug brahma --title "ব্রহ্ম পুরাণ" --word শ্লোক \
+              --match "ব্রহ্ম পুরাণ" --toc --max 200
           # ---- সামবেদ
           run --slug samaveda --title "সামবেদ সংহিতা" --word মন্ত্র \
-              --match "সামবেদ সংহিতা" --toc --max 200
+              --match "সামবেদ সংহিতা পরিতোষ" --toc --max 240
           # ---- ঋগ্বেদ (রমেশচন্দ্র দত্ত) ০১–০৯ মণ্ডল
           run --slug rigveda --title "ঋগ্বেদ সংহিতা" --word সূক্ত \
               --match "ঋগ্বেদ ০" --by-ordinal --max 40

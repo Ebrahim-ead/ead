@@ -798,6 +798,11 @@ def main_run(args):
             sys.exit("সূচি-পাতা পাওয়া গেল না: " + args.match)
         print("সূচি:", urllib.parse.unquote(url0)[-60:], flush=True)
         toc = toc_links(url0)
+        _k = norm((args.match.split() or [""])[0])
+        if _k:
+            _own = [u for u in toc if _k in norm(urllib.parse.unquote(u))]
+            if len(_own) >= 3:
+                toc = _own
         print("ভেতরের টপিক/লেসন:", len(toc), flush=True)
         items = [(i, u) for i, u in enumerate(toc, start=args.start)]
         if args.max:
