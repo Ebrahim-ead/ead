@@ -22,6 +22,10 @@ DATA = ROOT / "assets/grantho/data"
 BASE_FILE = DATA / "_baseline.json"
 TOL = 0.85          # ১৫%-এর বেশি কমলেই সন্দেহ
 
+# সাইটে কেবল এই দুটি গ্রন্থ থাকবে (ব্যবহারকারীর সিদ্ধান্ত, ২০২৬-১১-০৫)।
+ACTIVE = ("gita", "rigveda")
+KEEP_PAGES = {"gita.html", "rigveda.html", "veda.html"}
+
 
 def load_json(p, default=None):
     try:
@@ -72,6 +76,25 @@ def main():
         return 0
 
     bcommit = base.get("_commit")
+
+    # ১) পরিধি-রক্ষা: পুরনো ব্রাঞ্চের রান main-এ বাদ-দেওয়া গ্রন্থ ফিরিয়ে আনতে পারে
+    #    (২০২৬-১১-০৪-এ ঠিক তাই হয়েছিল)। সেগুলো এখানেই সরিয়ে দিই।
+    removed = []
+    for d in sorted(DATA.iterdir()):
+        if d.is_dir() and d.name not in ACTIVE and d.name != "_debug":
+            import shutil
+            shutil.rmtree(d)
+            removed.append(d.name)
+    for f in sorted((ROOT / "grantho/hindu").glob("*.html")):
+        if f.name not in KEEP_PAGES:
+            f.unlink()
+            removed.append("পাতা " + f.name)
+    for f in sorted(DATA.glob("_fetch_report_*.txt")):
+        f.unlink()
+    if removed:
+        print("🧹 পরিধির বাইরের জিনিস সরানো হলো:", ", ".join(removed[:6]),
+              "…" if len(removed) > 6 else "")
+
     broken = []
     for slug, idx in indices():
         b = base["slugs"].get(slug)
@@ -83,7 +106,9 @@ def main():
 
     if not broken:
         print("✓ সব গ্রন্থের ডেটা অটুট (বেসলাইনের ৮৫%-এর উপরে)")
-        return 0
+        if not removed:
+            return 0
+        return rebuild_and_push("পরিধি-রক্ষা: অননুমোদিত গ্রন্থ সরানো")
 
     print("⛔ ছোট/ভাঙা ডেটা ধরা পড়েছে:")
     for slug, was, cur in broken:
@@ -99,18 +124,21 @@ def main():
         else:
             print(f"   ↩ {slug} বেসলাইন ({bcommit[:8]}) থেকে ফিরিয়ে আনা হলো")
 
+    return rebuild_and_push("ডেটা-রক্ষা: ছোট হয়ে যাওয়া গ্রন্থ বেসলাইন থেকে "
+                            f"ফিরিয়ে আনা ({', '.join(s for s, _, _ in broken)})")
+
+
+def rebuild_and_push(msg):
     env = dict(os.environ, GRANTHO_ALLOW_SHRINK="1")
     subprocess.run([sys.executable, "-u", "tools/build_pages.py"], cwd=ROOT, env=env)
-    git("add", "grantho", "assets/grantho/data")
-    msg = ("ডেটা-রক্ষা: ছোট হয়ে যাওয়া গ্রন্থ বেসলাইন থেকে ফিরিয়ে আনা "
-           f"({', '.join(s for s, _, _ in broken)})")
+    git("add", "-A", "grantho", "assets/grantho/data")
     if git("commit", "-m", msg).returncode:
         print("কমিট করার মতো পরিবর্তন নেই")
         return 0
     if git("push", "origin", "HEAD:main").returncode:
         print("⛔ push ব্যর্থ")
         return 1
-    print("✓ মেরামত main-এ push হলো")
+    print("✓ main-এ push হলো —", msg)
     return 0
 
 

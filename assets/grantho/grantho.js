@@ -84,7 +84,8 @@
     listEl.innerHTML = index.chapters.map(function (c) {
       var on = c.id === chapterId;
       var meta = bn(c.count) + " " + VW;
-      if (c.from && c.to && c.count > 1) meta += " · " + bn(c.from) + " – " + bn(c.to) + " নং";
+      if (c.suktaCount) meta += " · " + bn(c.suktaCount) + " সূক্ত";
+      else if (c.from && c.to && c.count > 1) meta += " · " + bn(c.from) + " – " + bn(c.to) + " নং";
       return '<button class="g-ch' + (on ? " on" : "") + '" type="button" data-ch="' + c.id + '"' +
         (on ? ' aria-current="true"' : "") + '>' +
         '<span class="num">' + bn(c.id) + '</span>' +
@@ -98,17 +99,42 @@
   }
 
   /* ---------- শ্লোক ---------- */
+  /* সূক্ত/অংশ: chapter.suktas থাকলে «সূক্ত ১২» ধরে সাজাই, আর cuts-এ যে
+     মন্ত্রের ভেতরে কয়েকটি শ্লোক জোড়া ছিল সেগুলো আলাদা পঙক্তি-কার্ড হয়। */
+  var cuts = {};       // মন্ত্র-নং → [অংশ…]
+  var inSukta = {};    // মন্ত্র-নং → সূক্ত-নং
+
+  function useLayout() {
+    cuts = {}; inSukta = {};
+    if (!chapter || !chapter.suktas) return false;
+    chapter.suktas.forEach(function (s) {
+      for (var n = s.from; n <= s.to; n++) inSukta[n] = s.id;
+      if (s.cuts) for (var k in s.cuts) cuts[k] = s.cuts[k];
+    });
+    return true;
+  }
+
   function verseHTML(v) {
     var q = state.q ? state.q.toLowerCase() : "";
     var hit = q && ((v.sk || "").toLowerCase().indexOf(q) > -1 || (v.bn || "").toLowerCase().indexOf(q) > -1);
+    var la = (typeof v.n === "number") ? v.n : 0;
+    var sk = (v.sk || "").replace(/\n+/g, "<br>");
+    var parts = state.bn ? (cuts[la] || null) : null;
     var out = '<article class="g-v' + (hit ? " hit" : "") + '" id="v' + v.n + '">';
     out += '<div class="g-v-num" aria-hidden="true">' + bn(v.n) + '</div><div class="g-v-body">';
     if (v.spk && state.sk) out += '<p class="g-v-spk">' + esc(v.spk) + '</p>';
-    if (state.sk && v.sk) out += '<p class="g-v-sk" lang="sa">' + esc(v.sk).replace(/\n+/g, "<br>") + '</p>';
-    if (state.bn && v.bn) out += '<p class="g-v-bn">' + esc(v.bn).replace(/\n+/g, "</p><p class=\"g-v-bn\">") + '</p>';
+    if (state.sk && sk) out += '<p class="g-v-sk" lang="sa">' + sk + '</p>';
+    if (parts) {
+      out += '<div class="g-v-padas">';
+      out += parts.map(function (x, i) {
+        return '<p class="g-v-bn g-v-pada"><span class="g-pada-n">' +
+          bn(i + 1) + '</span>' + esc(x) + '</p>';
+      }).join("");
+      out += '</div>';
+    } else if (state.bn && v.bn) {
+      out += '<p class="g-v-bn">' + esc(v.bn).replace(/\n+/g, "</p><p class=\"g-v-bn\">") + '</p>';
+    }
     if (state.bn && v.bnSrc) out += '<p class="g-v-src">অনুবাদ: ' + esc(v.bnSrc) + '</p>';
-
-
     out += '</div></article>';
     return out;
   }
@@ -181,10 +207,32 @@
         bnNoteEl.hidden = true;
       }
     }
-    bodyEl.innerHTML = list.map(verseHTML).join("") ||
-      '<p class="g-empty">কিছু পাওয়া যায়নি।</p>';
+    var hasS = useLayout();
+    var html = "", curS = null, sMeta = {};
+    if (hasS) {
+      chapter.suktas.forEach(function (x) { sMeta[x.id] = x; });
+      list.forEach(function (v) {
+        var sid = inSukta[v.n];
+        if (sid && sid !== curS) {
+          curS = sid;
+          var sm = sMeta[sid] || {};
+          html += '<h3 class="g-sukta-h" id="sukta' + sid + '">' +
+            '<span class="g-sukta-n">সূক্ত ' + bn(sid) + '</span>' +
+            '<span class="g-sukta-m">' + VW + " " + bn(sm.from) + "–" + bn(sm.to) +
+            (sm.shloka ? " · " + bn(sm.shloka) + " শ্লোক" : "") + '</span></h3>';
+        }
+        html += verseHTML(v);
+      });
+    } else {
+      html = list.map(verseHTML).join("");
+    }
+    bodyEl.innerHTML = html || '<p class="g-empty">কিছু পাওয়া যায়নি।</p>';
     if (titleEl) titleEl.textContent = chapter.bn;
-    if (metaEl) metaEl.textContent = bn(chapter.count) + " " + VW;
+    if (metaEl) {
+      var mm = bn(chapter.count) + " " + VW;
+      if (hasS) mm += " · " + bn(chapter.suktaCount || 0) + " সূক্ত";
+      metaEl.textContent = mm;
+    }
     var hits = bodyEl.querySelectorAll(".g-v.hit").length;
     if (searchEl) {
       var note = document.getElementById("g-hits");

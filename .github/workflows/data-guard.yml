@@ -1,0 +1,43 @@
+name: Data Guard (main)
+
+# main-এ ঢুকে পড়া ভাঙা ডেটা বা বাদ-দেওয়া গ্রন্থ নিজে থেকেই ঠিক করে।
+# কেন: ২০২৬-১১-০৪-এ রাতের রান নীরবে অনুবাদ মুছেছিল (গরুড় ১০৫ → ২১ শ্লোক),
+# আর পুরনো ব্রাঞ্চের রান বাদ-দেওয়া গ্রন্থ ফিরিয়েও আনতে পারে।
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '*/10 * * * *'    # প্রতি ১০ মিনিটে — ভাঙা ডেটা বেশিক্ষণ না থাকে
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data-guard
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: git
+        run: |
+          git config user.name  "grantho-bot"
+          git config user.email "bot@users.noreply.github.com"
+
+      - name: যাচাই (পরিধি + ছোট ডেটা)
+        run: python3 -u tools/guard_data.py
