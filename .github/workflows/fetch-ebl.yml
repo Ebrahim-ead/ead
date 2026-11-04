@@ -17,7 +17,7 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 170
+    timeout-minutes: 350
     env:
       # ---- প্রথম রান: URL-আবিষ্কার + ছান্দোগ্য (৮ অধ্যায়) ----
       KW: 'ভবিষ্য পুরাণ,গরুড় পুরাণ,ব্রহ্ম পুরাণ,সামবেদ,অথর্ববেদ,শুক্ল যজুর্বেদ,কৃষ্ণ যজুর্বেদ'
@@ -77,6 +77,8 @@ jobs:
           tail -40 /tmp/fetch.log 2>/dev/null || true
           echo "=== report ==="
           cat "assets/grantho/data/_fetch_report_${SLUG}.txt" 2>/dev/null || echo "(no report)"
+          echo "=== all reports ==="
+          for r in assets/grantho/data/_fetch_report_*.txt; do cat "$r"; echo; done 2>/dev/null || true
           echo "=== sample ch1 ==="
           python3 - <<'PY' || true
           import json, os

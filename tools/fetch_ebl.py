@@ -63,19 +63,29 @@ def to_int(s):
         return None
 
 
-def get(url, tries=3, timeout=45):
+_CACHE = {}
+
+
+def get(url, tries=4, timeout=60):
+    if url in _CACHE:
+        return _CACHE[url]
     for i in range(tries):
         try:
             req = urllib.request.Request(url, headers={
-                "User-Agent": UA, "Accept-Language": "bn,en;q=0.8"})
+                "User-Agent": UA, "Accept-Language": "bn,en;q=0.8",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"})
             with urllib.request.urlopen(req, timeout=timeout) as r:
-                return r.read().decode("utf-8", "replace")
+                data = r.read().decode("utf-8", "replace")
+                _CACHE[url] = data
+                return data
         except urllib.error.HTTPError as e:
             if e.code == 404:
                 return None
-            time.sleep(2 * (i + 1))
-        except Exception:
-            time.sleep(2 * (i + 1))
+            print(f"   ! HTTP {e.code} — {url[-50:]} (চেষ্টা {i+1})")
+            time.sleep(min(30, 4 * (i + 1)))
+        except Exception as e:
+            print(f"   ! {type(e).__name__} — {url[-50:]} (চেষ্টা {i+1})")
+            time.sleep(min(30, 4 * (i + 1)))
     return None
 
 
@@ -310,9 +320,12 @@ def classify(url):
     if re.search(r"ঋগ্বেদ", t) and "/topics/" in t:
         return dict(slug="rigveda", title="ঋগ্বেদ সংহিতা", mode="group",
                     match="ঋগ্বেদ ০", word="সূক্ত")
-    if re.search(r"শুক্ল[- ]?যজুর্বেদ", t) and "/books/" in t:
+    if re.search(r"শুক্ল[- ]?যজুর্বেদ", t) and ("/books/" in t or "/lessons/" in t):
         return dict(slug="yajurveda-shukla", title="শুক্ল যজুর্বেদ সংহিতা",
                     mode="book", match="শুক্ল যজুর্বেদ সংহিতা", word="মন্ত্র")
+    if re.search(r"কৃষ্ণ[- ]?যজুর্বেদ", t) and ("/books/" in t or "/lessons/" in t):
+        return dict(slug="yajurveda-krishna", title="কৃষ্ণ যজুর্বেদ সংহিতা",
+                    mode="book", match="কৃষ্ণ যজুর্বেদ সংহিতা", word="মন্ত্র")
     if re.search(r"ছান্দোগ্য", t) and "/topics/" in t:
         return dict(slug="chandogya", title="ছান্দোগ্য উপনিষদ", mode="ordinal",
                     match="ছান্দোগ্য উপনিষদ", word="মন্ত্র")
@@ -323,13 +336,25 @@ def run_auto(args):
     """আবিষ্কার → গ্রন্থ-শনাক্ত → নামানো, এক রানে।"""
     skip = set(x.strip() for x in os.environ.get("EBL_SKIP", "").split(",") if x.strip())
     only = set(x.strip() for x in os.environ.get("EBL_ONLY", "").split(",") if x.strip())
+    cache_p = os.path.join(args.out, "_debug", "sitemap.json")
     cands = []
-    for sm in TOPIC_SITEMAPS + LESSON_SITEMAPS:
-        x = get(sm)
-        if not x:
-            continue
-        cands += [htmllib.unescape(u) for u in
-                  re.findall(r"<loc>\s*([^<\s]+)\s*</loc>", x)]
+    if os.path.exists(cache_p):
+        try:
+            cands = json.load(open(cache_p, encoding="utf-8"))
+            print(f"সাইটম্যাপ ক্যাশ থেকে {len(cands)} URL")
+        except Exception:
+            cands = []
+    if not cands:
+        for sm in TOPIC_SITEMAPS + LESSON_SITEMAPS:
+            x = get(sm)
+            if not x:
+                continue
+            cands += [htmllib.unescape(u) for u in
+                      re.findall(r"<loc>\s*([^<\s]+)\s*</loc>", x)]
+            time.sleep(0.4)
+        os.makedirs(os.path.dirname(cache_p), exist_ok=True)
+        with open(cache_p, "w", encoding="utf-8") as f:
+            json.dump(cands, f, ensure_ascii=False)
     print(f"সাইটম্যাপ URL মোট: {len(cands)}")
     seen, targets = set(), {}
     for u in cands:
