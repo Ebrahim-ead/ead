@@ -1,915 +1,429 @@
-লেসন/টপিক: 178
-টপিক: 179
-নামানো হবে 179টি পাতা
-[1] ps://www.ebanglalibrary.com/lessons/বিষ্ণুপুরাণ-পৃথ্বীরাজ-স/
+কীওয়ার্ড: গরুড় পুরাণ
+বই-পাতা: ['https://www.ebanglalibrary.com/books/গরুড়-পুরাণ-সংস্কৃত/', 'https://www.ebanglalibrary.com/books/গরুড়-পুরাণ-অসম্পূর্ণ/']
+সূচিতে লেসন: 32
+নামানো হবে 32টি পাতা
+[1] //www.ebanglalibrary.com/lessons/১-০১-গরুডপুরাণ-অধ্যায়-১-১০/
+   ✓ 1 শ্লোক
+[2] //www.ebanglalibrary.com/lessons/১-০২-গরুডপুরাণ-অধ্যায়-১১-২/
+   ✓ 1 শ্লোক
+[3] //www.ebanglalibrary.com/lessons/১-০৩-গরুডপুরাণ-অধ্যায়-২১-৩/
+   ✓ 1 শ্লোক
+[4] //www.ebanglalibrary.com/lessons/১-০৪-গরুডপুরাণ-অধ্যায়-৩১-৪/
+   ✓ 1 শ্লোক
+[5] //www.ebanglalibrary.com/lessons/১-০৫-গরুডপুরাণ-অধ্যায়-৪১-৫/
    ✗ মন্ত্র পাওয়া যায়নি
-[2] tps://www.ebanglalibrary.com/topics/০১-ঋভু-ও-নিদাঘের-কাহিনি/
+[6] //www.ebanglalibrary.com/lessons/১-০৬-গরুডপুরাণ-অধ্যায়-৫১-৬/
    ✗ মন্ত্র পাওয়া যায়নি
-[3] ps://www.ebanglalibrary.com/topics/০২-দেবরাজের-অহঙ্কারের-ফল/
-   ✓ 2 শ্লোক
-[4] ://www.ebanglalibrary.com/topics/০৩-মৌন-ব্রতভঙ্গের-পাপমোচ-2/
-   ✓ 2 শ্লোক
-[5] ps://www.ebanglalibrary.com/topics/০৩-মৌন-ব্রতভঙ্গের-পাপমোচ/
+[7] //www.ebanglalibrary.com/lessons/১-০৭-গরুডপুরাণ-অধ্যায়-৬১-৭/
    ✗ মন্ত্র পাওয়া যায়নি
-[6] ps://www.ebanglalibrary.com/topics/০৫-রাজা-যুবনাশ্বের-গর্ভে/
-   ✓ 2 শ্লোক
-[7] tps://www.ebanglalibrary.com/topics/০৬-সৌভরি-মুনির-উপাখ্যান/
-   ✓ 2 শ্লোক
-[8] https://www.ebanglalibrary.com/topics/০৭-প্রতারক-ইন্দ্র/
+[8] //www.ebanglalibrary.com/lessons/১-০৮-গরুডপুরাণ-অধ্যায়-৭১-৮/
    ✓ 1 শ্লোক
-[9] https://www.ebanglalibrary.com/topics/০৮-কল্মষপাদের-কাহিনি/
-   ✓ 2 শ্লোক
-[10] https://www.ebanglalibrary.com/topics/০৯-নিমি-হলেন-বিদেহ/
-   ✓ 2 শ্লোক
-[11] https://www.ebanglalibrary.com/topics/১০-পুরুরবার-কাহিনি/
-   ✓ 2 শ্লোক
-[12] ps://www.ebanglalibrary.com/lessons/ব্রহ্মাণ্ড-পুরাণ-পৃথ্বী/
+[9] //www.ebanglalibrary.com/lessons/১-০৯-গরুডপুরাণ-অধ্যায়-৮১-৯/
+   ✓ 1 শ্লোক
+[10] //www.ebanglalibrary.com/lessons/১-১০-গরুডপুরাণ-অধ্যায়-৯১-১/
+   ✓ 1 শ্লোক
+[11] ://www.ebanglalibrary.com/lessons/১-১১-গরুডপুরাণ-অধ্যায়-১০১/
    ✗ মন্ত্র পাওয়া যায়নি
-[13] https://www.ebanglalibrary.com/topics/০১-১০-অধ্যায়/
+[12] ://www.ebanglalibrary.com/lessons/১-১২-গরুডপুরাণ-অধ্যায়-১১১/
    ✗ মন্ত্র পাওয়া যায়নি
-[14] https://www.ebanglalibrary.com/topics/১১-২০-অধ্যায়/
+[13] ://www.ebanglalibrary.com/lessons/১-১৩-গরুডপুরাণ-অধ্যায়-১২১/
+   ✓ 1 শ্লোক
+[14] ://www.ebanglalibrary.com/lessons/১-১৪-গরুডপুরাণ-অধ্যায়-১৩১/
+   ✓ 1 শ্লোক
+[15] ://www.ebanglalibrary.com/lessons/১-১৫-গরুডপুরাণ-অধ্যায়-১৪১/
+   ✓ 1 শ্লোক
+[16] ://www.ebanglalibrary.com/lessons/১-১৬-গরুডপুরাণ-অধ্যায়-১৫১/
+   ✓ 1 শ্লোক
+[17] ://www.ebanglalibrary.com/lessons/১-১৭-গরুডপুরাণ-অধ্যায়-১৬১/
    ✗ মন্ত্র পাওয়া যায়নি
-[15] https://www.ebanglalibrary.com/topics/২১-৩০-অধ্যায়/
+[18] ://www.ebanglalibrary.com/lessons/১-১৮-গরুডপুরাণ-অধ্যায়-১৭১/
+   ✓ 1 শ্লোক
+[19] ://www.ebanglalibrary.com/lessons/১-১৯-গরুডপুরাণ-অধ্যায়-১৮১/
+   ✓ 1 শ্লোক
+[20] ://www.ebanglalibrary.com/lessons/১-২০-গরুডপুরাণ-অধ্যায়-১৯১/
+   ✓ 1 শ্লোক
+[21] ://www.ebanglalibrary.com/lessons/১-২১-গরুডপুরাণ-অধ্যায়-২০১/
    ✗ মন্ত্র পাওয়া যায়নি
-[16] https://www.ebanglalibrary.com/topics/৪১-৫০-অধ্যায়/
+[22] ://www.ebanglalibrary.com/lessons/১-২২-গরুডপুরাণ-অধ্যায়-২১১/
    ✗ মন্ত্র পাওয়া যায়নি
-[17] https://www.ebanglalibrary.com/topics/৫১-৬০-অধ্যায়/
+[23] ://www.ebanglalibrary.com/lessons/১-২৩-গরুডপুরাণ-অধ্যায়-২২১/
+   ✓ 1 শ্লোক
+[24] ://www.ebanglalibrary.com/lessons/১-২৪-গরুডপুরাণ-অধ্যায়-২৩১/
+   ✓ 1 শ্লোক
+[25] ://www.ebanglalibrary.com/lessons/২-১-গরুডপুরাণ-অধ্যায়-১-১০/
+   ✓ 1 শ্লোক
+[26] //www.ebanglalibrary.com/lessons/২-২-গরুডপুরাণ-অধ্যায়-১১-২০/
    ✗ মন্ত্র পাওয়া যায়নি
-[18] s://www.ebanglalibrary.com/lessons/বরাহ-পুরাণ-পৃথ্বীরাজ-সেন/
+[27] //www.ebanglalibrary.com/lessons/২-৩-গরুডপুরাণ-অধ্যায়-২১-৩০/
+   ✓ 1 শ্লোক
+[28] //www.ebanglalibrary.com/lessons/২-৪-গরুডপুরাণ-অধ্যায়-৩১-৪০/
+   ✓ 1 শ্লোক
+[29] //www.ebanglalibrary.com/lessons/২-৫-গরুডপুরাণ-অধ্যায়-৪১-৪৯/
+   ✓ 1 শ্লোক
+[30] ://www.ebanglalibrary.com/lessons/৩-১-গরুডপুরাণ-অধ্যায়-১-১০/
    ✗ মন্ত্র পাওয়া যায়নি
-[19] ://www.ebanglalibrary.com/topics/১-রাজা-দুর্জয়-ও-মুনি-সৌরম/
+[31] //www.ebanglalibrary.com/lessons/৩-২-গরুডপুরাণ-অধ্যায়-১১-২০/
    ✓ 1 শ্লোক
-[20] tps://www.ebanglalibrary.com/topics/২-কোকক্ষেত্রের-মাহাত্ম্/
-   ✓ 1 শ্লোক
-[21] s://www.ebanglalibrary.com/topics/৩-নিষ্ঠুর-ব্যাধ-হল-সত্যতপ/
-   ✓ 1 শ্লোক
-[22] ://www.ebanglalibrary.com/topics/৪-এক-বণিক-ও-প্রেতের-কাহিনি/
-   ✓ 1 শ্লোক
-[23] ttps://www.ebanglalibrary.com/topics/৫-সৌধর-তীর্থের-মাহাত্ম/
-   ✓ 1 শ্লোক
-[24] tps://www.ebanglalibrary.com/topics/৬-কুব্জাম্রকের-মাহাত্ম্/
+[32] //www.ebanglalibrary.com/lessons/৩-৩-গরুডপুরাণ-অধ্যায়-২১-৩০/
    ✗ মন্ত্র পাওয়া যায়নি
-[25] ://www.ebanglalibrary.com/topics/৭-বণিক-গোকর্ণ-ও-শুকপাখির-ক/
+garuda: বাংলা 21/21
+  1. গরুড় পুরাণ — ১ ০১ গরুডপুরাণ অধ্যায় ১ ১০: 1/1
+  2. গরুড় পুরাণ — ১ ০২ গরুডপুরাণ অধ্যায় ১১ ২: 1/1
+  3. গরুড় পুরাণ — ১ ০৩ গরুডপুরাণ অধ্যায় ২১ ৩: 1/1
+  4. গরুড় পুরাণ — ১ ০৪ গরুডপুরাণ অধ্যায় ৩১ ৪: 1/1
+  8. গরুড় পুরাণ — ১ ০৮ গরুডপুরাণ অধ্যায় ৭১ ৮: 1/1
+  9. গরুড় পুরাণ — ১ ০৯ গরুডপুরাণ অধ্যায় ৮১ ৯: 1/1
+  10. গরুড় পুরাণ — ১ ১০ গরুডপুরাণ অধ্যায় ৯১ ১: 1/1
+  13. গরুড় পুরাণ — ১ ১৩ গরুডপুরাণ অধ্যায় ১২১: 1/1
+  14. গরুড় পুরাণ — ১ ১৪ গরুডপুরাণ অধ্যায় ১৩১: 1/1
+  15. গরুড় পুরাণ — ১ ১৫ গরুডপুরাণ অধ্যায় ১৪১: 1/1
+  16. গরুড় পুরাণ — ১ ১৬ গরুডপুরাণ অধ্যায় ১৫১: 1/1
+  18. গরুড় পুরাণ — ১ ১৮ গরুডপুরাণ অধ্যায় ১৭১: 1/1
+  19. গরুড় পুরাণ — ১ ১৯ গরুডপুরাণ অধ্যায় ১৮১: 1/1
+  20. গরুড় পুরাণ — ১ ২০ গরুডপুরাণ অধ্যায় ১৯১: 1/1
+  23. গরুড় পুরাণ — ১ ২৩ গরুডপুরাণ অধ্যায় ২২১: 1/1
+  24. গরুড় পুরাণ — ১ ২৪ গরুডপুরাণ অধ্যায় ২৩১: 1/1
+  25. গরুড় পুরাণ — ২ ১ গরুডপুরাণ অধ্যায় ১ ১০: 1/1
+  27. গরুড় পুরাণ — ২ ৩ গরুডপুরাণ অধ্যায় ২১ ৩০: 1/1
+  28. গরুড় পুরাণ — ২ ৪ গরুডপুরাণ অধ্যায় ৩১ ৪০: 1/1
+  29. গরুড় পুরাণ — ২ ৫ গরুডপুরাণ অধ্যায় ৪১ ৪৯: 1/1
+  31. গরুড় পুরাণ — ৩ ২ গরুডপুরাণ অধ্যায় ১১ ২০: 1/1
+কীওয়ার্ড: ভবিষ্য পুরাণ
+বই-পাতা: ['tps://www.ebanglalibrary.com/books/ভবিষ্য-পুরাণ-অনুবাদ-স্বা/']
+সূচিতে লেসন: 50
+নামানো হবে 50টি পাতা
+[1] https://www.ebanglalibrary.com/lessons/কথা-প্রস্তাবনা/
+   ! URLError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%be%e0%a6%ac%e0%a6%a8%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 12 শ্লোক
+[2] https://www.ebanglalibrary.com/lessons/সৃষ্টি-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 33 শ্লোক
+[3] https://www.ebanglalibrary.com/lessons/সর্বসংস্কার-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 16 শ্লোক
+[4] https://www.ebanglalibrary.com/lessons/সাবিত্রী-মাহাত্ম্য/
+   ! URLError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%ae%e0%a7%8d%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 29 শ্লোক
+[5] https://www.ebanglalibrary.com/lessons/স্ত্রী-শুভাশুভ-লক্ষণ/
+   ! URLError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 14 শ্লোক
+[6] ps://www.ebanglalibrary.com/lessons/তৃতীয়া-কল্প-বিধি-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 4 শ্লোক
+[7] https://www.ebanglalibrary.com/lessons/চতুর্থী-কল্প-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[26] s://www.ebanglalibrary.com/lessons/লিঙ্গ-পুরাণ-পৃথ্বীরাজ-সে/
+[8] s://www.ebanglalibrary.com/lessons/পঞ্চমী-কল্পে-নাগপঞ্চমী-ব/
+   ! URLError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%9a%e0%a6%ae%e0%a7%80-%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[27] s://www.ebanglalibrary.com/topics/১-শিবভক্ত-দধীচি-মুনির-প্র/
+[9] ttps://www.ebanglalibrary.com/lessons/ধাতুগত-বিষ-লক্ষণ-সমূহ/
+   ! URLError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b8%e0%a6%ae%e0%a7%82%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 12 শ্লোক
+[10] s://www.ebanglalibrary.com/lessons/ষষ্ঠীকল্পে-কাৰ্ত্তিক-ষষ্/
+   ! URLError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%95-%e0%a6%b7%e0%a6%b7%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[11] s://www.ebanglalibrary.com/lessons/ষষ্ঠীকল্পে-ব্রাহ্মণ্য-বি/
+   ! URLError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%af-%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 7 শ্লোক
+[12] tps://www.ebanglalibrary.com/lessons/সপ্তমী-কল্প-ব্ৰত-বৰ্ণন/
+   ! URLError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[28] https://www.ebanglalibrary.com/topics/২-নন্দীশ্বরের-কাহিনি/
+[13] s://www.ebanglalibrary.com/lessons/সপ্তমী-কল্প-বর্ণনে-কৃষ্ণ/
+   ! URLError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%83%e0%a6%b7%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 12 শ্লোক
+[14] s://www.ebanglalibrary.com/lessons/আদিত্য-নিত্যারাধনবিধি-বর/
+   ! URLError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a7%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[15] s://www.ebanglalibrary.com/lessons/রথ-সপ্তমী-মাহাত্ম্য-বর্ণ/
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[29] ps://www.ebanglalibrary.com/topics/৩-শরভরূপে-শিবকর্তৃক-নৃসি/
-   ✓ 1 শ্লোক
-[30] s://www.ebanglalibrary.com/topics/৪-শিব-কর্তৃক-বিষ্ণুকে-সুদ/
-   ✓ 1 শ্লোক
-[31] ps://www.ebanglalibrary.com/topics/৫-গায়ক-বিষ্ণুভক্ত-কৌশিক/
-   ✓ 1 শ্লোক
-[32] ps://www.ebanglalibrary.com/topics/৬-মহারাজ-অম্বরীষের-কন্যা/
-   ✓ 1 শ্লোক
-[33] s://www.ebanglalibrary.com/lessons/ভবিষ্য-পুরাণ-পৃথ্বীরাজ-স/
+[16] s://www.ebanglalibrary.com/lessons/সূর্যযোগ-মাহাত্ম্য-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[34] ps://www.ebanglalibrary.com/topics/০১-ভবিষ্য-পুরাণের-সৃষ্টি/
+[17] ps://www.ebanglalibrary.com/lessons/সূর্যের-বিরাট-রূপ-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 1 শ্লোক
-[35] s://www.ebanglalibrary.com/topics/০২-ম্লেচ্ছ-বিনাশ-যজ্ঞ-করে/
-   ✓ 1 শ্লোক
-[36] s://www.ebanglalibrary.com/topics/০৩-কলির-সাধনার-ফলস্বরূপ-ধ/
-   ✓ 1 শ্লোক
-[37] s://www.ebanglalibrary.com/topics/০৪-ম্লেচ্ছ-রাজা-ন্যূহকে-স/
-   ✓ 1 শ্লোক
-[38] ps://www.ebanglalibrary.com/topics/৫-বিক্রমাদিত্য-বেতাল-সংব/
+[18] s://www.ebanglalibrary.com/lessons/আদিত্যবার-মাহাত্ম্য-বর্ণ/
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[39] ps://www.ebanglalibrary.com/topics/৬-ব্রাহ্মণবেশী-বেতালের-দ/
-   ✓ 1 শ্লোক
-[40] https://www.ebanglalibrary.com/topics/৭-পাণিনির-রুদ্র-সাধনা/
-   ✓ 1 শ্লোক
-[41] ps://www.ebanglalibrary.com/topics/৮-কলিকালে-পঞ্চপাণ্ডবের-প/
-   ✓ 1 শ্লোক
-[42] ps://www.ebanglalibrary.com/topics/০৯-ভোজরাজের-দ্বারা-আৰ্য্/
-   ✓ 1 শ্লোক
-[43] ps://www.ebanglalibrary.com/topics/১০-শ্রীচৈতন্যের-মাতা-পিত/
-   ✓ 1 শ্লোক
-[44] ps://www.ebanglalibrary.com/lessons/পদ্ম-মহাপুরাণ-পৃথ্বীরাজ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[45] s://www.ebanglalibrary.com/topics/১-নর্মদা-বা-রেবা-মাহাত্ম্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[46] tps://www.ebanglalibrary.com/topics/২-ব্রাহ্মণের-প্রাণরক্ষা/
-   ✓ 1 শ্লোক
-[47] ps://www.ebanglalibrary.com/topics/৩-ভক্তরাজ-প্রহ্লাদের-পূর/
-   ✓ 1 শ্লোক
-[48] s://www.ebanglalibrary.com/topics/৪-পতিব্রতা-নারী-সুকলার-কা/
-   ✓ 1 শ্লোক
-[49] ps://www.ebanglalibrary.com/topics/৫-তীর্থযাত্রা-থেকে-প্রত্/
-   ✓ 1 শ্লোক
-[50] ps://www.ebanglalibrary.com/topics/৬-মহেশ্বর-ক্রোধে-সমুদ্রে/
-   ✓ 1 শ্লোক
-[51] ps://www.ebanglalibrary.com/topics/৭-বৃন্দার-সঙ্গে-জালন্ধরে/
-   ✓ 1 শ্লোক
-[52] ps://www.ebanglalibrary.com/topics/৮-জাম্ববান-কথিত-পুরাকল্প/
-   ✓ 1 শ্লোক
-[53] s://www.ebanglalibrary.com/lessons/গরুড়-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[54] ps://www.ebanglalibrary.com/topics/১-সুতপুত্ৰ-উগ্রশ্রবা-কর্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[55] ://www.ebanglalibrary.com/topics/২-মানব-মানবীর-মঙ্গল-ও-অমঙ্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[56] s://www.ebanglalibrary.com/topics/৩-বলাসুরের-দেহ-থেকে-সৃষ্ট/
-   ✗ মন্ত্র পাওয়া যায়নি
-[57] s://www.ebanglalibrary.com/topics/৪-গয়াতীর্থের-উৎপত্তি-ও-ত/
-   ✓ 1 শ্লোক
-[58] ps://www.ebanglalibrary.com/topics/৫-বিনতানন্দনের-প্রশ্নে-ভ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[59] ttps://www.ebanglalibrary.com/topics/৬-মৃত্যুপথযাত্রীর-সেবা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[60] ps://www.ebanglalibrary.com/topics/৭-বৃষোৎসর্গ-শ্রাদ্ধের-শ্/
+[19] ps://www.ebanglalibrary.com/lessons/সৌরধর্ম-মাহাত্ম্য-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 6 শ্লোক
+[20] s://www.ebanglalibrary.com/lessons/ব্রহ্মকৃত-সূর্যস্তুতি-বর/
+   ! URLError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a4%e0%a6%bf-%e0%a6%ac%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 10 শ্লোক
+[21] https://www.ebanglalibrary.com/lessons/বিবাহ-বিধি-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 8 শ্লোক
+[22] s://www.ebanglalibrary.com/lessons/স্ত্রীগণের-গৃহধর্ম-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 12 শ্লোক
+[23] https://www.ebanglalibrary.com/lessons/স্ত্রীধর্ম-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 16 শ্লোক
+[24] https://www.ebanglalibrary.com/lessons/ধর্ম-স্বরূপ-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 3 শ্লোক
-[61] https://www.ebanglalibrary.com/topics/৮-পঞ্চপিশাচের-কাহিনী/
+[25] ps://www.ebanglalibrary.com/lessons/ব্রহ্মাণ্ডোৎপত্তি-বিস্ত/
+   ! URLError — a6%bf%e0%a6%b8%e0%a7%8d%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%bf%e0%a6%b8%e0%a7%8d%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%bf%e0%a6%b8%e0%a7%8d%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%bf%e0%a6%b8%e0%a7%8d%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 1 শ্লোক
-[62] tps://www.ebanglalibrary.com/topics/৯-বভ্রূবাহন-ও-প্রেতবাহন/
-   ✓ 1 শ্লোক
-[63] ps://www.ebanglalibrary.com/lessons/ব্রহ্মবৈবর্ত-পুরাণ-পৃথ্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[64] https://www.ebanglalibrary.com/topics/১-ব্রহ্ম-খণ্ড/
-   ✗ মন্ত্র পাওয়া যায়নি
-[65] https://www.ebanglalibrary.com/topics/২-প্রকৃতি-খণ্ড/
-   ✗ মন্ত্র পাওয়া যায়নি
-[66] https://www.ebanglalibrary.com/topics/৩-গণেশ-খন্ড/
-   ✗ মন্ত্র পাওয়া যায়নি
-[67] https://www.ebanglalibrary.com/topics/৪-শ্রীকৃষ্ণ-জন্ম-খণ্ড/
-   ✗ মন্ত্র পাওয়া যায়নি
-[68] s://www.ebanglalibrary.com/lessons/শিব-মহাপুরাণ-পৃথ্বীরাজ-স/
-   ✗ মন্ত্র পাওয়া যায়নি
-[69] ttps://www.ebanglalibrary.com/topics/০১-শিব-কর্তৃক-মদন-ভস্ম/
-   ✗ মন্ত্র পাওয়া যায়নি
-[70] s://www.ebanglalibrary.com/topics/০২-পার্বতীর-তপস্যা-ও-শিবে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[71] https://www.ebanglalibrary.com/topics/০৩-কালীর-তপস্যা/
-   ✓ 1 শ্লোক
-[72] s://www.ebanglalibrary.com/topics/০৪-বিত্থোৎপত্তি-ও-তার-মাহ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[73] https://www.ebanglalibrary.com/topics/০৫-গণেশের-বিবাহ/
-   ✓ 1 শ্লোক
-[74] https://www.ebanglalibrary.com/topics/০৬-অর্জুনের-তপস্যা/
-   ✓ 1 শ্লোক
-[75] ps://www.ebanglalibrary.com/topics/০৭-অজ্ঞানে-শিবরাত্রি-পাল/
-   ✓ 1 শ্লোক
-[76] tps://www.ebanglalibrary.com/topics/০৮-অজ্ঞানতাবশতঃ-শিবরাত্/
-   ✓ 1 শ্লোক
-[77] https://www.ebanglalibrary.com/topics/০৯-ত্রিপুর-নাশন/
-   ✓ 1 শ্লোক
-[78] ps://www.ebanglalibrary.com/topics/১০-ধ্বনির-মাহাত্ম্য-প্রস/
-   ✓ 1 শ্লোক
-[79] ps://www.ebanglalibrary.com/topics/১১-দেবীর-দেহাভ্যন্তরে-শি/
-   ✓ 1 শ্লোক
-[80] ps://www.ebanglalibrary.com/topics/১২-শিবের-অঙ্গে-ভস্মলেপনে/
-   ✓ 1 শ্লোক
-[81] ://www.ebanglalibrary.com/topics/১৩-শিব-সতীর-বিবাহ-ও-দক্ষযজ/
-   ✓ 1 শ্লোক
-[82] https://www.ebanglalibrary.com/topics/১৪-হর-গৌরীর-রাসলীলা/
-   ✓ 1 শ্লোক
-[83] tps://www.ebanglalibrary.com/topics/১৫-শিবপুরাণ-মার্কণ্ডেয়/
-   ✓ 1 শ্লোক
-[84] s://www.ebanglalibrary.com/lessons/স্কন্দ-পুরাণ-পৃথ্বীরাজ-স/
-   ✗ মন্ত্র পাওয়া যায়নি
-[85] https://www.ebanglalibrary.com/topics/০১-বিশ্বাসঘাতকতার-ফল/
-   ✓ 1 শ্লোক
-[86] ttps://www.ebanglalibrary.com/topics/০২-মহাদেবের-লিঙ্গ-পূজা/
-   ✓ 1 শ্লোক
-[87] ps://www.ebanglalibrary.com/topics/০৩-শিবভক্ত-শ্বেতরাজার-কা/
-   ✓ 1 শ্লোক
-[88] tps://www.ebanglalibrary.com/topics/০৪-শিব-দুর্গার-পাশাখেলা/
-   ✓ 1 শ্লোক
-[89] https://www.ebanglalibrary.com/topics/০৫-জগন্নাথ-লীলা/
-   ✓ 1 শ্লোক
-[90] ttps://www.ebanglalibrary.com/topics/০৬-গৃহপতিকে-শিবের-কৃপা/
-   ✓ 1 শ্লোক
-[91] https://www.ebanglalibrary.com/topics/০৭-শুচিত্মানের-কাহিনি/
-   ✓ 1 শ্লোক
-[92] s://www.ebanglalibrary.com/topics/০৮-গরুড়-কর্তৃক-বিনতার-দা/
-   ✓ 1 শ্লোক
-[93] https://www.ebanglalibrary.com/topics/০৯-সূর্যের-সংসার/
-   ✓ 1 শ্লোক
-[94] ps://www.ebanglalibrary.com/topics/১০-সুদর্শনের-বেতালত্ব-মো/
-   ✓ 1 শ্লোক
-[95] ps://www.ebanglalibrary.com/topics/১১-পিঙ্গাক্ষ-বনাম-তারাক্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[96] tps://www.ebanglalibrary.com/topics/১২-অনিচ্ছাকৃত-শিবরাত্রি/
-   ✓ 1 শ্লোক
-[97] ps://www.ebanglalibrary.com/topics/১৩-হরিকেশ-কাশীর-দণ্ডপানি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[98] ps://www.ebanglalibrary.com/topics/১৪-প্রণবেশ্বরের-সাধনার-ম/
-   ✓ 1 শ্লোক
-[99] tps://www.ebanglalibrary.com/topics/১৫-অগস্ত্যযাত্রায়-বিন্/
-   ✓ 1 শ্লোক
-[100] ps://www.ebanglalibrary.com/topics/১৬-অমিত্রজিতের-দানব-সংহা/
-   ✓ 1 শ্লোক
-[101] https://www.ebanglalibrary.com/topics/১৭-রাজা-দিবোদাসের-কথা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[102] s://www.ebanglalibrary.com/topics/১৮-দক্ষের-পাপে-চন্দ্রের-ক/
-   ✓ 1 শ্লোক
-[103] tps://www.ebanglalibrary.com/topics/১৯-ঘনবাহনের-সোমবার-ব্রত/
-   ✓ 1 শ্লোক
-[104] s://www.ebanglalibrary.com/lessons/বামন-পুরাণ-পৃথ্বীরাজ-সেন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[105] https://www.ebanglalibrary.com/topics/বামন-পুরাণ-০১-১০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[106] https://www.ebanglalibrary.com/topics/বামন-পুরাণ-১১-২০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[107] https://www.ebanglalibrary.com/topics/বামন-পুরাণ-২১-৩০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[108] https://www.ebanglalibrary.com/topics/বামন-পুরাণ-৩১-৪০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[109] https://www.ebanglalibrary.com/topics/বামন-পুরাণ-৪১-৫৫/
-   ✗ মন্ত্র পাওয়া যায়নি
-[110] s://www.ebanglalibrary.com/lessons/ভাগবত-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[111] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০১ম-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[112] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০২য়-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[113] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৩য়-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[114] ps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৪র্থ-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[115] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৫ম-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[116] ps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৬ষ্ঠ-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[117] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৭ম-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[118] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৮ম-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[119] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৯ম-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[120] s://www.ebanglalibrary.com/lessons/কূর্ম-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[121] https://www.ebanglalibrary.com/topics/১-কূর্ম-পুরাণ-১-৪৫/
-   ✗ মন্ত্র পাওয়া যায়নি
-[122] https://www.ebanglalibrary.com/topics/২-ঈশ্বর-গীতা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[123] ps://www.ebanglalibrary.com/lessons/নারদীয়-পুরাণ-পৃথ্বীরাজ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[124] ps://www.ebanglalibrary.com/topics/১-মহামুনি-মৃকুণ্ডের-তপস্/
-   ✓ 1 শ্লোক
-[125] https://www.ebanglalibrary.com/topics/২-ভদ্রশীলের-কাহিনি/
-   ✓ 1 শ্লোক
-[126] ps://www.ebanglalibrary.com/topics/৩-দেবমালির-সাধনায়-সিদ্ধ/
-   ✓ 1 শ্লোক
-[127] s://www.ebanglalibrary.com/topics/৪-যজ্ঞমালি-ও-সুমালির-কাহি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[128] s://www.ebanglalibrary.com/topics/৬-রাজা-সুমতির-উপাখ্যান-বি/
-   ✓ 1 শ্লোক
-[129] s://www.ebanglalibrary.com/topics/৭-বহু-রাজার-অহঙ্কারের-পরি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[130] ps://www.ebanglalibrary.com/topics/৮-মন্দিরে-দীপদানের-মাহাত/
-   ✓ 1 শ্লোক
-[131] tps://www.ebanglalibrary.com/topics/৯-বিষ্ণুপাদোদকের-মাহাত্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[132] s://www.ebanglalibrary.com/lessons/মৎস্য-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[133] ps://www.ebanglalibrary.com/topics/১-কচের-সঞ্জীবনী-বিদ্যালা/
-   ✓ 1 শ্লোক
-[134] ps://www.ebanglalibrary.com/topics/২-দেবগুরু-বৃহস্পতির-ছলনা/
-   ✓ 1 শ্লোক
-[135] s://www.ebanglalibrary.com/topics/৩-মিত্রবরুণ-ও-অগস্ত্যের-ক/
-   ✓ 1 শ্লোক
-[136] ps://www.ebanglalibrary.com/topics/৪-মহারাজা-পুষ্পবাহনের-কা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[137] https://www.ebanglalibrary.com/topics/৫-তারকাসুর-বধ/
-   ✓ 1 শ্লোক
-[138] s://www.ebanglalibrary.com/lessons/বায়ু-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[139] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-০১-১০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[140] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-১১-২০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[141] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-২১-৩০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[142] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৩১-৪০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[143] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৪১-৫০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[144] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৫১-৬০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[145] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৬১-৭০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[146] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৭১-৮০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[147] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৮১-৯০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[148] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৯১-৯৮/
-   ✗ মন্ত্র পাওয়া যায়নি
-[149] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৯৯-১১০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[150] s://www.ebanglalibrary.com/lessons/ব্রহ্ম-পুরাণ-পৃথ্বীরাজ-স/
-   ✗ মন্ত্র পাওয়া যায়নি
-[151] tps://www.ebanglalibrary.com/topics/০১-ব্ৰহ্মপুরাণের-সৃষ্টি/
-   ✓ 1 শ্লোক
-[152] s://www.ebanglalibrary.com/topics/০২-রাজা-কুবলাশ্ব-হলেন-ধুন/
-   ✓ 1 শ্লোক
-[153] ps://www.ebanglalibrary.com/topics/০৩-অপরাধ-করে-সত্যবত-হলেন/
-   ✓ 1 শ্লোক
-[154] s://www.ebanglalibrary.com/topics/০৪-অপুত্রক-সগর-রাজা-বহুপু/
-   ✗ মন্ত্র পাওয়া যায়নি
-[155] s://www.ebanglalibrary.com/topics/০৫-কপোত-কপোতীর-অতিথি-সৎকা/
-   ✓ 1 শ্লোক
-[156] s://www.ebanglalibrary.com/topics/০৬-শাপগ্রস্ত-দেবতা-রাজা-শ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[157] ps://www.ebanglalibrary.com/topics/০৭-হরিশচন্দ্রের-যজ্ঞে-শু/
-   ✓ 1 শ্লোক
-[158] ://www.ebanglalibrary.com/topics/০৮-রাজা-শ্বেতের-মৃত্যু-ও-শ/
-   ✓ 1 শ্লোক
-[159] https://www.ebanglalibrary.com/topics/০৯-মহাশনির-কাহিনী/
-   ✓ 1 শ্লোক
-[160] https://www.ebanglalibrary.com/topics/১০-যথা-ধর্ম-তথা-জয়/
-   ✗ মন্ত্র পাওয়া যায়নি
-[161] ps://www.ebanglalibrary.com/topics/১১-ভক্তিযুক্ত-পূজাই-শ্রে/
-   ✓ 1 শ্লোক
-[162] ps://www.ebanglalibrary.com/topics/১২-ইন্দ্ৰ-প্ৰমতি-চিত্রসে/
-   ✓ 1 শ্লোক
-[163] https://www.ebanglalibrary.com/topics/১৩-একাদশীর-মাহাত্ম্য/
-   ✗ মন্ত্র পাওয়া যায়নি
-[164] s://www.ebanglalibrary.com/lessons/অগ্নি-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[165] tps://www.ebanglalibrary.com/topics/০১-মৎস্য-অবতারের-কাহিনী/
-   ✓ 1 শ্লোক
-[166] tps://www.ebanglalibrary.com/topics/০২-কূর্ম-অবতারের-কাহিনী/
-   ✓ 1 শ্লোক
-[167] ttps://www.ebanglalibrary.com/topics/০৩-বরাহ-অবতারের-কাহিনী/
-   ✓ 1 শ্লোক
-[168] ps://www.ebanglalibrary.com/topics/০৪-নৃসিংহ-অবতারের-কাহিনী/
-   ✗ মন্ত্র পাওয়া যায়নি
-[169] ttps://www.ebanglalibrary.com/topics/০৫-বামন-অবতারের-কাহিনী/
-   ✗ মন্ত্র পাওয়া যায়নি
-[170] ps://www.ebanglalibrary.com/topics/০৬-পরশুরাম-অবতারের-কাহিন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[171] ps://www.ebanglalibrary.com/topics/০৭-শ্রীরাম-অবতারের-কাহিন/
-   ✓ 1 শ্লোক
-[172] tps://www.ebanglalibrary.com/topics/০৮-বলরাম-অবতারের-কাহিনি/
-   ✓ 1 শ্লোক
-[173] ps://www.ebanglalibrary.com/topics/০৯-সূতপুত্ৰ-উগ্রশ্রবা-কর/
-   ✓ 1 শ্লোক
-[174] s://www.ebanglalibrary.com/topics/১০-বলাসুরের-দেহ-থেকে-সৃষ্/
-   ✓ 1 শ্লোক
-[175] ps://www.ebanglalibrary.com/topics/১১-গয়াতীর্থের-উৎপত্তি-ও/
-   ✓ 1 শ্লোক
-[176] tps://www.ebanglalibrary.com/topics/১২-বিনতানন্দনের-প্রশ্নে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[177] tps://www.ebanglalibrary.com/topics/১৩-মৃত্যুপথযাত্রীর-সেবা/
-   ✓ 1 শ্লোক
-[178] ps://www.ebanglalibrary.com/topics/১৪-বৃষোৎসর্গ-শ্রাদ্ধের-শ/
-   ✓ 3 শ্লোক
-[179] https://www.ebanglalibrary.com/topics/১৫-পঞ্চপিশাচের-কাহিনি/
-   ✓ 1 শ্লোক
-garuda: বাংলা 87/105
-  3. গরুড় পুরাণ — ০২ দেবরাজের অহঙ্কারের ফল: 2/2
-  4. গরুড় পুরাণ — ০৩ মৌন ব্রতভঙ্গের পাপমোচ 2: 2/2
-  6. গরুড় পুরাণ — ০৫ রাজা যুবনাশ্বের গর্ভে: 2/2
-  7. গরুড় পুরাণ — ০৬ সৌভরি মুনির উপাখ্যান: 2/2
-  8. গরুড় পুরাণ — ০৭ প্রতারক ইন্দ্র: 0/1
-  9. গরুড় পুরাণ — ০৮ কল্মষপাদের কাহিনি: 2/2
-  10. গরুড় পুরাণ — ০৯ নিমি হলেন বিদেহ: 2/2
-  11. গরুড় পুরাণ — ১০ পুরুরবার কাহিনি: 2/2
-  19. গরুড় পুরাণ — ১ রাজা দুর্জয় ও মুনি সৌরম: 1/1
-  20. গরুড় পুরাণ — ২ কোকক্ষেত্রের মাহাত্ম্: 1/1
-  21. গরুড় পুরাণ — ৩ নিষ্ঠুর ব্যাধ হল সত্যতপ: 1/1
-  22. গরুড় পুরাণ — ৪ এক বণিক ও প্রেতের কাহিনি: 0/1
-  23. গরুড় পুরাণ — ৫ সৌধর তীর্থের মাহাত্ম: 1/1
-  29. গরুড় পুরাণ — ৩ শরভরূপে শিবকর্তৃক নৃসি: 1/1
-  30. গরুড় পুরাণ — ৪ শিব কর্তৃক বিষ্ণুকে সুদ: 1/1
-  31. গরুড় পুরাণ — ৫ গায়ক বিষ্ণুভক্ত কৌশিক: 1/1
-  32. গরুড় পুরাণ — ৬ মহারাজ অম্বরীষের কন্যা: 1/1
-  34. গরুড় পুরাণ — ০১ ভবিষ্য পুরাণের সৃষ্টি: 1/1
-  35. গরুড় পুরাণ — ০২ ম্লেচ্ছ বিনাশ যজ্ঞ করে: 1/1
-  36. গরুড় পুরাণ — ০৩ কলির সাধনার ফলস্বরূপ ধ: 1/1
-  37. গরুড় পুরাণ — ০৪ ম্লেচ্ছ রাজা ন্যূহকে স: 1/1
-  39. গরুড় পুরাণ — ৬ ব্রাহ্মণবেশী বেতালের দ: 1/1
-  40. গরুড় পুরাণ — ৭ পাণিনির রুদ্র সাধনা: 1/1
-  41. গরুড় পুরাণ — ৮ কলিকালে পঞ্চপাণ্ডবের প: 1/1
-  42. গরুড় পুরাণ — ০৯ ভোজরাজের দ্বারা আৰ্য্: 0/1
-  43. গরুড় পুরাণ — ১০ শ্রীচৈতন্যের মাতা পিত: 1/1
-  46. গরুড় পুরাণ — ২ ব্রাহ্মণের প্রাণরক্ষা: 0/1
-  47. গরুড় পুরাণ — ৩ ভক্তরাজ প্রহ্লাদের পূর: 1/1
-  48. গরুড় পুরাণ — ৪ পতিব্রতা নারী সুকলার কা: 1/1
-  49. গরুড় পুরাণ — ৫ তীর্থযাত্রা থেকে প্রত্: 1/1
-  50. গরুড় পুরাণ — ৬ মহেশ্বর ক্রোধে সমুদ্রে: 1/1
-  51. গরুড় পুরাণ — ৭ বৃন্দার সঙ্গে জালন্ধরে: 1/1
-  52. গরুড় পুরাণ — ৮ জাম্ববান কথিত পুরাকল্প: 1/1
-  57. গরুড় পুরাণ — ৪ গয়াতীর্থের উৎপত্তি ও ত: 1/1
-  60. গরুড় পুরাণ — ৭ বৃষোৎসর্গ শ্রাদ্ধের শ্: 0/3
-  61. গরুড় পুরাণ — ৮ পঞ্চপিশাচের কাহিনী: 1/1
-  62. গরুড় পুরাণ — ৯ বভ্রূবাহন ও প্রেতবাহন: 1/1
-  71. গরুড় পুরাণ — ০৩ কালীর তপস্যা: 1/1
-  73. গরুড় পুরাণ — ০৫ গণেশের বিবাহ: 1/1
-  74. গরুড় পুরাণ — ০৬ অর্জুনের তপস্যা: 1/1
-  75. গরুড় পুরাণ — ০৭ অজ্ঞানে শিবরাত্রি পাল: 1/1
-  76. গরুড় পুরাণ — ০৮ অজ্ঞানতাবশতঃ শিবরাত্: 1/1
-  77. গরুড় পুরাণ — ০৯ ত্রিপুর নাশন: 1/1
-  78. গরুড় পুরাণ — ১০ ধ্বনির মাহাত্ম্য প্রস: 1/1
-  79. গরুড় পুরাণ — ১১ দেবীর দেহাভ্যন্তরে শি: 1/1
-  80. গরুড় পুরাণ — ১২ শিবের অঙ্গে ভস্মলেপনে: 1/1
-  81. গরুড় পুরাণ — ১৩ শিব সতীর বিবাহ ও দক্ষযজ: 1/1
-  82. গরুড় পুরাণ — ১৪ হর গৌরীর রাসলীলা: 1/1
-  83. গরুড় পুরাণ — ১৫ শিবপুরাণ মার্কণ্ডেয়: 1/1
-  85. গরুড় পুরাণ — ০১ বিশ্বাসঘাতকতার ফল: 1/1
-  86. গরুড় পুরাণ — ০২ মহাদেবের লিঙ্গ পূজা: 1/1
-  87. গরুড় পুরাণ — ০৩ শিবভক্ত শ্বেতরাজার কা: 1/1
-  88. গরুড় পুরাণ — ০৪ শিব দুর্গার পাশাখেলা: 1/1
-  89. গরুড় পুরাণ — ০৫ জগন্নাথ লীলা: 1/1
-  90. গরুড় পুরাণ — ০৬ গৃহপতিকে শিবের কৃপা: 1/1
-  91. গরুড় পুরাণ — ০৭ শুচিত্মানের কাহিনি: 1/1
-  92. গরুড় পুরাণ — ০৮ গরুড় কর্তৃক বিনতার দা: 1/1
-  93. গরুড় পুরাণ — ০৯ সূর্যের সংসার: 1/1
-  94. গরুড় পুরাণ — ১০ সুদর্শনের বেতালত্ব মো: 1/1
-  96. গরুড় পুরাণ — ১২ অনিচ্ছাকৃত শিবরাত্রি: 1/1
-  98. গরুড় পুরাণ — ১৪ প্রণবেশ্বরের সাধনার ম: 1/1
-  99. গরুড় পুরাণ — ১৫ অগস্ত্যযাত্রায় বিন্: 1/1
-  100. গরুড় পুরাণ — ১৬ অমিত্রজিতের দানব সংহা: 1/1
-  102. গরুড় পুরাণ — ১৮ দক্ষের পাপে চন্দ্রের ক: 0/1
-  103. গরুড় পুরাণ — ১৯ ঘনবাহনের সোমবার ব্রত: 1/1
-  124. গরুড় পুরাণ — ১ মহামুনি মৃকুণ্ডের তপস্: 1/1
-  125. গরুড় পুরাণ — ২ ভদ্রশীলের কাহিনি: 1/1
-  126. গরুড় পুরাণ — ৩ দেবমালির সাধনায় সিদ্ধ: 0/1
-  128. গরুড় পুরাণ — ৬ রাজা সুমতির উপাখ্যান বি: 1/1
-  130. গরুড় পুরাণ — ৮ মন্দিরে দীপদানের মাহাত: 1/1
-  133. গরুড় পুরাণ — ১ কচের সঞ্জীবনী বিদ্যালা: 1/1
-  134. গরুড় পুরাণ — ২ দেবগুরু বৃহস্পতির ছলনা: 1/1
-  135. গরুড় পুরাণ — ৩ মিত্রবরুণ ও অগস্ত্যের ক: 1/1
-  137. গরুড় পুরাণ — ৫ তারকাসুর বধ: 1/1
-  151. গরুড় পুরাণ — ০১ ব্ৰহ্মপুরাণের সৃষ্টি: 1/1
-  152. গরুড় পুরাণ — ০২ রাজা কুবলাশ্ব হলেন ধুন: 0/1
-  153. গরুড় পুরাণ — ০৩ অপরাধ করে সত্যবত হলেন: 1/1
-  155. গরুড় পুরাণ — ০৫ কপোত কপোতীর অতিথি সৎকা: 0/1
-  157. গরুড় পুরাণ — ০৭ হরিশচন্দ্রের যজ্ঞে শু: 1/1
-  158. গরুড় পুরাণ — ০৮ রাজা শ্বেতের মৃত্যু ও শ: 1/1
-  159. গরুড় পুরাণ — ০৯ মহাশনির কাহিনী: 1/1
-  161. গরুড় পুরাণ — ১১ ভক্তিযুক্ত পূজাই শ্রে: 1/1
-  162. গরুড় পুরাণ — ১২ ইন্দ্ৰ প্ৰমতি চিত্রসে: 1/1
-  165. গরুড় পুরাণ — ০১ মৎস্য অবতারের কাহিনী: 0/1
-  166. গরুড় পুরাণ — ০২ কূর্ম অবতারের কাহিনী: 1/1
-  167. গরুড় পুরাণ — ০৩ বরাহ অবতারের কাহিনী: 1/1
-  171. গরুড় পুরাণ — ০৭ শ্রীরাম অবতারের কাহিন: 1/1
-  172. গরুড় পুরাণ — ০৮ বলরাম অবতারের কাহিনি: 1/1
-  173. গরুড় পুরাণ — ০৯ সূতপুত্ৰ উগ্রশ্রবা কর: 0/1
-  174. গরুড় পুরাণ — ১০ বলাসুরের দেহ থেকে সৃষ্: 0/1
-  175. গরুড় পুরাণ — ১১ গয়াতীর্থের উৎপত্তি ও: 1/1
-  177. গরুড় পুরাণ — ১৩ মৃত্যুপথযাত্রীর সেবা: 0/1
-  178. গরুড় পুরাণ — ১৪ বৃষোৎসর্গ শ্রাদ্ধের শ: 0/3
-  179. গরুড় পুরাণ — ১৫ পঞ্চপিশাচের কাহিনি: 1/1
-লেসন/টপিক: 178
-টপিক: 179
-নামানো হবে 179টি পাতা
-[1] ps://www.ebanglalibrary.com/lessons/বিষ্ণুপুরাণ-পৃথ্বীরাজ-স/
-   ✗ মন্ত্র পাওয়া যায়নি
-[2] tps://www.ebanglalibrary.com/topics/০১-ঋভু-ও-নিদাঘের-কাহিনি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[3] ps://www.ebanglalibrary.com/topics/০২-দেবরাজের-অহঙ্কারের-ফল/
+[26] s://www.ebanglalibrary.com/lessons/পুরাণ-ইতিহাস-শ্রবণ-মাহাত/
+   ! URLError — a6%be%e0%a6%b9%e0%a6%be%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%be%e0%a6%b9%e0%a6%be%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%be%e0%a6%b9%e0%a6%be%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%be%e0%a6%b9%e0%a6%be%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 2 শ্লোক
-[4] ://www.ebanglalibrary.com/topics/০৩-মৌন-ব্রতভঙ্গের-পাপমোচ-2/
-   ✓ 2 শ্লোক
-[5] ps://www.ebanglalibrary.com/topics/০৩-মৌন-ব্রতভঙ্গের-পাপমোচ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[6] ps://www.ebanglalibrary.com/topics/০৫-রাজা-যুবনাশ্বের-গর্ভে/
-   ✓ 2 শ্লোক
-[7] tps://www.ebanglalibrary.com/topics/০৬-সৌভরি-মুনির-উপাখ্যান/
-   ✓ 2 শ্লোক
-[8] https://www.ebanglalibrary.com/topics/০৭-প্রতারক-ইন্দ্র/
-   ✓ 1 শ্লোক
-[9] https://www.ebanglalibrary.com/topics/০৮-কল্মষপাদের-কাহিনি/
-   ✓ 2 শ্লোক
-[10] https://www.ebanglalibrary.com/topics/০৯-নিমি-হলেন-বিদেহ/
-   ✓ 2 শ্লোক
-[11] https://www.ebanglalibrary.com/topics/১০-পুরুরবার-কাহিনি/
-   ✓ 2 শ্লোক
-[12] ps://www.ebanglalibrary.com/lessons/ব্রহ্মাণ্ড-পুরাণ-পৃথ্বী/
-   ✗ মন্ত্র পাওয়া যায়নি
-[13] https://www.ebanglalibrary.com/topics/০১-১০-অধ্যায়/
-   ✗ মন্ত্র পাওয়া যায়নি
-[14] https://www.ebanglalibrary.com/topics/১১-২০-অধ্যায়/
-   ✗ মন্ত্র পাওয়া যায়নি
-[15] https://www.ebanglalibrary.com/topics/২১-৩০-অধ্যায়/
-   ✗ মন্ত্র পাওয়া যায়নি
-[16] https://www.ebanglalibrary.com/topics/৪১-৫০-অধ্যায়/
-   ✗ মন্ত্র পাওয়া যায়নি
-[17] https://www.ebanglalibrary.com/topics/৫১-৬০-অধ্যায়/
-   ✗ মন্ত্র পাওয়া যায়নি
-[18] s://www.ebanglalibrary.com/lessons/বরাহ-পুরাণ-পৃথ্বীরাজ-সেন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[19] ://www.ebanglalibrary.com/topics/১-রাজা-দুর্জয়-ও-মুনি-সৌরম/
-   ✓ 1 শ্লোক
-[20] tps://www.ebanglalibrary.com/topics/২-কোকক্ষেত্রের-মাহাত্ম্/
-   ✓ 1 শ্লোক
-[21] s://www.ebanglalibrary.com/topics/৩-নিষ্ঠুর-ব্যাধ-হল-সত্যতপ/
-   ✓ 1 শ্লোক
-[22] ://www.ebanglalibrary.com/topics/৪-এক-বণিক-ও-প্রেতের-কাহিনি/
-   ✓ 1 শ্লোক
-[23] ttps://www.ebanglalibrary.com/topics/৫-সৌধর-তীর্থের-মাহাত্ম/
-   ✓ 1 শ্লোক
-[24] tps://www.ebanglalibrary.com/topics/৬-কুব্জাম্রকের-মাহাত্ম্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[25] ://www.ebanglalibrary.com/topics/৭-বণিক-গোকর্ণ-ও-শুকপাখির-ক/
-   ✗ মন্ত্র পাওয়া যায়নি
-[26] s://www.ebanglalibrary.com/lessons/লিঙ্গ-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[27] s://www.ebanglalibrary.com/topics/১-শিবভক্ত-দধীচি-মুনির-প্র/
-   ✗ মন্ত্র পাওয়া যায়নি
-[28] https://www.ebanglalibrary.com/topics/২-নন্দীশ্বরের-কাহিনি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[29] ps://www.ebanglalibrary.com/topics/৩-শরভরূপে-শিবকর্তৃক-নৃসি/
-   ✓ 1 শ্লোক
-[30] s://www.ebanglalibrary.com/topics/৪-শিব-কর্তৃক-বিষ্ণুকে-সুদ/
-   ✓ 1 শ্লোক
-[31] ps://www.ebanglalibrary.com/topics/৫-গায়ক-বিষ্ণুভক্ত-কৌশিক/
-   ✓ 1 শ্লোক
-[32] ps://www.ebanglalibrary.com/topics/৬-মহারাজ-অম্বরীষের-কন্যা/
-   ✓ 1 শ্লোক
-[33] s://www.ebanglalibrary.com/lessons/ভবিষ্য-পুরাণ-পৃথ্বীরাজ-স/
-   ✗ মন্ত্র পাওয়া যায়নি
-[34] ps://www.ebanglalibrary.com/topics/০১-ভবিষ্য-পুরাণের-সৃষ্টি/
-   ✓ 1 শ্লোক
-[35] s://www.ebanglalibrary.com/topics/০২-ম্লেচ্ছ-বিনাশ-যজ্ঞ-করে/
-   ✓ 1 শ্লোক
-[36] s://www.ebanglalibrary.com/topics/০৩-কলির-সাধনার-ফলস্বরূপ-ধ/
-   ✓ 1 শ্লোক
-[37] s://www.ebanglalibrary.com/topics/০৪-ম্লেচ্ছ-রাজা-ন্যূহকে-স/
-   ✓ 1 শ্লোক
-[38] ps://www.ebanglalibrary.com/topics/৫-বিক্রমাদিত্য-বেতাল-সংব/
-   ✗ মন্ত্র পাওয়া যায়নি
-[39] ps://www.ebanglalibrary.com/topics/৬-ব্রাহ্মণবেশী-বেতালের-দ/
-   ✓ 1 শ্লোক
-[40] https://www.ebanglalibrary.com/topics/৭-পাণিনির-রুদ্র-সাধনা/
-   ✓ 1 শ্লোক
-[41] ps://www.ebanglalibrary.com/topics/৮-কলিকালে-পঞ্চপাণ্ডবের-প/
-   ✓ 1 শ্লোক
-[42] ps://www.ebanglalibrary.com/topics/০৯-ভোজরাজের-দ্বারা-আৰ্য্/
-   ✓ 1 শ্লোক
-[43] ps://www.ebanglalibrary.com/topics/১০-শ্রীচৈতন্যের-মাতা-পিত/
-   ✓ 1 শ্লোক
-[44] ps://www.ebanglalibrary.com/lessons/পদ্ম-মহাপুরাণ-পৃথ্বীরাজ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[45] s://www.ebanglalibrary.com/topics/১-নর্মদা-বা-রেবা-মাহাত্ম্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[46] tps://www.ebanglalibrary.com/topics/২-ব্রাহ্মণের-প্রাণরক্ষা/
-   ✓ 1 শ্লোক
-[47] ps://www.ebanglalibrary.com/topics/৩-ভক্তরাজ-প্রহ্লাদের-পূর/
-   ✓ 1 শ্লোক
-[48] s://www.ebanglalibrary.com/topics/৪-পতিব্রতা-নারী-সুকলার-কা/
-   ✓ 1 শ্লোক
-[49] ps://www.ebanglalibrary.com/topics/৫-তীর্থযাত্রা-থেকে-প্রত্/
-   ✓ 1 শ্লোক
-[50] ps://www.ebanglalibrary.com/topics/৬-মহেশ্বর-ক্রোধে-সমুদ্রে/
-   ✓ 1 শ্লোক
-[51] ps://www.ebanglalibrary.com/topics/৭-বৃন্দার-সঙ্গে-জালন্ধরে/
-   ✓ 1 শ্লোক
-[52] ps://www.ebanglalibrary.com/topics/৮-জাম্ববান-কথিত-পুরাকল্প/
-   ✓ 1 শ্লোক
-[53] s://www.ebanglalibrary.com/lessons/গরুড়-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[54] ps://www.ebanglalibrary.com/topics/১-সুতপুত্ৰ-উগ্রশ্রবা-কর্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[55] ://www.ebanglalibrary.com/topics/২-মানব-মানবীর-মঙ্গল-ও-অমঙ্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[56] s://www.ebanglalibrary.com/topics/৩-বলাসুরের-দেহ-থেকে-সৃষ্ট/
-   ✗ মন্ত্র পাওয়া যায়নি
-[57] s://www.ebanglalibrary.com/topics/৪-গয়াতীর্থের-উৎপত্তি-ও-ত/
-   ✓ 1 শ্লোক
-[58] ps://www.ebanglalibrary.com/topics/৫-বিনতানন্দনের-প্রশ্নে-ভ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[59] ttps://www.ebanglalibrary.com/topics/৬-মৃত্যুপথযাত্রীর-সেবা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[60] ps://www.ebanglalibrary.com/topics/৭-বৃষোৎসর্গ-শ্রাদ্ধের-শ্/
-   ✓ 3 শ্লোক
-[61] https://www.ebanglalibrary.com/topics/৮-পঞ্চপিশাচের-কাহিনী/
-   ✓ 1 শ্লোক
-[62] tps://www.ebanglalibrary.com/topics/৯-বভ্রূবাহন-ও-প্রেতবাহন/
-   ✓ 1 শ্লোক
-[63] ps://www.ebanglalibrary.com/lessons/ব্রহ্মবৈবর্ত-পুরাণ-পৃথ্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[64] https://www.ebanglalibrary.com/topics/১-ব্রহ্ম-খণ্ড/
-   ✗ মন্ত্র পাওয়া যায়নি
-[65] https://www.ebanglalibrary.com/topics/২-প্রকৃতি-খণ্ড/
-   ✗ মন্ত্র পাওয়া যায়নি
-[66] https://www.ebanglalibrary.com/topics/৩-গণেশ-খন্ড/
-   ✗ মন্ত্র পাওয়া যায়নি
-[67] https://www.ebanglalibrary.com/topics/৪-শ্রীকৃষ্ণ-জন্ম-খণ্ড/
-   ✗ মন্ত্র পাওয়া যায়নি
-[68] s://www.ebanglalibrary.com/lessons/শিব-মহাপুরাণ-পৃথ্বীরাজ-স/
-   ✗ মন্ত্র পাওয়া যায়নি
-[69] ttps://www.ebanglalibrary.com/topics/০১-শিব-কর্তৃক-মদন-ভস্ম/
-   ✗ মন্ত্র পাওয়া যায়নি
-[70] s://www.ebanglalibrary.com/topics/০২-পার্বতীর-তপস্যা-ও-শিবে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[71] https://www.ebanglalibrary.com/topics/০৩-কালীর-তপস্যা/
-   ✓ 1 শ্লোক
-[72] s://www.ebanglalibrary.com/topics/০৪-বিত্থোৎপত্তি-ও-তার-মাহ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[73] https://www.ebanglalibrary.com/topics/০৫-গণেশের-বিবাহ/
-   ✓ 1 শ্লোক
-[74] https://www.ebanglalibrary.com/topics/০৬-অর্জুনের-তপস্যা/
-   ✓ 1 শ্লোক
-[75] ps://www.ebanglalibrary.com/topics/০৭-অজ্ঞানে-শিবরাত্রি-পাল/
-   ✓ 1 শ্লোক
-[76] tps://www.ebanglalibrary.com/topics/০৮-অজ্ঞানতাবশতঃ-শিবরাত্/
-   ✓ 1 শ্লোক
-[77] https://www.ebanglalibrary.com/topics/০৯-ত্রিপুর-নাশন/
-   ✓ 1 শ্লোক
-[78] ps://www.ebanglalibrary.com/topics/১০-ধ্বনির-মাহাত্ম্য-প্রস/
-   ✓ 1 শ্লোক
-[79] ps://www.ebanglalibrary.com/topics/১১-দেবীর-দেহাভ্যন্তরে-শি/
-   ✓ 1 শ্লোক
-[80] ps://www.ebanglalibrary.com/topics/১২-শিবের-অঙ্গে-ভস্মলেপনে/
-   ✓ 1 শ্লোক
-[81] ://www.ebanglalibrary.com/topics/১৩-শিব-সতীর-বিবাহ-ও-দক্ষযজ/
-   ✓ 1 শ্লোক
-[82] https://www.ebanglalibrary.com/topics/১৪-হর-গৌরীর-রাসলীলা/
-   ✓ 1 শ্লোক
-[83] tps://www.ebanglalibrary.com/topics/১৫-শিবপুরাণ-মার্কণ্ডেয়/
-   ✓ 1 শ্লোক
-[84] s://www.ebanglalibrary.com/lessons/স্কন্দ-পুরাণ-পৃথ্বীরাজ-স/
-   ✗ মন্ত্র পাওয়া যায়নি
-[85] https://www.ebanglalibrary.com/topics/০১-বিশ্বাসঘাতকতার-ফল/
-   ✓ 1 শ্লোক
-[86] ttps://www.ebanglalibrary.com/topics/০২-মহাদেবের-লিঙ্গ-পূজা/
-   ✓ 1 শ্লোক
-[87] ps://www.ebanglalibrary.com/topics/০৩-শিবভক্ত-শ্বেতরাজার-কা/
-   ✓ 1 শ্লোক
-[88] tps://www.ebanglalibrary.com/topics/০৪-শিব-দুর্গার-পাশাখেলা/
-   ✓ 1 শ্লোক
-[89] https://www.ebanglalibrary.com/topics/০৫-জগন্নাথ-লীলা/
-   ✓ 1 শ্লোক
-[90] ttps://www.ebanglalibrary.com/topics/০৬-গৃহপতিকে-শিবের-কৃপা/
-   ✓ 1 শ্লোক
-[91] https://www.ebanglalibrary.com/topics/০৭-শুচিত্মানের-কাহিনি/
-   ✓ 1 শ্লোক
-[92] s://www.ebanglalibrary.com/topics/০৮-গরুড়-কর্তৃক-বিনতার-দা/
-   ✓ 1 শ্লোক
-[93] https://www.ebanglalibrary.com/topics/০৯-সূর্যের-সংসার/
-   ✓ 1 শ্লোক
-[94] ps://www.ebanglalibrary.com/topics/১০-সুদর্শনের-বেতালত্ব-মো/
-   ✓ 1 শ্লোক
-[95] ps://www.ebanglalibrary.com/topics/১১-পিঙ্গাক্ষ-বনাম-তারাক্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[96] tps://www.ebanglalibrary.com/topics/১২-অনিচ্ছাকৃত-শিবরাত্রি/
-   ✓ 1 শ্লোক
-[97] ps://www.ebanglalibrary.com/topics/১৩-হরিকেশ-কাশীর-দণ্ডপানি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[98] ps://www.ebanglalibrary.com/topics/১৪-প্রণবেশ্বরের-সাধনার-ম/
-   ✓ 1 শ্লোক
-[99] tps://www.ebanglalibrary.com/topics/১৫-অগস্ত্যযাত্রায়-বিন্/
-   ✓ 1 শ্লোক
-[100] ps://www.ebanglalibrary.com/topics/১৬-অমিত্রজিতের-দানব-সংহা/
-   ✓ 1 শ্লোক
-[101] https://www.ebanglalibrary.com/topics/১৭-রাজা-দিবোদাসের-কথা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[102] s://www.ebanglalibrary.com/topics/১৮-দক্ষের-পাপে-চন্দ্রের-ক/
-   ✓ 1 শ্লোক
-[103] tps://www.ebanglalibrary.com/topics/১৯-ঘনবাহনের-সোমবার-ব্রত/
-   ✓ 1 শ্লোক
-[104] s://www.ebanglalibrary.com/lessons/বামন-পুরাণ-পৃথ্বীরাজ-সেন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[105] https://www.ebanglalibrary.com/topics/বামন-পুরাণ-০১-১০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[106] https://www.ebanglalibrary.com/topics/বামন-পুরাণ-১১-২০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[107] https://www.ebanglalibrary.com/topics/বামন-পুরাণ-২১-৩০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[108] https://www.ebanglalibrary.com/topics/বামন-পুরাণ-৩১-৪০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[109] https://www.ebanglalibrary.com/topics/বামন-পুরাণ-৪১-৫৫/
-   ✗ মন্ত্র পাওয়া যায়নি
-[110] s://www.ebanglalibrary.com/lessons/ভাগবত-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[111] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০১ম-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[112] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০২য়-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[113] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৩য়-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[114] ps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৪র্থ-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[115] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৫ম-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[116] ps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৬ষ্ঠ-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[117] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৭ম-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[118] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৮ম-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[119] ttps://www.ebanglalibrary.com/topics/ভাগবত-পুরাণ-০৯ম-স্কন্ধ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[120] s://www.ebanglalibrary.com/lessons/কূর্ম-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[121] https://www.ebanglalibrary.com/topics/১-কূর্ম-পুরাণ-১-৪৫/
-   ✗ মন্ত্র পাওয়া যায়নি
-[122] https://www.ebanglalibrary.com/topics/২-ঈশ্বর-গীতা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[123] ps://www.ebanglalibrary.com/lessons/নারদীয়-পুরাণ-পৃথ্বীরাজ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[124] ps://www.ebanglalibrary.com/topics/১-মহামুনি-মৃকুণ্ডের-তপস্/
-   ✓ 1 শ্লোক
-[125] https://www.ebanglalibrary.com/topics/২-ভদ্রশীলের-কাহিনি/
-   ✓ 1 শ্লোক
-[126] ps://www.ebanglalibrary.com/topics/৩-দেবমালির-সাধনায়-সিদ্ধ/
-   ✓ 1 শ্লোক
-[127] s://www.ebanglalibrary.com/topics/৪-যজ্ঞমালি-ও-সুমালির-কাহি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[128] s://www.ebanglalibrary.com/topics/৬-রাজা-সুমতির-উপাখ্যান-বি/
-   ✓ 1 শ্লোক
-[129] s://www.ebanglalibrary.com/topics/৭-বহু-রাজার-অহঙ্কারের-পরি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[130] ps://www.ebanglalibrary.com/topics/৮-মন্দিরে-দীপদানের-মাহাত/
-   ✓ 1 শ্লোক
-[131] tps://www.ebanglalibrary.com/topics/৯-বিষ্ণুপাদোদকের-মাহাত্/
-   ✗ মন্ত্র পাওয়া যায়নি
-[132] s://www.ebanglalibrary.com/lessons/মৎস্য-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[133] ps://www.ebanglalibrary.com/topics/১-কচের-সঞ্জীবনী-বিদ্যালা/
-   ✓ 1 শ্লোক
-[134] ps://www.ebanglalibrary.com/topics/২-দেবগুরু-বৃহস্পতির-ছলনা/
-   ✓ 1 শ্লোক
-[135] s://www.ebanglalibrary.com/topics/৩-মিত্রবরুণ-ও-অগস্ত্যের-ক/
-   ✓ 1 শ্লোক
-[136] ps://www.ebanglalibrary.com/topics/৪-মহারাজা-পুষ্পবাহনের-কা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[137] https://www.ebanglalibrary.com/topics/৫-তারকাসুর-বধ/
-   ✓ 1 শ্লোক
-[138] s://www.ebanglalibrary.com/lessons/বায়ু-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[139] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-০১-১০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[140] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-১১-২০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[141] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-২১-৩০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[142] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৩১-৪০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[143] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৪১-৫০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[144] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৫১-৬০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[145] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৬১-৭০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[146] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৭১-৮০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[147] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৮১-৯০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[148] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৯১-৯৮/
-   ✗ মন্ত্র পাওয়া যায়নি
-[149] https://www.ebanglalibrary.com/topics/বায়ু-পুরাণ-৯৯-১১০/
-   ✗ মন্ত্র পাওয়া যায়নি
-[150] s://www.ebanglalibrary.com/lessons/ব্রহ্ম-পুরাণ-পৃথ্বীরাজ-স/
-   ✗ মন্ত্র পাওয়া যায়নি
-[151] tps://www.ebanglalibrary.com/topics/০১-ব্ৰহ্মপুরাণের-সৃষ্টি/
-   ✓ 1 শ্লোক
-[152] s://www.ebanglalibrary.com/topics/০২-রাজা-কুবলাশ্ব-হলেন-ধুন/
-   ✓ 1 শ্লোক
-[153] ps://www.ebanglalibrary.com/topics/০৩-অপরাধ-করে-সত্যবত-হলেন/
-   ✓ 1 শ্লোক
-[154] s://www.ebanglalibrary.com/topics/০৪-অপুত্রক-সগর-রাজা-বহুপু/
-   ✗ মন্ত্র পাওয়া যায়নি
-[155] s://www.ebanglalibrary.com/topics/০৫-কপোত-কপোতীর-অতিথি-সৎকা/
-   ✓ 1 শ্লোক
-[156] s://www.ebanglalibrary.com/topics/০৬-শাপগ্রস্ত-দেবতা-রাজা-শ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[157] ps://www.ebanglalibrary.com/topics/০৭-হরিশচন্দ্রের-যজ্ঞে-শু/
-   ✓ 1 শ্লোক
-[158] ://www.ebanglalibrary.com/topics/০৮-রাজা-শ্বেতের-মৃত্যু-ও-শ/
-   ✓ 1 শ্লোক
-[159] https://www.ebanglalibrary.com/topics/০৯-মহাশনির-কাহিনী/
-   ✓ 1 শ্লোক
-[160] https://www.ebanglalibrary.com/topics/১০-যথা-ধর্ম-তথা-জয়/
-   ✗ মন্ত্র পাওয়া যায়নি
-[161] ps://www.ebanglalibrary.com/topics/১১-ভক্তিযুক্ত-পূজাই-শ্রে/
-   ✓ 1 শ্লোক
-[162] ps://www.ebanglalibrary.com/topics/১২-ইন্দ্ৰ-প্ৰমতি-চিত্রসে/
-   ✓ 1 শ্লোক
-[163] https://www.ebanglalibrary.com/topics/১৩-একাদশীর-মাহাত্ম্য/
-   ✗ মন্ত্র পাওয়া যায়নি
-[164] s://www.ebanglalibrary.com/lessons/অগ্নি-পুরাণ-পৃথ্বীরাজ-সে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[165] tps://www.ebanglalibrary.com/topics/০১-মৎস্য-অবতারের-কাহিনী/
-   ✓ 1 শ্লোক
-[166] tps://www.ebanglalibrary.com/topics/০২-কূর্ম-অবতারের-কাহিনী/
-   ✓ 1 শ্লোক
-[167] ttps://www.ebanglalibrary.com/topics/০৩-বরাহ-অবতারের-কাহিনী/
-   ✓ 1 শ্লোক
-[168] ps://www.ebanglalibrary.com/topics/০৪-নৃসিংহ-অবতারের-কাহিনী/
-   ✗ মন্ত্র পাওয়া যায়নি
-[169] ttps://www.ebanglalibrary.com/topics/০৫-বামন-অবতারের-কাহিনী/
-   ✗ মন্ত্র পাওয়া যায়নি
-[170] ps://www.ebanglalibrary.com/topics/০৬-পরশুরাম-অবতারের-কাহিন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[171] ps://www.ebanglalibrary.com/topics/০৭-শ্রীরাম-অবতারের-কাহিন/
-   ✓ 1 শ্লোক
-[172] tps://www.ebanglalibrary.com/topics/০৮-বলরাম-অবতারের-কাহিনি/
-   ✓ 1 শ্লোক
-[173] ps://www.ebanglalibrary.com/topics/০৯-সূতপুত্ৰ-উগ্রশ্রবা-কর/
-   ✓ 1 শ্লোক
-[174] s://www.ebanglalibrary.com/topics/১০-বলাসুরের-দেহ-থেকে-সৃষ্/
-   ✓ 1 শ্লোক
-[175] ps://www.ebanglalibrary.com/topics/১১-গয়াতীর্থের-উৎপত্তি-ও/
-   ✓ 1 শ্লোক
-[176] tps://www.ebanglalibrary.com/topics/১২-বিনতানন্দনের-প্রশ্নে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[177] tps://www.ebanglalibrary.com/topics/১৩-মৃত্যুপথযাত্রীর-সেবা/
-   ✓ 1 শ্লোক
-[178] ps://www.ebanglalibrary.com/topics/১৪-বৃষোৎসর্গ-শ্রাদ্ধের-শ/
-   ✓ 3 শ্লোক
-[179] https://www.ebanglalibrary.com/topics/১৫-পঞ্চপিশাচের-কাহিনি/
-   ✓ 1 শ্লোক
-bhabishya: বাংলা 87/105
-  3. ভবিষ্য পুরাণ — ০২ দেবরাজের অহঙ্কারের ফল: 2/2
-  4. ভবিষ্য পুরাণ — ০৩ মৌন ব্রতভঙ্গের পাপমোচ 2: 2/2
-  6. ভবিষ্য পুরাণ — ০৫ রাজা যুবনাশ্বের গর্ভে: 2/2
-  7. ভবিষ্য পুরাণ — ০৬ সৌভরি মুনির উপাখ্যান: 2/2
-  8. ভবিষ্য পুরাণ — ০৭ প্রতারক ইন্দ্র: 0/1
-  9. ভবিষ্য পুরাণ — ০৮ কল্মষপাদের কাহিনি: 2/2
-  10. ভবিষ্য পুরাণ — ০৯ নিমি হলেন বিদেহ: 2/2
-  11. ভবিষ্য পুরাণ — ১০ পুরুরবার কাহিনি: 2/2
-  19. ভবিষ্য পুরাণ — ১ রাজা দুর্জয় ও মুনি সৌরম: 1/1
-  20. ভবিষ্য পুরাণ — ২ কোকক্ষেত্রের মাহাত্ম্: 1/1
-  21. ভবিষ্য পুরাণ — ৩ নিষ্ঠুর ব্যাধ হল সত্যতপ: 1/1
-  22. ভবিষ্য পুরাণ — ৪ এক বণিক ও প্রেতের কাহিনি: 0/1
-  23. ভবিষ্য পুরাণ — ৫ সৌধর তীর্থের মাহাত্ম: 1/1
-  29. ভবিষ্য পুরাণ — ৩ শরভরূপে শিবকর্তৃক নৃসি: 1/1
-  30. ভবিষ্য পুরাণ — ৪ শিব কর্তৃক বিষ্ণুকে সুদ: 1/1
-  31. ভবিষ্য পুরাণ — ৫ গায়ক বিষ্ণুভক্ত কৌশিক: 1/1
-  32. ভবিষ্য পুরাণ — ৬ মহারাজ অম্বরীষের কন্যা: 1/1
-  34. ভবিষ্য পুরাণ — ০১ ভবিষ্য পুরাণের সৃষ্টি: 1/1
-  35. ভবিষ্য পুরাণ — ০২ ম্লেচ্ছ বিনাশ যজ্ঞ করে: 1/1
-  36. ভবিষ্য পুরাণ — ০৩ কলির সাধনার ফলস্বরূপ ধ: 1/1
-  37. ভবিষ্য পুরাণ — ০৪ ম্লেচ্ছ রাজা ন্যূহকে স: 1/1
-  39. ভবিষ্য পুরাণ — ৬ ব্রাহ্মণবেশী বেতালের দ: 1/1
-  40. ভবিষ্য পুরাণ — ৭ পাণিনির রুদ্র সাধনা: 1/1
-  41. ভবিষ্য পুরাণ — ৮ কলিকালে পঞ্চপাণ্ডবের প: 1/1
-  42. ভবিষ্য পুরাণ — ০৯ ভোজরাজের দ্বারা আৰ্য্: 0/1
-  43. ভবিষ্য পুরাণ — ১০ শ্রীচৈতন্যের মাতা পিত: 1/1
-  46. ভবিষ্য পুরাণ — ২ ব্রাহ্মণের প্রাণরক্ষা: 0/1
-  47. ভবিষ্য পুরাণ — ৩ ভক্তরাজ প্রহ্লাদের পূর: 1/1
-  48. ভবিষ্য পুরাণ — ৪ পতিব্রতা নারী সুকলার কা: 1/1
-  49. ভবিষ্য পুরাণ — ৫ তীর্থযাত্রা থেকে প্রত্: 1/1
-  50. ভবিষ্য পুরাণ — ৬ মহেশ্বর ক্রোধে সমুদ্রে: 1/1
-  51. ভবিষ্য পুরাণ — ৭ বৃন্দার সঙ্গে জালন্ধরে: 1/1
-  52. ভবিষ্য পুরাণ — ৮ জাম্ববান কথিত পুরাকল্প: 1/1
-  57. ভবিষ্য পুরাণ — ৪ গয়াতীর্থের উৎপত্তি ও ত: 1/1
-  60. ভবিষ্য পুরাণ — ৭ বৃষোৎসর্গ শ্রাদ্ধের শ্: 0/3
-  61. ভবিষ্য পুরাণ — ৮ পঞ্চপিশাচের কাহিনী: 1/1
-  62. ভবিষ্য পুরাণ — ৯ বভ্রূবাহন ও প্রেতবাহন: 1/1
-  71. ভবিষ্য পুরাণ — ০৩ কালীর তপস্যা: 1/1
-  73. ভবিষ্য পুরাণ — ০৫ গণেশের বিবাহ: 1/1
-  74. ভবিষ্য পুরাণ — ০৬ অর্জুনের তপস্যা: 1/1
-  75. ভবিষ্য পুরাণ — ০৭ অজ্ঞানে শিবরাত্রি পাল: 1/1
-  76. ভবিষ্য পুরাণ — ০৮ অজ্ঞানতাবশতঃ শিবরাত্: 1/1
-  77. ভবিষ্য পুরাণ — ০৯ ত্রিপুর নাশন: 1/1
-  78. ভবিষ্য পুরাণ — ১০ ধ্বনির মাহাত্ম্য প্রস: 1/1
-  79. ভবিষ্য পুরাণ — ১১ দেবীর দেহাভ্যন্তরে শি: 1/1
-  80. ভবিষ্য পুরাণ — ১২ শিবের অঙ্গে ভস্মলেপনে: 1/1
-  81. ভবিষ্য পুরাণ — ১৩ শিব সতীর বিবাহ ও দক্ষযজ: 1/1
-  82. ভবিষ্য পুরাণ — ১৪ হর গৌরীর রাসলীলা: 1/1
-  83. ভবিষ্য পুরাণ — ১৫ শিবপুরাণ মার্কণ্ডেয়: 1/1
-  85. ভবিষ্য পুরাণ — ০১ বিশ্বাসঘাতকতার ফল: 1/1
-  86. ভবিষ্য পুরাণ — ০২ মহাদেবের লিঙ্গ পূজা: 1/1
-  87. ভবিষ্য পুরাণ — ০৩ শিবভক্ত শ্বেতরাজার কা: 1/1
-  88. ভবিষ্য পুরাণ — ০৪ শিব দুর্গার পাশাখেলা: 1/1
-  89. ভবিষ্য পুরাণ — ০৫ জগন্নাথ লীলা: 1/1
-  90. ভবিষ্য পুরাণ — ০৬ গৃহপতিকে শিবের কৃপা: 1/1
-  91. ভবিষ্য পুরাণ — ০৭ শুচিত্মানের কাহিনি: 1/1
-  92. ভবিষ্য পুরাণ — ০৮ গরুড় কর্তৃক বিনতার দা: 1/1
-  93. ভবিষ্য পুরাণ — ০৯ সূর্যের সংসার: 1/1
-  94. ভবিষ্য পুরাণ — ১০ সুদর্শনের বেতালত্ব মো: 1/1
-  96. ভবিষ্য পুরাণ — ১২ অনিচ্ছাকৃত শিবরাত্রি: 1/1
-  98. ভবিষ্য পুরাণ — ১৪ প্রণবেশ্বরের সাধনার ম: 1/1
-  99. ভবিষ্য পুরাণ — ১৫ অগস্ত্যযাত্রায় বিন্: 1/1
-  100. ভবিষ্য পুরাণ — ১৬ অমিত্রজিতের দানব সংহা: 1/1
-  102. ভবিষ্য পুরাণ — ১৮ দক্ষের পাপে চন্দ্রের ক: 0/1
-  103. ভবিষ্য পুরাণ — ১৯ ঘনবাহনের সোমবার ব্রত: 1/1
-  124. ভবিষ্য পুরাণ — ১ মহামুনি মৃকুণ্ডের তপস্: 1/1
-  125. ভবিষ্য পুরাণ — ২ ভদ্রশীলের কাহিনি: 1/1
-  126. ভবিষ্য পুরাণ — ৩ দেবমালির সাধনায় সিদ্ধ: 0/1
-  128. ভবিষ্য পুরাণ — ৬ রাজা সুমতির উপাখ্যান বি: 1/1
-  130. ভবিষ্য পুরাণ — ৮ মন্দিরে দীপদানের মাহাত: 1/1
-  133. ভবিষ্য পুরাণ — ১ কচের সঞ্জীবনী বিদ্যালা: 1/1
-  134. ভবিষ্য পুরাণ — ২ দেবগুরু বৃহস্পতির ছলনা: 1/1
-  135. ভবিষ্য পুরাণ — ৩ মিত্রবরুণ ও অগস্ত্যের ক: 1/1
-  137. ভবিষ্য পুরাণ — ৫ তারকাসুর বধ: 1/1
-  151. ভবিষ্য পুরাণ — ০১ ব্ৰহ্মপুরাণের সৃষ্টি: 1/1
-  152. ভবিষ্য পুরাণ — ০২ রাজা কুবলাশ্ব হলেন ধুন: 0/1
-  153. ভবিষ্য পুরাণ — ০৩ অপরাধ করে সত্যবত হলেন: 1/1
-  155. ভবিষ্য পুরাণ — ০৫ কপোত কপোতীর অতিথি সৎকা: 0/1
-  157. ভবিষ্য পুরাণ — ০৭ হরিশচন্দ্রের যজ্ঞে শু: 1/1
-  158. ভবিষ্য পুরাণ — ০৮ রাজা শ্বেতের মৃত্যু ও শ: 1/1
-  159. ভবিষ্য পুরাণ — ০৯ মহাশনির কাহিনী: 1/1
-  161. ভবিষ্য পুরাণ — ১১ ভক্তিযুক্ত পূজাই শ্রে: 1/1
-  162. ভবিষ্য পুরাণ — ১২ ইন্দ্ৰ প্ৰমতি চিত্রসে: 1/1
-  165. ভবিষ্য পুরাণ — ০১ মৎস্য অবতারের কাহিনী: 0/1
-  166. ভবিষ্য পুরাণ — ০২ কূর্ম অবতারের কাহিনী: 1/1
-  167. ভবিষ্য পুরাণ — ০৩ বরাহ অবতারের কাহিনী: 1/1
-  171. ভবিষ্য পুরাণ — ০৭ শ্রীরাম অবতারের কাহিন: 1/1
-  172. ভবিষ্য পুরাণ — ০৮ বলরাম অবতারের কাহিনি: 1/1
-  173. ভবিষ্য পুরাণ — ০৯ সূতপুত্ৰ উগ্রশ্রবা কর: 0/1
-  174. ভবিষ্য পুরাণ — ১০ বলাসুরের দেহ থেকে সৃষ্: 0/1
-  175. ভবিষ্য পুরাণ — ১১ গয়াতীর্থের উৎপত্তি ও: 1/1
-  177. ভবিষ্য পুরাণ — ১৩ মৃত্যুপথযাত্রীর সেবা: 0/1
-  178. ভবিষ্য পুরাণ — ১৪ বৃষোৎসর্গ শ্রাদ্ধের শ: 0/3
-  179. ভবিষ্য পুরাণ — ১৫ পঞ্চপিশাচের কাহিনি: 1/1
+[27] s://www.ebanglalibrary.com/lessons/পূর্তকর্ম-তথা-বৃক্ষ-রোপণ/
+   ! URLError — a6%b0%e0%a7%8b%e0%a6%aa%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8b%e0%a6%aa%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8b%e0%a6%aa%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8b%e0%a6%aa%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 11 শ্লোক
+[28] ps://www.ebanglalibrary.com/lessons/বিবিধ-বিধিকুণ্ড-নির্ণয়/
+   ! URLError — a7%8d%e0%a6%a3%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%a3%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%a3%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%a3%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[29] s://www.ebanglalibrary.com/lessons/হোমাবসানে-ষোড়শোপচার-বর্/
+   ! URLError — 6%b0-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[30] s://www.ebanglalibrary.com/lessons/যজ্ঞ-ভেদে-বহ্নিনাম-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[31] s://www.ebanglalibrary.com/lessons/স্রুবাদর্বী-পাত্র-নির্মা/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%ae%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%ae%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%ae%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%ae%e0%a6%be/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[32] s://www.ebanglalibrary.com/lessons/ব্রাহ্মণ-লক্ষণ-তথা-ব্রাহ/
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%be%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%be%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%be%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%be%e0%a6%b9/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 26 শ্লোক
+[33] tps://www.ebanglalibrary.com/lessons/গুরুজন-মাহাত্ম্য-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 9 শ্লোক
+[34] tps://www.ebanglalibrary.com/lessons/আহুতি-হোম-সংখ্যা-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[35] https://www.ebanglalibrary.com/lessons/কুন্ড-সংস্কার-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 8 শ্লোক
+[36] s://www.ebanglalibrary.com/lessons/বিবিধ-মন্ডল-নিৰ্মাণ-বৰ্ণ/
+   ! URLError — a6%ac%e0%a7%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a7%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a7%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a7%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[37] s://www.ebanglalibrary.com/lessons/সুদর্শনান্ত-নরপতি-রাজ্যক/
+   ! URLError — a6%9c%e0%a7%8d%e0%a6%af%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%9c%e0%a7%8d%e0%a6%af%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%9c%e0%a7%8d%e0%a6%af%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%9c%e0%a7%8d%e0%a6%af%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[38] ps://www.ebanglalibrary.com/lessons/ত্রেতাযুগীয়ভূপ-বৃত্তান/
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[39] s://www.ebanglalibrary.com/lessons/দ্বাপরযুগীয়-ভূপ-বৃত্তান/
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%a4%e0%a6%be%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 1 শ্লোক
+[40] s://www.ebanglalibrary.com/lessons/ম্লেচ্ছযজ্ঞ-বৃত্তান্ত-তথ/
+   ! URLError — 7%8d%e0%a6%a4-%e0%a6%a4%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%a4-%e0%a6%a4%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%a4-%e0%a6%a4%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%a4-%e0%a6%a4%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 14 শ্লোক
+[41] https://www.ebanglalibrary.com/lessons/ম্লেচ্ছবংশ-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[42] s://www.ebanglalibrary.com/lessons/আর্যাবর্তে-ম্লেচ্ছগণের-আ/
+   ! URLError — 6%a3%e0%a7%87%e0%a6%b0-%e0%a6%86/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a3%e0%a7%87%e0%a6%b0-%e0%a6%86/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a3%e0%a7%87%e0%a6%b0-%e0%a6%86/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a3%e0%a7%87%e0%a6%b0-%e0%a6%86/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[43] s://www.ebanglalibrary.com/lessons/কলিঞ্জর-অজমেরপুরাদি-বর্ণ/
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%b0%e0%a7%8d%e0%a6%a3/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[44] https://www.ebanglalibrary.com/lessons/পদ্মাবতী-কথা-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[45] s://www.ebanglalibrary.com/lessons/মধুমতী-বরনির্ণয়-কথা-বর্/
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[46] ttps://www.ebanglalibrary.com/lessons/সত্যনারায়ণ-কথা-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 6 শ্লোক
+[47] s://www.ebanglalibrary.com/lessons/সত্যনারায়ণ-ব্রতে-চন্দ্র/
+   ! URLError — a7%8d%e0%a6%a6%e0%a7%8d%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%a6%e0%a7%8d%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%a6%e0%a7%8d%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%a6%e0%a7%8d%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[48] ps://www.ebanglalibrary.com/lessons/সত্যনারায়ণ-ব্ৰতে-ভিন্ন/
+   ! URLError — a6%bf%e0%a6%a8%e0%a7%8d%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%bf%e0%a6%a8%e0%a7%8d%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%bf%e0%a6%a8%e0%a7%8d%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%bf%e0%a6%a8%e0%a7%8d%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 12 শ্লোক
+[49] s://www.ebanglalibrary.com/lessons/শতানন্দ-ব্রাহ্মণ-কথা-বর্/
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%be-%e0%a6%ac%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[50] https://www.ebanglalibrary.com/lessons/সাধু-বণিক-কথা-বর্ণন/
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b0%e0%a7%8d%e0%a6%a3%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+bhabishya: বাংলা 258/288
+  1. ভবিষ্য পুরাণ — কথা প্রস্তাবনা: 12/12
+  2. ভবিষ্য পুরাণ — সৃষ্টি বর্ণন: 33/33
+  3. ভবিষ্য পুরাণ — সর্বসংস্কার বর্ণন: 16/16
+  4. ভবিষ্য পুরাণ — সাবিত্রী মাহাত্ম্য: 29/29
+  5. ভবিষ্য পুরাণ — স্ত্রী শুভাশুভ লক্ষণ: 14/14
+  6. ভবিষ্য পুরাণ — তৃতীয়া কল্প বিধি বর্ণন: 0/4
+  9. ভবিষ্য পুরাণ — ধাতুগত বিষ লক্ষণ সমূহ: 12/12
+  10. ভবিষ্য পুরাণ — ষষ্ঠীকল্পে কাৰ্ত্তিক ষষ্: 0/1
+  11. ভবিষ্য পুরাণ — ষষ্ঠীকল্পে ব্রাহ্মণ্য বি: 7/7
+  13. ভবিষ্য পুরাণ — সপ্তমী কল্প বর্ণনে কৃষ্ণ: 11/12
+  14. ভবিষ্য পুরাণ — আদিত্য নিত্যারাধনবিধি বর: 1/1
+  17. ভবিষ্য পুরাণ — সূর্যের বিরাট রূপ বর্ণন: 0/1
+  19. ভবিষ্য পুরাণ — সৌরধর্ম মাহাত্ম্য বর্ণন: 6/6
+  20. ভবিষ্য পুরাণ — ব্রহ্মকৃত সূর্যস্তুতি বর: 10/10
+  21. ভবিষ্য পুরাণ — বিবাহ বিধি বর্ণন: 7/8
+  22. ভবিষ্য পুরাণ — স্ত্রীগণের গৃহধর্ম বর্ণন: 0/12
+  23. ভবিষ্য পুরাণ — স্ত্রীধর্ম বর্ণন: 16/16
+  24. ভবিষ্য পুরাণ — ধর্ম স্বরূপ বর্ণন: 0/3
+  25. ভবিষ্য পুরাণ — ব্রহ্মাণ্ডোৎপত্তি বিস্ত: 1/1
+  26. ভবিষ্য পুরাণ — পুরাণ ইতিহাস শ্রবণ মাহাত: 2/2
+  27. ভবিষ্য পুরাণ — পূর্তকর্ম তথা বৃক্ষ রোপণ: 11/11
+  32. ভবিষ্য পুরাণ — ব্রাহ্মণ লক্ষণ তথা ব্রাহ: 26/26
+  33. ভবিষ্য পুরাণ — গুরুজন মাহাত্ম্য বর্ণন: 9/9
+  35. ভবিষ্য পুরাণ — কুন্ড সংস্কার বর্ণন: 8/8
+  38. ভবিষ্য পুরাণ — ত্রেতাযুগীয়ভূপ বৃত্তান: 1/1
+  39. ভবিষ্য পুরাণ — দ্বাপরযুগীয় ভূপ বৃত্তান: 0/1
+  40. ভবিষ্য পুরাণ — ম্লেচ্ছযজ্ঞ বৃত্তান্ত তথ: 14/14
+  46. ভবিষ্য পুরাণ — সত্যনারায়ণ কথা বর্ণন: 0/6
+  48. ভবিষ্য পুরাণ — সত্যনারায়ণ ব্ৰতে ভিন্ন: 12/12
+বই-পাতা: []
+বই-পাতা পাওয়া গেল না: ব্রহ্ম পুরাণ
 কীওয়ার্ড: সামবেদ সংহিতা
 বই-পাতা: ['tps://www.ebanglalibrary.com/books/সামবেদ-সংহিতা-অনুবাদ-পরি/', 'ttps://www.ebanglalibrary.com/books/সামবেদ-সংহিতা-বঙ্গানুবা/']
 সূচিতে লেসন: 48
@@ -1037,3 +551,358 @@ samaveda: বাংলা 174/179
   38. সামবেদ সংহিতা — সামবেদ ০৪।০২: 9/9
   42. সামবেদ সংহিতা — সামবেদ ০৪।০৬: 9/9
   48. সামবেদ সংহিতা — সামবেদ ০৪।১২: 1/1
+কীওয়ার্ড: অথর্ববেদ সংহিতা
+বই-পাতা: ['ttps://www.ebanglalibrary.com/books/অথর্ববেদ-সংহিতা-সম্পাদন/']
+সূচিতে লেসন: 50
+নামানো হবে 50টি পাতা
+[1] s://www.ebanglalibrary.com/lessons/০০-সম্পাদকের-নিবেদন-ভূমি/
+   ! URLError — a6%ad%e0%a7%82%e0%a6%ae%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ad%e0%a7%82%e0%a6%ae%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ad%e0%a7%82%e0%a6%ae%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ad%e0%a7%82%e0%a6%ae%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 4 মন্ত্র
+[2] tps://www.ebanglalibrary.com/lessons/০১ম-কাণ্ড-প্রথম-অনুবাক/
+   ! URLError — a7%81%e0%a6%ac%e0%a6%be%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%81%e0%a6%ac%e0%a6%be%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%81%e0%a6%ac%e0%a6%be%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%81%e0%a6%ac%e0%a6%be%e0%a6%95/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 32 মন্ত্র
+[3] s://www.ebanglalibrary.com/lessons/০১।০২-প্রথম-কাণ্ড-দ্বিতী/
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 25 মন্ত্র
+[4] ://www.ebanglalibrary.com/lessons/০১।০৩-প্রথম-কাণ্ড-তৃতীয়-অ/
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 21 মন্ত্র
+[5] s://www.ebanglalibrary.com/lessons/০১।০৪-প্রথম-কাণ্ড-চতুর্থ/
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 25 মন্ত্র
+[6] ://www.ebanglalibrary.com/lessons/০১।০৫-প্রথম-কাণ্ড-পঞ্চম-অ/
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 29 মন্ত্র
+[7] ://www.ebanglalibrary.com/lessons/০১।০৬-প্রথম-কাণ্ড-ষষ্ঠ-অন/
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 39 মন্ত্র
+[8] s://www.ebanglalibrary.com/lessons/০২।১-দ্বিতীয়-কাণ্ড-প্রথ/
+   ! URLError — a6%aa%e0%a7%8d%e0%a6%b0%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%aa%e0%a7%8d%e0%a6%b0%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%aa%e0%a7%8d%e0%a6%b0%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%aa%e0%a7%8d%e0%a6%b0%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 9 মন্ত্র
+[9] s://www.ebanglalibrary.com/lessons/০২।২-দ্বিতীয়-কাণ্ড-দ্বি/
+   ! URLError — a6%a6%e0%a7%8d%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%a6%e0%a7%8d%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%a6%e0%a7%8d%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%a6%e0%a7%8d%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 8 মন্ত্র
+[10] s://www.ebanglalibrary.com/lessons/০২।৩-দ্বিতীয়-কাণ্ড-তৃতী/
+   ! URLError — a6%a4%e0%a7%83%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%a4%e0%a7%83%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%a4%e0%a7%83%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%a4%e0%a7%83%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 15 মন্ত্র
+[11] s://www.ebanglalibrary.com/lessons/০২।৪-দ্বিতীয়-কাণ্ড-চতুর/
+   ! URLError — a6%9a%e0%a6%a4%e0%a7%81%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%9a%e0%a6%a4%e0%a7%81%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%9a%e0%a6%a4%e0%a7%81%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%9a%e0%a6%a4%e0%a7%81%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 15 মন্ত্র
+[12] s://www.ebanglalibrary.com/lessons/০২।৫-দ্বিতীয়-কাণ্ড-পঞ্চ/
+   ! URLError — a6%aa%e0%a6%9e%e0%a7%8d%e0%a6%9a/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%aa%e0%a6%9e%e0%a7%8d%e0%a6%9a/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%aa%e0%a6%9e%e0%a7%8d%e0%a6%9a/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%aa%e0%a6%9e%e0%a7%8d%e0%a6%9a/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 8 মন্ত্র
+[13] s://www.ebanglalibrary.com/lessons/০২।৬-দ্বিতীয়-কাণ্ড-ষষ্ঠ/
+   ! URLError — a6%b7%e0%a6%b7%e0%a7%8d%e0%a6%a0/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%b7%e0%a6%b7%e0%a7%8d%e0%a6%a0/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%b7%e0%a6%b7%e0%a7%8d%e0%a6%a0/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%b7%e0%a6%b7%e0%a7%8d%e0%a6%a0/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 10 মন্ত্র
+[14] ://www.ebanglalibrary.com/lessons/০৩।১-তৃতীয়-কাণ্ড-প্রথম-অ/
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 12 মন্ত্র
+[15] s://www.ebanglalibrary.com/lessons/০৩।২-তৃতীয়-কাণ্ড-দ্বিতী/
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 8 মন্ত্র
+[16] s://www.ebanglalibrary.com/lessons/০৩।৩-তৃতীয়-কাণ্ড-তৃতীয়/
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 10 মন্ত্র
+[17] s://www.ebanglalibrary.com/lessons/০৩।৪-তৃতীয়-কাণ্ড-চতুর্থ/
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 12 মন্ত্র
+[18] ://www.ebanglalibrary.com/lessons/০৩।৫-তৃতীয়-কাণ্ড-পঞ্চম-অ/
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 10 মন্ত্র
+[19] ://www.ebanglalibrary.com/lessons/০৩।৬-তৃতীয়-কাণ্ড-ষষ্ঠ-অন/
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 13 মন্ত্র
+[20] ://www.ebanglalibrary.com/lessons/০৪।১-চতুর্থ-কাণ্ড-প্রথম-অ/
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 11 মন্ত্র
+[21] s://www.ebanglalibrary.com/lessons/০৪।২-চতুর্থ-কাণ্ড-দ্বিতী/
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 8 মন্ত্র
+[22] ://www.ebanglalibrary.com/lessons/০৪।৩-চতুর্থ-কাণ্ড-তৃতীয়-অ/
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 16 মন্ত্র
+[23] s://www.ebanglalibrary.com/lessons/০৪।৪-চতুর্থ-কাণ্ড-চতুর্থ/
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 9 মন্ত্র
+[24] ://www.ebanglalibrary.com/lessons/০৪।৫-চতুর্থ-কাণ্ড-পঞ্চম-অ/
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 9 মন্ত্র
+[25] ://www.ebanglalibrary.com/lessons/০৪।৬-চতুর্থ-কাণ্ড-ষষ্ঠ-অন/
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 8 মন্ত্র
+[26] ://www.ebanglalibrary.com/lessons/০৪।৭-চতুর্থ-কাণ্ড-সপ্তম-অ/
+   ! URLError — 7%8d%e0%a6%a4%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%a4%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%a4%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%a4%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 9 মন্ত্র
+[27] ://www.ebanglalibrary.com/lessons/০৪।৮-চতুর্থ-কাণ্ড-অষ্টম-অ/
+   ! URLError — 7%8d%e0%a6%9f%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%9f%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%9f%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%9f%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 11 মন্ত্র
+[28] ://www.ebanglalibrary.com/lessons/০৫।১-পঞ্চম-কাণ্ড-প্রথম-অন/
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 8 মন্ত্র
+[29] s://www.ebanglalibrary.com/lessons/০৫।২-পঞ্চম-কাণ্ড-দ্বিতীয/
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 5 মন্ত্র
+[30] ://www.ebanglalibrary.com/lessons/০৫।৩-পঞ্চম-কাণ্ড-তৃতীয়-অন/
+   ! URLError — 7%80%e0%a7%9f-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%80%e0%a7%9f-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%80%e0%a7%9f-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%80%e0%a7%9f-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 8 মন্ত্র
+[31] ://www.ebanglalibrary.com/lessons/০৫।৪-পঞ্চম-কাণ্ড-চতুর্থ-অ/
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 14 মন্ত্র
+[32] ://www.ebanglalibrary.com/lessons/০৫।৫-পঞ্চম-কাণ্ড-পঞ্চম-অন/
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 9 মন্ত্র
+[33] ://www.ebanglalibrary.com/lessons/০৫।৬-পঞ্চম-কাণ্ড-ষষ্ঠ-অনু/
+   ! URLError — 6%a0-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a0-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a0-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a0-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 14 মন্ত্র
+[34] ://www.ebanglalibrary.com/lessons/০৬।০১-ষষ্ঠ-কাণ্ড-প্রথম-অন/
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 13 মন্ত্র
+[35] s://www.ebanglalibrary.com/lessons/০৬।০২-ষষ্ঠ-কাণ্ড-দ্বিতীয/
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 14 মন্ত্র
+[36] ://www.ebanglalibrary.com/lessons/০৬।০৩-ষষ্ঠ-কাণ্ড-তৃতীয়-অ/
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 21 মন্ত্র
+[37] ://www.ebanglalibrary.com/lessons/০৬।০৪-ষষ্ঠ-কাণ্ড-চতুর্থ-অ/
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 15 মন্ত্র
+[38] ://www.ebanglalibrary.com/lessons/০৬।০৫-ষষ্ঠ-কাণ্ড-পঞ্চম-অন/
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 16 মন্ত্র
+[39] ://www.ebanglalibrary.com/lessons/০৬।০৬-ষষ্ঠ-কাণ্ড-ষষ্ঠ-অনু/
+   ! URLError — 6%a0-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a0-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a0-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a0-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 15 মন্ত্র
+[40] ://www.ebanglalibrary.com/lessons/০৬।০৭-ষষ্ঠ-কাণ্ড-সপ্তম-অন/
+   ! URLError — 6%a4%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a4%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a4%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a4%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 15 মন্ত্র
+[41] ://www.ebanglalibrary.com/lessons/০৬।০৮-ষষ্ঠ-কাণ্ড-অষ্টম-অন/
+   ! URLError — 6%9f%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%9f%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%9f%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%9f%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 16 মন্ত্র
+[42] ://www.ebanglalibrary.com/lessons/০৬।০৯-ষষ্ঠ-কাণ্ড-নবম-অনুব/
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 14 মন্ত্র
+[43] ://www.ebanglalibrary.com/lessons/০৬।১০-ষষ্ঠ-কাণ্ড-দশম-অনুব/
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 16 মন্ত্র
+[44] ://www.ebanglalibrary.com/lessons/০৬।১১-ষষ্ঠ-কাণ্ড-একাদশ-অন/
+   ! URLError — 6%a6%e0%a6%b6-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a6%e0%a6%b6-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a6%e0%a6%b6-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a6%e0%a6%b6-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 17 মন্ত্র
+[45] ://www.ebanglalibrary.com/lessons/০৬।১২-ষষ্ঠ-কাণ্ড-দ্বাদশ-অ/
+   ! URLError — 6%be%e0%a6%a6%e0%a6%b6-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%be%e0%a6%a6%e0%a6%b6-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%be%e0%a6%a6%e0%a6%b6-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%be%e0%a6%a6%e0%a6%b6-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 19 মন্ত্র
+[46] s://www.ebanglalibrary.com/lessons/০৬।১৩-ষষ্ঠ-কাণ্ড-ত্রয়োদ/
+   ! URLError — a6%af%e0%a6%bc%e0%a7%8b%e0%a6%a6/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%af%e0%a6%bc%e0%a7%8b%e0%a6%a6/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%af%e0%a6%bc%e0%a7%8b%e0%a6%a6/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%af%e0%a6%bc%e0%a7%8b%e0%a6%a6/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 25 মন্ত্র
+[47] ://www.ebanglalibrary.com/lessons/০৭।০১-সপ্তম-কাণ্ড-প্রথম-অ/
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 14 মন্ত্র
+[48] s://www.ebanglalibrary.com/lessons/০৭।০২-সপ্তম-কাণ্ড-দ্বিতী/
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 10 মন্ত্র
+[49] ://www.ebanglalibrary.com/lessons/০৭।০৩-সপ্তম-কাণ্ড-তৃতীয়-অ/
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a4%e0%a7%80%e0%a7%9f-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 20 মন্ত্র
+[50] s://www.ebanglalibrary.com/lessons/০৭।০৪-সপ্তম-কাণ্ড-চতুর্থ/
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 17 মন্ত্র
+atharvaveda: বাংলা 720/721
+  1. অথর্ববেদ সংহিতা — ০০ সম্পাদকের নিবেদন ভূমি: 4/4
+  2. অথর্ববেদ সংহিতা — ০১ম কাণ্ড প্রথম অনুবাক: 32/32
+  3. অথর্ববেদ সংহিতা — ০১।০২ প্রথম কাণ্ড দ্বিতী: 25/25
+  4. অথর্ববেদ সংহিতা — ০১।০৩ প্রথম কাণ্ড তৃতীয় অ: 21/21
+  5. অথর্ববেদ সংহিতা — ০১।০৪ প্রথম কাণ্ড চতুর্থ: 25/25
+  6. অথর্ববেদ সংহিতা — ০১।০৫ প্রথম কাণ্ড পঞ্চম অ: 29/29
+  7. অথর্ববেদ সংহিতা — ০১।০৬ প্রথম কাণ্ড ষষ্ঠ অন: 39/39
+  8. অথর্ববেদ সংহিতা — ০২।১ দ্বিতীয় কাণ্ড প্রথ: 9/9
+  9. অথর্ববেদ সংহিতা — ০২।২ দ্বিতীয় কাণ্ড দ্বি: 8/8
+  10. অথর্ববেদ সংহিতা — ০২।৩ দ্বিতীয় কাণ্ড তৃতী: 15/15
+  11. অথর্ববেদ সংহিতা — ০২।৪ দ্বিতীয় কাণ্ড চতুর: 15/15
+  12. অথর্ববেদ সংহিতা — ০২।৫ দ্বিতীয় কাণ্ড পঞ্চ: 8/8
+  13. অথর্ববেদ সংহিতা — ০২।৬ দ্বিতীয় কাণ্ড ষষ্ঠ: 10/10
+  14. অথর্ববেদ সংহিতা — ০৩।১ তৃতীয় কাণ্ড প্রথম অ: 12/12
+  15. অথর্ববেদ সংহিতা — ০৩।২ তৃতীয় কাণ্ড দ্বিতী: 8/8
+  16. অথর্ববেদ সংহিতা — ০৩।৩ তৃতীয় কাণ্ড তৃতীয়: 10/10
+  17. অথর্ববেদ সংহিতা — ০৩।৪ তৃতীয় কাণ্ড চতুর্থ: 12/12
+  18. অথর্ববেদ সংহিতা — ০৩।৫ তৃতীয় কাণ্ড পঞ্চম অ: 10/10
+  19. অথর্ববেদ সংহিতা — ০৩।৬ তৃতীয় কাণ্ড ষষ্ঠ অন: 13/13
+  20. অথর্ববেদ সংহিতা — ০৪।১ চতুর্থ কাণ্ড প্রথম অ: 11/11
+  21. অথর্ববেদ সংহিতা — ০৪।২ চতুর্থ কাণ্ড দ্বিতী: 8/8
+  22. অথর্ববেদ সংহিতা — ০৪।৩ চতুর্থ কাণ্ড তৃতীয় অ: 16/16
+  23. অথর্ববেদ সংহিতা — ০৪।৪ চতুর্থ কাণ্ড চতুর্থ: 9/9
+  24. অথর্ববেদ সংহিতা — ০৪।৫ চতুর্থ কাণ্ড পঞ্চম অ: 9/9
+  25. অথর্ববেদ সংহিতা — ০৪।৬ চতুর্থ কাণ্ড ষষ্ঠ অন: 8/8
+  26. অথর্ববেদ সংহিতা — ০৪।৭ চতুর্থ কাণ্ড সপ্তম অ: 9/9
+  27. অথর্ববেদ সংহিতা — ০৪।৮ চতুর্থ কাণ্ড অষ্টম অ: 11/11
+  28. অথর্ববেদ সংহিতা — ০৫।১ পঞ্চম কাণ্ড প্রথম অন: 8/8
+  29. অথর্ববেদ সংহিতা — ০৫।২ পঞ্চম কাণ্ড দ্বিতীয: 5/5
+  30. অথর্ববেদ সংহিতা — ০৫।৩ পঞ্চম কাণ্ড তৃতীয় অন: 8/8
+  31. অথর্ববেদ সংহিতা — ০৫।৪ পঞ্চম কাণ্ড চতুর্থ অ: 14/14
+  32. অথর্ববেদ সংহিতা — ০৫।৫ পঞ্চম কাণ্ড পঞ্চম অন: 9/9
+  33. অথর্ববেদ সংহিতা — ০৫।৬ পঞ্চম কাণ্ড ষষ্ঠ অনু: 14/14
+  34. অথর্ববেদ সংহিতা — ০৬।০১ ষষ্ঠ কাণ্ড প্রথম অন: 13/13
+  35. অথর্ববেদ সংহিতা — ০৬।০২ ষষ্ঠ কাণ্ড দ্বিতীয: 14/14
+  36. অথর্ববেদ সংহিতা — ০৬।০৩ ষষ্ঠ কাণ্ড তৃতীয় অ: 21/21
+  37. অথর্ববেদ সংহিতা — ০৬।০৪ ষষ্ঠ কাণ্ড চতুর্থ অ: 15/15
+  38. অথর্ববেদ সংহিতা — ০৬।০৫ ষষ্ঠ কাণ্ড পঞ্চম অন: 16/16
+  39. অথর্ববেদ সংহিতা — ০৬।০৬ ষষ্ঠ কাণ্ড ষষ্ঠ অনু: 15/15
+  40. অথর্ববেদ সংহিতা — ০৬।০৭ ষষ্ঠ কাণ্ড সপ্তম অন: 15/15
+  41. অথর্ববেদ সংহিতা — ০৬।০৮ ষষ্ঠ কাণ্ড অষ্টম অন: 16/16
+  42. অথর্ববেদ সংহিতা — ০৬।০৯ ষষ্ঠ কাণ্ড নবম অনুব: 14/14
+  43. অথর্ববেদ সংহিতা — ০৬।১০ ষষ্ঠ কাণ্ড দশম অনুব: 16/16
+  44. অথর্ববেদ সংহিতা — ০৬।১১ ষষ্ঠ কাণ্ড একাদশ অন: 17/17
+  45. অথর্ববেদ সংহিতা — ০৬।১২ ষষ্ঠ কাণ্ড দ্বাদশ অ: 19/19
+  46. অথর্ববেদ সংহিতা — ০৬।১৩ ষষ্ঠ কাণ্ড ত্রয়োদ: 25/25
+  47. অথর্ববেদ সংহিতা — ০৭।০১ সপ্তম কাণ্ড প্রথম অ: 14/14
+  48. অথর্ববেদ সংহিতা — ০৭।০২ সপ্তম কাণ্ড দ্বিতী: 9/10
+  49. অথর্ববেদ সংহিতা — ০৭।০৩ সপ্তম কাণ্ড তৃতীয় অ: 20/20
+  50. অথর্ববেদ সংহিতা — ০৭।০৪ সপ্তম কাণ্ড চতুর্থ: 17/17
