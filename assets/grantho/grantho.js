@@ -40,6 +40,7 @@
   var onlyBnEl = document.getElementById("g-only-bn");
 
   var index = null, chapter = null, chapterId = null;
+  var bnNoteEl = document.getElementById("g-bn-note");
   /* গীতা/পুরাণে «শ্লোক», বেদ-উপনিষদে «মন্ত্র» — index.json-এর verseWord থেকে */
   var VW = "শ্লোক";
   var state = { bn: true, sk: true, q: "", onlyBn: false };
@@ -104,8 +105,10 @@
     out += '<div class="g-v-num" aria-hidden="true">' + bn(v.n) + '</div><div class="g-v-body">';
     if (v.spk && state.sk) out += '<p class="g-v-spk">' + esc(v.spk) + '</p>';
     if (state.sk && v.sk) out += '<p class="g-v-sk" lang="sa">' + esc(v.sk).replace(/\n+/g, "<br>") + '</p>';
-    if (state.bn && v.bn) out += '<p class="g-v-bn">' + esc(v.bn) + '</p>';
-    if (state.bn && !v.bn) out += '<p class="g-v-gap">এই ' + VW + 'ের বাংলা অনুবাদ এখনো যোগ করা যায়নি — সংস্কৃত মূল পাঠই এখানে প্রামাণ্য।</p>';
+    if (state.bn && v.bn) out += '<p class="g-v-bn">' + esc(v.bn).replace(/\n+/g, "</p><p class=\"g-v-bn\">") + '</p>';
+    if (state.bn && v.bnSrc) out += '<p class="g-v-src">অনুবাদ: ' + esc(v.bnSrc) + '</p>';
+
+
     out += '</div></article>';
     return out;
   }
@@ -146,6 +149,7 @@
 
     /* খোঁজার অবস্থায় থাকলে পুরো গ্রন্থের ফলাফল দেখাই */
     if (state.q && state.q.length >= 2) {
+      if (bnNoteEl) bnNoteEl.hidden = true;
       bodyEl.innerHTML = '<p class="g-loading">খোঁজা হচ্ছে…</p>';
       loadAll().then(function () {
         var r = searchHTML(state.q);
@@ -160,6 +164,23 @@
 
     var list = chapter.verses;
     if (state.onlyBn) list = list.filter(function (v) { return v.bn; });
+
+    /* বাংলা অনুবাদের কভারেজ — প্রতি মন্ত্রে পুনরাবৃত্তি না করে একবার */
+    if (bnNoteEl) {
+      var withBn = chapter.verses.filter(function (v) { return v.bn; }).length;
+      var total = chapter.verses.length;
+      if (!state.bn) {
+        bnNoteEl.hidden = true;
+      } else if (withBn === 0) {
+        bnNoteEl.hidden = false;
+        bnNoteEl.innerHTML = "এই অধ্যায়ের <b>" + bn(total) + "টি " + VW + "</b>-এর বাংলা অনুবাদ এখনো যোগ করা যায়নি — সংস্কৃত মূল পাঠই এখানে প্রামাণ্য।";
+      } else if (withBn < total) {
+        bnNoteEl.hidden = false;
+        bnNoteEl.innerHTML = "বাংলা অনুবাদ পাওয়া গেছে <b>" + bn(withBn) + "/" + bn(total) + "</b>টিতে।";
+      } else {
+        bnNoteEl.hidden = true;
+      }
+    }
     bodyEl.innerHTML = list.map(verseHTML).join("") ||
       '<p class="g-empty">কিছু পাওয়া যায়নি।</p>';
     if (titleEl) titleEl.textContent = chapter.bn;
