@@ -56,6 +56,10 @@ jobs:
         continue-on-error: true
         run: |
           set -x
+          if [ "$AUTO" = "1" ]; then
+            python3 tools/fetch_ebl.py --auto 2>&1 | tee /tmp/fetch.log
+            exit 0
+          fi
           ARGS=(--slug "$SLUG" --title "$TITLE" --match "$MATCH" --word "$WORD" --start "$STARTN")
           [ "$ORDINAL" = "1" ] && ARGS+=(--by-ordinal)
           [ "$CHAIN" = "1" ] && ARGS+=(--chain)

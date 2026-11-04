@@ -18,6 +18,7 @@
     --slug chandogya --match ছান্দোগ্য --by-ordinal   → অধ্যায়-ক্রমে নামাও
     --slug bhabishya --match "ভবিষ্য পুরাণ" --chain    → «Next Lesson» ধরে ক্রমে নামাও
     --dump 2                      → প্রথম ২ পাতার কাঁচা পাঠ _debug/ তে রাখো
+    --auto                         → কাঠামো নিজেই ঠিক করে এক রানে সব নামায়
 """
 import argparse
 import html as htmllib
@@ -151,12 +152,30 @@ def parse_verses(txt):
                     cur["part"] = "bn"      # সংখ্যার পরেই বাংলা (ঋগ্বেদ-ধাঁচ)
                 cur[cur["part"]].append(rest)
             continue
-        if cur is None:
+        if cur is None and not (ln.startswith("মন্ত্র") or ln.startswith("অর্থ")):
             continue
-        lbl = re.match(r"^(অন্বয়|সরলার্থ|মন্তব্য|ভাষ্য|টীকা)\s*[:\-–—]\s*", ln)
+        lbl = (re.match(r"^(অন্বয়|সরলার্থ|মন্তব্য|ভাষ্য|টীকা|মন্ত্র)\s*[:\-–—]?\s*", ln)
+               or re.match(r"^(অর্থ)\s*[:ঃ]?\s*[\-–—]*\s*", ln))
         if lbl:
+            if lbl.group(1) == "মন্ত্র":
+                if cur and (cur["bn"] or cur["part"] in ("bn", "note")):
+                    close()
+                    counter += 1
+                    cur = {"n": counter, "gidx": None, "sk": [], "anv": [],
+                           "bn": [], "note": [], "part": "sk"}
+                if cur is None:
+                    counter += 1
+                    cur = {"n": counter, "gidx": None, "sk": [], "anv": [],
+                           "bn": [], "note": [], "part": "sk"}
+                rest = ln[lbl.end():].strip()
+                rest = re.sub(r"^\([০-৯]{1,3}\)\s*", "", rest)
+                if rest:
+                    cur["sk"].append(rest)
+                cur["part"] = "sk"
+                continue
+            g = lbl.group(1)
             cur["part"] = {"অন্বয়": "anv", "সরলার্থ": "bn", "মন্তব্য": "note",
-                           "ভাষ্য": "note", "টীকা": "note"}[lbl.group(1)]
+                           "ভাষ্য": "note", "টীকা": "note"}.get(g, "bn")
             rest = ln[lbl.end():].strip()
             if rest:
                 cur[cur["part"]].append(rest)
@@ -182,6 +201,7 @@ def parse_verses(txt):
             n = last + 1
         last = n
         bn = re.sub(r"^\s*(Bookmark|Previous|Next)\s+", "", bn)
+        bn = re.sub(r"^\(\s*[০-৯]{1,3}\s*\)\s*", "", bn)      # «(১১) » বাদ
         bn = re.sub(r"\s*Bookmark\s*$", "", bn)
         note = re.sub(r"\s*Bookmark\s*$", "", " ".join(v["note"]).strip())
         out.append({"n": n, "sk": sk, "anv": " ".join(v["anv"]).strip(),
@@ -266,6 +286,89 @@ def write_chapter(out_dir, idx, title, verses, url):
             "withBn": sum(1 for v in vs if v["bn"]), "url": url}
 
 
+def classify(url):
+    """URL দেখে গ্রন্থ-ধরন ঠিক করে (slug, শিরোনাম, পদ্ধতি, ম্যাচ-কীওয়ার্ড)।"""
+    t = urllib.parse.unquote(url)
+    if re.search(r"ভবিষ্য[- ]?পুরাণ", t) and "/lessons/" in t:
+        return dict(slug="bhabishya", title="ভবিষ্য পুরাণ", mode="book",
+                    match="ভবিষ্য পুরাণ পৃথ্বীরাজ", word="শ্লোক")
+    if re.search(r"গরুড়[- ]?পুরাণ", t) and "/lessons/" in t:
+        return dict(slug="garuda", title="গরুড় পুরাণ", mode="book",
+                    match="গরুড় পুরাণ পৃথ্বীরাজ", word="শ্লোক")
+    if re.search(r"ব্রহ্ম[- ]?পুরাণ", t) and "/lessons/" in t:
+        return dict(slug="brahma", title="ব্রহ্ম পুরাণ", mode="book",
+                    match="ব্রহ্ম পুরাণ পৃথ্বীরাজ", word="শ্লোক")
+    if re.search(r"অথর্ববেদ", t) and "/books/" in t:
+        return dict(slug="atharvaveda", title="অথর্ববেদ সংহিতা", mode="book",
+                    match="অথর্ববেদ সংহিতা", word="মন্ত্র")
+    if re.search(r"সামবেদ", t) and "/books/" in t:
+        return dict(slug="samaveda", title="সামবেদ সংহিতা", mode="book",
+                    match="সামবেদ সংহিতা বঙ্গানুবাদ", word="মন্ত্র")
+    if re.search(r"সামবেদ", t) and "/lessons/" in t and re.search(r"[০-৯]{2}।[০-৯]{2}", t):
+        return dict(slug="samaveda", title="সামবেদ সংহিতা", mode="book",
+                    match="সামবেদ সংহিতা পরিতোষ", word="মন্ত্র")
+    if re.search(r"ঋগ্বেদ", t) and "/topics/" in t:
+        return dict(slug="rigveda", title="ঋগ্বেদ সংহিতা", mode="group",
+                    match="ঋগ্বেদ ০", word="সূক্ত")
+    if re.search(r"শুক্ল[- ]?যজুর্বেদ", t) and "/books/" in t:
+        return dict(slug="yajurveda-shukla", title="শুক্ল যজুর্বেদ সংহিতা",
+                    mode="book", match="শুক্ল যজুর্বেদ সংহিতা", word="মন্ত্র")
+    if re.search(r"ছান্দোগ্য", t) and "/topics/" in t:
+        return dict(slug="chandogya", title="ছান্দোগ্য উপনিষদ", mode="ordinal",
+                    match="ছান্দোগ্য উপনিষদ", word="মন্ত্র")
+    return None
+
+
+def run_auto(args):
+    """আবিষ্কার → গ্রন্থ-শনাক্ত → নামানো, এক রানে।"""
+    cands = []
+    for sm in TOPIC_SITEMAPS + LESSON_SITEMAPS:
+        x = get(sm)
+        if not x:
+            continue
+        cands += [htmllib.unescape(u) for u in
+                  re.findall(r"<loc>\s*([^<\s]+)\s*</loc>", x)]
+    print(f"সাইটম্যাপ URL মোট: {len(cands)}")
+    seen, targets = set(), {}
+    for u in cands:
+        c = classify(u)
+        if not c:
+            continue
+        k = c["slug"]
+        if k not in targets:
+            targets[k] = c
+            print(f"শনাক্ত: {k} ← {urllib.parse.unquote(u)[-70:]}")
+        seen.add(k)
+    for k, c in targets.items():
+        print(f"\n===== {c['title']} ({k}) — {c['mode']} =====")
+        sub = argparse.Namespace(**vars(args))
+        sub.slug = c["slug"]
+        sub.title = c["title"]
+        sub.match = c["match"]
+        sub.word = c["word"]
+        sub.ordinal = sub.chain = sub.book = sub.group_by_num = False
+        sub.discover = sub.auto = False
+        sub.url = ""
+        if c["mode"] == "book":
+            book = sitemap_urls(LESSON_SITEMAPS + TOPIC_SITEMAPS, c["match"],
+                                ("lessons", "books"))
+            book = [u for u in book if "/lessons/" in u]
+            if not book:
+                print("  ✗ বই-পাতা পাওয়া গেল না")
+                continue
+            sub.book = True
+            sub.url = book[0]
+            print("  বই:", urllib.parse.unquote(book[0])[-70:])
+        elif c["mode"] == "ordinal":
+            sub.by_ordinal = True
+        elif c["mode"] == "group":
+            sub.group_by_num = True
+        try:
+            main_run(sub)
+        except Exception as e:
+            print("  ✗ ভুল:", e)
+
+
 def build_index(out_dir, slug, title, chapters, word):
     byc = {c["id"]: c for c in chapters}
     chs = [byc[k] for k in sorted(byc)]
@@ -281,24 +384,9 @@ def build_index(out_dir, slug, title, chapters, word):
     return idx
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--slug")
-    ap.add_argument("--title", default="")
-    ap.add_argument("--match", default="")
-    ap.add_argument("--url", default="")
-    ap.add_argument("--out", default="assets/grantho/data")
-    ap.add_argument("--word", default="মন্ত্র")
-    ap.add_argument("--discover", action="store_true")
-    ap.add_argument("--by-ordinal", action="store_true")
-    ap.add_argument("--chain", action="store_true")
-    ap.add_argument("--book", action="store_true", help="বই-পাতার সূচি থেকে সব লেসন")
-    ap.add_argument("--group-by-num", action="store_true",
-                    help="পাতার শিরোনামে «০৬।১৩» থাকলে প্রথম সংখ্যা = অধ্যায়")
-    ap.add_argument("--max", type=int, default=0)
-    ap.add_argument("--start", type=int, default=1)
-    ap.add_argument("--dump", type=int, default=0)
-    args = ap.parse_args()
+def main_run(args):
+    if getattr(args, "auto", False):
+        return run_auto(args)
 
     if args.discover:
         urls = sitemap_urls(TOPIC_SITEMAPS + LESSON_SITEMAPS, args.match)
@@ -456,3 +544,32 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def main():  # noqa: F811  (CLI প্রবেশ-বিন্দু)
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--slug")
+    ap.add_argument("--title", default="")
+    ap.add_argument("--match", default="")
+    ap.add_argument("--url", default="")
+    ap.add_argument("--out", default="assets/grantho/data")
+    ap.add_argument("--word", default="মন্ত্র")
+    ap.add_argument("--discover", action="store_true")
+    ap.add_argument("--by-ordinal", action="store_true")
+    ap.add_argument("--chain", action="store_true")
+    ap.add_argument("--book", action="store_true")
+    ap.add_argument("--auto", action="store_true")
+    ap.add_argument("--group-by-num", action="store_true")
+    ap.add_argument("--max", type=int, default=0)
+    ap.add_argument("--start", type=int, default=1)
+    ap.add_argument("--dump", type=int, default=0)
+    args = ap.parse_args()
+    if args.auto:
+        return run_auto(args)
+    if args.discover:
+        urls = sitemap_urls(TOPIC_SITEMAPS + LESSON_SITEMAPS, args.match)
+        print(f"মিলেছে {len(urls)}")
+        for u in urls:
+            print(" ", urllib.parse.unquote(u))
+        return
+    return main_run(args)
