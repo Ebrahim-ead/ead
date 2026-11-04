@@ -90,6 +90,24 @@ jobs:
           python3 -u tools/fetch_ebl.py --slug samaveda --title "সামবেদ সংহিতা" \
             --word মন্ত্র --match "সামবেদ সংহিতা|সামবেদ" --book-auto --max 400 2>&1 | tail -20
 
+      - name: ৮খ) ঋগ্বেদ — দশম মণ্ডল
+        continue-on-error: true
+        run: |
+          python3 -u tools/fetch_ebl.py --slug rigveda --title "ঋগ্বেদ সংহিতা" \
+            --word সূক্ত --match "ঋগ্বেদ ১০" --by-ordinal --max 40 2>&1 | tail -15
+
+      - name: ৮গ) যজুর্বেদ — সিরিজ খোঁজা
+        continue-on-error: true
+        run: |
+          python3 -u tools/fetch_ebl.py --slug yajurveda-shukla --title "শুক্ল যজুর্বেদ সংহিতা" \
+            --word মন্ত্র --match "যজুর্বেদ" --series --max 200 2>&1 | tail -20
+
+      - name: ৮ঘ) সামবেদ — দ্বিতীয় সংস্করণ (বঙ্গানুবাদ)
+        continue-on-error: true
+        run: |
+          python3 -u tools/fetch_ebl.py --slug samaveda --title "সামবেদ সংহিতা" \
+            --word মন্ত্র --match "সামবেদ সংহিতা বঙ্গানুবাদ" --book-auto --max 400 2>&1 | tail -15
+
       - name: ৯) রিপোর্ট
         if: always()
         run: |
