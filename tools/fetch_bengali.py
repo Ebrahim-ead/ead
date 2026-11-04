@@ -70,50 +70,64 @@ def clean_html(s):
 
 
 def parse_post(html):
-    """পোস্টের HTML → (সংস্কৃত-অংশ, [(মন্ত্র-নং?, বাংলা-ব্যাখ্যা)], টীকা)।"""
+    """পোস্টের HTML → (সংস্কৃত-শ্লোক, [(মন্ত্র-নং?, বাংলা)], টীকা)।
+
+    দুই ধরনের গঠন চেনে:
+      ১) উপনিষদ রামকৃষ্ণ-মঠ ধাঁচ: শ্লোক → «ব্যাখ্যা—» বাংলা  (কঠ, শ্বেতাশ্বতর…)
+      ২) ছান্দোগ্য ধাঁচ: শ্লোক → «অন্বয় :» → «সরলার্থ :» → «মন্তব্য :»
+    """
     txt = clean_html(html)
     if "Additional menu" in txt:
         txt = txt.split("Additional menu", 1)[1]
-    # শেয়ার-ব্লক বাদ
     for cut in ("Share this on:", "Copy link", "Thanks for sharing!"):
         i = txt.find(cut)
         if i > 0:
             txt = txt[:i]
 
     m = re.search(r"ব্যাখ্যা\s*[—\-–]\s*", txt)
-    if not m:
-        return "", [], ""
-    # সংস্কৃত শ্লোক = ব্যাখ্যার আগের অংশ (সম্বন্ধ— বাদ দিয়ে)
-    sk = txt[:m.start()].strip()
+    if m:
+        sk = txt[:m.start()].strip()
+        body = txt[m.end():]
+        k = body.find("সম্বন্ধ—")
+        if k > 0:
+            body = body[:k]
+        style = "ব্যাখ্যা"
+    else:
+        a = re.search(r"অন্বয়\s*[:：]", txt)
+        if not a:
+            return "", [(None, "")], ""
+        sk = txt[:a.start()].strip()
+        rest = txt[a.end():]
+        s_ = re.search(r"সরলার্থ\s*[:：]", rest)
+        body = rest[s_.end():] if s_ else rest
+        k = body.find("মন্তব্য")
+        if k > 0:
+            body = body[:k]
+        style = "সরলার্থ"
+
+    # সংস্কৃত অংশ: সম্বন্ধ— সূচনা-বাক্য ও শিরোনাম-জাত লাইন বাদ
     k = sk.find("সম্বন্ধ—")
     if k >= 0:
         nl = sk.find("\n", k)
         sk = (sk[nl + 1:] if nl > 0 else "").strip()
-    # শিরোনাম/নেভিগেশন-জাত প্রথম লাইন বাদ
     lines = [l.strip() for l in sk.split("\n") if l.strip()]
     if lines and len(lines[0]) < 25 and not re.search(r"[।॥]", lines[0]):
         lines = lines[1:]
     sk = "\n".join(lines).strip()
-    body = txt[m.end():]
+    if len(sk) > 4000:
+        sk = sk[:4000]
 
-    # সম্বন্ধ— (পরবর্তী মন্ত্রের সূচনা) বাদ
-    j = body.find("সম্বন্ধ—")
-    if j > 0:
-        body = body[:j]
-
-    # টীকা: «(১)…» বাক্য-মধ্যে থাকলে আলাদা করি
     notes = re.findall(r"\(\s*[০-৯]+\s*\)[^()]{40,}", body)
     for n in notes:
         body = body.replace(n, "")
     body = re.sub(r"[ \t]+", " ", body)
     body = re.sub(r"\n{2,}", "\n\n", body).strip()
 
-    # এক পোস্টে একাধিক মন্ত্র? «॥ n ॥» চিহ্ন ধরে ভাগ
     parts = []
     marks = list(re.finditer(r"॥\s*([০-৯]+)\s*॥", body))
     if len(marks) >= 2:
         prev = 0
-        for k, mm in enumerate(marks):
+        for mm in marks:
             seg = body[prev:mm.end()].strip()
             prev = mm.end()
             if len(seg) > 80:
