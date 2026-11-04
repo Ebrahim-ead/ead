@@ -199,7 +199,7 @@ def is_heading(ln):
     return len(ln) < 20 and not re.search(r"[।॥,]", ln)
 
 
-def parse_verses(txt):
+def parse_verses(txt, bn_meaning=False):
     """পাতার পাঠ → [{'n','sk','anv','bn','bnNote'}]।
 
     গঠন:
@@ -351,6 +351,13 @@ def parse_verses(txt):
             nm = NUMHEAD.match(ln)
             is_dev = bool(DEV_RE.search(ln))
             is_bn_sk = (not is_dev) and _is_bn_verse(ln)
+            if is_bn_sk and bn_meaning:
+                if cur is None or cur["bn"]:
+                    add_verse([])
+                cur["part"] = "bn"
+                cur["bn"].append(ln)
+                started = True
+                continue
             if is_dev or is_bn_sk:
                 if cur is None or cur["bn"]:
                     add_verse([])
