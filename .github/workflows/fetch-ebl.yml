@@ -56,20 +56,20 @@ jobs:
         continue-on-error: true
         run: |
           set -x
+          : > /tmp/fetch.log
           run() {
             echo "### $*"
             python3 -u tools/fetch_ebl.py "$@" 2>&1 | tee -a /tmp/fetch.log
             sleep 2
           }
-          : > /tmp/fetch.log
-          run --slug bhabishya --title "ভবিষ্য পুরাণ" --word শ্লোক \
-              --match "ভবিষ্য পুরাণ|ভবিষ্যপুরাণ" --book-auto --max 120
-          run --slug garuda --title "গরুড় পুরাণ" --word শ্লোক \
-              --match "গরুড় পুরাণ|গরুড পুরাণ" --book-auto --max 120
-          run --slug brahma --title "ব্রহ্ম পুরাণ" --word শ্লোক \
-              --match "ব্রহ্ম পুরাণ|ব্রহ্মপুরাণ" --book-auto --max 120
           run --slug samaveda --title "সামবেদ সংহিতা" --word মন্ত্র \
-              --match "সামবেদ সংহিতা|সামবেদ" --book-auto --max 120
+              --match "সামবেদ সংহিতা|সামবেদ" --book-auto --max 150
+          run --slug garuda --title "গরুড় পুরাণ" --word শ্লোক \
+              --match "গরুড় পুরাণ|গরুড পুরাণ" --book-auto --max 150
+          run --slug brahma --title "ব্রহ্ম পুরাণ" --word শ্লোক \
+              --match "ব্রহ্ম পুরাণ|ব্রহ্মপুরাণ" --book-auto --max 60
+          run --slug bhabishya --title "ভবিষ্য পুরাণ" --word শ্লোক \
+              --match "ভবিষ্য পুরাণ|ভবিষ্যপুরাণ" --book-auto --max 60 --start 5
           echo "শেষ $(date -u +%H:%M:%S)"
 
       - name: Report

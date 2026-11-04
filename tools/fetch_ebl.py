@@ -145,10 +145,19 @@ def parse_verses(txt):
             verses.append(cur)
         cur = None
 
+    started = not ("মন্ত্র :" in txt or "মন্ত্র:" in txt)
+    if "অন্বয়" not in txt and "সরলার্থ" not in txt:
+        # লেবেলহীন (ঋগ্বেদ-ধাঁচ): এক অনুচ্ছেদে একাধিক «১ । … ২ । …» থাকলে ভাগ করি
+        txt = re.sub(r"\s(?=[০-৯]{1,3}\s*।\s)", "\n", txt)
     for raw in txt.split("\n"):
         ln = raw.strip()
         if not ln or ln in (",", "|"):
             continue
+        if not started:                      # «মন্ত্র :» শুরুর আগের ঋষি/ছন্দ-ব্লক বাদ
+            if ln.startswith("মন্ত্র"):
+                started = True
+            else:
+                continue
         if ln.startswith("## "):
             continue
         m = NUM_LINE.match(ln)
@@ -277,6 +286,35 @@ def ordinal_of(url):
         if k in t:
             return v, k
     return None, None
+
+
+def next_page_link(h):
+    """learnDash-এর «Next Page» লিংক (topic/lesson — দুটোই)।"""
+    m = re.search(r'href="([^"]*ld-(?:topic|lesson)-page=[^"]*)"[^>]*>\s*Next Page', h, re.I)
+    if not m:
+        m = re.search(r'<a[^>]+href="([^"]*ld-(?:topic|lesson)-page=[^"]*)"', h, re.I)
+    return htmllib.unescape(m.group(1)) if m else None
+
+
+def fetch_paged(url, max_pages=40):
+    """এক পাতার সব পৃষ্ঠা («Next Page» ধরে) জোড়া দেয়।"""
+    parts, seen, u = [], set(), url
+    for _ in range(max_pages):
+        if u in seen:
+            break
+        seen.add(u)
+        h = get(u)
+        if not h:
+            break
+        t = page_text(h)
+        if t:
+            parts.append(t)
+        nu = next_page_link(h)
+        if not nu or nu in seen:
+            break
+        u = nu
+        time.sleep(0.25)
+    return "\n\n".join(parts)
 
 
 def write_chapter(out_dir, idx, title, verses, url):
@@ -434,7 +472,7 @@ def main_run(args):
     if args.url and not (args.book or args.chain or args.group_by_num):
         # একক পাতা (পরীক্ষা/ডাম্প)
         h = get(args.url)
-        txt = page_text(h)
+        txt = fetch_paged(args.url)
         vs = parse_verses(txt)
         print(f"মন্ত্র: {len(vs)}")
         for v in vs[: args.dump or 3]:
@@ -538,8 +576,7 @@ def main_run(args):
                 curch = a
                 bucket.setdefault(a, [])
                 curv = 0
-            h = get(u)
-            vs = parse_verses(page_text(h))
+            vs = parse_verses(fetch_paged(u))
             if not vs:
                 print(f"   ✗ {a}.{b}")
                 continue
@@ -570,8 +607,7 @@ def main_run(args):
 
     for idx, u in items:
         print(f"[{idx}] {urllib.parse.unquote(u)[-60:]}")
-        h = get(u)
-        txt = page_text(h)
+        txt = fetch_paged(u)
         vs = parse_verses(txt)
         if not vs:
             print("   ✗ মন্ত্র পাওয়া যায়নি")
