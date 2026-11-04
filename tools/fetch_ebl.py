@@ -746,7 +746,7 @@ def main_run(args):
     out_dir = os.path.join(args.out, args.slug) if args.slug else ""
 
     if args.url and not (args.book or args.chain or args.group_by_num or args.toc
-                         or args.series or args.prefix):
+                         or args.series or args.prefix or args.book_toc):
         # একক পাতা (পরীক্ষা/ডাম্প)
         h = get(args.url)
         txt = fetch_paged(args.url)
@@ -792,6 +792,29 @@ def main_run(args):
             items = items[: args.max]
     elif args.book:
         items = [(i, u) for i, u in enumerate(book_lessons(args.url), start=args.start)]
+        if args.max:
+            items = items[: args.max]
+    elif args.book_toc:
+        # বই/লেসন-পাতার সূচি → প্রতিটি লেসনের ভেতরের টপিক (আসল শ্লোক-পাতা)
+        url0 = args.url
+        if not url0:
+            cands = sitemap_urls(LESSON_SITEMAPS, args.match)
+            url0 = sorted(cands, key=lambda x: (len(urllib.parse.unquote(x)), x))[0] if cands else None
+        if not url0:
+            sys.exit("সূচি-পাতা পাওয়া গেল না: " + args.match)
+        lessons = book_lessons(url0) or [url0]
+        print("লেসন:", len(lessons), flush=True)
+        sel, seen = [], set()
+        for lu in lessons:
+            for t in toc_links(lu):
+                if "/topics/" in urllib.parse.unquote(t) and t not in seen:
+                    seen.add(t)
+                    sel.append(t)
+            time.sleep(0.2)
+        if not sel:
+            sel = [t for lu in lessons for t in toc_links(lu) if t not in seen]
+        print("টপিক:", len(sel), flush=True)
+        items = [(i, u) for i, u in enumerate(sel, start=args.start)]
         if args.max:
             items = items[: args.max]
     elif args.prefix:
@@ -1015,6 +1038,8 @@ def main():  # noqa: F811  (CLI প্রবেশ-বিন্দু)
     ap.add_argument("--discover", action="store_true")
     ap.add_argument("--by-ordinal", action="store_true")
     ap.add_argument("--chain", action="store_true")
+    ap.add_argument("--book-toc", action="store_true",
+                    help="বই-পাতার প্রতিটি লেসনের ভেতরের টপিক (আসল শ্লোক-পাতা)")
     ap.add_argument("--prefix", default="",
                     help="সাইটম্যাপে এই ঠিকানা-অংশ থাকা সব পাতা (গ্রন্থ-সিরিজ)")
     ap.add_argument("--toc", action="store_true",
