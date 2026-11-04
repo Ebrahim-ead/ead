@@ -80,6 +80,7 @@ def safe_url(u):
 
 
 _DOWN = {"n": 0}
+_ALL = []          # এই রানে সাইটম্যাপে দেখা সব URL
 
 
 def get(url, tries=4, timeout=60):
@@ -507,6 +508,12 @@ def norm(x):
 
 
 def sitemap_urls(sitemaps, keyword, want=("topics", "lessons", "books")):
+    """সাইটম্যাপ থেকে কীওয়ার্ড-মেলা URL।
+
+    পাশাপাশি সব <loc> জমা রাখি (_ALL)। কারণ সাইটম্যাপ দিনে একবার বদলায়;
+    একটা রানে সব URL না পেলে (আংশিক/ক্যাশ) সূচি-পাতার ভেতরের লিংক থেকেও
+    খোঁজা যায় — নইলে শূন্য ফল মানেই অর্ধেক রান।
+    """
     pat = norm(keyword)
     urls, seen = [], set()
     for sm in sitemaps:
@@ -517,10 +524,23 @@ def sitemap_urls(sitemaps, keyword, want=("topics", "lessons", "books")):
             u = htmllib.unescape(loc).strip()
             if not any(w in u for w in want):
                 continue
+            if u not in _ALL:
+                _ALL.append(u)
             dec = norm(urllib.parse.unquote(u))
             if pat in dec and u not in seen:
                 seen.add(u)
                 urls.append(u)
+    if not urls:
+        # সূচি-পাতার ভেতরের লিংক থেকে চেষ্টা (ld-topic-page / ld-lesson-page)
+        base = f"{BASE}/topics/{urllib.parse.quote(keyword.replace(' ', '-'))}/"
+        inner = toc_links(base)
+        for u in inner:
+            if pat in norm(urllib.parse.unquote(u)) and u not in seen:
+                seen.add(u)
+                urls.append(u)
+        if urls:
+            print(f"   (সাইটম্যাপে পাওয়া গেল না — সূচি-পাতার ভেতর থেকে "
+                  f"{len(urls)}টি লিংক)", flush=True)
     return urls
 
 
@@ -1137,6 +1157,20 @@ def main_run(args):
                         if o and o not in seen_o:
                             seen_o.add(o)
                             pairs.append((o, u))
+            if not pairs and num:             # সাইটম্যাপ অসম্পূর্ণ — যা পাওয়া গেছে তা থেকেই
+                for u in _ALL:
+                    if "/topics/" not in u:
+                        continue
+                    t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
+                    m = re.match(r"^\D*?([০-৯]{1,2})\s*।", t)
+                    if m and to_int(m.group(1)) == to_int(num):
+                        o, _ = ordinal_of(u)
+                        if o and o not in seen_o:
+                            seen_o.add(o)
+                            pairs.append((o, u))
+                if pairs:
+                    print(f"   (মণ্ডল {num}: সূচি থেকেই {len(pairs)}টি সূক্ত-পাতা)",
+                          flush=True)
             if not pairs:                     # পুরনো পথ (প্রথম/দ্বিতীয়…)
                 for u in allu:
                     if "/topics/" not in u:
