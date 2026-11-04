@@ -119,6 +119,29 @@ jobs:
                   print("  |", ln[:120])
           PY
 
+      - name: Debug (HTML-গঠন)
+        continue-on-error: true
+        run: |
+          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
+          import sys, re, urllib.parse
+          sys.path.insert(0, "tools")
+          import fetch_ebl as f
+          for label, kw, want in [("অথর্ববেদ", "অর্ববেদ সংহিত", "lessons"),
+                                  ("গরুড়", "গরুড় পুরাণ", "lessons")]:
+              allu = f.sitemap_urls(f.LESSON_SITEMAPS + f.TOPIC_SITEMAPS, kw, (want,))
+              u = sorted(allu, key=lambda x: (len(urllib.parse.unquote(x)), x))[0] if allu else None
+              print("=====", label, (urllib.parse.unquote(u)[-45:] if u else "নেই"), "|", len(allu))
+              if not u:
+                  continue
+              h = f.get(u) or ""
+              i = h.find("entry-content")
+              print("entry-content index:", i, "| html:", len(h))
+              print("দেবনাগরী(সম্পূর্ণ):", len(re.findall(r"[\u0900-\u097F]", h)), "| ॥:", h.count("॥"))
+              seg = h[i:i+4000] if i > 0 else h[:4000]
+              print("--- সেগমেন্ট ---")
+              print(re.sub(r"\s+", " ", seg)[:2500])
+          PY
+
       - name: Fetch (উপনিষদ + পুরাণ)
         continue-on-error: true
         run: |
