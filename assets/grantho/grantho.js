@@ -40,6 +40,8 @@
   var onlyBnEl = document.getElementById("g-only-bn");
 
   var index = null, chapter = null, chapterId = null;
+  /* গীতা/পুরাণে «শ্লোক», বেদ-উপনিষদে «মন্ত্র» — index.json-এর verseWord থেকে */
+  var VW = "শ্লোক";
   var state = { bn: true, sk: true, q: "", onlyBn: false };
   var cache = {};
 
@@ -80,7 +82,7 @@
     if (!listEl || !index) return;
     listEl.innerHTML = index.chapters.map(function (c) {
       var on = c.id === chapterId;
-      var meta = bn(c.count) + " শ্লোক";
+      var meta = bn(c.count) + " " + VW;
       if (c.from && c.to && c.count > 1) meta += " · " + bn(c.from) + " – " + bn(c.to) + " নং";
       return '<button class="g-ch' + (on ? " on" : "") + '" type="button" data-ch="' + c.id + '"' +
         (on ? ' aria-current="true"' : "") + '>' +
@@ -91,7 +93,7 @@
     listEl.querySelectorAll("[data-ch]").forEach(function (b) {
       b.addEventListener("click", function () { openChapter(+b.dataset.ch); });
     });
-    if (totalEl) totalEl.textContent = bnNum(index.total) + " শ্লোক · " + bn(index.chapters.length) + " অধ্যায়";
+    if (totalEl) totalEl.textContent = bnNum(index.total) + " " + VW + " · " + bn(index.chapters.length) + " অধ্যায়";
   }
 
   /* ---------- শ্লোক ---------- */
@@ -103,7 +105,7 @@
     if (v.spk && state.sk) out += '<p class="g-v-spk">' + esc(v.spk) + '</p>';
     if (state.sk && v.sk) out += '<p class="g-v-sk" lang="sa">' + esc(v.sk).replace(/\n+/g, "<br>") + '</p>';
     if (state.bn && v.bn) out += '<p class="g-v-bn">' + esc(v.bn) + '</p>';
-    if (state.bn && !v.bn) out += '<p class="g-v-gap">এই শ্লোকের বাংলা অনুবাদ এখনো যোগ করা যায়নি।</p>';
+    if (state.bn && !v.bn) out += '<p class="g-v-gap">এই ' + VW + 'ের বাংলা অনুবাদ এখনো যোগ করা যায়নি — সংস্কৃত মূল পাঠই এখানে প্রামাণ্য।</p>';
     out += '</div></article>';
     return out;
   }
@@ -136,7 +138,7 @@
         return out + "</div></article>";
       }).join(""));
     });
-    return { html: rows.join("") || '<p class="g-empty">কোনো শ্লোক মেলেনি। অন্য শব্দে চেষ্টা করুন।</p>', total: total };
+    return { html: rows.join("") || '<p class="g-empty">কিছু মেলেনি। অন্য শব্দে চেষ্টা করুন।</p>', total: total };
   }
 
   function renderVerses() {
@@ -149,9 +151,9 @@
         var r = searchHTML(state.q);
         bodyEl.innerHTML = r.html;
         if (titleEl) titleEl.textContent = "খোঁজা: " + state.q;
-        if (metaEl) metaEl.textContent = bn(r.total) + "টি শ্লোক";
+        if (metaEl) metaEl.textContent = bn(r.total) + "টি " + VW;
         var note = document.getElementById("g-hits");
-        if (note) note.textContent = r.total ? bn(r.total) + "টি শ্লোকে পাওয়া গেছে" : "কোনো শ্লোক মেলেনি";
+        if (note) note.textContent = r.total ? bn(r.total) + "টি " + VW + " পাওয়া গেছে" : "কিছু মেলেনি";
       });
       return;
     }
@@ -161,11 +163,11 @@
     bodyEl.innerHTML = list.map(verseHTML).join("") ||
       '<p class="g-empty">কিছু পাওয়া যায়নি।</p>';
     if (titleEl) titleEl.textContent = chapter.bn;
-    if (metaEl) metaEl.textContent = bn(chapter.count) + " শ্লোক";
+    if (metaEl) metaEl.textContent = bn(chapter.count) + " " + VW;
     var hits = bodyEl.querySelectorAll(".g-v.hit").length;
     if (searchEl) {
       var note = document.getElementById("g-hits");
-      if (note) note.textContent = state.q ? (hits ? bn(hits) + "টি শ্লোকে পাওয়া গেছে" : "কোনো শ্লোক মেলেনি") : "";
+      if (note) note.textContent = state.q ? (hits ? bn(hits) + "টি " + VW + " পাওয়া গেছে" : "কিছু মেলেনি") : "";
     }
   }
 
@@ -231,6 +233,7 @@
 
   loadJSON(BASE + "index.json").then(function (d) {
     index = d;
+    if (d.verseWord) VW = d.verseWord;
     bind();
     var start = 1;
     var m = (location.hash || "").match(/^#ch(\d+)$/);
