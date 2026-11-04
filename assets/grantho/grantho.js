@@ -1,0 +1,231 @@
+/* ============================================================
+   grantho.js — হিন্দু ধর্মগ্রন্থের পড়ার ইঞ্জিন
+   ------------------------------------------------------------
+   একবারে একটা অধ্যায় লোড হয়: assets/grantho/data/<granth>/ch<N>.json
+   প্রতিটি শ্লোকে সংস্কৃত (দেবনাগরী) + বাংলা অনুবাদ + বক্তা।
+
+   নীতি: পাঠ কখনো বদলানো হয় না। শুধু দেখানো/লুকানো আর ক্রম।
+   একই ইঞ্জিন পরে বেদ, উপনিষদ, পুরাণের পাতাতেও চলবে — শুধু
+   ডেটা ফোল্ডার আলাদা হবে (data-granth অ্যাট্রিবিউট)।
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var root = document.getElementById("grantho-reader");
+  if (!root) return;
+
+  var SLUG = root.dataset.granth || "gita";
+  var BASE = root.dataset.base || "assets/grantho/data/" + SLUG + "/";
+  var KEY = "grantho." + SLUG + ".v1";
+
+  var listEl   = document.getElementById("g-chapter-list");
+  var bodyEl   = document.getElementById("g-body");
+  var titleEl  = document.getElementById("g-ch-title");
+  var metaEl   = document.getElementById("g-ch-meta");
+  var totalEl  = document.getElementById("g-total");
+  var searchEl = document.getElementById("g-search");
+  var onlyBnEl = document.getElementById("g-only-bn");
+
+  var index = null, chapter = null, chapterId = null;
+  var state = { bn: true, sk: true, q: "", onlyBn: false };
+  var cache = {};
+
+  /* ---------- সহায়ক ---------- */
+  var BN_DIGITS = "০১২৩৪৫৬৭৮৯";
+  function bn(n) {
+    return String(n).replace(/[0-9]/g, function (d) { return BN_DIGITS[+d]; });
+  }
+  function bnNum(n) {
+    return bn(String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",")).replace(/,/g, ",");
+  }
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+  function saved() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+  }
+  function save(patch) {
+    try {
+      var s = saved();
+      for (var k in patch) s[k] = patch[k];
+      localStorage.setItem(KEY, JSON.stringify(s));
+    } catch (e) {}
+  }
+
+  function loadJSON(url) {
+    if (cache[url]) return Promise.resolve(cache[url]);
+    return fetch(url, { cache: "no-cache" }).then(function (r) {
+      if (!r.ok) throw new Error(url + " → " + r.status);
+      return r.json();
+    }).then(function (d) { cache[url] = d; return d; });
+  }
+
+  /* ---------- অধ্যায়-তালিকা ---------- */
+  function renderChapters() {
+    if (!listEl || !index) return;
+    listEl.innerHTML = index.chapters.map(function (c) {
+      var on = c.id === chapterId;
+      var meta = bn(c.count) + " শ্লোক";
+      if (c.from && c.to && c.count > 1) meta += " · " + bn(c.from) + " – " + bn(c.to) + " নং";
+      return '<button class="g-ch' + (on ? " on" : "") + '" type="button" data-ch="' + c.id + '"' +
+        (on ? ' aria-current="true"' : "") + '>' +
+        '<span class="num">' + bn(c.id) + '</span>' +
+        '<span class="txt"><span class="nm">' + esc(c.bn) + '</span>' +
+        '<span class="meta">' + meta + '</span></span></button>';
+    }).join("");
+    listEl.querySelectorAll("[data-ch]").forEach(function (b) {
+      b.addEventListener("click", function () { openChapter(+b.dataset.ch); });
+    });
+    if (totalEl) totalEl.textContent = bnNum(index.total) + " শ্লোক · " + bn(index.chapters.length) + " অধ্যায়";
+  }
+
+  /* ---------- শ্লোক ---------- */
+  function verseHTML(v) {
+    var q = state.q ? state.q.toLowerCase() : "";
+    var hit = q && ((v.sk || "").toLowerCase().indexOf(q) > -1 || (v.bn || "").toLowerCase().indexOf(q) > -1);
+    var out = '<article class="g-v' + (hit ? " hit" : "") + '" id="v' + v.n + '">';
+    out += '<div class="g-v-num" aria-hidden="true">' + bn(v.n) + '</div><div class="g-v-body">';
+    if (v.spk && state.sk) out += '<p class="g-v-spk">' + esc(v.spk) + '</p>';
+    if (state.sk && v.sk) out += '<p class="g-v-sk" lang="sa">' + esc(v.sk).replace(/\n+/g, "<br>") + '</p>';
+    if (state.bn && v.bn) out += '<p class="g-v-bn">' + esc(v.bn) + '</p>';
+    if (state.bn && !v.bn) out += '<p class="g-v-gap">এই শ্লোকের বাংলা অনুবাদ এখনো যোগ করা যায়নি।</p>';
+    out += '</div></article>';
+    return out;
+  }
+
+  /* সার্চ পুরো গ্রন্থ জুড়ে — একবার সব অধ্যায় এনে মিলিয়ে রাখি */
+  var allLoaded = null;
+  function loadAll() {
+    if (allLoaded) return Promise.resolve(allLoaded);
+    return Promise.all(index.chapters.map(function (c) {
+      return loadJSON(BASE + "ch" + c.id + ".json");
+    })).then(function (list) { allLoaded = list; return list; });
+  }
+
+  function searchHTML(q) {
+    var low = q.toLowerCase(), rows = [], total = 0;
+    allLoaded.forEach(function (c) {
+      var hit = c.verses.filter(function (v) {
+        return (v.sk || "").toLowerCase().indexOf(low) > -1 ||
+               (v.bn || "").toLowerCase().indexOf(low) > -1;
+      });
+      if (!hit.length) return;
+      total += hit.length;
+      rows.push('<p class="g-hit-head">' + esc(c.bn) + " · " + bn(hit.length) + "টি</p>");
+      rows.push(hit.map(function (v) {
+        var out = '<article class="g-v hit" id="v' + c.id + '-' + v.n + '">';
+        out += '<div class="g-v-num">' + bn(v.n) + '</div><div class="g-v-body">';
+        if (v.spk) out += '<p class="g-v-spk">' + esc(v.spk) + '</p>';
+        if (v.sk) out += '<p class="g-v-sk" lang="sa">' + esc(v.sk).replace(/\n+/g, "<br>") + '</p>';
+        if (v.bn) out += '<p class="g-v-bn">' + esc(v.bn) + '</p>';
+        return out + "</div></article>";
+      }).join(""));
+    });
+    return { html: rows.join("") || '<p class="g-empty">কোনো শ্লোক মেলেনি। অন্য শব্দে চেষ্টা করুন।</p>', total: total };
+  }
+
+  function renderVerses() {
+    if (!chapter) return;
+
+    /* খোঁজার অবস্থায় থাকলে পুরো গ্রন্থের ফলাফল দেখাই */
+    if (state.q && state.q.length >= 2) {
+      bodyEl.innerHTML = '<p class="g-loading">খোঁজা হচ্ছে…</p>';
+      loadAll().then(function () {
+        var r = searchHTML(state.q);
+        bodyEl.innerHTML = r.html;
+        if (titleEl) titleEl.textContent = "খোঁজা: " + state.q;
+        if (metaEl) metaEl.textContent = bn(r.total) + "টি শ্লোক";
+        var note = document.getElementById("g-hits");
+        if (note) note.textContent = r.total ? bn(r.total) + "টি শ্লোকে পাওয়া গেছে" : "কোনো শ্লোক মেলেনি";
+      });
+      return;
+    }
+
+    var list = chapter.verses;
+    if (state.onlyBn) list = list.filter(function (v) { return v.bn; });
+    bodyEl.innerHTML = list.map(verseHTML).join("") ||
+      '<p class="g-empty">কিছু পাওয়া যায়নি।</p>';
+    if (titleEl) titleEl.textContent = chapter.bn;
+    if (metaEl) metaEl.textContent = bn(chapter.count) + " শ্লোক";
+    var hits = bodyEl.querySelectorAll(".g-v.hit").length;
+    if (searchEl) {
+      var note = document.getElementById("g-hits");
+      if (note) note.textContent = state.q ? (hits ? bn(hits) + "টি শ্লোকে পাওয়া গেছে" : "কোনো শ্লোক মেলেনি") : "";
+    }
+  }
+
+  /* ---------- অধ্যায় খোলা ---------- */
+  function openChapter(id) {
+    chapterId = id;
+    save({ last: id });
+    renderChapters();
+    bodyEl.innerHTML = '<p class="g-loading">লোড হচ্ছে…</p>';
+    loadJSON(BASE + "ch" + id + ".json").then(function (c) {
+      if (chapterId !== id) return;
+      chapter = c;
+      renderVerses();
+      try { window.scrollTo({ top: root.offsetTop - 70, behavior: "smooth" }); } catch (e) {}
+      var h = location.hash;
+      if (h && /^#v?\d+$/.test(h)) {
+        var el = document.getElementById("v" + h.replace("#v", "").replace("#", ""));
+        if (el) el.scrollIntoView({ block: "center" });
+      }
+    }).catch(function () {
+      bodyEl.innerHTML = '<p class="g-empty">অধ্যায়টি লোড করা গেল না। পুনরায় চেষ্টা করুন।</p>';
+    });
+  }
+
+  /* ---------- নিয়ন্ত্রণ ---------- */
+  function bind() {
+    if (searchEl) {
+      searchEl.addEventListener("input", function () {
+        state.q = searchEl.value.trim();
+        renderVerses();
+      });
+    }
+    var skBtn = document.getElementById("g-sk-btn"), bnBtn = document.getElementById("g-bn-btn");
+    if (skBtn) skBtn.addEventListener("click", function () {
+      state.sk = !state.sk; skBtn.classList.toggle("on", state.sk);
+      skBtn.setAttribute("aria-pressed", state.sk ? "true" : "false");
+      save({ sk: state.sk }); renderVerses();
+    });
+    if (bnBtn) bnBtn.addEventListener("click", function () {
+      state.bn = !state.bn; bnBtn.classList.toggle("on", state.bn);
+      bnBtn.setAttribute("aria-pressed", state.bn ? "true" : "false");
+      save({ bn: state.bn }); renderVerses();
+    });
+    if (onlyBnEl) onlyBnEl.addEventListener("change", function () {
+      state.onlyBn = onlyBnEl.checked; save({ onlyBn: state.onlyBn }); renderVerses();
+    });
+    var prev = document.getElementById("g-prev"), next = document.getElementById("g-next");
+    if (prev) prev.addEventListener("click", function () { if (chapterId > 1) openChapter(chapterId - 1); });
+    if (next) next.addEventListener("click", function () {
+      if (index && chapterId < index.chapters.length) openChapter(chapterId + 1);
+    });
+  }
+
+  /* ---------- শুরু ---------- */
+  var st = saved();
+  if (typeof st.sk === "boolean") state.sk = st.sk;
+  if (typeof st.bn === "boolean") state.bn = st.bn;
+  if (typeof st.onlyBn === "boolean") state.onlyBn = st.onlyBn;
+  var skBtn0 = document.getElementById("g-sk-btn"), bnBtn0 = document.getElementById("g-bn-btn");
+  if (skBtn0) { skBtn0.classList.toggle("on", state.sk); skBtn0.setAttribute("aria-pressed", state.sk ? "true" : "false"); }
+  if (bnBtn0) { bnBtn0.classList.toggle("on", state.bn); bnBtn0.setAttribute("aria-pressed", state.bn ? "true" : "false"); }
+  if (onlyBnEl) onlyBnEl.checked = state.onlyBn;
+
+  loadJSON(BASE + "index.json").then(function (d) {
+    index = d;
+    bind();
+    var start = 1;
+    var m = (location.hash || "").match(/^#ch(\d+)$/);
+    if (m) start = +m[1];
+    else if (st.last && d.chapters.some(function (c) { return c.id === st.last; })) start = st.last;
+    renderChapters();
+    openChapter(start);
+  }).catch(function () {
+    bodyEl.innerHTML = '<p class="g-empty">সূচি লোড করা গেল না।</p>';
+  });
+})();
