@@ -181,6 +181,40 @@ jobs:
           print(f"গীতা: {d['withBn']}/{d['total']} শ্লোক · {len(d['chapters'])} অধ্যায়")
           PY
 
+      # ফল যাচাইয়ের ছোট রিপোর্ট (লগ দেখা যায় না বলে ফাইলে লিখি)
+      - name: ফল-রিপোর্ট (ফাইলে)
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          out = []
+          try:
+              idx = json.load(open('assets/grantho/data/rigveda/index.json', encoding='utf-8'))
+              out.append(f"মণ্ডল: {len(idx['chapters'])} · মন্ত্র: {idx['total']} · "
+                         f"সূক্ত: {idx.get('suktaTotal')} · শ্লোক: {idx.get('shlokaTotal')}")
+              for c in idx['chapters']:
+                  out.append(f"  মণ্ডল {c['id']}: {c['count']} মন্ত্র · "
+                             f"{c.get('suktaCount')} সূক্ত · {c.get('shlokaCount')} শ্লোক")
+          except Exception as e:
+              out.append(f"index পড়া গেল না: {e}")
+          try:
+              ch = json.load(open('assets/grantho/data/rigveda/ch10.json', encoding='utf-8'))
+              vs = ch.get('verses', [])
+              out.append(f"ch10: {ch.get('count')} মন্ত্র · সূক্ত {ch.get('suktaCount')} · "
+                         f"পাতা {len(ch.get('pages', []))} · seg আছে "
+                         f"{sum(1 for v in vs if v.get('seg'))}/{len(vs)}")
+              for v in vs[:3]:
+                  out.append(f"   {v['n']} seg={v.get('seg')} | {v['bn'][:70]}")
+              for v in vs[-2:]:
+                  out.append(f"   {v['n']} seg={v.get('seg')} | {v['bn'][:70]}")
+          except Exception as e:
+              out.append(f"ch10 পড়া গেল না: {e}")
+          os.makedirs('assets/grantho/data/_debug', exist_ok=True)
+          open('assets/grantho/data/_debug/rigveda10.txt', 'w', encoding='utf-8').write(
+              "\n".join(out) + "\n")
+          print("\n".join(out))
+          PY
+
       - name: রিপোর্ট
         if: always()
         run: |
@@ -199,7 +233,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git add grantho assets/grantho/data assets/grantho/data/_debug/probe.txt 2>/dev/null || git add grantho assets/grantho/data || true
+          git add grantho assets/grantho/data assets/grantho/data/_debug/probe.txt assets/grantho/data/_debug/rigveda10.txt 2>/dev/null || git add grantho assets/grantho/data || true
           if git diff --cached --quiet; then
             echo "কোনো পরিবর্তন নেই — প্রকাশ লাগবে না"; exit 0
           fi
