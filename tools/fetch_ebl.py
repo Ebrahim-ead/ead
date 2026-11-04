@@ -40,7 +40,7 @@ LESSON_SITEMAPS = [f"{BASE}/wp-sitemap-posts-sfwd-lessons-{i}.xml" for i in rang
 COURSE_SITEMAPS = [f"{BASE}/wp-sitemap-posts-sfwd-courses-{i}.xml" for i in range(1, 6)]
 
 BN_DIGITS = "০১২৩৪৫৬৭৮৯"
-DEV_RE = re.compile("[\u0900-\u0963\u0966-\u097F]")  # দাঁড়ি (।॥) বাদ
+DEV_RE = re.compile("[\u0900-\u0963\u0966-\u0970\u0971-\u097F]")  # দাঁড়ি/॥ বাদ
 DEV_DIGITS = "०१२३४५६७८९"
 ORD = {"প্রথম": 1, "দ্বিতীয়": 2, "দ্বিতীয়ো": 2, "তৃতীয়": 3, "চতুর্থ": 4,
        "পঞ্চম": 5, "ষষ্ঠ": 6, "সপ্তম": 7, "অষ্টম": 8, "নবম": 9, "দশম": 10,
@@ -146,104 +146,179 @@ def page_text(h):
     return "\n".join(out)
 
 
-def parse_verses(txt):
-    verses, cur, counter = [], None, 0
-    # পাতায় «অন্বয়/সরলার্থ» লেবেল থাকলে কঠোর লেবেল-ভিত্তিক পাঠ;
-    # না থাকলে (ঋগ্বেদ-ধাঁচ) অনুচ্ছেদই অনুবাদ।
-    has_labels = ("অন্বয়" in txt) or ("সরলার্থ" in txt)
 
-    def close():
+BN2DEV = str.maketrans(
+    "অআইঈউঊঋএঐওঔকখগঘঙচছজঝঞটঠডঢণতথদধনপফবভমযরলশষসহািীুূৃেৈোৌ্ংঃয়ড়ঢ়ৎ",
+    "अआइईउऊऋएऐओऔकखगघङचछजझञटठडढणतथदधनपफबभमयरलशषसहािीुूृेैोौ्ंःयड़ढ़त्")
+
+
+
+def to_devanagari(line):
+    """বাংলা অক্ষরে ছাপা সংস্কৃত শ্লোক → দেবনাগরী (সাদৃশ্য-মানচিত্র)।"""
+    if not line or DEV_RE.search(line):
+        return line
+    bn_letters = sum(1 for c in line if "\u0980" <= c <= "\u09FF")
+    if bn_letters < 8:
+        return line
+    return line.translate(BN2DEV)
+
+VERSE_TAIL = re.compile(r"[॥|]{1,2}\s*([০-৯०-९]{1,3})\s*[॥|]{0,2}\s*$")
+NUMHEAD = re.compile(r"^([০-৯]{1,3})\s*[।\.]\s*(.+)$")
+LBL = re.compile(r"^(অন্বয়|সরলার্থ|মন্তব্য|ভাষ্য|টীকা|ব্যাখ্যা)\s*[:\-–—]?\s*")
+MTRA = re.compile(r"^মন্ত্র\s*[:\-–—]?\s*")
+ARTH = re.compile(r"^অর্থ\s*[:ঃ]?\s*[\-–—]*\s*")
+BN_VERB = re.compile(r"হয়|করে|থেকে|জন্য|এবং|উচিত|বললেন|গেল|মধ্যে|দ্বারা|"
+                     r"তিনি|তাঁর|ব্যক্তি|হইয়া|করি|নহে|হবে|ছিল|আছে|নাই")
+
+
+def _is_bn_verse(p):
+    """বাংলা অক্ষরে ছাপা সংস্কৃত শ্লোক (ক্রিয়াপদহীন, দাঁড়ি-নম্বর-শেষ)।"""
+    if not VERSE_TAIL.search(p):
+        return False
+    if len(p) > 320 or len(p.split()) < 3:
+        return False
+    return not BN_VERB.search(p)
+
+
+def parse_verses(txt):
+    """পাতার পাঠ → [{'n','sk','anv','bn','bnNote'}] (সব ধরনের গঠন)।"""
+    txt = txt.replace("।।", "॥").replace("||", "॥")
+    if "অন্বয়" not in txt and "সরলার্থ" not in txt:
+        txt = re.sub(r"\s+(?=[০-৯]{1,3}\s*।\s)", "\n", txt)
+    labelled = ("অন্বয়" in txt or "সরলার্থ" in txt or "মন্ত্র :" in txt
+                or "মন্ত্র:" in txt or "অর্থ" in txt)
+    out, cur, auto, started = [], None, 0, False
+
+    def push():
         nonlocal cur
         if cur and cur["bn"]:
-            verses.append(cur)
+            out.append(cur)
         cur = None
 
-    started = not ("মন্ত্র :" in txt or "মন্ত্র:" in txt)
-    if "অন্বয়" not in txt and "সরলার্থ" not in txt:
-        # লেবেলহীন (ঋগ্বেদ-ধাঁচ): এক অনুচ্ছেদে একাধিক «১ । … ২ । …» থাকলে ভাগ করি
-        txt = re.sub(r"\s(?=[০-৯]{1,3}\s*।\s)", "\n", txt)
+    def new(part="sk"):
+        return {"sk": [], "anv": [], "bn": [], "note": [], "part": part,
+                "n": None}
+
     for raw in txt.split("\n"):
         ln = raw.strip()
-        if not ln or ln in (",", "|"):
+        if not ln or ln in (",", "|") or ln.startswith("## ") or "||" in ln:
             continue
-        if not started:                      # «মন্ত্র :» শুরুর আগের ঋষি/ছন্দ-ব্লক বাদ
-            if ln.startswith("মন্ত্র"):
-                started = True
-            else:
-                continue
-        if ln.startswith("## ") or ln.startswith("**") or ln.startswith("লেখক"):
-            continue
-        m = NUM_LINE.match(ln)
-        if m and (cur is None or cur["bn"] or cur["part"] in ("bn", "note")):
-            close()
-            counter += 1
-            cur = {"n": counter, "gidx": to_int(m.group(1)), "sk": [], "anv": [],
-                   "bn": [], "note": [], "part": "sk"}
-            if m.group(2):
-                rest = m.group(2)
-                if not has_labels and not DEV_RE.search(rest) and len(rest) > 25:
-                    cur["part"] = "bn"      # সংখ্যার পরেই বাংলা (ঋগ্বেদ-ধাঁচ)
-                cur[cur["part"]].append(rest)
-            continue
-        if cur is None and not (ln.startswith("মন্ত্র") or ln.startswith("অর্থ")):
-            continue
-        lbl = (re.match(r"^(অন্বয়|সরলার্থ|মন্তব্য|ভাষ্য|টীকা|মন্ত্র)\s*[:\-–—]?\s*", ln)
-               or re.match(r"^(অর্থ)\s*[:ঃ]?\s*[\-–—]*\s*", ln))
-        if lbl:
-            if lbl.group(1) == "মন্ত্র":
-                if cur and (cur["bn"] or cur["part"] in ("bn", "note")):
-                    close()
-                    counter += 1
-                    cur = {"n": counter, "gidx": None, "sk": [], "anv": [],
-                           "bn": [], "note": [], "part": "sk"}
-                if cur is None:
-                    counter += 1
-                    cur = {"n": counter, "gidx": None, "sk": [], "anv": [],
-                           "bn": [], "note": [], "part": "sk"}
-                rest = ln[lbl.end():].strip()
-                rest = re.sub(r"^\([০-৯]{1,3}\)\s*", "", rest)
-                if rest:
-                    cur["sk"].append(rest)
-                cur["part"] = "sk"
-                continue
-            g = lbl.group(1)
-            if cur is None:
-                counter += 1
-                cur = {"n": counter, "gidx": None, "sk": [], "anv": [], "bn": [],
-                       "note": [], "part": "bn"}
-            cur["part"] = {"অন্বয়": "anv", "সরলার্থ": "bn", "মন্তব্য": "note",
-                           "ভাষ্য": "note", "টীকা": "note"}.get(g, "bn")
-            rest = ln[lbl.end():].strip()
-            if rest:
-                cur[cur["part"]].append(rest)
-            continue
-        if (not has_labels and cur["part"] == "sk"
-                and not DEV_RE.search(ln) and len(ln) > 25):
-            cur["part"] = "bn"          # সংস্কৃতহীন পাতা: সরল অনুচ্ছেদই অনুবাদ
-        cur[cur["part"]].append(ln)
-    close()
 
-    out, last = [], 0
-    for v in verses:
-        sk = " ".join(v["sk"]).strip()
-        bn = " ".join(v["bn"]).strip()
-        if not bn or len(bn) < 15:
+        if labelled:
+            if not started:                   # শিরোনাম/ঋষি-ব্লক বাদ
+                if ln.startswith("মন্ত্র") or ln.startswith("অর্থ") or LBL.match(ln) \
+                        or DEV_RE.search(ln) or NUMHEAD.match(ln):
+                    started = True
+                else:
+                    continue
+            m = MTRA.match(ln)
+            if m:
+                push()
+                r = re.sub(r"^\(\s*[০-৯]{1,3}\s*\)\s*", "", ln[m.end():]).strip()
+                cur = new("sk")
+                if r:
+                    cur["sk"].append(r)
+                continue
+            a = ARTH.match(ln)
+            if a:
+                if cur is None or cur["bn"]:
+                    push()
+                    cur = new("bn")
+                cur["part"] = "bn"
+                r = re.sub(r"^\(\s*[০-৯]{1,3}\s*\)\s*", "", ln[a.end():]).strip()
+                if r:
+                    cur["bn"].append(r)
+                continue
+            l = LBL.match(ln)
+            if l:
+                g = l.group(1)
+                if g == "সরলার্থ" and cur is not None and cur["bn"]:
+                    push()
+                if cur is None:
+                    cur = new("bn")
+                cur["part"] = {"অন্বয়": "anv", "সরলার্থ": "bn"}.get(g, "note")
+                r = ln[l.end():].strip()
+                if r:
+                    cur[cur["part"]].append(r)
+                continue
+
+        nm = NUMHEAD.match(ln)
+        is_dev = bool(DEV_RE.search(ln))
+        is_bn_sk = (not labelled) and (not is_dev) and _is_bn_verse(ln)
+        if is_dev or is_bn_sk:
+            if cur is None or cur["bn"] or (cur["part"] == "sk" and not cur["sk"]):
+                if cur is not None and cur["bn"]:
+                    push()
+                if cur is None:
+                    cur = new("sk")
+            if is_dev and nm:
+                cur["sk"].append(nm.group(2).strip())
+                if cur["n"] is None:
+                    cur["n"] = to_int(nm.group(1))
+            else:
+                cur["sk"].append(ln if is_dev else to_devanagari(ln))
+            started = True
+            if cur["n"] is None and (is_bn_sk or nm):
+                t = VERSE_TAIL.search(ln)
+                if t:
+                    cur["n"] = to_int(t.group(1))
             continue
-        # স্থানীয় মন্ত্র-সংখ্যা: সংস্কৃতের শেষ «॥ ১॥»
-        n = None
-        tail = TAIL_MARK.search(sk[-40:]) if sk else None
-        if tail:
-            n = to_int(tail.group(1))
-        if not n or (last and n <= last):
-            n = last + 1
-        last = n
-        bn = re.sub(r"^\s*(Bookmark|Previous|Next)\s+", "", bn)
-        bn = re.sub(r"^\(\s*[০-৯]{1,3}\s*\)\s*", "", bn)      # «(১১) » বাদ
+        if nm:
+            if labelled:                      # «৪৬৯. <সংস্কৃত শ্লোক>»
+                if cur is None or cur["bn"]:
+                    push()
+                if cur is None:
+                    cur = new("sk")
+                cur["sk"].append(nm.group(2).strip())
+                if cur["n"] is None:
+                    cur["n"] = to_int(nm.group(1))
+                continue
+            if cur is not None and cur["bn"]:
+                push()
+            cur = new("bn")
+            started = True
+            cur["n"] = to_int(nm.group(1))
+            cur["bn"].append(nm.group(2).strip())
+            continue
+        if not labelled and not started:       # ভূমিকা/শিরোনাম-আবর্জনা বাদ
+            continue
+        if cur is None or cur["part"] == "sk" and not cur["bn"] and not cur["sk"]:
+            if labelled and cur is None:
+                continue
+            if cur is None:
+                cur = new("bn")
+        if cur["part"] == "sk":
+            if not cur["sk"]:
+                continue
+            cur["part"] = "bn"
+        cur[cur["part"]].append(ln)
+    push()
+
+    res = []
+    for v in out:
+        bn = re.sub(r"\s+", " ", " ".join(v["bn"])).strip()
+        bn = re.sub(r"^\(\s*[০-৯०-९]{1,3}\s*\)\s*", "", bn)
         bn = re.sub(r"\s*Bookmark\s*$", "", bn)
-        note = re.sub(r"\s*Bookmark\s*$", "", " ".join(v["note"]).strip())
-        out.append({"n": n, "sk": sk, "anv": " ".join(v["anv"]).strip(),
-                    "bn": bn, "bnNote": note})
-    return out
+        if len(bn) < 8:
+            continue
+        sk = re.sub(r"[ \t]+", " ", " ".join(v["sk"])).strip()
+        n = v["n"] or last_of(v["sk"])
+        if n:
+            auto = n
+        else:
+            auto += 1
+            n = auto
+        res.append({"n": n, "sk": sk, "anv": " ".join(v["anv"]).strip(),
+                    "bn": bn, "bnNote": " ".join(v["note"]).strip()})
+    return res
+
+
+def last_of(sk_lines):
+    for ln in reversed(sk_lines):
+        m = re.search(r"[॥।]\s*([০-৯०-९]{1,3})\s*$", ln)
+        if m:
+            return to_int(m.group(1))
+    return None
 
 
 def next_link(h):
