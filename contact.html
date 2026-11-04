@@ -201,7 +201,13 @@ section{padding:62px 0;position:relative}
   border-top:1px dashed var(--line);padding-top:14px}
 .reslabel{color:var(--muted);font-size:14px}
 .reslabel b{color:var(--gold2)}
-select.mini{border:1px solid var(--line);background:#07131c;border-radius:11px;padding:7px 11px;cursor:pointer}
+select.mini{border:1px solid var(--line);background:#07131c;border-radius:11px;padding:7px 11px;cursor:pointer;
+  color:#e9f2f7;color-scheme:dark;transition:border-color .2s}
+html[data-theme="light"] select.mini{color-scheme:light}
+select.mini:hover{border-color:rgba(245,184,28,.5)}
+/* without an explicit palette the popup list renders white on white */
+select.mini option{background:#0b1a24;color:#e9f2f7}
+select.mini option:checked,select.mini option:hover{background:#153044;color:#ffd15c}
 .qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:20px}
 .qcard{position:relative;display:flex;flex-direction:column;gap:9px;border:1px solid var(--line);border-radius:15px;padding:16px 17px 14px;will-change:transform;
   background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.014));
