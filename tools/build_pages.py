@@ -160,6 +160,15 @@ def make_page(slug, idx, meta):
     if total != withbn:
         facts += f'<span class="g-fact"><b>{commas(total)}</b> মোট {meta["word"]}</span>'
     facts += f'<span class="g-fact"><b>{commas(nch)}</b> {meta["chword"]}</span>'
+    nsuk = idx.get("suktaTotal") or sum(c.get("suktaCount", 0) for c in idx["chapters"])
+    nshl = idx.get("shlokaTotal") or sum(c.get("shlokaCount", 0) for c in idx["chapters"])
+    if nsuk:
+        facts += f'<span class="g-fact"><b>{commas(nsuk)}</b> সূক্ত</span>'
+    if nshl:
+        facts += f'<span class="g-fact"><b>{commas(nshl)}</b> শ্লোক</span>'
+    if idx.get("note"):
+        meta = dict(meta)
+        meta["src"] = meta["src"] + " " + idx["note"]
     h = re.sub(r'<div class="g-facts">.*?</div>', '<div class="g-facts">' + facts + '</div>',
                h, count=1, flags=re.S)
 
@@ -167,6 +176,8 @@ def make_page(slug, idx, meta):
         'data-base="../../assets/grantho/data/samaveda/"',
         f'data-base="../../assets/grantho/data/{slug}/"')
     src = meta["src"]
+    if idx.get("note"):
+        src += " " + idx["note"]
     if withbn < total:
         src += f' {commas(total - withbn)}টি {meta["word"]}র বাংলা উৎসে পাওয়া যায়নি — সেগুলো পরে যোগ হবে।'
     h = re.sub(r'<div class="g-src"><b>পাঠ সম্পর্কে।</b>.*?</div>',
@@ -227,8 +238,24 @@ def replace_grid(page, inner):
     print("  গ্রিড আপডেট:", page)
 
 
+def refresh_rigveda_layout():
+    """ঋগ্বেদে সূক্ত/শ্লোক-ভাগ হালনাগাদ করি (নতুন মণ্ডল নামলে দরকার হয়)।"""
+    try:
+        sys.path.insert(0, str(ROOT / "tools"))
+        import rigveda_suktas
+    except Exception as e:
+        print("  (সূক্ত-ভাগ বাদ:", e, ")")
+        return
+    try:
+        rigveda_suktas.main(apply=True)
+    except Exception as e:
+        print("  (সূক্ত-ভাগ ব্যর্থ:", e, ")")
+
+
 def main():
     made = []
+    if (DATA / "rigveda" / "index.json").exists():
+        refresh_rigveda_layout()
     # ---- বেদ
     vedas = []
     for slug in [x for x in ("rigveda", "samaveda", "yajurveda-shukla",
