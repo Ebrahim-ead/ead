@@ -67,7 +67,20 @@ def to_int(s):
 _CACHE = {}
 
 
+def safe_url(u):
+    """URL-এ বাংলা/দেবনাগরী থাকলে percent-encode করি (http.client ASCII চায়)।"""
+    if not u:
+        return u
+    parts = urllib.parse.urlsplit(u)
+    return urllib.parse.urlunsplit((
+        parts.scheme or "https", parts.netloc,
+        urllib.parse.quote(parts.path, safe="/%"),
+        urllib.parse.quote_plus(parts.query, safe="=&%") if parts.query else "",
+        ""))
+
+
 def get(url, tries=4, timeout=60):
+    url = safe_url(url)
     if url in _CACHE:
         return _CACHE[url]
     for i in range(tries):
@@ -158,7 +171,7 @@ def parse_verses(txt):
                 started = True
             else:
                 continue
-        if ln.startswith("## "):
+        if ln.startswith("## ") or ln.startswith("**") or ln.startswith("লেখক"):
             continue
         m = NUM_LINE.match(ln)
         if m and (cur is None or cur["bn"] or cur["part"] in ("bn", "note")):
@@ -194,6 +207,10 @@ def parse_verses(txt):
                 cur["part"] = "sk"
                 continue
             g = lbl.group(1)
+            if cur is None:
+                counter += 1
+                cur = {"n": counter, "gidx": None, "sk": [], "anv": [], "bn": [],
+                       "note": [], "part": "bn"}
             cur["part"] = {"অন্বয়": "anv", "সরলার্থ": "bn", "মন্তব্য": "note",
                            "ভাষ্য": "note", "টীকা": "note"}.get(g, "bn")
             rest = ln[lbl.end():].strip()
