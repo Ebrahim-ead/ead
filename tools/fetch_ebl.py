@@ -691,7 +691,8 @@ def main_run(args):
 
     out_dir = os.path.join(args.out, args.slug) if args.slug else ""
 
-    if args.url and not (args.book or args.chain or args.group_by_num):
+    if args.url and not (args.book or args.chain or args.group_by_num or args.toc
+                         or args.series):
         # একক পাতা (পরীক্ষা/ডাম্প)
         h = get(args.url)
         txt = fetch_paged(args.url)
