@@ -1,0 +1,94 @@
+name: Fetch Bengali (ebanglalibrary)
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fetch-ebl.yml'
+      - 'tools/fetch_ebl.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-ebl
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    env:
+      # ---- প্রথম রান: URL-আবিষ্কার + ছান্দোগ্য (৮ অধ্যায়) ----
+      KW: 'ছান্দোগ্য,ভবিষ্য পুরাণ,বাংলা বেদ,গরুড় পুরাণ,ব্রহ্ম পুরাণ,ঋগ্বেদ,সামবেদ,অথর্ববেদ,কঠ উপনিষদ'
+      SLUG: 'chandogya'
+      TITLE: 'ছান্দোগ্য উপনিষদ'
+      MATCH: 'ছান্দোগ্য উপনিষদ'
+      ORDINAL: '1'
+      CHAIN: '0'
+      MAXN: '0'
+      STARTN: '1'
+      WORD: 'মন্ত্র'
+      DUMPN: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Discover (URL তালিকা)
+        continue-on-error: true
+        run: |
+          mkdir -p assets/grantho/data/_debug
+          : > assets/grantho/data/_debug/urls.txt
+          IFS=',' read -ra arr <<< "$KW"
+          for k in "${arr[@]}"; do
+            echo "=== $k ===" >> assets/grantho/data/_debug/urls.txt
+            python3 tools/fetch_ebl.py --discover --match "$k" 2>&1 | tee -a assets/grantho/data/_debug/urls.txt
+            echo >> assets/grantho/data/_debug/urls.txt
+          done
+          wc -l assets/grantho/data/_debug/urls.txt
+
+      - name: Fetch
+        continue-on-error: true
+        run: |
+          set -x
+          ARGS="--slug $SLUG --title $TITLE --match $MATCH --word $WORD --start $STARTN"
+          [ "$ORDINAL" = "1" ] && ARGS="$ARGS --by-ordinal"
+          [ "$CHAIN" = "1" ] && ARGS="$ARGS --chain"
+          [ "$MAXN" != "0" ] && ARGS="$ARGS --max $MAXN"
+          [ "$DUMPN" != "0" ] && ARGS="$ARGS --dump $DUMPN"
+          python3 tools/fetch_ebl.py $ARGS 2>&1 | tee /tmp/fetch.log
+
+      - name: Report
+        if: always()
+        run: |
+          echo "=== log tail ==="
+          tail -40 /tmp/fetch.log 2>/dev/null || true
+          echo "=== report ==="
+          cat "assets/grantho/data/_fetch_report_${SLUG}.txt" 2>/dev/null || echo "(no report)"
+          echo "=== sample ch1 ==="
+          python3 - <<'PY' || true
+          import json, os
+          f = "assets/grantho/data/%s/ch1.json" % os.environ["SLUG"]
+          if os.path.exists(f):
+              o = json.load(open(f, encoding="utf-8"))
+              print("count:", o["count"], "| bn:", o["bn"])
+              for v in o["verses"][:2]:
+                  print("N:", v["n"])
+                  print("SK:", (v.get("sk") or "")[:260])
+                  print("BN:", (v.get("bn") or "")[:260])
+                  print("--")
+          else:
+              print("(no ch1.json)")
+          PY
+
+      - name: Commit & push
+        if: always()
+        run: |
+          git config user.name  "grantho-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add assets/grantho/data || true
+          git commit -m "ebanglalibrary: ${SLUG} ($(date -u +%H:%M))" || echo "no changes"
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || echo "push skipped"
