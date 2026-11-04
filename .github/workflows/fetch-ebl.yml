@@ -57,7 +57,10 @@ jobs:
         run: |
           set -x
           if [ "$AUTO" = "1" ]; then
-            python3 tools/fetch_ebl.py --auto 2>&1 | tee /tmp/fetch.log
+            echo "AUTO শুরু $(date -u +%H:%M:%S)"
+            set +e
+            timeout 900 python3 -u tools/fetch_ebl.py --auto 2>&1 | tee /tmp/fetch.log
+            echo "AUTO শেষ $(date -u +%H:%M:%S) — exit ${PIPESTATUS[0]}"
             exit 0
           fi
           ARGS=(--slug "$SLUG" --title "$TITLE" --match "$MATCH" --word "$WORD" --start "$STARTN")
@@ -72,7 +75,9 @@ jobs:
       - name: Report
         if: always()
         run: |
+          mkdir -p assets/grantho/data/_debug
           cp /tmp/fetch.log assets/grantho/data/_debug/fetch_log.txt 2>/dev/null || true
+          echo "ক্যাশ ফাইল:"; ls -la assets/grantho/data/_debug/ || true
           echo "=== log tail ==="
           tail -40 /tmp/fetch.log 2>/dev/null || true
           echo "=== report ==="
