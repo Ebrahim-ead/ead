@@ -162,9 +162,9 @@ def to_devanagari(line):
         return line
     return line.translate(BN2DEV)
 
-VERSE_TAIL = re.compile(r"[॥|]{1,2}\s*([০-৯०-९]{1,3})\s*[॥|]{0,2}\s*$")
+VERSE_TAIL = re.compile(r"[॥|৷]{1,2}\s*([০-৯०-९]{1,3})\s*[॥|]{0,2}\s*$")
 NUMHEAD = re.compile(r"^([০-৯]{1,3})\s*[।\.]\s*(.+)$")
-LBL = re.compile(r"^(অন্বয়|সরলার্থ|মন্তব্য|ভাষ্য|টীকা|ব্যাখ্যা)\s*[:\-–—]?\s*")
+LBL = re.compile(r"^(অন্বয়|সরলার্থ|বঙ্গানুবাদ|অনুবাদ|মন্তব্য|ভাষ্য|টীকা|সূক্তস্য\s*বিনিয়োগ|ব্যাখ্যা)\s*[:ঃ।\-–—]*\s*")
 MTRA = re.compile(r"^মন্ত্র\s*[:\-–—]?\s*")
 ARTH = re.compile(r"^অর্থ\s*[:ঃ]?\s*[\-–—]*\s*")
 BN_VERB = re.compile(r"হয়|করে|থেকে|জন্য|এবং|উচিত|বললেন|গেল|মধ্যে|দ্বারা|"
@@ -213,11 +213,12 @@ def parse_verses(txt, bn_meaning=False):
         multiline = len([x for x in txt.splitlines() if len(x.strip()) > 12])
         if dev < 200 and multiline > 30:
             bn_meaning = True          # সংস্কৃত মূল নেই ⇒ বাংলা-লিপিতেই পাঠ
-    txt = txt.replace("।।", "॥").replace("||", "॥")
+    txt = txt.replace("।।", "॥").replace("||", "॥").replace("\u09f7", "॥")
     if "অন্বয়" not in txt and "সরলার্থ" not in txt:
         txt = re.sub(r"\s+(?=[০-৯]{1,3}\s*।\s)", "\n", txt)
     labelled = ("অন্বয়" in txt or "সরলার্থ" in txt or "মন্ত্র :" in txt
-                or "মন্ত্র:" in txt or "অর্থ" in txt)
+                or "মন্ত্র:" in txt or "অর্থ" in txt or "টীকা" in txt
+                or bool(re.search(r"(বঙ্গানুবাদ|অনুবাদ)\s*[–—\-]", txt)))
 
     out, cur = [], None
 
@@ -265,9 +266,12 @@ def parse_verses(txt, bn_meaning=False):
         cur["part"] = "note"
         cur["note"].extend(lines)
 
-    def flush_pending(pend, verse_label):
+    def flush_pending(pend, verse_label, continuation=False):
         """pending লাইন: শেষের সংস্কৃত-ব্লক = শ্লোক, তার আগেরটা ব্যাখ্যা-ধারাবাহিকতা।"""
         if not pend:
+            return
+        if continuation and cur is not None:
+            cur[cur["part"]].extend(pend)   # লেবেলবিহীন ধারাবাহিকতা (বাংলা-পাঠ)
             return
         i = len(pend)
         if not looks_sanskrit(pend[i - 1]):
@@ -299,21 +303,38 @@ def parse_verses(txt, bn_meaning=False):
             add_verse([])
 
     if labelled:
+        started = False
         pend = []
         for raw in txt.split("\n"):
             ln = raw.strip()
-            if not ln or ln in (",", "|") or ln.startswith("## ") or "||" in ln:
+            if not ln or ln in (",", "|", ".") or ln.startswith("## ") or "||" in ln:
+                continue
+            if ln.startswith("[") or ln[:14].strip().startswith("ঋষি"):
+                continue
+            _lbl = LBL.match(ln)
+            if bn_meaning and not _lbl:
+                if DEV_RE.search(ln) or VERSE_TAIL.search(ln) or (
+                        looks_sanskrit(ln) and cur is not None
+                        and not cur["bn"] and cur["sk"]):
+                    flush_pending(pend, False, False)
+                    pend = []
+                    if cur is not None and not cur["bn"] and cur["sk"]:
+                        cur["sk"].append(ln)      # একই শ্লোকের পরের পঙক্তি
+                    else:
+                        add_verse([ln])
+                else:
+                    pend.append(ln)
                 continue
             m = MTRA.match(ln)
             if m:
-                flush_pending(pend, False)
+                flush_pending(pend, False, bn_meaning)
                 pend = []
                 rest = re.sub(r"^\(\s*[০-৯]{1,3}\s*\)\s*", "", ln[m.end():]).strip()
                 add_verse([rest])
                 continue
             a = ARTH.match(ln)
             if a:
-                flush_pending(pend, False)
+                flush_pending(pend, False, bn_meaning)
                 pend = []
                 if cur is None or cur["bn"]:
                     add_verse([])
@@ -323,44 +344,60 @@ def parse_verses(txt, bn_meaning=False):
                     cur["bn"].append(r)
                 continue
             l = LBL.match(ln)
+            if not started and not l and not DEV_RE.search(ln) \
+                    and not looks_sanskrit(ln) and not bn_meaning:
+                continue                      # শিরোনাম/সূচি/ঋষি-ব্লক
+            started = True
             if l:
                 g = l.group(1)
                 rest = ln[l.end():].strip()
+                key = {"অন্বয়": "anv",
+                       "সরলার্থ": "bn", "বঙ্গানুবাদ": "bn", "অনুবাদ": "bn",
+                       "ব্যাখ্যা": "bn"}.get(g, "note")
                 if g == "অন্বয়":
                     if pend:
-                        flush_pending(pend, True)
+                        flush_pending(pend, True, bn_meaning)
                         pend = []
                     elif cur is None:
                         add_verse([])
-                    cur["part"] = "anv"
                 else:
                     if pend:
-                        flush_pending(pend, True)
+                        flush_pending(pend, True, bn_meaning)
                         pend = []
                     if cur is None:
                         add_verse([])
-                    if g == "সরলার্থ" and cur["bn"]:
+                    if key == "bn" and cur["bn"]:
                         add_verse([])
-                    cur["part"] = {"সরলার্থ": "bn"}.get(g, "note")
+                cur["part"] = key
                 if rest:
                     cur[cur["part"]].append(rest)
                 continue
             pend.append(ln)
-        flush_pending(pend, False)
+        flush_pending(pend, False, bn_meaning)
     else:
         started = False
         for raw in txt.split("\n"):
             ln = raw.strip()
-            if not ln or ln in (",", "|") or ln.startswith("## ") or "||" in ln:
+            if not ln or ln in (",", "|", ".") or ln.startswith("## ") or "||" in ln:
                 continue
+            if ln.startswith("[") or ln[:14].strip().startswith("ঋষি"):
+                continue
+            if ln.startswith("[") or "ঋষি" in ln[:30] or ln.startswith("লেখক"):
+                continue                      # ঋষি/দেবতা/ছন্দ-ব্লক
             nm = NUMHEAD.match(ln)
             is_dev = bool(DEV_RE.search(ln))
-            is_bn_sk = (not is_dev) and _is_bn_verse(ln)
+            is_bn_sk = (not is_dev) and (not bn_meaning) and _is_bn_verse(ln)
+            if (not started) and (not is_dev) and (not nm):
+                continue                      # শিরোনাম/ভূমিকা
             if is_bn_sk and bn_meaning:
                 if cur is None or cur["bn"]:
                     add_verse([])
                 cur["part"] = "bn"
                 cur["bn"].append(ln)
+                started = True
+                continue
+            if is_dev and bn_meaning and cur is not None and not cur["bn"] and cur["sk"]:
+                cur["sk"].append(ln)          # একই শ্লোকের পরের লাইন
                 started = True
                 continue
             if is_dev or is_bn_sk:
@@ -374,6 +411,8 @@ def parse_verses(txt, bn_meaning=False):
                 started = True
                 continue
             if nm:
+                if nm.group(2).strip() in ("সূক্ত", "সূক্ত ।।", "সূক্ত।", "?"):
+                    continue
                 if cur is not None and cur["bn"]:
                     add_verse([])
                 add_verse([])
@@ -399,11 +438,11 @@ def parse_verses(txt, bn_meaning=False):
         bn = re.sub(r"\s+", " ", " ".join(v["bn"])).strip()
         bn = re.sub(r"^\(\s*[০-৯०-९]{1,3}\s*\)\s*", "", bn)
         bn = re.sub(r"\s*Bookmark\s*$", "", bn)
-        if len(bn) < 8:
-            continue
         sk = re.sub(r"[ \t]+", " ", " ".join(v["sk"])).strip()
-        if labelled and not sk:
-            continue                     # সংস্কৃতহীন ভূমিকা/অনুচ্ছেদ বাদ
+        if len(bn) < 8 and not sk:
+            continue
+        if labelled and not sk and not bn_meaning:
+            continue                     # সংস্কৃতহীন ভূমিকা-জাতীয় অনুচ্ছেদ বাদ
         n = v["n"] or last_of(v["sk"])
         if n:
             auto = n
