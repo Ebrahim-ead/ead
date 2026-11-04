@@ -196,7 +196,7 @@ def looks_sanskrit(ln):
 
 def is_heading(ln):
     """সূচি/শিরোনাম-জাতীয় ছোট লাইন (দাঁড়ি নেই, ক্রিয়াপদ নেই)।"""
-    return len(ln) < 26 and not re.search(r"[।॥,]", ln)
+    return len(ln) < 20 and not re.search(r"[।॥,]", ln)
 
 
 def parse_verses(txt):
@@ -216,13 +216,35 @@ def parse_verses(txt):
 
     out, cur = [], None
 
-    def add_verse(sk_lines):
+    def split_by_danda(lines):
+        """«॥১২॥» / «॥৩-৪॥» চিহ্ন ধরে শ্লোক-ব্লক ভাগ।"""
+        groups, acc = [], []
+        for ln in lines:
+            acc.append(ln)
+            m = re.search(r"[॥]\s*([০-৯०-९]{1,3})(?:\s*[-–]\s*[০-৯०-९]{1,3})?\s*[॥]\s*$", ln)
+            if m:
+                groups.append(acc)
+                acc = []
+        if acc:
+            if groups:                      # শেষ অসম্পূর্ণ অংশ আগেরটার সঙ্গে
+                groups[-1].extend(acc)
+            else:
+                groups.append(acc)
+        return groups
+
+    def add_verse(sk_lines, n_override=None):
         nonlocal cur
         sk_lines = [x for x in sk_lines
                     if x and not (x.startswith("ইতি") and "সমাপ্ত" in x)]
+        parts = split_by_danda(sk_lines)
+        if len(parts) > 1:
+            for i, g in enumerate(parts):
+                add_verse(g, n_override if i == 0 else None)
+            return cur
+        sk_lines = [re.sub(r"^([০-৯]{1,3})\s*[।\.]\s*", "", x) for x in sk_lines]
         v = {"sk": sk_lines, "anv": [], "bn": [], "note": [],
              "part": "anv", "n": None}
-        t = last_of(v["sk"])
+        t = n_override or last_of(v["sk"])
         if t:
             v["n"] = t
         out.append(v)
