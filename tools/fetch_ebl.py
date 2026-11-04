@@ -684,20 +684,25 @@ def main_run(args):
             items = items[: args.max]
     elif args.chain:
         urls = [args.url] if args.url else []
+        key = "/lessons/" + (args.match.split() or [""])[0].replace(" ", "-")
         if not urls:
-            cands = sitemap_urls(LESSON_SITEMAPS, args.match)
+            cands = sitemap_urls(LESSON_SITEMAPS + TOPIC_SITEMAPS, args.match)
+            cands = sorted(cands, key=lambda x: (0 if key in urllib.parse.unquote(x) else 1,
+                                                 len(x), x))
             urls = cands[:1]
-        # ক্রম: «Next Lesson» শৃঙ্খল
+        # ক্রম: «Next Lesson» শৃঙ্খল (একই গ্রন্থের সিরিজের ভেতরে)
         chain, seen = [], set()
-        u = urls[0]
+        u = urls[0] if urls else None
         while u and u not in seen and (not args.max or len(chain) < args.max):
+            if key and key not in urllib.parse.unquote(u):
+                break
             seen.add(u)
             h = get(u)
             if not h:
                 break
             chain.append(u)
             nu = lesson_next(h)
-            if not nu or nu in seen:
+            if not nu or nu in seen or not nu.startswith("http"):
                 break
             u = nu
             time.sleep(0.4)

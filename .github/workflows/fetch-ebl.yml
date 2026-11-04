@@ -52,23 +52,6 @@ jobs:
           done
           wc -l assets/grantho/data/_debug/urls.txt
 
-      - name: Debug (পাতার গঠন)
-        continue-on-error: true
-        run: |
-          python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
-          import sys, re, urllib.parse
-          sys.path.insert(0, "tools")
-          import fetch_ebl as f
-          u = "https://www.ebanglalibrary.com/lessons/" + urllib.parse.quote("কেন-উপনিষদ") + "/"
-          h = f.get(u) or ""
-          print("HTML দৈর্ঘ্য:", len(h), "| দেবনাগরী অক্ষর:", len(re.findall(r"[\u0900-\u097F]", h)))
-          t = f.fetch_paged(u)
-          lines = [x.strip() for x in t.splitlines() if x.strip()]
-          print("টেক্সট লাইন:", len(lines))
-          for ln in lines[:45]:
-              print("  |", ln[:120])
-          PY
-
       - name: Fetch (উপনিষদ + পুরাণ)
         continue-on-error: true
         run: |
@@ -80,13 +63,13 @@ jobs:
             sleep 1
           }
           # ---- বাকি উপনিষদ: লেসন-সিরিজ (প্রতি লেসন = এক খণ্ড)
-          run --slug upanishad-kena --title "কেন উপনিষদ" --word মন্ত্র --match "কেন উপনিষদ" --by-ordinal --max 20
-          run --slug upanishad-isha --title "ঈশ উপনিষদ" --word মন্ত্র --match "ঈশ উপনিষদ" --by-ordinal --max 20
-          run --slug upanishad-prashna --title "প্রশ্ন উপনিষদ" --word মন্ত্র --match "প্রশ্ন উপনিষদ" --by-ordinal --max 20
-          run --slug upanishad-mundaka --title "মুণ্ডক উপনিষদ" --word মন্ত্র --match "মুণ্ডক উপনিষদ" --by-ordinal --max 20
-          run --slug upanishad-mandukya --title "মাণ্ডূক্য উপনিষদ" --word মন্ত্র --match "মাণ্ডূক্য উপনিষদ" --by-ordinal --max 20
-          run --slug upanishad-taittiriya --title "তৈত্তিরীয় উপনিষদ" --word মন্ত্র --match "তৈত্তিরীয় উপনিষদ" --by-ordinal --max 20
-          run --slug upanishad-aitareya --title "ঐতরেয় উপনিষদ" --word মন্ত্র --match "ঐতরেয় উপনিষদ" --by-ordinal --max 20
+          run --slug upanishad-kena --title "কেন উপনিষদ" --word মন্ত্র --match "কেন উপনিষদ" --chain --max 2
+          run --slug upanishad-isha --title "ঈশ উপনিষদ" --word মন্ত্র --match "ঈশ উপনিষদ" --chain --max 2
+          run --slug upanishad-prashna --title "প্রশ্ন উপনিষদ" --word মন্ত্র --match "প্রশ্ন উপনিষদ" --chain --max 2
+          run --slug upanishad-mundaka --title "মুণ্ডক উপনিষদ" --word মন্ত্র --match "মুণ্ডক উপনিষদ" --chain --max 2
+          run --slug upanishad-mandukya --title "মাণ্ডূক্য উপনিষদ" --word মন্ত্র --match "মাণ্ডূক্য উপনিষদ" --chain --max 2
+          run --slug upanishad-taittiriya --title "তৈত্তিরীয় উপনিষদ" --word মন্ত্র --match "তৈত্তিরীয় উপনিষদ" --chain --max 2
+          run --slug upanishad-aitareya --title "ঐতরেয় উপনিষদ" --word মন্ত্র --match "ঐতরেয় উপনিষদ" --chain --max 2
 
           echo "শেষ $(date -u +%H:%M:%S)"
 
