@@ -62,15 +62,21 @@ jobs:
             python3 -u tools/fetch_ebl.py "$@" 2>&1 | tee -a /tmp/fetch.log
             sleep 1
           }
-          # ---- গরুড় পুরাণ (পৃথ্বীরাজ সেন): বই → লেসন → টপিক
+          # ---- গরুড় পুরাণ (পৃথ্বীরাজ সেন)
           run --slug garuda --title "গরুড় পুরাণ" --word শ্লোক \
-              --match "গরুড় পুরাণ পৃথ্বীরাজ" --book-toc --max 400
+              --match "গরুড় পুরাণ|গরুড পুরাণ" --book-auto --max 400
           # ---- ভবিষ্য পুরাণ
           run --slug bhabishya --title "ভবিষ্য পুরাণ" --word শ্লোক \
-              --match "ভবিষ্য পুরাণ পৃথ্বীরাজ" --book-toc --max 400
+              --match "ভবিষ্য পুরাণ" --book-auto --max 400
+          # ---- ব্রহ্ম পুরাণ
+          run --slug brahma --title "ব্রহ্ম পুরাণ" --word শ্লোক \
+              --match "ব্রহ্ম পুরাণ" --book-auto --max 400
           # ---- সামবেদ (পরিতোষ ঠাকুর)
           run --slug samaveda --title "সামবেদ সংহিতা" --word মন্ত্র \
               --match "সামবেদ সংহিতা|সামবেদ" --book-auto --max 400
+          # ---- অথর্ববেদ (দিলীপ মুখোপাধ্যায়)
+          run --slug atharvaveda --title "অথর্ববেদ সংহিতা" --word মন্ত্র \
+              --match "অথর্ববেদ সংহিতা|অথর্ববেদ" --book-auto --max 400
 
           echo "শেষ $(date -u +%H:%M:%S)"
 
