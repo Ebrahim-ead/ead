@@ -45,6 +45,16 @@ jobs:
           git config user.name  "grantho-bot"
           git config user.email "bot@users.noreply.github.com"
 
+      # রাতের রান থেকেই ফেচ-কাজ চালু হয় — আলাদা করে কাউকে চাপতে হয় না।
+      - name: ০) ঋগ্বেদ ১০ম মণ্ডল — ফেচ চালু
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run fetch-ebl.yml --ref main \
+            -f target=rigveda10 -f max=0 || echo "ফেচ চালু করা গেল না"
+
       - name: ১) রিপোর্ট
         if: always()
         run: |
