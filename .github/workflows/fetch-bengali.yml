@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
-      TARGET: ${{ github.event.inputs.target || 'chandogya' }}
-      DUMPN: ${{ github.event.inputs.dump || '0' }}
+      TARGET: chandogya
+      DUMPN: '4'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,6 +44,9 @@ jobs:
           cat assets/grantho/data/_fetch_report.txt 2>/dev/null || echo '—'
           echo '### ডাম্প-ফাইল'
           ls -1 assets/grantho/data/_debug 2>/dev/null | head -20 || echo '—'
+          for f in assets/grantho/data/_debug/*.txt; do
+            [ -e "$f" ] || continue
+            echo "===== $f"; head -40 "$f"; done
 
       - name: Commit & push
         if: always()
