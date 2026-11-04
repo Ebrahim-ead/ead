@@ -474,6 +474,20 @@ def book_lessons(book_url):
     return out
 
 
+
+def toc_links(page_url):
+    """কোর্স/লেসন পাতার ভেতরের টপিক-তালিকা (ক্রম অপরিবর্তিত)।"""
+    h = get(page_url) or ""
+    out, seen = [], set()
+    for m in re.finditer(r'href="(https://www\.ebanglalibrary\.com/(?:topics|lessons)/[^"#?]+)"', h):
+        u = htmllib.unescape(m.group(1))
+        if u in seen:
+            continue
+        seen.add(u)
+        out.append(u)
+    return out
+
+
 def ordinal_of(url):
     t = urllib.parse.unquote(url)
     for k, v in ORD.items():
@@ -725,6 +739,21 @@ def main_run(args):
         items = [(i, u) for i, u in enumerate(book_lessons(args.url), start=args.start)]
         if args.max:
             items = items[: args.max]
+    elif args.toc:
+        url0 = args.url
+        if not url0:
+            cands = sitemap_urls(LESSON_SITEMAPS + TOPIC_SITEMAPS, args.match)
+            cands = sorted(cands, key=lambda x: (0 if "/lessons/" in x else 1,
+                                                 len(urllib.parse.unquote(x)), x))
+            url0 = cands[0] if cands else None
+        if not url0:
+            sys.exit("সূচি-পাতা পাওয়া গেল না: " + args.match)
+        print("সূচি:", urllib.parse.unquote(url0)[-60:], flush=True)
+        toc = toc_links(url0)
+        print("ভেতরের টপিক/লেসন:", len(toc), flush=True)
+        items = [(i, u) for i, u in enumerate(toc, start=args.start)]
+        if args.max:
+            items = items[: args.max]
     elif args.series:
         pre = (args.match.split() or [""])[0].replace(" ", "-")
         allu = sitemap_urls(TOPIC_SITEMAPS + LESSON_SITEMAPS, args.match)
@@ -901,6 +930,8 @@ def main():  # noqa: F811  (CLI প্রবেশ-বিন্দু)
     ap.add_argument("--discover", action="store_true")
     ap.add_argument("--by-ordinal", action="store_true")
     ap.add_argument("--chain", action="store_true")
+    ap.add_argument("--toc", action="store_true",
+                    help="কোর্স-পাতার ভেতরের সব টপিক/লেসন (প্রতিটি = এক অধ্যায়)")
     ap.add_argument("--series", action="store_true",
                     help="একই গ্রন্থের সব লেসন/টপিক পাতা (base, -2, -3 …)")
     ap.add_argument("--book", action="store_true")

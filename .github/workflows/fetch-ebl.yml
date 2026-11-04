@@ -19,11 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 350
     env:
-      # ---- প্রথম রান: URL-আবিষ্কার + ছান্দোগ্য (৮ অধ্যায়) ----
-      KW: 'কেন উপনিষদ,ঈশ উপনিষদ,প্রশ্ন উপনিষদ,মুণ্ডক উপনিষদ,মাণ্ডূক্য উপনিষদ,তৈত্তিরীয় উপনিষদ,ঐতরেয় উপনিষদ'
-      SLUG: 'upanishad-kena'
-      TITLE: 'কেন উপনিষদ'
-      MATCH: 'কেন উপনিষদ'
+      # ---- : URL-আবিষ্কার + ছান্দোগ্য (৮ অধ্যায়) ----
+      KW: 'অথর্ববেদ সংহিতা'
+      SLUG: 'atharvaveda'
+      TITLE: 'অথর্ববেদ সংহিতা'
+      MATCH: 'অথর্ববেদ সংহিতা'
       ORDINAL: '0'
       CHAIN: '0'
       BOOK: '0'
@@ -119,27 +119,27 @@ jobs:
                   print("  |", ln[:120])
           PY
 
-      - name: Debug (HTML-গঠন)
+      - name: Debug (পুরাণ অধ্যায়-পাতা)
         continue-on-error: true
         run: |
           python3 - <<'PY' 2>&1 | tee assets/grantho/data/_debug/dbg.txt
           import sys, re, urllib.parse
           sys.path.insert(0, "tools")
           import fetch_ebl as f
-          for label, kw, want in [("অথর্ববেদ", "অর্ববেদ সংহিত", "lessons"),
-                                  ("গরুড়", "গরুড় পুরাণ", "lessons")]:
-              allu = f.sitemap_urls(f.LESSON_SITEMAPS + f.TOPIC_SITEMAPS, kw, (want,))
-              u = sorted(allu, key=lambda x: (len(urllib.parse.unquote(x)), x))[0] if allu else None
-              print("=====", label, (urllib.parse.unquote(u)[-45:] if u else "নেই"), "|", len(allu))
-              if not u:
-                  continue
-              h = f.get(u) or ""
-              i = h.find("entry-content")
-              print("entry-content index:", i, "| html:", len(h))
-              print("দেবনাগরী(সম্পূর্ণ):", len(re.findall(r"[\u0900-\u097F]", h)), "| ॥:", h.count("॥"))
-              seg = h[i:i+4000] if i > 0 else h[:4000]
-              print("--- সেগমেন্ট ---")
-              print(re.sub(r"\s+", " ", seg)[:2500])
+          cands = f.sitemap_urls(f.LESSON_SITEMAPS + f.TOPIC_SITEMAPS, "গরুড় পুরাণ পৃথ্বীরাজ")
+          url0 = sorted(cands, key=lambda x: len(urllib.parse.unquote(x)))[0]
+          toc = f.toc_links(url0)
+          print("সূচি-টপিক:", len(toc))
+          print("প্রথম কয়েক:", [urllib.parse.unquote(u)[-40:] for u in toc[:3]])
+          if toc:
+              u = toc[0]
+              t = f.fetch_paged(u)
+              lines = [x.strip() for x in t.splitlines() if x.strip()]
+              print("টেক্সট লাইন:", len(lines), "| ॥:", t.count("॥"))
+              vs = f.parse_verses(t)
+              print("পার্স:", len(vs), "| sk:", sum(1 for v in vs if v["sk"]), "| bn:", sum(1 for v in vs if v["bn"]))
+              for ln in lines[:35]:
+                  print("  |", ln[:120])
           PY
 
       - name: Fetch (উপনিষদ + পুরাণ)
@@ -152,14 +152,9 @@ jobs:
             python3 -u tools/fetch_ebl.py "$@" 2>&1 | tee -a /tmp/fetch.log
             sleep 1
           }
-          # ---- বাকি উপনিষদ: লেসন-সিরিজ (প্রতি লেসন = এক খণ্ড)
-          run --slug upanishad-kena --title "কেন উপনিষদ" --word মন্ত্র --match "কেন উপনিষদ" --series --max 40
-          run --slug upanishad-isha --title "ঈশ উপনিষদ" --word মন্ত্র --match "ঈশ উপনিষদ" --series --max 40
-          run --slug upanishad-prashna --title "প্রশ্ন উপনিষদ" --word মন্ত্র --match "প্রশ্ন উপনিষদ" --series --max 40
-          run --slug upanishad-mundaka --title "মুণ্ডক উপনিষদ" --word মন্ত্র --match "মুণ্ডক উপনিষদ" --series --max 40
-          run --slug upanishad-mandukya --title "মাণ্ডূক্য উপনিষদ" --word মন্ত্র --match "মাণ্ডূক্য উপনিষদ" --series --max 40
-          run --slug upanishad-taittiriya --title "তৈত্তিরীয় উপনিষদ" --word মন্ত্র --match "তৈত্তিরীয় উপনিষদ" --series --max 40
-          run --slug upanishad-aitareya --title "ঐতরেয় উপনিষদ" --word মন্ত্র --match "ঐতরেয় উপনিষদ" --series --max 40
+          # ---- অথর্ববেদ: কোর্স-পাতার ভেতরের সব অধ্যায় (টপিক)
+          run --slug atharvaveda --title "অথর্ববেদ সংহিতা" --word মন্ত্র \
+              --match "অথর্ববেদ সংহিতা" --toc --max 60
 
           echo "শেষ $(date -u +%H:%M:%S)"
 
