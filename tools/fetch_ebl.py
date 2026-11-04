@@ -746,7 +746,7 @@ def main_run(args):
     out_dir = os.path.join(args.out, args.slug) if args.slug else ""
 
     if args.url and not (args.book or args.chain or args.group_by_num or args.toc
-                         or args.series):
+                         or args.series or args.prefix):
         # একক পাতা (পরীক্ষা/ডাম্প)
         h = get(args.url)
         txt = fetch_paged(args.url)
@@ -792,6 +792,25 @@ def main_run(args):
             items = items[: args.max]
     elif args.book:
         items = [(i, u) for i, u in enumerate(book_lessons(args.url), start=args.start)]
+        if args.max:
+            items = items[: args.max]
+    elif args.prefix:
+        # সাইটম্যাপে ঠিকানা-প্রিফিক্স ধরে একই গ্রন্থের সব পাঠ-পাতা
+        allu = sitemap_urls(TOPIC_SITEMAPS + LESSON_SITEMAPS, args.prefix)
+        sel = [u for u in allu if norm(args.prefix).replace("", "") in norm(urllib.parse.unquote(u))
+               .replace("", "")] if allu else []
+        sel = sel or allu
+
+        def _ord(u):
+            t = urllib.parse.unquote(u)
+            m = re.search(r"([০-৯]{1,3})\s*।?\s*([০-৯]{1,3})?", t)
+            return (to_int(m.group(1)) if m and m.group(1) else 999,
+                    to_int(m.group(2)) if m and m.group(2) else 0, len(t), t)
+        sel = sorted(set(sel), key=_ord)
+        print("প্রিফিক্স-মিল:", len(sel), flush=True)
+        for u in sel[:3]:
+            print("   ·", urllib.parse.unquote(u)[-55:])
+        items = [(i, u) for i, u in enumerate(sel, start=args.start)]
         if args.max:
             items = items[: args.max]
     elif args.toc:
@@ -996,6 +1015,8 @@ def main():  # noqa: F811  (CLI প্রবেশ-বিন্দু)
     ap.add_argument("--discover", action="store_true")
     ap.add_argument("--by-ordinal", action="store_true")
     ap.add_argument("--chain", action="store_true")
+    ap.add_argument("--prefix", default="",
+                    help="সাইটম্যাপে এই ঠিকানা-অংশ থাকা সব পাতা (গ্রন্থ-সিরিজ)")
     ap.add_argument("--toc", action="store_true",
                     help="কোর্স-পাতার ভেতরের সব টপিক/লেসন (প্রতিটি = এক অধ্যায়)")
     ap.add_argument("--series", action="store_true",

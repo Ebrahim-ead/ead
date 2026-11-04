@@ -62,24 +62,15 @@ jobs:
             python3 -u tools/fetch_ebl.py "$@" 2>&1 | tee -a /tmp/fetch.log
             sleep 1
           }
-          # ---- অথর্ববেদ: ১৮।০৩ থেকে শুরু হওয়া পাঠ-সিরিজের সব কাণ্ড
-          run --slug atharvaveda --title "অথর্ববেদ সংহিতা" --word মন্ত্র \
-              --url "https://www.ebanglalibrary.com/lessons/অথর্ববেদ-সংহিতা-১৮।০৩-অষ/" --toc --max 400
-          # ---- গরুড় পুরাণ (পৃথ্বীরাজ সেন)
+          # ---- গরুড় পুরাণ (পৃথ্বীরাজ সেন) — সাইটম্যাপ-প্রিফিক্স
           run --slug garuda --title "গরুড় পুরাণ" --word শ্লোক \
-              --match "গরুড় পুরাণ" --toc --max 200
+              --prefix "গরুড়-পুরাণ-পৃথ্বীরাজ" --max 300
           # ---- ভবিষ্য পুরাণ
           run --slug bhabishya --title "ভবিষ্য পুরাণ" --word শ্লোক \
-              --match "ভবিষ্য পুরাণ" --toc --max 200
-          # ---- ব্রহ্ম পুরাণ
-          run --slug brahma --title "ব্রহ্ম পুরাণ" --word শ্লোক \
-              --match "ব্রহ্ম পুরাণ" --toc --max 200
-          # ---- সামবেদ
+              --prefix "ভবিষ্য-পুরাণ-পৃথ্বীরাজ" --max 300
+          # ---- সামবেদ (পরিতোষ ঠাকুর)
           run --slug samaveda --title "সামবেদ সংহিতা" --word মন্ত্র \
-              --match "সামবেদ সংহিতা পরিতোষ" --toc --max 240
-          # ---- ঋগ্বেদ (রমেশচন্দ্র দত্ত) ০১–০৯ মণ্ডল
-          run --slug rigveda --title "ঋগ্বেদ সংহিতা" --word সূক্ত \
-              --match "ঋগ্বেদ ০" --by-ordinal --max 40
+              --prefix "সামবেদ-সংহিতা-পরিতোষ" --max 300
 
           echo "শেষ $(date -u +%H:%M:%S)"
 
