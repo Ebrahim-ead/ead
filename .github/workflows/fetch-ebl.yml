@@ -93,6 +93,21 @@ jobs:
           got = F.mandala_links(10)
           out.append(f"mandala_links(10) → {len(got)}")
 
+          # mandala_links-এর ভেতরে কোন ধাপে থামছে
+          import urllib.parse as _up
+          for toc in F.RV_MANDALA_TOC:
+              if "10" not in toc:
+                  continue
+              tl = F.toc_links(toc)
+              hit = 0
+              for u in tl:
+                  t = _up.unquote(u.rstrip("/").split("/")[-1])
+                  g = _re.match(r"^[^০-৯0-9]*?([০-৯]{1,2})\s*।\s*([০-৯]{1,3})$", t)
+                  if g and F.to_int(g.group(1)) == 10:
+                      hit += 1
+              out.append(f"সূচি {toc.split('/topics/')[-1]}: লিংক {len(tl)}, "
+                         f"মণ্ডল-১০-মিল {hit}")
+
           # আসল সাইটম্যাপের ১৯১টি লিংকের ওপরেই ধাপে ধাপে যাচাই
           import re as _re
           sample = m10[:6] + m10[-3:]
