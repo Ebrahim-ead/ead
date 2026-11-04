@@ -1,142 +1,312 @@
-সূচি: ps://www.ebanglalibrary.com/lessons/৪-অথর্ববেদ-সংহিতা-চতুর্/
-ভেতরের টপিক/লেসন: 131
-নামানো হবে 60টি পাতা
-[1] ps://www.ebanglalibrary.com/lessons/৪-অথর্ববেদ-সংহিতা-চতুর্/
-   ✓ 1 মন্ত্র
-[2] s://www.ebanglalibrary.com/lessons/১-ঋগ্বেদ-সংহিতা-প্রথম-অধ/
-   ✓ 1 মন্ত্র
-[3] https://www.ebanglalibrary.com/topics/০১-ঋগ্বেদ/
+সূচি: s://www.ebanglalibrary.com/lessons/অথর্ববেদ-সংহিতা-১৮।০৩-অষ/
+ভেতরের টপিক/লেসন: 50
+নামানো হবে 50টি পাতা
+[1] s://www.ebanglalibrary.com/lessons/অথর্ববেদ-সংহিতা-১৮।০৩-অষ/
+   ! URLError — 7%a6%e0%a7%a9-%e0%a6%85%e0%a6%b7/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%a6%e0%a7%a9-%e0%a6%85%e0%a6%b7/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%a6%e0%a7%a9-%e0%a6%85%e0%a6%b7/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%a6%e0%a7%a9-%e0%a6%85%e0%a6%b7/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[4] https://www.ebanglalibrary.com/topics/০২-রচনাকাল/
+[2] ://www.ebanglalibrary.com/lessons/০৭।০৫-সপ্তম-কাণ্ড-পঞ্চম-অ/
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[5] https://www.ebanglalibrary.com/topics/০৩-ভাষ্যকার/
+[3] ://www.ebanglalibrary.com/lessons/০৭।০৬-সপ্তম-কাণ্ড-ষষ্ঠ-অন/
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%a0-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[6] ps://www.ebanglalibrary.com/topics/০৪-সূক্তসমূহের-প্রকৃতি-ও/
+[4] ://www.ebanglalibrary.com/lessons/০৭।০৭-সপ্তম-কাণ্ড-সপ্তম-অ/
+   ! URLError — 7%8d%e0%a6%a4%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%a4%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%a4%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%a4%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[5] ://www.ebanglalibrary.com/lessons/০৭।০৮-সপ্তম-কাণ্ড-অষ্টম-অ/
+   ! URLError — 7%8d%e0%a6%9f%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%9f%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%9f%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%9f%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[6] ://www.ebanglalibrary.com/lessons/০৭।০৯-সপ্তম-কাণ্ড-নবম-অনু/
+   ! URLError — 6%ae-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%ae-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%ae-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%ae-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[7] ://www.ebanglalibrary.com/lessons/০৭।১০-সপ্তম-কাণ্ড-দশম-অনু/
+   ! URLError — 6%ae-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%ae-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%ae-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%ae-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[8] ://www.ebanglalibrary.com/lessons/০৮।১-অষ্টম-কাণ্ড-প্রথম-অন/
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[9] s://www.ebanglalibrary.com/lessons/০৮।২-অষ্টম-কাণ্ড-দ্বিতীয/
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[10] ://www.ebanglalibrary.com/lessons/০৮।৩-অষ্টম-কাণ্ড-তৃতীয়-অ/
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[11] ://www.ebanglalibrary.com/lessons/০৮।৪-অষ্টম-কাণ্ড-চতুর্থ-অ/
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[12] ://www.ebanglalibrary.com/lessons/০৮।৫-অষ্টম-কাণ্ড-পঞ্চম-অন/
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[13] ://www.ebanglalibrary.com/lessons/০৯।১-নবম-কাণ্ড-প্রথম-অনুব/
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[14] ://www.ebanglalibrary.com/lessons/০৯।২-নবম-কাণ্ড-দ্বিতীয়-অ/
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[15] ://www.ebanglalibrary.com/lessons/০৯।৩-নবম-কাণ্ড-তৃতীয়-অনু/
+   ! URLError — 6%bc-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%bc-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%bc-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%bc-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[16] ://www.ebanglalibrary.com/lessons/০৯।৪-নবম-কাণ্ড-চতুর্থ-অনু/
+   ! URLError — 6%a5-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a5-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a5-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a5-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 2 মন্ত্র
-[7] tps://www.ebanglalibrary.com/topics/০৫-স্তোত্রগীতি-সম্বন্ধে/
+[17] ://www.ebanglalibrary.com/lessons/০৯।৫-নবম-কাণ্ড-পঞ্চম-অনুব/
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[8] https://www.ebanglalibrary.com/topics/০৬-রচনা-প্রকরণ/
+[18] ://www.ebanglalibrary.com/lessons/১০।১-দশম-কাণ্ড-প্রথম-অনুব/
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[9] ttps://www.ebanglalibrary.com/topics/০৭-সূক্তের-শ্রেণীবিভাগ/
+[19] ://www.ebanglalibrary.com/lessons/১০।২-দশম-কাণ্ড-দ্বিতীয়-অ/
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[10] https://www.ebanglalibrary.com/topics/০৮-সংবাদসূক্ত/
+[20] ://www.ebanglalibrary.com/lessons/১০।৩-দশম-কাণ্ড-তৃতীয়-অনু/
+   ! URLError — 6%bc-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%bc-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%bc-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%bc-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[11] https://www.ebanglalibrary.com/topics/০৯-দানস্তুতি/
+[21] ://www.ebanglalibrary.com/lessons/১০।৪-দশম-কাণ্ড-চতুর্থ-অনু/
+   ! URLError — 6%a5-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a5-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a5-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a5-%e0%a6%85%e0%a6%a8%e0%a7%81/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[12] https://www.ebanglalibrary.com/topics/১০-বালখিল্য/
+[22] ://www.ebanglalibrary.com/lessons/১০।৫-দশম-কাণ্ড-পঞ্চম-অনুব/
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 12 মন্ত্র
+[23] ://www.ebanglalibrary.com/lessons/১১।১-একাদশ-কাণ্ড-প্রথম-অন/
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[24] s://www.ebanglalibrary.com/lessons/১১।২-একাদশ-কাণ্ড-দ্বিতীয/
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[25] ://www.ebanglalibrary.com/lessons/১১।৩-একাদশ-কাণ্ড-তৃতীয়-অ/
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%80%e0%a6%af%e0%a6%bc-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[26] ://www.ebanglalibrary.com/lessons/১১।৪-একাদশ-কাণ্ড-চতুর্থ-অ/
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0%e0%a7%8d%e0%a6%a5-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[27] ://www.ebanglalibrary.com/lessons/১১।৫-একাদশ-কাণ্ড-পঞ্চম-অন/
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%9a%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[28] ://www.ebanglalibrary.com/lessons/১২।১-দ্বাদশ-কাণ্ড-প্রথম-অ/
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 19 মন্ত্র
+[29] s://www.ebanglalibrary.com/lessons/১২।২-দ্বাদশ-কাণ্ড-দ্বিতী/
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[30] s://www.ebanglalibrary.com/lessons/১২।৩-দ্বাদশ-কাণ্ড-তৃতীয়/
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[31] s://www.ebanglalibrary.com/lessons/১২।৪-দ্বাদশ-কাণ্ড-চতুর্থ/
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[32] ://www.ebanglalibrary.com/lessons/১২।৫-দ্বাদশ-কাণ্ড-পঞ্চম-অ/
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 7%8d%e0%a6%9a%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[33] s://www.ebanglalibrary.com/lessons/১৩।১-ত্রয়োদশ-কাণ্ড-প্রথ/
+   ! URLError — a6%aa%e0%a7%8d%e0%a6%b0%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%aa%e0%a7%8d%e0%a6%b0%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%aa%e0%a7%8d%e0%a6%b0%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%aa%e0%a7%8d%e0%a6%b0%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[34] s://www.ebanglalibrary.com/lessons/১৩।২-ত্রয়োদশ-কাণ্ড-দ্বি/
+   ! URLError — a6%a6%e0%a7%8d%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%a6%e0%a7%8d%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%a6%e0%a7%8d%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%a6%e0%a7%8d%e0%a6%ac%e0%a6%bf/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 8 মন্ত্র
+[35] s://www.ebanglalibrary.com/lessons/১৩।৩-ত্রয়োদশ-কাণ্ড-তৃতী/
+   ! URLError — a6%a4%e0%a7%83%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%a4%e0%a7%83%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%a4%e0%a7%83%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%a4%e0%a7%83%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 4)
+   ✗ মন্ত্র পাওয়া যায়নি
+[36] s://www.ebanglalibrary.com/lessons/১৩।৪-ত্রয়োদশ-কাণ্ড-চতুর/
+   ! URLError — a6%9a%e0%a6%a4%e0%a7%81%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%9a%e0%a6%a4%e0%a7%81%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%9a%e0%a6%a4%e0%a7%81%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%9a%e0%a6%a4%e0%a7%81%e0%a6%b0/?ld-lesson-page=1 (চেষ্টা 4)
    ✓ 2 মন্ত্র
-[13] https://www.ebanglalibrary.com/topics/১১-খিলসূক্ত/
-   ✓ 2 মন্ত্র
-[14] https://www.ebanglalibrary.com/topics/১২-অন্যান্য-সূক্তাবলী/
-   ✓ 2 মন্ত্র
-[15] https://www.ebanglalibrary.com/topics/১৩-নিবিদ্/
+[37] s://www.ebanglalibrary.com/lessons/১৪।১-চতুর্দশ-কাণ্ড-প্রথম/
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%a5%e0%a6%ae/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%a5%e0%a6%ae/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%a5%e0%a6%ae/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%a5%e0%a6%ae/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 16 মন্ত্র
+[38] s://www.ebanglalibrary.com/lessons/১৪।২-চতুর্দশ-কাণ্ড-দ্বিত/
+   ! URLError — a7%8d%e0%a6%ac%e0%a6%bf%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%ac%e0%a6%bf%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%ac%e0%a6%bf%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%ac%e0%a6%bf%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 10 মন্ত্র
+[39] ://www.ebanglalibrary.com/lessons/১৫।১-পঞ্চদশ-কাণ্ড-প্রথম-অ/
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[16] https://www.ebanglalibrary.com/topics/১৪-আপ্রী-সূক্ত/
+[40] s://www.ebanglalibrary.com/lessons/১৫।২-পঞ্চদশ-কাণ্ড-দ্বিতী/
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[17] https://www.ebanglalibrary.com/topics/১৫-সোমমণ্ডল/
+[41] ://www.ebanglalibrary.com/lessons/১৬।১-ষোড়শ-কাণ্ড-প্রথম-অন/
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%a5%e0%a6%ae-%e0%a6%85%e0%a6%a8/?ld-lesson-page=1 (চেষ্টা 4)
+   ✓ 3 মন্ত্র
+[42] s://www.ebanglalibrary.com/lessons/১৬।২-ষোড়শ-কাণ্ড-দ্বিতীয/
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%bf%e0%a6%a4%e0%a7%80%e0%a6%af/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[18] https://www.ebanglalibrary.com/topics/১৬-সর্বেশ্বেরবাদ/
+[43] ://www.ebanglalibrary.com/lessons/১৭।১-সপ্তদশ-কাণ্ড-প্রথম-অ/
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[19] https://www.ebanglalibrary.com/topics/১৭-একেশ্বরবাদ/
+[44] s://www.ebanglalibrary.com/lessons/১৮।১-অষ্টাদশ-কাণ্ড-প্রথম/
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%a5%e0%a6%ae/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%a5%e0%a6%ae/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%a5%e0%a6%ae/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%b0%e0%a6%a5%e0%a6%ae/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[20] tps://www.ebanglalibrary.com/topics/১৮-উপাখ্যান-ও-প্ৰহেলিকা/
+[45] s://www.ebanglalibrary.com/lessons/১৮।২-অষ্টাদশ-কাণ্ড-দ্বিত/
+   ! URLError — a7%8d%e0%a6%ac%e0%a6%bf%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%8d%e0%a6%ac%e0%a6%bf%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%8d%e0%a6%ac%e0%a6%bf%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%8d%e0%a6%ac%e0%a6%bf%e0%a6%a4/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[21] https://www.ebanglalibrary.com/topics/১৯-সূর্যাসূক্ত/
-   ✓ 2 মন্ত্র
-[22] https://www.ebanglalibrary.com/topics/২০-দূতকারের-অনুশোচনা/
+[46] s://www.ebanglalibrary.com/lessons/১৮।৪-অষ্টাদশ-কাণ্ড-চতুর্/
+   ! URLError — a6%a4%e0%a7%81%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%a4%e0%a7%81%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%a4%e0%a7%81%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%a4%e0%a7%81%e0%a6%b0%e0%a7%8d/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[23] https://www.ebanglalibrary.com/topics/২১-যমসংহিতা/
-   ✓ 2 মন্ত্র
-[24] https://www.ebanglalibrary.com/topics/২২-মণ্ডূকসূক্ত/
-   ✓ 2 মন্ত্র
-[25] ps://www.ebanglalibrary.com/topics/২৩-রাত্রিসূক্ত-ও-অরণ্যান/
-   ✓ 2 মন্ত্র
-[26] s://www.ebanglalibrary.com/topics/২৪-ঋগ্বেদ-লোকায়ত-না-ধর্ম/
+[47] ://www.ebanglalibrary.com/lessons/১৯।১-ঊনবিংশ-কাণ্ড-প্রথম-অ/
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — 6%b0%e0%a6%a5%e0%a6%ae-%e0%a6%85/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[27] https://www.ebanglalibrary.com/topics/২৫-রচনারীতি-ভাষা/
+[48] s://www.ebanglalibrary.com/lessons/১৯।২-ঊনবিংশ-কাণ্ড-দ্বিতী/
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[28] https://www.ebanglalibrary.com/topics/২৬-স্বর/
+[49] s://www.ebanglalibrary.com/lessons/১৯।৩-ঊনবিংশ-কাণ্ড-তৃতীয়/
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a6%a4%e0%a7%80%e0%a6%af%e0%a6%bc/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[29] ps://www.ebanglalibrary.com/topics/২৭-মৌখিক-সাহিত্যরূপে-ঋগ্/
+[50] s://www.ebanglalibrary.com/lessons/১৯।৪-ঊনবিংশ-কাণ্ড-চতুর্থ/
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 1)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 2)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 3)
+   ! URLError — a7%81%e0%a6%b0%e0%a7%8d%e0%a6%a5/?ld-lesson-page=1 (চেষ্টা 4)
    ✗ মন্ত্র পাওয়া যায়নি
-[30] https://www.ebanglalibrary.com/topics/২৮-চিত্রকল্প/
-   ✗ মন্ত্র পাওয়া যায়নি
-[31] https://www.ebanglalibrary.com/topics/২৯-বৰ্ণনা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[32] https://www.ebanglalibrary.com/topics/৩০-ধর্ম-ও-দর্শন/
-   ✗ মন্ত্র পাওয়া যায়নি
-[33] https://www.ebanglalibrary.com/topics/৩১-নীতিবোধ/
-   ✓ 2 মন্ত্র
-[34] https://www.ebanglalibrary.com/topics/৩২-প্ৰত্নকথা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[35] ps://www.ebanglalibrary.com/lessons/২-সামবেদ-সংহিতা-দ্বিতীয/
-   ✓ 1 মন্ত্র
-[36] https://www.ebanglalibrary.com/topics/০১-সামবেদ-সংহিতা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[37] https://www.ebanglalibrary.com/topics/০২-ছন্দ-ও-ভাষা/
-   ✓ 2 মন্ত্র
-[38] https://www.ebanglalibrary.com/topics/০৩-ধ্বনি-ও-স্বরগ্রাম/
-   ✗ মন্ত্র পাওয়া যায়নি
-[39] https://www.ebanglalibrary.com/topics/০৪-সামবেদ-ও-সোমযাগ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[40] https://www.ebanglalibrary.com/topics/০৫-চন্দ্ররূপে-সোম/
-   ✓ 2 মন্ত্র
-[41] https://www.ebanglalibrary.com/topics/০৬-সামবেদের-উৎস/
-   ✗ মন্ত্র পাওয়া যায়নি
-[42] ps://www.ebanglalibrary.com/lessons/৩-যজুর্বেদ-সংহিতা-তৃতীয/
-   ✓ 1 মন্ত্র
-[43] https://www.ebanglalibrary.com/topics/০১-যজুর্বেদ-সংহিতা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[44] https://www.ebanglalibrary.com/topics/০২-রচনাকাল-2/
-   ✓ 2 মন্ত্র
-[45] https://www.ebanglalibrary.com/topics/০৩-বিষয়বস্তু/
-   ✗ মন্ত্র পাওয়া যায়নি
-[46] https://www.ebanglalibrary.com/topics/০৪-অনুষ্ঠান-চৰ্যা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[47] https://www.ebanglalibrary.com/topics/০৫-সমাজ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[48] https://www.ebanglalibrary.com/topics/০৬-আঙ্গিক-ও-ভাষা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[49] https://www.ebanglalibrary.com/topics/০৭-ইন্দ্ৰজাল/
-   ✗ মন্ত্র পাওয়া যায়নি
-[50] ps://www.ebanglalibrary.com/topics/০১-পাঠভেদ-অথর্ববেদ-সংহিত/
-   ✓ 2 মন্ত্র
-[51] ps://www.ebanglalibrary.com/topics/০২-মূলপাঠ-অথর্ববেদ-সংহিত/
-   ✗ মন্ত্র পাওয়া যায়নি
-[52] ps://www.ebanglalibrary.com/topics/০৩-রচয়িতা-অথর্ববেদ-সংহি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[53] ps://www.ebanglalibrary.com/topics/০৪-বিষয়বস্তু-অথর্ববেদ-স/
-   ✓ 2 মন্ত্র
-[54] ps://www.ebanglalibrary.com/topics/০৫-বৈদিক-ঐতিহ্যে-অথৰ্ববে/
-   ✗ মন্ত্র পাওয়া যায়নি
-[55] ps://www.ebanglalibrary.com/topics/০৬-রচনাকাল-অথর্ববেদ-সংহি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[56] ps://www.ebanglalibrary.com/topics/০৭-সূক্তসমূহের-শ্রেণী-বি/
-   ✗ মন্ত্র পাওয়া যায়নি
-[57] tps://www.ebanglalibrary.com/topics/০৮-সমাজ-অথর্ববেদ-সংহিতা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[58] https://www.ebanglalibrary.com/topics/০৯-দেবসঙ্ঘ/
-   ✗ মন্ত্র পাওয়া যায়নি
-[59] ps://www.ebanglalibrary.com/topics/১০-দর্শন-অথর্ববেদ-সংহিতা/
-   ✗ মন্ত্র পাওয়া যায়নি
-[60] https://www.ebanglalibrary.com/topics/১১-ব্রাত্য-সূক্ত/
-   ✗ মন্ত্র পাওয়া যায়নি
-atharvaveda: বাংলা 32/32
-  1. অথর্ববেদ সংহিতা — ৪ অথর্ববেদ সংহিতা চতুর্: 1/1
-  2. অথর্ববেদ সংহিতা — ১ ঋগ্বেদ সংহিতা প্রথম অধ: 1/1
-  6. অথর্ববেদ সংহিতা — ০৪ সূক্তসমূহের প্রকৃতি ও: 2/2
-  12. অথর্ববেদ সংহিতা — ১০ বালখিল্য: 2/2
-  13. অথর্ববেদ সংহিতা — ১১ খিলসূক্ত: 2/2
-  14. অথর্ববেদ সংহিতা — ১২ অন্যান্য সূক্তাবলী: 2/2
-  21. অথর্ববেদ সংহিতা — ১৯ সূর্যাসূক্ত: 2/2
-  23. অথর্ববেদ সংহিতা — ২১ যমসংহিতা: 2/2
-  24. অথর্ববেদ সংহিতা — ২২ মণ্ডূকসূক্ত: 2/2
-  25. অথর্ববেদ সংহিতা — ২৩ রাত্রিসূক্ত ও অরণ্যান: 2/2
-  33. অথর্ববেদ সংহিতা — ৩১ নীতিবোধ: 2/2
-  35. অথর্ববেদ সংহিতা — ২ সামবেদ সংহিতা দ্বিতীয: 1/1
-  37. অথর্ববেদ সংহিতা — ০২ ছন্দ ও ভাষা: 2/2
-  40. অথর্ববেদ সংহিতা — ০৫ চন্দ্ররূপে সোম: 2/2
-  42. অথর্ববেদ সংহিতা — ৩ যজুর্বেদ সংহিতা তৃতীয: 1/1
-  44. অথর্ববেদ সংহিতা — ০২ রচনাকাল 2: 2/2
-  50. অথর্ববেদ সংহিতা — ০১ পাঠভেদ অথর্ববেদ সংহিত: 2/2
-  53. অথর্ববেদ সংহিতা — ০৪ বিষয়বস্তু অথর্ববেদ স: 2/2
+atharvaveda: বাংলা 72/72
+  16. অথর্ববেদ সংহিতা — ০৯।৪ নবম কাণ্ড চতুর্থ অনু: 2/2
+  22. অথর্ববেদ সংহিতা — ১০।৫ দশম কাণ্ড পঞ্চম অনুব: 12/12
+  28. অথর্ববেদ সংহিতা — ১২।১ দ্বাদশ কাণ্ড প্রথম অ: 19/19
+  34. অথর্ববেদ সংহিতা — ১৩।২ ত্রয়োদশ কাণ্ড দ্বি: 8/8
+  36. অথর্ববেদ সংহিতা — ১৩।৪ ত্রয়োদশ কাণ্ড চতুর: 2/2
+  37. অথর্ববেদ সংহিতা — ১৪।১ চতুর্দশ কাণ্ড প্রথম: 16/16
+  38. অথর্ববেদ সংহিতা — ১৪।২ চতুর্দশ কাণ্ড দ্বিত: 10/10
+  41. অথর্ববেদ সংহিতা — ১৬।১ ষোড়শ কাণ্ড প্রথম অন: 3/3
