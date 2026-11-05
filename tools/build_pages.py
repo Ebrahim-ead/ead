@@ -117,6 +117,11 @@ UPA = {
 
 # টেমপ্লেট: আগে সামবেদ-পাতা (মূল নকশা), না থাকলে যেকোনো বানানো গ্রন্থ-পাতা।
 # সামবেদ সাইট থেকে সরানো হয়েছে, তাই এখানেও নির্ভরতা রাখা যাবে না।
+#
+# ▸ নতুন পাতা বানানোর *পরে* আনকন্ডিশনালি normalize() চালানো হয় (নিচে), কারণ
+#   টেমপ্লেট-পাতাটাই পুরোনো হতে পারে: নতুন পাতা থেকে আধুনিক ফুটার/SEO/ক্লাস
+#   টেনে নিয়ে সেগুলো বসানো হয়। ফলে build_pages.py দিয়ে rebuild করলেও
+#   ফুটার-সংক্ষেপ, og:image ও canonical হারে না (আগে ফিরে যেত)।
 def _pick_template():
     for cand in ("samaveda.html", "rigveda.html", "gita.html"):
         p = OUT / cand
@@ -126,6 +131,57 @@ def _pick_template():
 
 
 TEMPLATE = _pick_template()
+
+SITE = "https://ebrahim-ead.github.io/ead"
+OG_CARD = SITE + "/assets/og-cover.jpg"
+
+
+def _ref_page() -> str:
+    """আধুনিক (হাতে ঠিক করা) পাতা — ফুটার ও head-এর জন্য সবচেয়ে ভালো নমুনা।"""
+    for cand in ("rigveda.html", "gita.html", "islam.html"):
+        p = OUT / cand
+        if p.exists():
+            return p.read_text(encoding="utf-8")
+    return ""
+
+
+REF = _ref_page()
+FOOTER = (re.search(r"<footer\b.*?</footer>", REF, re.S).group(0)
+          if REF and re.search(r"<footer\b.*?</footer>", REF, re.S) else "")
+EXTRA_CSS = re.compile(
+    r'<link[^>]*href="(?:\.\./\.\./|\.\./|\.){0,3}assets/site-extra\.css"[^>]*>'
+    r'(?:\s*<link[^>]*\?v=\d+"[^>]*>)?')
+
+
+def normalize(slug: str, html: str) -> str:
+    """new/পুরোনো নির্বিশেষে প্রতিটি বানানো পাতায় একই head ও ফুটার।"""
+    href = f"{SITE}/grantho/hindu/{slug}.html"
+    # ১) SEO ট্যাগ — আগে থাকলে হালনাগাদ, না থাকলে যোগ (canonical বারবার যোগ হয় না)
+    if 'property="og:image"' in html:
+        html = re.sub(r'(<meta property="og:image" content=")[^"]*(")', lambda m: m.group(1) + OG_CARD + m.group(2), html, count=1)
+        html = re.sub(r'(<link rel="canonical" href=")[^"]*(")', lambda m: m.group(1) + href + m.group(2), html, count=1)
+        if 'rel="canonical"' not in html:
+            html = html.replace("</head>", f'<link rel="canonical" href="{href}">\n</head>', 1)
+    else:
+        lines = [f'<meta property="og:image" content="{OG_CARD}">',
+                 '<meta property="og:image:width" content="1200">',
+                 '<meta property="og:image:height" content="630">']
+        if 'name="twitter:card"' in html:          # কার্ড-লাইন থাকলে মান ঠিক করি
+            html = re.sub(r'<meta name="twitter:card"[^>]*>',
+                          '<meta name="twitter:card" content="summary_large_image">', html, count=1)
+        else:
+            lines.append('<meta name="twitter:card" content="summary_large_image">')
+        lines.append(f'<link rel="canonical" href="{href}">')
+        html = html.replace("</head>", "\n".join(lines) + "\n</head>", 1)
+    # ২) site-extra.css (মোবাইল/সূত্র/কম্প্যাক্ট ফুটার) — নতুনরা এটা পায় না
+    if "site-extra.css" not in html:
+        html = html.replace("</head>", '<link rel="stylesheet" href="../../assets/site-extra.css">\n</head>', 1)
+    # ৩) ফুটার — পুরোনো টেমপ্লেটের ফুটার বদলে আধুনিক (সংক্ষিপ্ত) ফুটার
+    if FOOTER:
+        m = re.search(r"<footer\b.*?</footer>", html, re.S)
+        if m and m.group(0) != FOOTER:
+            html = html[:m.start()] + FOOTER + html[m.end():]
+    return html
 
 
 def load(slug):
@@ -206,7 +262,7 @@ def make_page(slug, idx, meta):
                       f'{label} — {commas(withbn)} {meta["word"]}'),
                      (r'(<meta name="twitter:description" content=")[^"]*(")', fulldesc)):
         h = re.sub(pat, lambda m, v=val: m.group(1) + v + m.group(2), h, count=1)
-    (OUT / f"{slug}.html").write_text(h, encoding="utf-8")
+    (OUT / f"{slug}.html").write_text(normalize(slug, h), encoding="utf-8")
     return dict(slug=slug, total=total, withbn=withbn, nch=nch)
 
 
