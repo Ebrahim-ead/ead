@@ -62,7 +62,7 @@ MOBILE_CSS = r"""
 .article-body table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
 
 /* দৃশ্যের বাইরের কার্ড আঁকা হয় না → খুব লম্বা পাতায় স্ক্রল মসৃণ */
-.article-body>section,.h-item,.q-card{content-visibility:auto;contain-intrinsic-size:auto 320px}
+.article-body>section{content-visibility:auto;contain-intrinsic-size:auto 320px}
 
 /* ছবি সবসময় অনুপাত ধরে ছোট হবে */
 .article-body img,.h-item img{height:auto}

@@ -1386,8 +1386,10 @@ html[data-theme="light"] .qhc-kicker,html[data-theme="light"] .qhc-go{color:#805
 .article-body img,.article-body table{max-width:100%;height:auto}
 .article-body table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
 
-/* দৃশ্যের বাইরের কার্ড আঁকা হয় না → খুব লম্বা পাতায় স্ক্রল মসৃণ */
-.article-body>section,.h-item,.q-card{content-visibility:auto;contain-intrinsic-size:auto 320px}
+/* দৃশ্যের বাইরের সেকশন আঁকা হয় না → খুব লম্বা প্রবন্ধে স্ক্রল মসৃণ।
+   হাদিস/আয়াতের কার্ডে দেওয়া হয়নি: ওখানে নম্বর দিয়ে লাফ দেওয়ার হিসাব
+   অনুমানী উচ্চতায় ভুল হয়ে যেতে পারে। */
+.article-body>section{content-visibility:auto;contain-intrinsic-size:auto 320px}
 
 /* ছবি সবসময় অনুপাত ধরে ছোট হবে */
 .article-body img,.h-item img{height:auto}
