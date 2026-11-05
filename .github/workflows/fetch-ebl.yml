@@ -28,6 +28,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write     # bot-ব্রাঞ্চ → PR → merge করতে লাগে
 
 concurrency:
   group: fetch-ebl
@@ -270,7 +271,16 @@ jobs:
             gh pr merge "$NUM" --merge
             echo "✓ প্রকাশ হয়েছে (PR #$NUM)"
           else
-            echo "⛔ bot-ব্রাঞ্চে push/PR ব্যর্থ"
+            # PR বানানো গেল না — ডেটা-কমিটটা সোজা main-এ দিই (ডেটা-বটের নিজের
+            # রিপো, এটাই এতদিন ধরে প্রত্যাশিত আচরণ ছিল)
+            echo "PR হয়নি — সোজা main-এ push করছি"
+            git fetch origin main || true
+            if git rebase origin/main; then
+              git push origin "HEAD:refs/heads/main" && echo "✓ main-এ প্রকাশ হয়েছে"
+            else
+              git rebase --abort || true
+              echo "⛔ main-এ push-ও হলো না"
+            fi
           fi
           # যা হয়েছে তা ছোট করে রিপোর্টে লিখে main-এ রেখে দিই — লগ দেখা যায় না
           {
