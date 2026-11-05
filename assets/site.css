@@ -1426,3 +1426,8 @@ footer ul{line-height:2}
   footer .fgrid{gap:20px}
   footer .soc a{min-width:44px;min-height:44px}
 }
+
+/* sprite থেকে আসা মেনু-আইকন (আগে inline SVG ছিল) */
+.nav-symbol .ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:1080px){.nav-symbol{display:flex}}
