@@ -133,6 +133,37 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      # লগ/artifact ডাউনলোড সব জায়গায় হয় না — তাই ফলটা commit-comment-এও রাখি
+      # (GitHub API দিয়েই পড়া যায়, আলাদা কিছু লাগে না)।
+      - name: ফল কমেন্টে (commit-comment)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          CMT=/tmp/report.md
+          {
+            echo "### মিশকাত fill — রিপোর্ট"
+            echo ""
+            echo "- মোড: \`$MODE\` · limit=\`$LIMIT\` · sleep=\`$SLEEP\`"
+            echo "- ব্র্যাঞ্চ: \`${BOT_BRANCH}\` · কমিট: \`${GITHUB_SHA:0:7}\`"
+            echo ""
+            for f in assets/hadith/data/_debug/mishkat/fill_probe.txt \
+                     assets/hadith/data/_debug/mishkat/build.txt \
+                     assets/hadith/data/_debug/mishkat/fill_run.txt; do
+              [ -f "$f" ] || continue
+              echo '```'
+              echo "## $(basename "$f")"
+              head -c 12000 "$f"
+              echo '```'
+            done
+            echo '```'
+            echo "## verify"
+            head -c 4000 /tmp/verify.txt 2>/dev/null || true
+            echo '```'
+          } > "$CMT"
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/comments" \
+            -F body=@"$CMT" --jq '.id' && echo "✓ কমেন্টে গেছে" || echo "⚠ কমেন্ট হলো না"
+
       - name: ফল রিপোর্ট + push
         if: always()
         run: |
