@@ -44,12 +44,32 @@ jobs:
     timeout-minutes: 350
     env:
       PYTHONUNBUFFERED: '1'
-      MODE: ${{ inputs.mode || 'all' }}
+      # মোড: dispatch-এ ইনপুট, নয়তো _trigger/mishkat-fill ফাইলের প্রথম শব্দ
+      # (যেমন «probe» বা «all») — push-ট্রিগার দিয়েও মোড বাছা যায়।
+      MODE: ${{ inputs.mode || 'auto' }}
       LIMIT: ${{ inputs.limit || '0' }}
       SLEEP: ${{ inputs.sleep || '0.8' }}
       PROBE_SAMPLE: ${{ inputs.probe_sample || '' }}
       BOT_BRANCH: bot/mishkat-data
     steps:
+      - name: আগের চলমান রান বাতিল (নতুন রানই শেষ কথা)
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ github.token }}
+          all_but_latest: true
+        continue-on-error: true
+
+      - name: মোড নির্ধারণ
+        run: |
+          if [ "$MODE" = "auto" ] || [ -z "$MODE" ]; then
+            if [ -f assets/hadith/data/_trigger/mishkat-fill ]; then
+              MODE=$(head -1 assets/hadith/data/_trigger/mishkat-fill | tr -s ' \t' ' ' | cut -d' ' -f1)
+            fi
+            [ -z "$MODE" ] && MODE=all
+            echo "MODE=$MODE" >> "$GITHUB_ENV"
+          fi
+          echo "চলবে: MODE=$MODE · LIMIT=$LIMIT · SLEEP=$SLEEP"
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -132,6 +152,8 @@ jobs:
           git add -f assets/hadith/data/mishkat || true
           git add -f assets/hadith/data/index.json || true
           git add -f assets/hadith/data/_debug/mishkat/filled || true
+          git add -f assets/hadith/data/_debug/mishkat/fill_probe.txt || true
+          git add -f assets/hadith/data/_debug/mishkat/build.txt || true
           git add -f assets/hadith/data/_debug/mishkat/fill_run.txt || true
 
           if git diff --cached --quiet; then
