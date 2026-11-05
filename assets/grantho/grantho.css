@@ -166,3 +166,24 @@ html[data-theme="light"] .g-intro h1 span{color:#8a5a00}
   .g-layout{grid-template-columns:minmax(0,1fr)}
   .g-v{break-inside:avoid;border-color:#ccc}
 }
+
+/* ---- পৃষ্ঠা-ভাগ (বৃহৎ মণ্ডলে ব্রাউজার আটকায় না) ---- */
+.g-pager{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  flex-wrap:wrap;margin:6px 0 14px;
+}
+.g-pg-btn{
+  font:inherit;font-size:13.5px;line-height:1;padding:9px 14px;
+  border-radius:10px;cursor:pointer;
+  border:1px solid rgba(148,163,184,.32);
+  background:rgba(148,163,184,.08);color:inherit;
+  transition:background .15s,border-color .15s,transform .15s;
+}
+.g-pg-btn:hover:not(:disabled){background:rgba(148,163,184,.18);border-color:rgba(148,163,184,.5)}
+.g-pg-btn:active:not(:disabled){transform:translateY(1px)}
+.g-pg-btn:disabled{opacity:.4;cursor:default}
+.g-pg-info{font-size:13px;opacity:.75;font-variant-numeric:tabular-nums}
+@media(max-width:620px){
+  .g-pg-btn{padding:8px 11px;font-size:12.5px}
+  .g-pg-info{width:100%;text-align:center;order:-1}
+}
