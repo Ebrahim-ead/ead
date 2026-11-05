@@ -1,0 +1,16 @@
+mode=probe · chapters=সব · limit=0
+head=b842d51
+ফাইল:
+assets/hadith/data/_debug/mishkat/:
+total 16
+-rw-r--r-- 1 runner runner   68 Nov  5 01:20 _run.txt
+-rw-r--r-- 1 runner runner 2469 Nov  5 01:20 probe.txt
+-rw-r--r-- 1 runner runner 2469 Nov  5 01:20 probe_log.txt
+drwxr-xr-x 2 runner runner 4096 Nov  5 01:20 raw
+
+assets/hadith/data/_debug/mishkat/raw:
+total 6856
+-rw-r--r-- 1 runner runner 2438783 Nov  5 01:20 _hadith_book_13_chapter_498_title_12308.html
+-rw-r--r-- 1 runner runner 2283189 Nov  5 01:20 _hadith_book_13_chapter_498_titles.html
+-rw-r--r-- 1 runner runner 2016432 Nov  5 01:20 _hadith_book_13_chapter_499_title_12306.html
+-rw-r--r-- 1 runner runner  271658 Nov  5 01:20 _hadith_book_13_chapters.html
