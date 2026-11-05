@@ -1,20 +1,20 @@
-toc-10।০১ | https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০।০১/ | OK len=337017 | links=503
+toc-10।০১ | https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০।০১/ | OK len=336545 | links=503
      · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০।০১০/
      · https://www.ebanglalibrary.com/lessons/ঋগ্বেদ-প্রথম-মণ্ডল/
      · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০১/
      · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০২/
 toc-10।01 | https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০।01/ | FAIL | links=0
-toc-10 | https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০/ | OK len=332943 | links=503
+toc-10 | https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০/ | OK len=332471 | links=503
      · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০।০০১/
      · https://www.ebanglalibrary.com/lessons/ঋগ্বেদ-প্রথম-মণ্ডল/
      · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০১/
      · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০২/
-toc-09।০১ | https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০৯।০১/ | OK len=332940 | links=503
+toc-09।০১ | https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০৯।০১/ | OK len=332468 | links=503
      · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০৯।০১০/
      · https://www.ebanglalibrary.com/lessons/ঋগ্বেদ-প্রথম-মণ্ডল/
      · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০১/
      · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০২/
-home | https://www.ebanglalibrary.com/ | OK len=154884 | links=0
+home | https://www.ebanglalibrary.com/ | OK len=154412 | links=0
 সাইটম্যাপে ঋগ্বেদ: 1033 · সব URL: 30673
 মণ্ডল ১০ (সাইটম্যাপ): 191 · মণ্ডল ৯ (সাইটম্যাপ): 0
 সূচি ঋগ্বেদ-10।০১/: লিংক 0, মণ্ডল-১০-মিল 0
