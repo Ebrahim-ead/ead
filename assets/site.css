@@ -1391,3 +1391,36 @@ html[data-theme="light"] .qhc-kicker,html[data-theme="light"] .qhc-go{color:#805
 
 /* ছবি সবসময় অনুপাত ধরে ছোট হবে */
 .article-body img,.h-item img{height:auto}
+
+/* --- souce lines (hadith/quran intro) ---------------------------------- */
+.h-src-line{font-size:13.5px;color:var(--muted);margin-top:6px}
+.h-src-line a,.h-credit a{color:var(--gold2);text-decoration:underline;text-underline-offset:3px}
+.h-src-more{margin-top:10px;max-width:760px;border:1px solid var(--line);border-radius:12px;
+  background:var(--card);padding:0 14px;font-size:13.5px;color:var(--muted)}
+.h-src-more summary{cursor:pointer;padding:10px 0;color:var(--gold2);font-weight:600}
+.h-src-more[open]{padding-bottom:12px}
+.h-src-more p{margin:8px 0;line-height:1.75}
+.h-credit{text-align:center;font-size:13px;padding:18px 0 8px}
+
+/* --- quran source line (mirror of .h-src-*) ---------------------------- */
+.q-src-line{font-size:13.5px;color:var(--muted);margin-top:6px}
+.q-src-line a,.q-credit a{color:var(--gold2);text-decoration:underline;text-underline-offset:3px}
+.q-src-more{margin-top:10px;max-width:760px;border:1px solid var(--line);border-radius:12px;
+  background:var(--card);padding:0 14px;font-size:13.5px;color:var(--muted)}
+.q-src-more summary{cursor:pointer;padding:10px 0;color:var(--gold2);font-weight:600}
+.q-src-more[open]{padding-bottom:12px}
+.q-src-more p{margin:8px 0;line-height:1.75}
+.q-credit{text-align:center;font-size:13px;padding:18px 0 8px}
+
+/* --- compact footer: one line of brand + links, less repeated text ----- */
+@media (min-width:761px){
+  footer .fgrid{grid-template-columns:1.4fr 1fr 1fr 1.4fr}
+}
+footer p{max-width:46ch}
+footer .footer-heading{font-size:14.5px;margin-bottom:8px}
+footer ul{line-height:2}
+/* মোবাইলে ফুটারের ফাঁকা জায়গা কম, সোশ্যাল আইকন আঙুলের মাপে */
+@media (max-width:760px){
+  footer .fgrid{gap:20px}
+  footer .soc a{min-width:44px;min-height:44px}
+}
