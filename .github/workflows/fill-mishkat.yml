@@ -54,6 +54,11 @@ jobs:
       PROBE_SAMPLE: ${{ inputs.probe_sample || '' }}
       BOT_BRANCH: bot/mishkat-data
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # checkout-এর পরে, নইলে _trigger ফাইলটা তখনো নামেনি (MODE=auto-তে আটকে যেত)
       - name: মোড নির্ধারণ
         run: |
           if [ "$MODE" = "auto" ] || [ -z "$MODE" ]; then
@@ -65,9 +70,6 @@ jobs:
           fi
           echo "চলবে: MODE=$MODE · LIMIT=$LIMIT · SLEEP=$SLEEP"
 
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
