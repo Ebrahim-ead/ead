@@ -36,7 +36,9 @@ permissions:
 
 concurrency:
   group: mishkat-fill
-  cancel-in-progress: false
+  # নতুন রান এলে পুরোনোটা নিজে থেকেই বাতিল হয় — নইলে গ্রুপ-লকে নতুন রান
+  # «pending»-এ আটকে থাকে আর ওই রানই বাতিল করতে পারে না (মরা-লক)।
+  cancel-in-progress: true
 
 jobs:
   run:
@@ -52,13 +54,6 @@ jobs:
       PROBE_SAMPLE: ${{ inputs.probe_sample || '' }}
       BOT_BRANCH: bot/mishkat-data
     steps:
-      - name: আগের চলমান রান বাতিল (নতুন রানই শেষ কথা)
-        uses: styfle/cancel-workflow-action@0.12.1
-        with:
-          access_token: ${{ github.token }}
-          all_but_latest: true
-        continue-on-error: true
-
       - name: মোড নির্ধারণ
         run: |
           if [ "$MODE" = "auto" ] || [ -z "$MODE" ]; then
