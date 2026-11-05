@@ -170,6 +170,39 @@
     return { html: rows.join("") || '<p class="g-empty">কিছু মেলেনি। অন্য শব্দে চেষ্টা করুন।</p>', total: total };
   }
 
+  /* ---------- পৃষ্ঠা-ভাগ ----------
+     বৃহৎ মণ্ডল (ঋগ্বেদ ১০ম: ১,৭২৯ কার্ড) একসঙ্গে বসালে ব্রাউজার হ্যাং করে।
+     তাই অধ্যায়ের পাঠ কয়েকটি পৃষ্ঠায় ভাগে দেখাই; নম্বর ও ক্রম অটুট থাকে। */
+  var PAGE_SIZE = 200;
+  var pageNo = 0;
+
+  function setPage(n) {
+    pageNo = Math.max(0, n);
+    renderVerses();
+    try { window.scrollTo({ top: root.offsetTop - 70, behavior: "smooth" }); } catch (e) {}
+  }
+
+  function pagerHTML(pages, i) {
+    if (pages <= 1) return "";
+    var out = '<nav class="g-pager" aria-label="পৃষ্ঠা">';
+    out += '<button type="button" class="g-pg-btn" data-pg="' + (i - 1) + '"' +
+      (i <= 0 ? " disabled" : "") + '>‹ আগের পৃষ্ঠা</button>';
+    out += '<span class="g-pg-info">পৃষ্ঠা ' + bn(i + 1) + " / " + bn(pages) + '</span>';
+    out += '<button type="button" class="g-pg-btn" data-pg="' + (i + 1) + '"' +
+      (i >= pages - 1 ? " disabled" : "") + '>পরের পৃষ্ঠা ›</button>';
+    return out + '</nav>';
+  }
+
+  function wirePager() {
+    var els = bodyEl.querySelectorAll(".g-pg-btn");
+    for (var i = 0; i < els.length; i++) {
+      els[i].addEventListener("click", function () {
+        if (this.disabled) return;
+        setPage(parseInt(this.getAttribute("data-pg"), 10) || 0);
+      });
+    }
+  }
+
   function renderVerses() {
     if (!chapter) return;
 
@@ -188,8 +221,11 @@
       return;
     }
 
-    var list = chapter.verses;
-    if (state.onlyBn) list = list.filter(function (v) { return v.bn; });
+    var all = chapter.verses;
+    if (state.onlyBn) all = all.filter(function (v) { return v.bn; });
+    var pages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+    if (pageNo >= pages) pageNo = pages - 1;
+    var list = all.slice(pageNo * PAGE_SIZE, (pageNo + 1) * PAGE_SIZE);
 
     /* বাংলা অনুবাদের কভারেজ — প্রতি মন্ত্রে পুনরাবৃত্তি না করে একবার */
     if (bnNoteEl) {
@@ -226,7 +262,11 @@
     } else {
       html = list.map(verseHTML).join("");
     }
-    bodyEl.innerHTML = html || '<p class="g-empty">কিছু পাওয়া যায়নি।</p>';
+    var pg = pagerHTML(pages, pageNo);
+    bodyEl.innerHTML = (pages > 1 ? pg : "") +
+      (html || '<p class="g-empty">কিছু পাওয়া যায়নি।</p>') +
+      (pages > 1 ? pg : "");
+    wirePager();
     if (titleEl) titleEl.textContent = chapter.bn;
     if (metaEl) {
       var mm = bn(chapter.count) + " " + VW;
@@ -243,6 +283,7 @@
   /* ---------- অধ্যায় খোলা ---------- */
   function openChapter(id) {
     chapterId = id;
+    pageNo = 0;
     save({ last: id });
     renderChapters();
     bodyEl.innerHTML = '<p class="g-loading">লোড হচ্ছে…</p>';
