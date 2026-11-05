@@ -104,11 +104,13 @@ def get(url, tries=4, timeout=60):
             print(f"   ! HTTP {e.code} — {url[-50:]} (চেষ্টা {i+1})")
             time.sleep(min(30, 4 * (i + 1)))
         except Exception as e:
-            _DOWN["n"] += 1
+            # URLError বেশিরভাগ সময় সাময়িক নেটওয়ার্ক-ঝাঁকুনি; পুরো সীমা
+            # একে দিয়ে ভরালে ভালো রানও মাঝপথে থেমে যেত (২০২৬-১১-০৫-এ তাই
+            # হয়েছে)। তাই আসল সাইট-ব্যর্থতার (403/429/503) সীমা আলাদা।
             print(f"   ! {type(e).__name__} — {url[-50:]} (চেষ্টা {i+1})")
             time.sleep(min(30, 4 * (i + 1)))
-        if _DOWN["n"] >= 25:
-            print("\n⛔ উৎস সাইট বারবার ব্যর্থ (২৫ বার) — এই রান থামানো হলো "
+        if _DOWN["n"] >= 60:
+            print("\n⛔ উৎস সাইট বারবার ব্যর্থ (৬০ বার) — এই রান থামানো হলো "
                   "যাতে ঘণ্টার পর ঘণ্টা নষ্ট না হয়।", flush=True)
             raise SystemExit(4)
     return None
@@ -720,8 +722,20 @@ def next_page_link(h):
     return htmllib.unescape(m.group(1)) if m else None
 
 
+def _same_topic(a, b):
+    """দুটি ঠিকানা একই টপিকের পৃষ্ঠা কি না (query বাদ দিয়ে)।"""
+    pa = urllib.parse.urlsplit(urllib.parse.unquote(a))
+    pb = urllib.parse.urlsplit(urllib.parse.unquote(b))
+    return pa.path.rstrip("/") == pb.path.rstrip("/") and pa.netloc == pb.netloc
+
+
 def fetch_paged(url, max_pages=40):
-    """এক পাতার সব পৃষ্ঠা («Next Page» ধরে) জোড়া দেয়।"""
+    """এক পাতার সব পৃষ্ঠা («Next Page» ধরে) জোড়া দেয়।
+
+    সাবধানতা: সাইটের পাশের সূচি-ব্লকে অন্য টপিকের «Next Page» থাকতে পারে।
+    ভুল ঠিকানায় গেলে সাইট কয়েকবার ব্যর্থ হয় আর পুরো রান থেমে যায় — তাই
+    কেবল একই টপিকের পৃষ্ঠাই অনুসরণ করি।
+    """
     parts, seen, u = [], set(), url
     for _ in range(max_pages):
         if u in seen:
@@ -733,8 +747,22 @@ def fetch_paged(url, max_pages=40):
         t = page_text(h)
         if t:
             parts.append(t)
-        nu = next_page_link(h)
-        if not nu or nu in seen:
+        # আসল পাতার ভেতরের «Next Page» আগে, নইলে পাশের সূচিরটা
+        cands = []
+        for m in re.finditer(r'href="([^"]*ld-(?:topic|lesson)-page=[^"]*)"', h, re.I):
+            cands.append(htmllib.unescape(m.group(1)))
+        cands.append(next_page_link(h))
+        nu = None
+        for c in cands:
+            if c and c not in seen:
+                if not _same_topic(url, c):
+                    continue          # অন্য টপিকের সূচি — এখানে যাব না
+                mm = re.search(r"ld-(?:topic|lesson)-page=[\d]+-(\d+)", c)
+                if mm and int(mm.group(1)) < 2:
+                    continue          # «-1» মানে শুরু থেকে গোনা — লুপ তৈরি করে
+                nu = c
+                break
+        if not nu:
             break
         u = nu
         time.sleep(0.25)
@@ -1369,8 +1397,17 @@ def main_run(args):
             return
         verses, done = [], 0
         for idx_, u in items:
-            txt = fetch_paged(u)
-            vs = parse_verses(txt)
+            # এক পাতা ব্যর্থ হলে পুরো রান থামে না — বাকিগুলো নামিয়ে রাখি,
+            # পরের রানে --only-unsaved ওই পাতাগুলোই আবার চেষ্টা করবে।
+            try:
+                txt = fetch_paged(u)
+                vs = parse_verses(txt)
+            except SystemExit:
+                print("   ! উৎস বেশি ব্যর্থ — বাকি পাতা পরে নামানো হবে")
+                break
+            except Exception as e:
+                print(f"   ✗ {idx_}: {type(e).__name__} — পরে আবার চেষ্টা হবে")
+                continue
             if not vs:
                 print(f"   ✗ {idx_}: মন্ত্র পাওয়া যায়নি")
                 continue
