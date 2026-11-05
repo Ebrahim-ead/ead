@@ -9,3 +9,7 @@
   মণ্ডল 8: 1702 মন্ত্র · 103 সূক্ত · 2722 শ্লোক
   মণ্ডল 9: 1104 মন্ত্র · 114 সূক্ত · 1990 শ্লোক
 ch10 পড়া গেল না: [Errno 2] No such file or directory: 'assets/grantho/data/rigveda/ch10.json'
+
+প্রকাশ: ব্যর্থ — কিছু প্রকাশ হয়নি
+bot-head: 480c547
+main-head: 223e21a
