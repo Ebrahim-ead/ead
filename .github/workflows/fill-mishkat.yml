@@ -1,0 +1,109 @@
+name: Fill (মিশকাত — তালিকায় না-থাকা হাদিস)
+
+# তালিকায় লিংক না-থাকা ১,৩৫১টি হাদিস আলাদা পাতা (/hadith/<id>) থেকে পূরণ করে,
+# তারপর প্রতিটি অধ্যায় নম্বর-ক্রমে সাজায়। ধাপে ধাপে চালানো যায় (limit), ক্যাশ থাকে।
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'কী করব'
+        type: choice
+        default: all
+        options: [all, fill, build, verify]
+      limit:
+        description: 'সর্বোচ্চ কতটি পাতা (০ = সব)'
+        default: '0'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fill-mishkat
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      PYTHONUNBUFFERED: '1'
+      MODE: ${{ inputs.mode || 'all' }}
+      LIMIT: ${{ inputs.limit || '0' }}
+      BOT_BRANCH: bot/mishkat-data
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: git
+        run: |
+          git config user.name  "hadith-bot"
+          git config user.email "bot@users.noreply.github.com"
+
+      # আগের রানের ফল/ক্যাশ — একই ব্রাঞ্চ থেকে, যাতে নামানো পাতা দুবার না নামে
+      - name: আগের ফল আনো
+        continue-on-error: true
+        run: |
+          git fetch origin "${BOT_BRANCH}" || true
+          git checkout "origin/${BOT_BRANCH}" -- assets/hadith/data/_debug 2>/dev/null || true
+          echo "আগে নামানো: $(ls assets/hadith/data/_debug/mishkat/filled 2>/dev/null | wc -l)"
+
+      - name: ১) ফাঁকা হাদিস নামানো
+        if: env.MODE == 'fill' || env.MODE == 'all'
+        run: |
+          ARGS=""
+          if [ "$LIMIT" != "0" ]; then ARGS="--limit $LIMIT"; fi
+          python3 -u tools/fill_mishkat.py --fill $ARGS > /tmp/fill.txt 2>&1 \
+            || echo "⚠ কিছু ক্ষেত্রে থেমেছে (ফল দেখুন)"
+          tail -30 /tmp/fill.txt
+          mkdir -p assets/hadith/data/_debug/mishkat
+          cp /tmp/fill.txt assets/hadith/data/_debug/mishkat/fill_log.txt || true
+
+      - name: ২) নম্বর-ক্রমে সাজানো + index
+        if: env.MODE == 'build' || env.MODE == 'all'
+        run: |
+          python3 -u tools/fill_mishkat.py --build 2>&1 | tail -10
+          python3 -u tools/fill_mishkat.py --verify 2>&1 | tail -40
+
+      - name: ৩) যাচাই
+        if: env.MODE == 'verify'
+        run: python3 -u tools/fill_mishkat.py --verify 2>&1 | tail -40
+
+      - name: ফল আপলোড
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mishkat-fill
+          path: |
+            assets/hadith/data/_debug/mishkat/
+            assets/hadith/data/mishkat/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: ফল জমা + push
+        if: always()
+        run: |
+          mkdir -p assets/hadith/data/_debug/mishkat
+          rm -rf assets/hadith/data/_debug/mishkat/raw
+          {
+            echo "mode=$MODE · limit=$LIMIT"
+            echo "নামানো পাতা: $(ls assets/hadith/data/_debug/mishkat/filled 2>/dev/null | wc -l)"
+          } >> assets/hadith/data/_debug/mishkat/_fill_run.txt
+          git add -f assets/hadith/data/_debug || true
+          git add -f assets/hadith/data/mishkat || true
+          git add -f assets/hadith/data/index.json || true
+          if git diff --cached --quiet; then
+            echo "নতুন ফল নেই"; exit 0
+          fi
+          git commit -m "মিশকাত: ফাঁকা হাদিস পূরণ ($MODE, $(date -u +%d/%m %H:%M) UTC)" || true
+          git push origin "HEAD:refs/heads/${BOT_BRANCH}" \
+            || { git fetch origin "${BOT_BRANCH}" || true
+                 git rebase "origin/${BOT_BRANCH}" || true
+                 git push origin "HEAD:refs/heads/${BOT_BRANCH}" \
+                   || { echo "⛔ push হলো না"; exit 1; }; }
