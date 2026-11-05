@@ -51,28 +51,3 @@
 /* ফুটার মোবাইলে কম ফাঁকা */
 @media (min-width:761px){ footer p{max-width:46ch} }
 footer .footer-heading{font-size:14.5px;margin-bottom:8px}
-/* --- optimized site rules: mobile & touch --------------------------------
-   ফোনে সবচেয়ে ব্যয়বহুল স্তরগুলো বন্ধ/হালকা করা হয়, চেহারা একই থাকে। */
-
-@media (max-width:820px){
-  .orb,.grid-tex,.motion-sparks{display:none!important}
-  .aura{animation:none!important}
-  header.top,.nav,.badge,.card,.qcard{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-  header.top{background:rgba(4,12,16,.985)!important}
-  html[data-theme="light"] header.top{background:rgba(247,250,252,.99)!important}
-  input,select,textarea{font-size:16px!important}   /* iOS ফোকাসে zoom বন্ধ */
-  ::-webkit-scrollbar{width:8px;height:8px}
-}
-@media (hover:none) and (pointer:coarse){
-  .h-btn,.theme-toggle,.burger,.h-drawer-btn,.h-icon{min-height:44px}
-  .h-btn{padding:10px 16px}
-  .nav a{min-height:44px;display:flex;align-items:center}
-  .card:hover,.qcard:hover,.hero-photo:hover{transform:none!important}
-}
-@media (max-width:760px){
-  .logo-copy small,.badge,.h-badge,.h-note{font-size:13px}
-}
-/* দৃশ্যের বাইরের কার্ড আঁকা হয় না → খুব লম্বা পাতায় স্ক্রল মসৃণ */
-.article-body>section{content-visibility:auto;contain-intrinsic-size:auto 320px}
-/* ছবি সবসময় অনুপাত ধরে ছোট হবে */
-.article-body img,.h-item img{height:auto}
