@@ -1,0 +1,33 @@
+mode=fetch · chapters=সব · limit=0
+head=c11f4f4
+ফাইল:
+assets/hadith/data/_debug/mishkat/:
+total 380
+-rw-r--r-- 1 runner runner     68 Nov  5 03:07 _run.txt
+-rw-r--r-- 1 runner runner    330 Nov  5 03:06 build.txt
+-rw-r--r-- 1 runner runner  51033 Nov  5 03:06 fetch_log.txt
+drwxr-xr-x 2 runner runner  36864 Nov  5 03:06 parsed
+drwxr-xr-x 2 runner runner  69632 Nov  5 03:06 raw
+-rw-r--r-- 1 runner runner 202827 Nov  5 02:21 toc.json
+-rw-r--r-- 1 runner runner   5061 Nov  5 03:06 verify.txt
+
+assets/hadith/data/_debug/mishkat/raw:
+total 1839880
+-rw-r--r-- 1 runner runner 2074052 Nov  5 02:21 _hadith_book_13_chapter_498_title_12307.html
+-rw-r--r-- 1 runner runner 2438869 Nov  5 02:21 _hadith_book_13_chapter_498_title_12308.html
+-rw-r--r-- 1 runner runner 2181647 Nov  5 02:21 _hadith_book_13_chapter_498_title_12309.html
+-rw-r--r-- 1 runner runner 2096732 Nov  5 02:21 _hadith_book_13_chapter_498_title_12310.html
+-rw-r--r-- 1 runner runner 1995464 Nov  5 02:21 _hadith_book_13_chapter_498_title_12311.html
+-rw-r--r-- 1 runner runner 2187862 Nov  5 02:21 _hadith_book_13_chapter_498_title_12312.html
+-rw-r--r-- 1 runner runner 1991664 Nov  5 02:21 _hadith_book_13_chapter_498_title_12313.html
+-rw-r--r-- 1 runner runner 2006405 Nov  5 02:21 _hadith_book_13_chapter_498_title_12314.html
+-rw-r--r-- 1 runner runner 1998456 Nov  5 02:21 _hadith_book_13_chapter_498_title_12315.html
+-rw-r--r-- 1 runner runner 2076845 Nov  5 02:22 _hadith_book_13_chapter_498_title_12316.html
+-rw-r--r-- 1 runner runner 2022407 Nov  5 02:22 _hadith_book_13_chapter_498_title_12317.html
+-rw-r--r-- 1 runner runner 2023356 Nov  5 02:22 _hadith_book_13_chapter_498_title_12318.html
+-rw-r--r-- 1 runner runner 2167460 Nov  5 02:22 _hadith_book_13_chapter_498_title_12319.html
+-rw-r--r-- 1 runner runner 2161366 Nov  5 02:22 _hadith_book_13_chapter_498_title_12320.html
+-rw-r--r-- 1 runner runner 2081930 Nov  5 02:22 _hadith_book_13_chapter_498_title_12321.html
+-rw-r--r-- 1 runner runner 2080829 Nov  5 02:22 _hadith_book_13_chapter_498_title_12322.html
+-rw-r--r-- 1 runner runner 2059859 Nov  5 02:22 _hadith_book_13_chapter_498_title_12323.html
+-rw-r--r-- 1 runner runner 2107157 Nov  5 02:22 _hadith_book_13_chapter_498_title_12324.html
