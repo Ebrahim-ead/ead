@@ -18,10 +18,8 @@ on:
       limit:
         description: 'সর্বোচ্চ কতটি পরিচ্ছেদ (০ = সব)'
         default: '0'
-  push:
-    paths:
-      - '.github/workflows/fetch-mishkat.yml'
-      - 'tools/fetch_mishkat.py'
+  # push-এ চালাই না: প্রতি রানে ~৯০০ পৃষ্ঠা নামে (দীর্ঘ, ভারী) — হাতে চালানোই নিয়ম।
+  # দরকার হলে: gh workflow run fetch-mishkat.yml -f mode=fetch
 
 permissions:
   contents: write
