@@ -1,9 +1,9 @@
 {
  "slug": "rigveda",
- "bn": "ঋগ্বেদ",
+ "bn": "ঋগ্বেদ সংহিতা",
  "en": "Rigveda",
- "total": 9222,
- "withBn": 9222,
+ "total": 10954,
+ "withBn": 10954,
  "chapters": [
   {
    "id": 1,
@@ -94,11 +94,21 @@
    "withBn": 1104,
    "suktaCount": 114,
    "shlokaCount": 1990
+  },
+  {
+   "id": 10,
+   "bn": "ঋগ্বেদ সংহিতা — মণ্ডল 10",
+   "count": 1732,
+   "from": 1,
+   "to": 1732,
+   "withBn": 1732,
+   "suktaCount": 191,
+   "shlokaCount": 3813
   }
  ],
  "verseWord": "সূক্ত",
  "bnSrc": "বাংলা অনুবাদ — ebanglalibrary.com",
  "note": "সূক্ত-সীমানা মোট মন্ত্র ÷ সূক্ত-সংখ্যা ধরে আনুমানিক (উৎসে সূক্তের শিরোনাম নেই); শ্লোক-ভাগ দাঁড়ি ধরে, তাই পড়ার সময় প্রতিটি শ্লোক আলাদা দেখা যায়।",
- "suktaTotal": 837,
- "shlokaTotal": 18335
+ "suktaTotal": 1028,
+ "shlokaTotal": 22148
 }
