@@ -57,23 +57,38 @@ jobs:
 
       - name: ০) যাচাই — সাইটের কাঠামো (probe)
         if: env.MODE == 'probe'
-        run: python3 -u tools/fetch_mishkat.py --probe 2>&1 | tail -60
+        run: |
+          mkdir -p assets/hadith/data/_debug/mishkat
+          python3 -u tools/fetch_mishkat.py --probe 2>&1 | tee assets/hadith/data/_debug/mishkat/probe_log.txt | tail -40
 
       - name: ১) অধ্যায় ও পরিচ্ছেদের তালিকা (discover)
         if: env.MODE == 'discover'
-        run: python3 -u tools/fetch_mishkat.py --discover 2>&1 | tail -60
+        run: |
+          mkdir -p assets/hadith/data/_debug/mishkat
+          python3 -u tools/fetch_mishkat.py --discover 2>&1 | tee assets/hadith/data/_debug/mishkat/discover_log.txt | tail -45
 
-      - name: ২) হাদিস নামানো (fetch)
+      # fetch = তালিকা দেখে → নামায় → রিডার-ফরম্যাটে ঢালে (এক রানে পুরো কাজ;
+      # পুনরায় চালালে ক্যাশের কারণে কেবল বাকি পরিচ্ছেদগুলোই নামে)
+      - name: ২) তালিকা (discover)
+        if: env.MODE == 'fetch'
+        run: python3 -u tools/fetch_mishkat.py --discover 2>&1 | tail -45
+
+      - name: ৩) হাদিস নামানো (fetch)
         if: env.MODE == 'fetch'
         run: |
           ARGS=""
           if [ -n "$CHAPTERS" ]; then ARGS="$ARGS --chapters $CHAPTERS"; fi
           if [ "$LIMIT" != "0" ]; then ARGS="$ARGS --limit $LIMIT"; fi
-          python3 -u tools/fetch_mishkat.py --fetch $ARGS 2>&1 | tail -80
+          python3 -u tools/fetch_mishkat.py --fetch $ARGS > /tmp/fetch.txt 2>&1 \
+            || echo "⚠ ফেচার কিছুক্ষেত্রে থেমেছে (ফল দেখুন)"
+          tail -60 /tmp/fetch.txt
+          cp /tmp/fetch.txt assets/hadith/data/_debug/mishkat/fetch_log.txt || true
 
-      - name: ৩) রিডার-ফরম্যাটে বিল্ড (build)
-        if: env.MODE == 'build'
-        run: python3 -u tools/fetch_mishkat.py --build 2>&1 | tail -60
+      - name: ৪) রিডার-ফরম্যাটে বিল্ড + যাচাই (build)
+        if: env.MODE == 'fetch' || env.MODE == 'build'
+        run: |
+          python3 -u tools/fetch_mishkat.py --build 2>&1 | tail -60
+          python3 -u tools/fetch_mishkat.py --verify 2>&1 | tail -40
 
       # ফল — লগ দেখা যায় না, তাই আর্টিফ্যাক্টেও রাখি (gh run download দিয়ে পড়া যায়)
       - name: ফল আপলোড
