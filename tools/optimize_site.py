@@ -266,6 +266,19 @@ def step_bg(dry: bool) -> None:
 # 4. mobile rules
 # --------------------------------------------------------------------------- #
 def step_mobile(dry: bool) -> None:
+    """site.css জেনারেটেড — হাতে টিউন করা নিয়ম site-extra.css-এ থাকে।"""
+    sheet = ASSETS / "site-extra.css"
+    if not sheet.exists():
+        sheet.write_text("/* site-extra.css — মানুয়াল/মোবাইল নিয়ম */\n")
+    if SITE_CSS_MARK in read(sheet):
+        print("  mobile rules already in assets/site-extra.css (skipped)")
+        return
+    write(sheet, read(sheet).rstrip() + "\n" + MOBILE_CSS, dry)
+    print(f"  mobile rules → assets/site-extra.css ({len(MOBILE_CSS)} bytes)")
+    return
+
+
+def _step_mobile_old(dry: bool) -> None:
     sheet = ASSETS / "site.css"
     if not sheet.exists():
         print("  ! assets/site.css নেই — আগে --step css চালান")
