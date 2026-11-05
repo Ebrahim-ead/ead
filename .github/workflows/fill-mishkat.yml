@@ -20,13 +20,16 @@ on:
         description: 'কী করব'
         type: choice
         default: all
-        options: [all, fill, build, verify, plan]
+        options: [all, fill, build, verify, plan, probe]
       limit:
         description: 'সর্বোচ্চ কতটি পাতা নামাবে (০ = সব)'
         default: '0'
       sleep:
         description: 'প্রতি অনুরোধের মাঝে বিরতি (সেকেন্ড)'
         default: '0.8'
+      probe_sample:
+        description: 'probe-এ কোন নম্বরগুলো দেখবে (কমা-বাঁধা; খালি = স্বয়ংক্রিয়)'
+        default: ''
 
 permissions:
   contents: write
@@ -44,6 +47,7 @@ jobs:
       MODE: ${{ inputs.mode || 'all' }}
       LIMIT: ${{ inputs.limit || '0' }}
       SLEEP: ${{ inputs.sleep || '0.8' }}
+      PROBE_SAMPLE: ${{ inputs.probe_sample || '' }}
       BOT_BRANCH: bot/mishkat-data
     steps:
       - uses: actions/checkout@v4
@@ -74,6 +78,13 @@ jobs:
       - name: ০) পরিকল্পনা
         if: always()
         run: python3 -u tools/fill_mishkat.py --plan
+
+      - name: ০.৫) পার্সার-পরীক্ষা (probe)
+        if: env.MODE == 'probe'
+        run: |
+          ARGS="--probe"
+          if [ -n "$PROBE_SAMPLE" ]; then echo "নমুনা: $PROBE_SAMPLE"; fi
+          python3 -u tools/fill_mishkat.py $ARGS 2>&1 | tail -80
 
       - name: ১) ফাঁকা হাদিস নামানো
         if: env.MODE == 'all' || env.MODE == 'fill'

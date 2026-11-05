@@ -49,7 +49,13 @@ CACHE = os.path.join(DATA, "_debug", "mishkat", "filled")
 RAW = os.path.join(DATA, "_debug", "mishkat", "rawfill")
 
 BN = "০১২৩৪৫৬৭৮৯"
-TITLE_RE = re.compile(r"মিশকাতুল\s*মাসাবীহ")
+HADITH_NO_RE = re.compile(r"হাদীস\s*নং")
+ZERO_W = re.compile(r"[\u200b-\u200f\u202a-\u202e\u2060\ufeff]")
+TITLE_RE = re.compile(r"মিশকাতুল\s*মাসাব")        # «মিশকাতুল মাসাবীহ» (ZWNJ-সহও)
+
+
+def norm(s: str) -> str:
+    return ZERO_W.sub("", s)
 
 
 # ------------------------------------------------------------------ helpers
@@ -227,7 +233,7 @@ LEAD_NUM_RE = re.compile(r"^\s*[০-৯0-9]+\s*[।.)]\s*")
 
 def parse_hadith_page(html: str, n: int) -> dict | None:
     """এক পাতার একক হাদিস → রিডার-ফরম্যাট; যাচাই ব্যর্থ হলে None।"""
-    if not TITLE_RE.search(html):
+    if not TITLE_RE.search(norm(html)):
         return None
     payload = flight_payload(html)
     rows = flight_rows(payload)
@@ -235,11 +241,9 @@ def parse_hadith_page(html: str, n: int) -> dict | None:
     item = None
     for h in items:
         num = h.get("hadith_number")
-        if isinstance(num, int) or str(num).isdigit():
-            if int(num) == n:
-                item = h
-                break
-        elif bn2num(num) == n:
+        if num is None or num == "":
+            continue
+        if bn2num(num) == n:
             item = h
             break
     if item is None:
@@ -265,6 +269,54 @@ def parse_hadith_page(html: str, n: int) -> dict | None:
     if tah:
         v["tah"] = tah
     return v
+
+
+def probe(sample=None) -> str:
+    """কয়েকটি পাতা নামিয়ে পার্সার কেন চিনছে/চিনছে না — বিস্তারিত রিপোর্ট।
+
+    Actions-এ চালিয়ে _debug/mishkat/fill_probe.txt পড়া যায়।
+    """
+    gaps = missing_numbers()
+    picks = list(sample or [])
+    for ch, g in gaps.items():
+        for a, b in g:
+            for n in range(a, min(b, a + 1) + 1):
+                if n not in picks:
+                    picks.append(n)
+        if len(picks) >= 6:
+            break
+    picks = picks[:6]
+    lines = [f"probe: {len(picks)} পাতা · {time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime())}"]
+    for n in picks:
+        url = f"{BASE}/hadith/{PAGE0 + n}"
+        try:
+            html = get(url, sleep=0.3)
+        except Exception as e:                       # noqa: BLE001
+            lines.append(f"\n[{n}] ✗ নামানো যায়নি: {e}")
+            continue
+        payload = flight_payload(html)
+        items = find_hadith_items(payload)
+        rows = flight_rows(payload)
+        nums = [str(h.get("hadith_number")) for h in items[:6]]
+        lines.append(f"\n[{n}] url={url}")
+        lines.append(f"  html {len(html)}B · flight {len(payload)}B · rows {len(rows)}")
+        has_num_label = bool(HADITH_NO_RE.search(norm(html)))
+        lines.append("  শিরোনাম-মিল: %s · «হাদীস নং» আছে: %s"
+                     % (bool(TITLE_RE.search(norm(html))), has_num_label))
+        lines.append(f"  hadiths-অ্যারে: {len(items)} · hadith_number: {nums}")
+        m = re.search(r'"hadith_number"\s*:\s*[^,}]+', payload)
+        lines.append(f"  নমুনা: {m.group(0)[:60] if m else '(নেই)'}")
+        for key in ("description", "description_ar", "type", "titles", "tahqeeq_explanation"):
+            m2 = re.search(r'"%s"\s*:\s*.{0,50}' % key, payload)
+            lines.append(f"  {key}: {(m2.group(0)[:60] if m2 else '(নেই)')}")
+        v = parse_hadith_page(html, n)
+        lines.append(f"  parse → {'✓ বাংলা ' + str(len(v['b'])) + 'B' if v else '✗ None'}")
+    report = "\n".join(lines)
+    os.makedirs(CACHE, exist_ok=True)
+    open(os.path.join(os.path.dirname(CACHE), "fill_probe.txt"), "w",
+         encoding="utf-8").write(report + "\n")
+    print(report, flush=True)
+    return report
 
 
 def fill(limit: int = 0, sleep: float = 0.8) -> None:
@@ -400,12 +452,14 @@ def repair() -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    for f in ("plan", "fill", "build", "verify", "repair"):
+    for f in ("plan", "fill", "build", "verify", "repair", "probe"):
         ap.add_argument("--" + f, action="store_true")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--sleep", type=float, default=0.8)
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
+    if a.probe:
+        probe()
     if a.plan:
         plan()
     if a.repair:
@@ -416,7 +470,7 @@ def main() -> int:
         build(dry=a.dry_run)
     if a.verify:
         verify()
-    if not any((a.plan, a.fill, a.build, a.verify, a.repair)):
+    if not any((a.plan, a.fill, a.build, a.verify, a.repair, a.probe)):
         ap.print_help()
     return 0
 
