@@ -286,8 +286,8 @@ def step_fonts(dry: bool) -> None:
     n = 0
     for p in pages():
         s = read(p)
-        s2 = re.sub(r"family=Hind\+Siliguri:wght@([0-9;]+)(?!&display=swap)",
-                    r"family=Hind+Siliguri:wght@\1&display=swap", s)
+        s2 = s if "Hind+Siliguri:wght@" in s and "display=swap" in s and "&display=swap0" not in s else re.sub(r"family=Hind\+Siliguri:wght@([0-9;]+?)(?:0)?(?:&display=swap)?(?=[&\"'])",
+                    lambda m: "family=Hind+Siliguri:wght@" + m.group(1) + "&display=swap", s)
         if s2 != s:
             write(p, s2, dry)
             n += 1
