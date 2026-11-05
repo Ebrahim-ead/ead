@@ -1,0 +1,94 @@
+name: Fetch (muslimbangla — মিশকাতুল মাসাবিহ)
+
+# muslimbangla.com থেকে মিশকাতুল মাসাবিহ (বই ১৩) নামিয়ে নিজের ফরম্যাটে ঢালে।
+# ডেটা-ফোল্ডার বড়, তাই ধাপে ধাপে: probe → discover → fetch → build.
+# ফল যন্ত্রের নিজের ব্রাঞ্চে commit/push হয় (main আলাদা, PR আলাদা)।
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'কী করব'
+        type: choice
+        default: probe
+        options: [probe, discover, fetch, build]
+      chapters:
+        description: 'কেবল এই অধ্যায়গুলো (কমা-বাঁধা সাইট-আইডি; খালি = সব)'
+        default: ''
+      limit:
+        description: 'সর্বোচ্চ কতটি পরিচ্ছেদ (০ = সব)'
+        default: '0'
+  push:
+    paths:
+      - '.github/workflows/fetch-mishkat.yml'
+      - 'tools/fetch_mishkat.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-mishkat
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      PYTHONUNBUFFERED: '1'
+      MODE: ${{ inputs.mode || 'probe' }}
+      CHAPTERS: ${{ inputs.chapters || '' }}
+      LIMIT: ${{ inputs.limit || '0' }}
+      BOT_BRANCH: ${{ (inputs.mode || 'probe') == 'probe' && 'bot/mishkat-probe' || 'bot/mishkat-data' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: git
+        run: |
+          git config user.name  "hadith-bot"
+          git config user.email "bot@users.noreply.github.com"
+
+      - name: ০) যাচাই — সাইটের কাঠামো (probe)
+        if: env.MODE == 'probe'
+        run: python3 -u tools/fetch_mishkat.py --probe 2>&1 | tail -60
+
+      - name: ১) অধ্যায় ও পরিচ্ছেদের তালিকা (discover)
+        if: env.MODE == 'discover'
+        run: python3 -u tools/fetch_mishkat.py --discover 2>&1 | tail -60
+
+      - name: ২) হাদিস নামানো (fetch)
+        if: env.MODE == 'fetch'
+        run: |
+          ARGS=""
+          if [ -n "$CHAPTERS" ]; then ARGS="$ARGS --chapters $CHAPTERS"; fi
+          if [ "$LIMIT" != "0" ]; then ARGS="$ARGS --limit $LIMIT"; fi
+          python3 -u tools/fetch_mishkat.py --fetch $ARGS 2>&1 | tail -80
+
+      - name: ৩) রিডার-ফরম্যাটে বিল্ড (build)
+        if: env.MODE == 'build'
+        run: python3 -u tools/fetch_mishkat.py --build 2>&1 | tail -60
+
+      # ফল — লগ দেখা যায় না, তাই ফাইলে লিখে ব্রাঞ্চে রেখে দিই
+      - name: ফল রিপোর্ট + push
+        if: always()
+        run: |
+          mkdir -p assets/hadith/data/_debug/mishkat
+          {
+            echo "mode=$MODE · chapters=${CHAPTERS:-সব} · limit=$LIMIT"
+            echo "head=$(git rev-parse --short HEAD)"
+          } >> assets/hadith/data/_debug/mishkat/_run.txt
+          ls -l assets/hadith/data/_debug/mishkat/ | head -20 || true
+          git add -f assets/hadith/data/_debug assets/hadith/data/mishkat assets/hadith/data/index.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "কোনো নতুন ফল নেই"; exit 0
+          fi
+          git commit -m "মিশকাত: $MODE-র ফল ($(date -u +%d/%m %H:%M) UTC)" || true
+          git push --force origin "HEAD:refs/heads/${BOT_BRANCH}" \
+            || { echo "⛔ push হলো না"; git log --oneline -1; exit 1; }
