@@ -12,6 +12,9 @@
   "use strict";
 
   var DATA = "assets/hadith/data/";
+  /* একসঙ্গে কতটি হাদিস আঁকা হবে — মিশকাতের বড় অধ্যায়ে (৯৫৯ হাদিস, ৩ মেগাবাইট)
+     একবারে সব আঁকলে ব্রাউজার আটকে যায় («অধ্যায়টি লোড করা গেল না»), তাই পৃষ্ঠা। */
+  var PAGE_SIZE = 120;
   var bnDigits = "০১২৩৪৫৬৭৮৯";
   var LS = {
     last: "hadith:last",
@@ -151,7 +154,10 @@
     listEl.querySelectorAll("[data-ch]").forEach(function (btn) {
       btn.addEventListener("click", function () { loadChapter(+btn.dataset.ch); });
     });
-    if (totalEl) totalEl.textContent = bnNum(b.count) + " হাদিস · " + bn(b.chapters.length) + " অধ্যায়";
+    if (totalEl) {
+      totalEl.textContent = bnNum(b.count) + " হাদিস · " + bn(b.chapters.length) +
+        " অধ্যায়" + (index.total ? " · সব কিতাবে " + bnNum(index.total) : "");
+    }
   }
 
   function markActive() {
@@ -237,35 +243,13 @@
       '<span class="h-badge plain">হাদিস ' + bn(c.from || 0) + '–' + bn(c.to || 0) + '</span>' +
       '</div></div>';
 
-    var items = d.verses.map(function (v, k) {
-      var ref = bookSlug + ":" + v.i;
-      var has = bookmarks.indexOf(ref) !== -1;
-      var g = v.g ? '<span class="h-grade ' + esc(v.gc || "other") + '">' + esc(v.g) + '</span>' : "";
-      /* উৎসে দুটি ভিন্ন হাদিস একই নম্বরে এলে দ্বিতীয়টিকে "সংস্করণ" বলা হয় */
-      var label = esc(b.short || b.bn) + ' ' + bn(v.i) + (v.dup ? ' <small style="opacity:.7">(সংস্করণ)</small>' : "");
-      /* উৎসেই এই হাদিসের বাংলা দেওয়া নেই — ফাঁকা দেখানোর বদলে জানিয়ে দেওয়া */
-      var noBn = !v.b || /^(অনুবাদ পাওয়া যায়নি।?|\(\.\.\.\)|—|-)$/.test(v.b);
-      return '<div class="h-item' + (has ? " bm" : "") + '" id="h' + k + '" data-i="' + v.i + '">' +
-        '<div class="h-item-top">' +
-        '<span class="h-num">' + label + '</span>' +
-        g +
-        (v.n ? '<span class="h-narrator">' + esc(v.n) + '</span>' : "") +
-        '<span class="h-item-tools">' +
-        '<button class="h-icon' + (has ? " on" : "") + '" data-bm="' + ref + '" type="button" ' +
-        'aria-label="বুকমার্ক" title="বুকমার্ক"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button>' +
-        '<button class="h-icon" data-copy="' + ref + '" type="button" aria-label="কপি" title="কপি">' +
-        '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/>' +
-        '<path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>' +
-        '</span></div>' +
-        (v.a ? '<div class="h-ar">' + esc(v.a) + '</div>' : "") +
-        '<div class="h-bn' + (noBn ? ' h-bn-missing' : '') + '">' +
-          (noBn ? 'এই হাদিসের বাংলা অনুবাদ উৎসে দেওয়া নেই — উপরের আরবি পাঠটাই মূল।'
-                : esc(v.b)) + '</div>' +
-        (!v.a ? '<div class="h-ar-missing">এই হাদিসের আরবি পাঠ উৎসে দেওয়া নেই।</div>' : "") +
-        (v.no ? '<details class="h-note-d"><summary>ব্যাখ্যা ও সনদ</summary>' +
-          '<div class="h-note-body">' + esc(v.no) + '</div></details>' : "") +
-        '</div>';
-    }).join("");
+    mainEl.innerHTML = head + '<div class="h-page" id="h-page" hidden></div>' +
+      '<div class="h-items" id="h-items"></div>';
+
+    /* হাদিসগুলো একবারেই সাজিয়ে রাখি; পৃষ্ঠা বদলালে কেবল ভিন্ন টুকরো আঁকি */
+    pageItems = d.verses;
+    pageNo = 0;
+    paintPage();
 
     var i = b.chapters.findIndex(function (x) { return x.id === id; });
     var prev = i > 0 ? b.chapters[i - 1] : null;
@@ -277,16 +261,12 @@
         bn(next.id) + '. ' + esc(next.bn || next.en) + ' →</button>' : "<span></span>") +
       '</div>';
 
-    mainEl.innerHTML = head + '<div class="h-items">' + items + '</div>' + pager;
-
-    mainEl.querySelectorAll("[data-ch]").forEach(function (btn) {
+    var foot = document.createElement("div");
+    foot.className = "h-chapter-foot";
+    foot.innerHTML = pager;
+    mainEl.appendChild(foot);
+    foot.querySelectorAll("[data-ch]").forEach(function (btn) {
       btn.addEventListener("click", function () { loadChapter(+btn.dataset.ch); });
-    });
-    mainEl.querySelectorAll("[data-bm]").forEach(function (btn) {
-      btn.addEventListener("click", function () { toggleBookmark(btn); });
-    });
-    mainEl.querySelectorAll("[data-copy]").forEach(function (btn) {
-      btn.addEventListener("click", function () { copyItem(btn); });
     });
 
     bindGradeFilter();
@@ -294,7 +274,96 @@
     store(LS.last, { b: bookSlug, c: id });
   }
 
+  /* ---------------------------------------------------------- *
+   * এক অধ্যায়ের ভেতরে পৃষ্ঠা-পৃষ্ঠা করে আঁকা
+   * ---------------------------------------------------------- */
+  var pageItems = [], pageNo = 0;
+
+  function itemHTML(v, k) {
+    var ref = bookSlug + ":" + v.i;
+    var has = bookmarks.indexOf(ref) !== -1;
+    var g = v.g ? '<span class="h-grade ' + esc(v.gc || "other") + '">' + esc(v.g) + '</span>' : "";
+    /* উৎসে দুটি ভিন্ন হাদিস একই নম্বরে এলে দ্বিতীয়টিকে "সংস্করণ" বলা হয় */
+    var label = esc(book().short || book().bn) + ' ' + bn(v.i) +
+      (v.dup ? ' <small style="opacity:.7">(সংস্করণ)</small>' : "");
+    /* উৎসেই এই হাদিসের বাংলা দেওয়া নেই — ফাঁকা দেখানোর বদলে জানিয়ে দেওয়া */
+    var noBn = !v.b || /^(অনুবাদ পাওয়া যায়নি।?|\(\.\.\.\)|—|-)$/.test(v.b);
+    return '<div class="h-item' + (has ? " bm" : "") + '" id="h' + k + '" data-i="' + v.i + '">' +
+      '<div class="h-item-top">' +
+      '<span class="h-num">' + label + '</span>' +
+      g +
+      (v.n ? '<span class="h-narrator">' + esc(v.n) + '</span>' : "") +
+      '<span class="h-item-tools">' +
+      '<button class="h-icon' + (has ? " on" : "") + '" data-bm="' + ref + '" type="button" ' +
+      'aria-label="বুকমার্ক" title="বুকমার্ক"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button>' +
+      '<button class="h-icon" data-copy="' + ref + '" type="button" aria-label="কপি" title="কপি">' +
+      '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/>' +
+      '<path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>' +
+      '</span></div>' +
+      (v.a ? '<div class="h-ar">' + esc(v.a) + '</div>' : "") +
+      '<div class="h-bn' + (noBn ? ' h-bn-missing' : '') + '">' +
+        (noBn ? 'এই হাদিসের বাংলা অনুবাদ উৎসে দেওয়া নেই — উপরের আরবি পাঠটাই মূল।'
+              : esc(v.b)) + '</div>' +
+      (!v.a ? '<div class="h-ar-missing">এই হাদিসের আরবি পাঠ উৎসে দেওয়া নেই।</div>' : "") +
+      (v.tah ? '<div class="h-tah"><b>তাহকীক:</b> ' + esc(v.tah) + '</div>' : "") +
+      (v.no ? '<details class="h-note-d"><summary>ব্যাখ্যা ও সনদ</summary>' +
+        '<div class="h-note-body">' + esc(v.no) + '</div></details>' : "") +
+      '</div>';
+  }
+
+  function paintPage() {
+    var host = document.getElementById("h-items");
+    if (!host) return;
+    var from = pageNo * PAGE_SIZE;
+    var slice = pageItems.slice(from, from + PAGE_SIZE);
+    host.innerHTML = slice.map(function (v, k) {
+      return itemHTML(v, from + k);
+    }).join("");
+
+    host.querySelectorAll("[data-bm]").forEach(function (btn) {
+      btn.addEventListener("click", function () { toggleBookmark(btn); });
+    });
+    host.querySelectorAll("[data-copy]").forEach(function (btn) {
+      btn.addEventListener("click", function () { copyItem(btn); });
+    });
+
+    var pagerEl = document.getElementById("h-page");
+    if (pagerEl) {
+      var pages = Math.ceil(pageItems.length / PAGE_SIZE);
+      if (pages <= 1) {
+        pagerEl.hidden = true;
+        pagerEl.innerHTML = "";
+      } else {
+        pagerEl.hidden = false;
+        pagerEl.innerHTML = '<button class="h-btn" type="button" data-pg="prev"' +
+          (pageNo === 0 ? " disabled" : "") + '>← আগের</button>' +
+          '<span class="h-pg-info">পৃষ্ঠা ' + bn(pageNo + 1) + ' / ' + bn(pages) +
+          ' · এই অধ্যায়ের ' + bn(from + 1) + '–' +
+          bn(Math.min(from + PAGE_SIZE, pageItems.length)) + ' নং স্লট' +
+          ' (মোট ' + bn(pageItems.length) + ')</span>' +
+          '<button class="h-btn" type="button" data-pg="next"' +
+          (pageNo >= pages - 1 ? " disabled" : "") + '>পরের →</button>';
+        pagerEl.querySelector('[data-pg="prev"]').addEventListener("click", function () {
+          if (pageNo > 0) { pageNo--; paintPage(); }
+        });
+        pagerEl.querySelector('[data-pg="next"]').addEventListener("click", function () {
+          if ((pageNo + 1) * PAGE_SIZE < pageItems.length) { pageNo++; paintPage(); }
+        });
+      }
+    }
+    applySettings();
+  }
+
+  /* সার্চ বা বুকমার্ক থেকে সরাসরি একটি হাদিসে — তার পৃষ্ঠাটা আগে বেছে নিই */
   function scrollToItem(num) {
+    var at = -1;
+    for (var i = 0; i < pageItems.length; i++) {
+      if (String(pageItems[i].i) === String(num)) { at = i; break; }
+    }
+    if (at > -1) {
+      var pg = Math.floor(at / PAGE_SIZE);
+      if (pg !== pageNo) { pageNo = pg; paintPage(); }
+    }
     var el = mainEl.querySelector('[data-i="' + num + '"]');
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -350,6 +419,8 @@
     if (ar) parts.push(ar.textContent.trim());
     var gr = item.querySelector(".h-grade");
     if (gr) parts.push("মান: " + gr.textContent.trim());
+    var tah = item.querySelector(".h-tah");
+    if (tah) parts.push(tah.textContent.trim());
     var text = parts.join("\n\n");
     var done = function () {
       var old = btn.title;
@@ -431,7 +502,7 @@
     if (!term) { resultsEl.hidden = true; resultsEl.innerHTML = ""; return; }
 
     /* a reference such as "বুখারী ১:৫" or "বুখারী ১" jumps straight there */
-    var ref = term.match(/^\s*(বুখারী|মুসলিম|নাসাঈ|আবু\s*দাউদ|তিরমিজি|ইবনে\s*মাজাহ)?\s*(\d{1,3})(?:\s*[:\s]\s*(\d{1,4}))?\s*$/);
+    var ref = term.match(/^\s*(বুখারী|মুসলিম|নাসাঈ|আবু\s*দাউদ|তিরমিজি|ইবনে\s*মাজাহ|মিশকাত(?:ুল\s*মাসাবি[হী])?|মিশকাত শরীফ)?\s*(\d{1,3})(?:\s*[:\s]\s*(\d{1,4}))?\s*$/);
     if (ref) {
       var slug = guessBook(ref[1]);
       var ch = +ref[2], had = ref[3] ? +ref[3] : null;
@@ -447,8 +518,8 @@
     }
 
     resultsEl.hidden = false;
-    resultsEl.innerHTML = '<div class="h-empty">খোঁজা হচ্ছে… (প্রথম বারে ৩৪ হাজার হাদিস সাজানো হয়, ' +
-      'একবারই লাগে)</div>';
+    resultsEl.innerHTML = '<div class="h-empty">খোঁজা হচ্ছে… (প্রথম বারে ' +
+      bnNum(index.total) + ' হাদিস সাজানো হয়, একবারই লাগে)</div>';
 
     whenIndexed().then(function (all) {
       var needle = q.trim().toLowerCase();
@@ -500,6 +571,7 @@
     if (/আবু\s*দাউদ/.test(t)) return "abu-dawud";
     if (/তিরমিজি/.test(t)) return "tirmidhi";
     if (/ইবনে\s*মাজাহ/.test(t)) return "ibn-majah";
+    if (/মিশকাত/.test(t)) return "mishkat";
     return bookSlug;
   }
 

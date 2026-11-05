@@ -25,6 +25,10 @@
 - `assets/islam-opponents-response-cover.jpg`, `assets/islam-opponents-response-wrap.jpg` — নতুন বইয়ের সামনের প্রচ্ছদ ও পূর্ণ প্রচ্ছদ
 - `ask.html` — নাস্তিকতা ও তুলনামূলক ধর্মতত্ত্ব-সম্পর্কিত মতবিনিময়
 - `about.html`, `contact.html` — সাইটের পরিসর ও যোগাযোগ
+- `hadith.html` — হাদিস-পাঠক: সিহাহ সিত্তাহর ছয় কিতাব + **মিশকাতুল মাসাবিহ** (মোট ৩৮,৯৯৯ হাদিস · ৩৬১ অধ্যায়), আরবি মূল ও বাংলা অনুবাদসহ
+- `assets/hadith/data/` — হাদিসের ডেটা: `<কিতাব>/<অধ্যায়>.json` + `index.json` (সব ডেটা সাইটের ভেতরেই)
+- `tools/fetch_mishkat.py` — muslimbangla.com (বই ১৩) থেকে মিশকাত নামানোর যন্ত্র: `--discover`, `--fetch`, `--build`, `--verify`
+- `.github/workflows/fetch-mishkat.yml` — ওই ফেচ Actions-এ চালানোর ওয়ার্কফ্লো (ফল `bot/mishkat-data` ব্রাঞ্চে)
 
 ## পরিসর
 প্রবন্ধ বিভাগে Ebrahim Ead-এর নিজস্ব প্রবন্ধগুলো রয়েছে।

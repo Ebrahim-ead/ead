@@ -207,6 +207,20 @@ html[data-theme="light"] .h-grade.fake{color:#9d1c1c;background:rgba(226,84,84,.
   padding-top:18px;border-top:1px solid var(--line)}
 .h-pager .h-btn{padding:10px 16px}
 
+/* ---------- এক অধ্যায়ের ভেতরের পৃষ্ঠা (বড় অধ্যায়ে ব্রাউজার আটকায় না) ---------- */
+.h-page{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:0 0 18px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;
+  background:var(--card);flex-wrap:wrap}
+.h-page[hidden]{display:none}
+.h-pg-info{font-size:12.5px;font-weight:600;color:var(--muted);text-align:center;flex:1 1 auto}
+.h-page .h-btn{padding:8px 14px;font-size:13px}
+.h-page .h-btn[disabled]{opacity:.4;cursor:not-allowed}
+
+/* তাহকীক — মূল সূত্রের রেফারেন্স (বুখারী ৩০৪ ইত্যাদি) */
+.h-tah{margin-top:10px;font-size:12.5px;line-height:1.9;color:var(--muted);
+  border-left:3px solid rgba(245,184,28,.45);padding-left:10px;white-space:pre-line}
+.h-tah b{color:var(--gold2);font-weight:700}
+
 /* ---------- credits ---------- */
 .h-credit{margin:26px 0 44px;padding:18px 20px;border:1px solid var(--line);border-radius:16px;
   background:var(--card);font-size:13px;line-height:1.9;color:var(--muted)}
