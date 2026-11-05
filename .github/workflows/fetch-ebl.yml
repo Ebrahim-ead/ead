@@ -221,10 +221,7 @@ jobs:
           print("\n".join(out))
           PY
           # ডেটা-প্রকাশ ব্যর্থ হলেও যেন ফলটি দেখা যায় — রিপোর্ট সোজা main-এ
-          git add -f assets/grantho/data/_debug/rigveda10.txt
-          git commit -m "ঋগ্বেদ ১০ম মণ্ডল: ফল-রিপোর্ট ($(date -u +%H:%M))" || true
-          git fetch origin main --depth=1 || true
-          git push origin HEAD:main || echo "রিপোর্ট push হলো না"
+          # commit/push নয় — প্রকাশ-ধাপেই ডেটার সঙ্গে একসঙ্গে যাবে
 
       - name: রিপোর্ট
         if: always()
@@ -244,7 +241,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git add grantho assets/grantho/data assets/grantho/data/_debug/probe.txt assets/grantho/data/_debug/rigveda10.txt 2>/dev/null || git add grantho assets/grantho/data || true
+          # ডেটা, পাতা আর রিপোর্ট — সব একসঙ্গে এক কমিটে যাবে
+          git add grantho assets/grantho/data assets/grantho/data/_debug 2>/dev/null \
+            || git add grantho assets/grantho/data || true
           if git diff --cached --quiet; then
             echo "কোনো পরিবর্তন নেই — প্রকাশ লাগবে না"; exit 0
           fi
