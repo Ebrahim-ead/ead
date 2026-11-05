@@ -34,6 +34,17 @@ def load_json(p, default=None):
         return default
 
 
+def site_total(idx):
+    """সাইটে দেখানো মোট মন্ত্র = প্রতি মণ্ডলের count যোগফল।
+
+    index.json-এর `total` কেবল শেষ রানে যা নামানো হলো তার হিসাব হতে পারে
+    (মণ্ডল ১০ যোগ হওয়ার পরেও total পুরনো ৯ মণ্ডলের সংখ্যা দেখাচ্ছিল)।
+    """
+    chs = idx.get("chapters") or []
+    s = sum(int(c.get("count") or 0) for c in chs)
+    return s or int(idx.get("total") or 0)
+
+
 def indices():
     for p in sorted(DATA.glob("*/index.json")):
         idx = load_json(p)
@@ -57,7 +68,7 @@ def set_baseline():
     base = {"_commit": sha, "_note": "এটি ভালো-জানা ডেটার হিসাব; এর চেয়ে "
             "১৫%-এর বেশি ছোট হলে guard_data.py ফিরিয়ে আনে।", "slugs": {}}
     for slug, idx in indices():
-        base["slugs"][slug] = {"total": idx.get("total", 0),
+        base["slugs"][slug] = {"total": site_total(idx),
                                "withBn": idx.get("withBn", 0),
                                "chapters": len(idx["chapters"])}
     BASE_FILE.write_text(json.dumps(base, ensure_ascii=False, indent=1) + "\n",
@@ -100,7 +111,7 @@ def main():
         b = base["slugs"].get(slug)
         if not b or not b.get("total"):
             continue
-        cur, was = idx.get("total", 0), b["total"]
+        cur, was = site_total(idx), b["total"]
         if cur < was * TOL:
             broken.append((slug, was, cur))
 

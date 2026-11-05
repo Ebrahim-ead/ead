@@ -2,113 +2,113 @@
  "slug": "rigveda",
  "bn": "ঋগ্বেদ সংহিতা",
  "en": "Rigveda",
- "total": 10954,
- "withBn": 10954,
+ "total": 10456,
+ "withBn": 10456,
  "chapters": [
   {
    "id": 1,
    "bn": "ঋগ্বেদ — 1",
-   "count": 2299,
+   "count": 2088,
    "from": 1,
-   "to": 2299,
-   "withBn": 2299,
+   "to": 2088,
+   "withBn": 2088,
    "suktaCount": 191,
-   "shlokaCount": 4782
+   "shlokaCount": 3427
   },
   {
    "id": 2,
    "bn": "ঋগ্বেদ — 2",
-   "count": 460,
+   "count": 414,
    "from": 1,
-   "to": 460,
-   "withBn": 460,
+   "to": 414,
+   "withBn": 414,
    "suktaCount": 43,
-   "shlokaCount": 1073
+   "shlokaCount": 847
   },
   {
    "id": 3,
    "bn": "ঋগ্বেদ — 3",
-   "count": 668,
+   "count": 601,
    "from": 1,
-   "to": 668,
-   "withBn": 668,
+   "to": 601,
+   "withBn": 601,
    "suktaCount": 62,
-   "shlokaCount": 1468
+   "shlokaCount": 1137
   },
   {
    "id": 4,
    "bn": "ঋগ্বেদ — 4",
-   "count": 631,
+   "count": 566,
    "from": 1,
-   "to": 631,
-   "withBn": 631,
+   "to": 566,
+   "withBn": 566,
    "suktaCount": 58,
-   "shlokaCount": 1338
+   "shlokaCount": 1017
   },
   {
    "id": 5,
    "bn": "ঋগ্বেদ — 5",
-   "count": 767,
+   "count": 679,
    "from": 1,
-   "to": 767,
-   "withBn": 767,
+   "to": 679,
+   "withBn": 679,
    "suktaCount": 87,
-   "shlokaCount": 1442
+   "shlokaCount": 1011
   },
   {
    "id": 6,
    "bn": "ঋগ্বেদ — 6",
-   "count": 757,
+   "count": 748,
    "from": 1,
-   "to": 757,
-   "withBn": 757,
+   "to": 748,
+   "withBn": 748,
    "suktaCount": 75,
-   "shlokaCount": 1597
+   "shlokaCount": 1502
   },
   {
    "id": 7,
    "bn": "ঋগ্বেদ — 7",
-   "count": 834,
+   "count": 830,
    "from": 1,
-   "to": 834,
-   "withBn": 834,
+   "to": 830,
+   "withBn": 830,
    "suktaCount": 104,
-   "shlokaCount": 1923
+   "shlokaCount": 1874
   },
   {
    "id": 8,
    "bn": "ঋগ্বেদ — 8",
-   "count": 1702,
+   "count": 1699,
    "from": 1,
-   "to": 1702,
-   "withBn": 1702,
+   "to": 1699,
+   "withBn": 1699,
    "suktaCount": 103,
-   "shlokaCount": 2722
+   "shlokaCount": 2699
   },
   {
    "id": 9,
    "bn": "ঋগ্বেদ — 9",
-   "count": 1104,
+   "count": 1102,
    "from": 1,
-   "to": 1104,
-   "withBn": 1104,
+   "to": 1102,
+   "withBn": 1102,
    "suktaCount": 114,
-   "shlokaCount": 1990
+   "shlokaCount": 1976
   },
   {
    "id": 10,
    "bn": "ঋগ্বেদ সংহিতা — মণ্ডল 10",
-   "count": 1732,
+   "count": 1729,
    "from": 1,
-   "to": 1732,
-   "withBn": 1732,
+   "to": 1729,
+   "withBn": 1729,
    "suktaCount": 191,
-   "shlokaCount": 3813
+   "shlokaCount": 3801
   }
  ],
  "verseWord": "সূক্ত",
  "bnSrc": "বাংলা অনুবাদ — ebanglalibrary.com",
  "note": "সূক্ত-সীমানা মোট মন্ত্র ÷ সূক্ত-সংখ্যা ধরে আনুমানিক (উৎসে সূক্তের শিরোনাম নেই); শ্লোক-ভাগ দাঁড়ি ধরে, তাই পড়ার সময় প্রতিটি শ্লোক আলাদা দেখা যায়।",
  "suktaTotal": 1028,
- "shlokaTotal": 22148
+ "shlokaTotal": 19291
 }
