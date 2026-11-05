@@ -10,8 +10,8 @@ on:
       mode:
         description: 'কী করব'
         type: choice
-        default: probe
-        options: [probe, discover, fetch, build]
+        default: fetch
+        options: [fetch, probe, discover, build]
       chapters:
         description: 'কেবল এই অধ্যায়গুলো (কমা-বাঁধা সাইট-আইডি; খালি = সব)'
         default: ''
@@ -36,10 +36,10 @@ jobs:
     timeout-minutes: 350
     env:
       PYTHONUNBUFFERED: '1'
-      MODE: ${{ inputs.mode || 'probe' }}
+      MODE: ${{ inputs.mode || 'fetch' }}
       CHAPTERS: ${{ inputs.chapters || '' }}
       LIMIT: ${{ inputs.limit || '0' }}
-      BOT_BRANCH: ${{ (inputs.mode || 'probe') == 'probe' && 'bot/mishkat-probe' || 'bot/mishkat-data' }}
+      BOT_BRANCH: ${{ (inputs.mode || 'fetch') == 'probe' && 'bot/mishkat-probe' || 'bot/mishkat-data' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -109,6 +109,8 @@ jobs:
             echo "head=$(git rev-parse --short HEAD)"
             echo "ফাইল:"; ls -l assets/hadith/data/_debug/mishkat/ assets/hadith/data/_debug/mishkat/raw 2>/dev/null | head -30
           } >> assets/hadith/data/_debug/mishkat/_run.txt
+          # কাঁচা HTML (raw/) কমিটে যাবে না — ডেটা ইতিমধ্যেই পার্স হয়ে parsed/-এ আছে
+          rm -rf assets/hadith/data/_debug/mishkat/raw
           # একসাথে না-থাকা pathspec দিলে git add কিছুই স্টেজ করে না — তাই আলাদা আলাদা
           git add -f assets/hadith/data/_debug || true
           [ -d assets/hadith/data/mishkat ] && git add -f assets/hadith/data/mishkat || true
