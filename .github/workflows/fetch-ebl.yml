@@ -142,8 +142,10 @@ jobs:
           if [ "$MAXV" != "0" ]; then ARGS="--max $MAXV"; fi
           python3 -u tools/fetch_ebl.py --slug rigveda --title "ঋগ্বেদ সংহিতা" \
             --word সূক্ত --match "ঋগ্বেদ" --by-ordinal --want 10 \
-            --into-chapter 10 --only-unsaved $ARGS > /tmp/fetch1.txt 2>&1 || true
+            --into-chapter 10 --only-unsaved $ARGS > /tmp/fetch1.txt 2>&1 \
+            || echo "⚠ ফেচার কোড ${PIPESTATUS[0]} নিয়ে শেষ হলো (ফল খতিয়ে দেখুন)"
           tail -40 /tmp/fetch1.txt
+          grep -E "✓|✗|⛔|মন্ত্র পাওয়া যায়নি|নামানো হবে" /tmp/fetch1.txt | tail -20 || true
           mkdir -p assets/grantho/data/_debug
           tail -60 /tmp/fetch1.txt > assets/grantho/data/_debug/fetch_run.txt || true
 
@@ -246,12 +248,12 @@ jobs:
             echo "কোনো পরিবর্তন নেই — প্রকাশ লাগবে না"; exit 0
           fi
           git commit -m "ঋগ্বেদ ১০ম মণ্ডল: স্বয়ংক্রিয় আপডেট ($(date -u +%d/%m %H:%M) UTC)" || true
-          git fetch origin main --depth=1 || true
+          git fetch origin main || true
           git rebase origin/main || git rebase --abort || true
           # bot-ব্রাঞ্চ পুরনো স্ন্যাপশট ধরে রেখেছিল, তাই সাধারণ push প্রতিবার
           # rejected হতো আর কিছুই প্রকাশ পেত না। শাখাটি মেশিনের একার, তাই
           # জোর করে ঠিক বর্তমান main + নতুন ডেটা বসাই।
-          git fetch origin "${BOT_BRANCH}" --depth=1 || true
+          git fetch origin "${BOT_BRANCH}" || true
           git push --force origin "HEAD:refs/heads/${BOT_BRANCH}" \
             || { echo "⛔ bot-ব্রাঞ্চে push হলো না"; git log --oneline -1;
                  exit 1; }
@@ -266,16 +268,18 @@ jobs:
           echo "PR: ${NUM:-নেই}"
           if [ -n "$NUM" ]; then
             gh pr merge "$NUM" --merge
+            echo "✓ প্রকাশ হয়েছে (PR #$NUM)"
           else
             echo "⛔ bot-ব্রাঞ্চে push/PR ব্যর্থ"
-            python3 - <<'PY2'
-          import json, os
-          p = 'assets/grantho/data/_debug/rigveda10.txt'
-          try:
-              old = open(p, encoding='utf-8').read()
-          except Exception:
-              old = ""
-          old += "\n⛔ প্রকাশ-ধাপ ব্যর্থ: bot-ব্রাঞ্চে push বা PR হয়নি।\n"
-          open(p, 'w', encoding='utf-8').write(old)
-          PY2
           fi
+          # যা হয়েছে তা ছোট করে রিপোর্টে লিখে main-এ রেখে দিই — লগ দেখা যায় না
+          {
+            echo ""
+            echo "প্রকাশ: $( [ -n "$NUM" ] && echo "PR #$NUM merge হয়েছে" || echo "ব্যর্থ — কিছু প্রকাশ হয়নি" )"
+            echo "bot-head: $(git rev-parse --short HEAD)"
+            echo "main-head: $(git rev-parse --short origin/main 2>/dev/null || echo '?')"
+          } >> assets/grantho/data/_debug/rigveda10.txt
+          git add -f assets/grantho/data/_debug/rigveda10.txt
+          git commit -m "প্রকাশ-ফল ($(date -u +%H:%M))" || true
+          git fetch origin main --depth=1 || true
+          git push origin HEAD:main || echo "প্রকাশ-ফল push হলো না"
