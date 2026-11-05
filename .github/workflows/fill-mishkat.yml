@@ -8,6 +8,12 @@ name: Mishkat fill (ফাঁকা হাদিস পূরণ)
 # পুনরায় চালালে ক্যাশের কারণে কেবল বাকিগুলোই নামে — তাই limit দিয়ে ধাপে ধাপেও চালানো যায়।
 
 on:
+  # মার্জ/পুশেই চালু হয়: Actions API-তে dispatch-অনুমতি না থাকলেও এই পথে চলে।
+  # ট্রিগার ফাইল ছোঁয়া = «এখন চালাও»। (paths ছোট রাখা, যাতে অন্য কিছুতে না চলে)
+  push:
+    branches: [main]
+    paths:
+      - 'assets/hadith/data/_trigger/mishkat-fill'
   workflow_dispatch:
     inputs:
       mode:
