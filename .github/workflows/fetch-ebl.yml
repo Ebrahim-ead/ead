@@ -142,7 +142,10 @@ jobs:
           if [ "$MAXV" != "0" ]; then ARGS="--max $MAXV"; fi
           python3 -u tools/fetch_ebl.py --slug rigveda --title "ঋগ্বেদ সংহিতা" \
             --word সূক্ত --match "ঋগ্বেদ" --by-ordinal --want 10 \
-            --into-chapter 10 --only-unsaved $ARGS 2>&1 | tail -40
+            --into-chapter 10 --only-unsaved $ARGS > /tmp/fetch1.txt 2>&1 || true
+          tail -40 /tmp/fetch1.txt
+          mkdir -p assets/grantho/data/_debug
+          tail -60 /tmp/fetch1.txt > assets/grantho/data/_debug/fetch_run.txt || true
 
       # প্রথম চেষ্টায় সূচি না মিললে একবার হালকা করে (২৫০ সূক্ত) আবার
       - name: ঋগ্বেদ ১০ম মণ্ডল — ফল না এলে একবার পুনরায়
@@ -214,6 +217,11 @@ jobs:
               "\n".join(out) + "\n")
           print("\n".join(out))
           PY
+          # ডেটা-প্রকাশ ব্যর্থ হলেও যেন ফলটি দেখা যায় — রিপোর্ট সোজা main-এ
+          git add -f assets/grantho/data/_debug/rigveda10.txt
+          git commit -m "ঋগ্বেদ ১০ম মণ্ডল: ফল-রিপোর্ট ($(date -u +%H:%M))" || true
+          git fetch origin main --depth=1 || true
+          git push origin HEAD:main || echo "রিপোর্ট push হলো না"
 
       - name: রিপোর্ট
         if: always()
@@ -240,7 +248,13 @@ jobs:
           git commit -m "ঋগ্বেদ ১০ম মণ্ডল: স্বয়ংক্রিয় আপডেট ($(date -u +%d/%m %H:%M) UTC)" || true
           git fetch origin main --depth=1 || true
           git rebase origin/main || git rebase --abort || true
-          git push origin "HEAD:refs/heads/${BOT_BRANCH}"
+          # bot-ব্রাঞ্চ পুরনো স্ন্যাপশট ধরে রেখেছিল, তাই সাধারণ push প্রতিবার
+          # rejected হতো আর কিছুই প্রকাশ পেত না। শাখাটি মেশিনের একার, তাই
+          # জোর করে ঠিক বর্তমান main + নতুন ডেটা বসাই।
+          git fetch origin "${BOT_BRANCH}" --depth=1 || true
+          git push --force origin "HEAD:refs/heads/${BOT_BRANCH}" \
+            || { echo "⛔ bot-ব্রাঞ্চে push হলো না"; git log --oneline -1;
+                 exit 1; }
           NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
           if [ -z "$NUM" ]; then
             gh pr create --base main --head "${BOT_BRANCH}" \
@@ -250,4 +264,18 @@ jobs:
             NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
           fi
           echo "PR: ${NUM:-নেই}"
-          [ -n "$NUM" ] && gh pr merge "$NUM" --merge
+          if [ -n "$NUM" ]; then
+            gh pr merge "$NUM" --merge
+          else
+            echo "⛔ bot-ব্রাঞ্চে push/PR ব্যর্থ"
+            python3 - <<'PY2'
+          import json, os
+          p = 'assets/grantho/data/_debug/rigveda10.txt'
+          try:
+              old = open(p, encoding='utf-8').read()
+          except Exception:
+              old = ""
+          old += "\n⛔ প্রকাশ-ধাপ ব্যর্থ: bot-ব্রাঞ্চে push বা PR হয়নি।\n"
+          open(p, 'w', encoding='utf-8').write(old)
+          PY2
+          fi
