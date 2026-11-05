@@ -314,9 +314,99 @@ def _split_rules(css: str) -> list[str]:
     return out
 
 
-STEPS = {"css": step_css, "img": step_img, "bg": step_bg,
+def step_imgsize(dry: bool) -> None:
+    try:
+        from PIL import Image
+    except Exception:
+        print("  ! Pillow নেই — pip install pillow")
+        return
+    d = ASSETS / "img"
+    saved = 0
+    for p in sorted(d.glob("*")):
+        if p.suffix.lower() not in (".jpg", ".jpeg", ".png", ".webp"):
+            continue
+        before = p.stat().st_size
+        try:
+            with Image.open(p) as im:
+                im.load()
+                w, h = im.size
+                fmt = im.format
+                icc = im.info.get("icc_profile")
+                if p.name.startswith("bg-"):
+                    # ব্যাকগ্রাউন্ড: blur হয়ে যায়, ছোট রাখাই যথেষ্ট
+                    target = min(w, 1400)
+                else:
+                    target = min(w, MAX_W)
+                if target < w:
+                    im = im.resize((target, round(h * target / w)), Image.LANCZOS)
+                out = io.BytesIO()
+                if p.suffix.lower() == ".png":
+                    im.save(out, "PNG", optimize=True)
+                elif p.suffix.lower() == ".webp" or p.name.startswith("bg-"):
+                    im.convert("RGB").save(out, "WEBP", quality=WEBP_Q, method=6, icc_profile=icc)
+                else:
+                    im.convert("RGB").save(out, "JPEG", quality=JPEG_Q, optimize=True,
+                                           progressive=True, icc_profile=icc)
+                data = out.getvalue()
+                if len(data) < before * 0.92:   # স্পষ্ট লাভ থাকলেই বদল
+                    if not dry:
+                        p.write_bytes(data)
+                    saved += before - len(data)
+        except Exception as e:
+            print(f"  ! {p.name}: {e}")
+    print(f"  image budget: {saved / 1024:.0f} KB কমেছে")
+
+
+def step_imgattrs(dry: bool) -> None:
+    """ফাইল হওয়া ছবির width/height বাস্তব ফাইলের মাপে ঠিক করা (অনুপাত অটুট)।"""
+    try:
+        from PIL import Image
+    except Exception:
+        print("  ! Pillow নেই")
+        return
+    fixed = 0
+    for page in pages():
+        s = read(page)
+        pre = rel(page)
+
+        def sub(m: re.Match) -> str:
+            nonlocal fixed
+            tag = m.group(0)
+            src = _attr(tag, "src") or ""
+            if not src.startswith(pre + "assets/img/"):
+                return tag
+            path = ROOT / src
+            if not path.exists():
+                return tag
+            try:
+                with Image.open(path) as im:
+                    w, h = im.size
+            except Exception:
+                return tag
+            if _attr(tag, "width") == str(w) and _attr(tag, "height") == str(h):
+                return tag
+            out = re.sub(r'\bwidth="\d+"', f'width="{w}"', tag)
+            out = re.sub(r'\bheight="\d+"', f'height="{h}"', out)
+            fixed += 1
+            return out
+
+        s2 = IMG_TAG.sub(sub, s)
+        if s2 != s:
+            write(page, s2, dry)
+    print(f"  {fixed}টি <img>-এ ফাইলের আসল মাপ বসানো হলো")
+
+
+STEPS = {"css": step_css, "img": step_img, "bg": step_bg, "imgsize": step_imgsize, "imgattrs": step_imgattrs,
          "mobile": step_mobile, "fonts": step_fonts}
-ORDER = ["css", "img", "bg", "mobile", "fonts"]
+ORDER = ["css", "img", "bg", "imgsize", "imgattrs", "mobile", "fonts"]
+
+
+# --------------------------------------------------------------------------- #
+# 6. image budget: resize + recompress what is served as files
+# --------------------------------------------------------------------------- #
+MAX_W = 900          # ছবি কোনোদিন তার নিজের ঘরের চেয়ে বড় আঁকা হয় না
+JPEG_Q = 78
+WEBP_Q = 76
 
 
 def main() -> int:
@@ -332,3 +422,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
