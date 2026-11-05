@@ -435,6 +435,16 @@ def build(chapters=None):
         ch["bn"] = name_only(c["bn"])                 # নাম পরিষ্কার (আরবি/HTML বাদ)
         ch.pop("site", None)
         ch["site_chapter"] = c["site"]                # উৎসে ফিরে যাওয়ার জন্য
+    # নিরাপত্তা: হঠাৎ করে ডেটা অনেক ছোট হয়ে গেলে (সাইট বদল/ব্যর্থতা) কিছুই মুছি না
+    prev = next((b for b in index["books"] if b["slug"] == BOOK_META["slug"]), None)
+    if prev and prev.get("count", 0) > 100 and book["count"] < prev["count"] * 0.97:
+        keep = os.path.join(OUT, "build_abort.txt")
+        msg = (f"⛔ বাতিল: নতুন {book['count']} হাদিস, আগের {prev['count']} — ৩%+ কমে গেছে।"
+               f" (আগের ডেটা অটুট রাখা হলো)")
+        open(keep, "w", encoding="utf-8").write(msg + "\n")
+        print(msg)
+        return
+
     book["grades"] = dict(sorted(grades.items(), key=lambda kv: -kv[1]))
     books = [b for b in index["books"] if b["slug"] != BOOK_META["slug"]]
     books.append(book)
