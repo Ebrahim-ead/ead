@@ -12,9 +12,6 @@
   "use strict";
 
   var DATA = "assets/hadith/data/";
-  /* একসঙ্গে কতটি হাদিস আঁকা হবে — মিশকাতের বড় অধ্যায়ে (৯৫৯ হাদিস, ৩ মেগাবাইট)
-     একবারে সব আঁকলে ব্রাউজার আটকে যায় («অধ্যায়টি লোড করা গেল না»), তাই পৃষ্ঠা। */
-  var PAGE_SIZE = 120;
   var bnDigits = "০১২৩৪৫৬৭৮৯";
   var LS = {
     last: "hadith:last",
@@ -243,13 +240,8 @@
       '<span class="h-badge plain">হাদিস ' + bn(c.from || 0) + '–' + bn(c.to || 0) + '</span>' +
       '</div></div>';
 
-    mainEl.innerHTML = head + '<div class="h-page" id="h-page" hidden></div>' +
-      '<div class="h-items" id="h-items"></div>';
-
-    /* হাদিসগুলো একবারেই সাজিয়ে রাখি; পৃষ্ঠা বদলালে কেবল ভিন্ন টুকরো আঁকি */
-    pageItems = d.verses;
-    pageNo = 0;
-    paintPage();
+    mainEl.innerHTML = head + '<div class="h-items" id="h-items"></div>';
+    paintItems(d.verses);
 
     var i = b.chapters.findIndex(function (x) { return x.id === id; });
     var prev = i > 0 ? b.chapters[i - 1] : null;
@@ -277,8 +269,6 @@
   /* ---------------------------------------------------------- *
    * এক অধ্যায়ের ভেতরে পৃষ্ঠা-পৃষ্ঠা করে আঁকা
    * ---------------------------------------------------------- */
-  var pageItems = [], pageNo = 0;
-
   function itemHTML(v, k) {
     var ref = bookSlug + ":" + v.i;
     var has = bookmarks.indexOf(ref) !== -1;
@@ -311,61 +301,52 @@
       '</div>';
   }
 
-  function paintPage() {
+  /* পুরো অধ্যায় একসঙ্গে দেখানো হয় — কোনো পৃষ্ঠা/পেজার নেই। তবুও বড় অধ্যায়ে
+     (নামায ৭৯২, আদাব ৪১৪) একবারে ৭০০+ কার্ড আঁকলে ব্রাউজার ঝুলে যায়, তাই
+     ব্যাচে (CHUNK করে) আঁকা হয় — চোখে সবই এক পৃষ্ঠা, কিন্তু ব্রাউজার বাঁচে। */
+  var CHUNK = 100;
+
+  function paintItems(items) {
     var host = document.getElementById("h-items");
     if (!host) return;
-    var from = pageNo * PAGE_SIZE;
-    var slice = pageItems.slice(from, from + PAGE_SIZE);
-    host.innerHTML = slice.map(function (v, k) {
-      return itemHTML(v, from + k);
-    }).join("");
+    host.innerHTML = "";
+    var at = 0;
 
+    function step() {
+      if (!host.isConnected) return;          /* এর মধ্যে অন্য অধ্যায় খোলা হয়েছে */
+      var slice = items.slice(at, at + CHUNK);
+      var html = slice.map(function (v, k) {
+        return itemHTML(v, at + k);
+      }).join("");
+      host.insertAdjacentHTML("beforeend", html);
+      at += CHUNK;
+      if (at < items.length) {
+        setTimeout(step, 0);
+      } else {
+        bindItemTools(host);
+        applySettings();
+      }
+    }
+    step();
+  }
+
+  function bindItemTools(host) {
     host.querySelectorAll("[data-bm]").forEach(function (btn) {
       btn.addEventListener("click", function () { toggleBookmark(btn); });
     });
     host.querySelectorAll("[data-copy]").forEach(function (btn) {
       btn.addEventListener("click", function () { copyItem(btn); });
     });
-
-    var pagerEl = document.getElementById("h-page");
-    if (pagerEl) {
-      var pages = Math.ceil(pageItems.length / PAGE_SIZE);
-      if (pages <= 1) {
-        pagerEl.hidden = true;
-        pagerEl.innerHTML = "";
-      } else {
-        pagerEl.hidden = false;
-        pagerEl.innerHTML = '<button class="h-btn" type="button" data-pg="prev"' +
-          (pageNo === 0 ? " disabled" : "") + '>← আগের</button>' +
-          '<span class="h-pg-info">পৃষ্ঠা ' + bn(pageNo + 1) + ' / ' + bn(pages) +
-          ' · এই অধ্যায়ের ' + bn(from + 1) + '–' +
-          bn(Math.min(from + PAGE_SIZE, pageItems.length)) + ' নং স্লট' +
-          ' (মোট ' + bn(pageItems.length) + ')</span>' +
-          '<button class="h-btn" type="button" data-pg="next"' +
-          (pageNo >= pages - 1 ? " disabled" : "") + '>পরের →</button>';
-        pagerEl.querySelector('[data-pg="prev"]').addEventListener("click", function () {
-          if (pageNo > 0) { pageNo--; paintPage(); }
-        });
-        pagerEl.querySelector('[data-pg="next"]').addEventListener("click", function () {
-          if ((pageNo + 1) * PAGE_SIZE < pageItems.length) { pageNo++; paintPage(); }
-        });
-      }
-    }
-    applySettings();
   }
 
-  /* সার্চ বা বুকমার্ক থেকে সরাসরি একটি হাদিসে — তার পৃষ্ঠাটা আগে বেছে নিই */
-  function scrollToItem(num) {
-    var at = -1;
-    for (var i = 0; i < pageItems.length; i++) {
-      if (String(pageItems[i].i) === String(num)) { at = i; break; }
-    }
-    if (at > -1) {
-      var pg = Math.floor(at / PAGE_SIZE);
-      if (pg !== pageNo) { pageNo = pg; paintPage(); }
-    }
+  function scrollToItem(num, tries) {
+    tries = tries || 0;
     var el = mainEl.querySelector('[data-i="' + num + '"]');
-    if (!el) return;
+    if (!el) {
+      /* বড় অধ্যায় ব্যাচে আঁকা হচ্ছে — কার্ডটি এখনো তৈরি হয়নি, এক মুহূর্ত পরে */
+      if (tries < 40) setTimeout(function () { scrollToItem(num, tries + 1); }, 60);
+      return;
+    }
     el.scrollIntoView({ behavior: "smooth", block: "start" });
     el.classList.add("hit");
     setTimeout(function () { el.classList.remove("hit"); }, 1800);
