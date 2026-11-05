@@ -233,8 +233,7 @@ LEAD_NUM_RE = re.compile(r"^\s*[০-৯0-9]+\s*[।.)]\s*")
 
 def parse_hadith_page(html: str, n: int) -> dict | None:
     """এক পাতার একক হাদিস → রিডার-ফরম্যাট; যাচাই ব্যর্থ হলে None।"""
-    if not TITLE_RE.search(norm(html)):
-        return None
+    # শিরোনাম-যাচাই ইচ্ছে করেই নরম (নিচে নম্বরেই কড়া যাচাই হয়)
     payload = flight_payload(html)
     rows = flight_rows(payload)
     items = find_hadith_items(payload)
@@ -246,9 +245,10 @@ def parse_hadith_page(html: str, n: int) -> dict | None:
         if bn2num(num) == n:
             item = h
             break
+    plain = norm(html)
     if item is None:
-        # শিরোনামের «হাদীস নং: n» দিয়েও যাচাই (কিছু পাতায় hadith_number খালি)
-        if f"হাদীস নং: {n}" not in html and f"হাদীস নং:{n}" not in html:
+        # শিরোনামের «হাদীস নং: n» দিয়ে যাচাই (কিছু পাতায় hadith_number খালি)
+        if not re.search(r"হাদীস\s*নং\s*[:：]?\s*%d(?!\d)" % n, plain):
             return None
         if len(items) != 1:
             return None
