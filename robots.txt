@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://ebrahim-ead.github.io/ead/sitemap.xml
