@@ -1,0 +1,123 @@
+name: Fetch (muslimbangla — মিশকাতুল মাসাবিহ)
+
+# muslimbangla.com থেকে মিশকাতুল মাসাবিহ (বই ১৩) নামিয়ে নিজের ফরম্যাটে ঢালে।
+# ডেটা-ফোল্ডার বড়, তাই ধাপে ধাপে: probe → discover → fetch → build.
+# ফল যন্ত্রের নিজের ব্রাঞ্চে commit/push হয় (main আলাদা, PR আলাদা)।
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'কী করব'
+        type: choice
+        default: fetch
+        options: [fetch, probe, discover, build]
+      chapters:
+        description: 'কেবল এই অধ্যায়গুলো (কমা-বাঁধা সাইট-আইডি; খালি = সব)'
+        default: ''
+      limit:
+        description: 'সর্বোচ্চ কতটি পরিচ্ছেদ (০ = সব)'
+        default: '0'
+  push:
+    paths:
+      - '.github/workflows/fetch-mishkat.yml'
+      - 'tools/fetch_mishkat.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-mishkat
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      PYTHONUNBUFFERED: '1'
+      MODE: ${{ inputs.mode || 'fetch' }}
+      CHAPTERS: ${{ inputs.chapters || '' }}
+      LIMIT: ${{ inputs.limit || '0' }}
+      BOT_BRANCH: ${{ (inputs.mode || 'fetch') == 'probe' && 'bot/mishkat-probe' || 'bot/mishkat-data' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: git
+        run: |
+          git config user.name  "hadith-bot"
+          git config user.email "bot@users.noreply.github.com"
+
+      - name: ০) যাচাই — সাইটের কাঠামো (probe)
+        if: env.MODE == 'probe'
+        run: |
+          mkdir -p assets/hadith/data/_debug/mishkat
+          python3 -u tools/fetch_mishkat.py --probe 2>&1 | tee assets/hadith/data/_debug/mishkat/probe_log.txt | tail -40
+
+      - name: ১) অধ্যায় ও পরিচ্ছেদের তালিকা (discover)
+        if: env.MODE == 'discover'
+        run: |
+          mkdir -p assets/hadith/data/_debug/mishkat
+          python3 -u tools/fetch_mishkat.py --discover 2>&1 | tee assets/hadith/data/_debug/mishkat/discover_log.txt | tail -45
+
+      # fetch = তালিকা দেখে → নামায় → রিডার-ফরম্যাটে ঢালে (এক রানে পুরো কাজ;
+      # পুনরায় চালালে ক্যাশের কারণে কেবল বাকি পরিচ্ছেদগুলোই নামে)
+      - name: ২) তালিকা (discover)
+        if: env.MODE == 'fetch'
+        run: python3 -u tools/fetch_mishkat.py --discover 2>&1 | tail -45
+
+      - name: ৩) হাদিস নামানো (fetch)
+        if: env.MODE == 'fetch'
+        run: |
+          ARGS=""
+          if [ -n "$CHAPTERS" ]; then ARGS="$ARGS --chapters $CHAPTERS"; fi
+          if [ "$LIMIT" != "0" ]; then ARGS="$ARGS --limit $LIMIT"; fi
+          python3 -u tools/fetch_mishkat.py --fetch $ARGS > /tmp/fetch.txt 2>&1 \
+            || echo "⚠ ফেচার কিছুক্ষেত্রে থেমেছে (ফল দেখুন)"
+          tail -60 /tmp/fetch.txt
+          cp /tmp/fetch.txt assets/hadith/data/_debug/mishkat/fetch_log.txt || true
+
+      - name: ৪) রিডার-ফরম্যাটে বিল্ড + যাচাই (build)
+        if: env.MODE == 'fetch' || env.MODE == 'build'
+        run: |
+          python3 -u tools/fetch_mishkat.py --build 2>&1 | tail -60
+          python3 -u tools/fetch_mishkat.py --verify 2>&1 | tail -40
+
+      # ফল — লগ দেখা যায় না, তাই আর্টিফ্যাক্টেও রাখি (gh run download দিয়ে পড়া যায়)
+      - name: ফল আপলোড
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mishkat-${{ env.MODE }}
+          path: assets/hadith/data/_debug/mishkat/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: ফল রিপোর্ট + push
+        if: always()
+        run: |
+          mkdir -p assets/hadith/data/_debug/mishkat
+          {
+            echo "mode=$MODE · chapters=${CHAPTERS:-সব} · limit=$LIMIT"
+            echo "head=$(git rev-parse --short HEAD)"
+            echo "ফাইল:"; ls -l assets/hadith/data/_debug/mishkat/ assets/hadith/data/_debug/mishkat/raw 2>/dev/null | head -30
+          } >> assets/hadith/data/_debug/mishkat/_run.txt
+          # কাঁচা HTML (raw/) কমিটে যাবে না — ডেটা ইতিমধ্যেই পার্স হয়ে parsed/-এ আছে
+          rm -rf assets/hadith/data/_debug/mishkat/raw
+          # একসাথে না-থাকা pathspec দিলে git add কিছুই স্টেজ করে না — তাই আলাদা আলাদা
+          git add -f assets/hadith/data/_debug || true
+          [ -d assets/hadith/data/mishkat ] && git add -f assets/hadith/data/mishkat || true
+          git add -f assets/hadith/data/index.json || true
+          if git diff --cached --quiet; then
+            echo "কোনো নতুন ফল নেই"; exit 0
+          fi
+          git commit -m "মিশকাত: $MODE-র ফল ($(date -u +%d/%m %H:%M) UTC)" || true
+          git push --force origin "HEAD:refs/heads/${BOT_BRANCH}" \
+            || { echo "⛔ push হলো না"; git log --oneline -1; exit 1; }
