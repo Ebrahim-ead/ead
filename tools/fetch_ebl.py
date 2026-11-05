@@ -769,7 +769,48 @@ def fetch_paged(url, max_pages=40):
     return "\n\n".join(parts)
 
 
+# ইংরেজি/দেবনাগরী/IAST মিশে থাকা মন্ত্র বাদ দেওয়ার নিয়ম (clean_rigveda-র সঙ্গে এক)
+_DEV_ANY = re.compile(r"[\u0900-\u0963\u0966-\u0970\u0971-\u097F]")
+_IAST = re.compile(r"[āīūṛṣṭḍṇṃśṅñĀĪŪṚṢṬḌṆṂŚṄÑ]")
+_LAT3 = re.compile(r"[A-Za-z][A-Za-z'’\-]{2,}")
+_BNCH = re.compile(r"[\u0980-\u09FF]")
+
+
+def foreign_reasons(text):
+    """বাংলার সঙ্গে বিদেশি পাঠ মিশে থাকলে কারণের তালিকা (খালি = পরিষ্কার)।"""
+    if not text:
+        return ["বাংলা নেই"]
+    out = []
+    if re.search(r"\bHYMN\b|Rig Veda Book", text):
+        out.append("Griffith-ইংরেজি")
+    if _DEV_ANY.search(text):
+        out.append("দেবনাগরী")
+    if _IAST.search(text):
+        out.append("IAST")
+    run = 0
+    for _t in _LAT3.finditer(text):
+        run += 1
+        if run >= 3:
+            out.append("ইংরেজি প্যারা")
+            break
+    total = len(re.sub(r"\s", "", text))
+    if total and len(_BNCH.findall(text)) / total < 0.35:
+        out.append("মূলত বিদেশি পাঠ")
+    return out
+
+
 def write_chapter(out_dir, idx, title, verses, url):
+    # ব্যবহারকারীর সিদ্ধান্ত (২০২৬-১১-০৫): মন্ত্রের বাংলার পাশে Griffith-এর
+    # ইংরেজি, দেবনাগরী মূল বা IAST থাকলে সেই মন্ত্রটা রাখা হয় না।
+    kept, dropped = [], 0
+    for v in verses:
+        if foreign_reasons(v.get("bn") or ""):
+            dropped += 1
+            continue
+        kept.append(v)
+    if dropped:
+        print(f"   ⚠ বিদেশি পাঠ মেশানো {dropped}টি মন্ত্র বাদ দেওয়া হলো", flush=True)
+    verses = kept
     vs = []
     for v in verses:
         d = {"n": v["n"], "sk": v["sk"], "bn": v["bn"], "spk": "", "bnSrc": SRC}

@@ -134,7 +134,7 @@
     } else if (state.bn && v.bn) {
       out += '<p class="g-v-bn">' + esc(v.bn).replace(/\n+/g, "</p><p class=\"g-v-bn\">") + '</p>';
     }
-    if (state.bn && v.bnSrc) out += '<p class="g-v-src">অনুবাদ: ' + esc(v.bnSrc) + '</p>';
+    /* উৎস-কৃতিত্ব গ্রন্থের শুরুতে একবারই — প্রতি মন্ত্রে পুনরাবৃত্তি নয় */
     out += '</div></article>';
     return out;
   }

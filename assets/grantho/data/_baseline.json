@@ -1,5 +1,5 @@
 {
- "_commit": "06e54752bcfe49271d0d2def555e9a45b2a3bc9d",
+ "_commit": "7af05145a8bd084ef74a3377fc66ca6411132f62",
  "_note": "এটি ভালো-জানা ডেটার হিসাব; এর চেয়ে ১৫%-এর বেশি ছোট হলে guard_data.py ফিরিয়ে আনে।",
  "slugs": {
   "gita": {
@@ -8,9 +8,9 @@
    "chapters": 18
   },
   "rigveda": {
-   "total": 9222,
-   "withBn": 9222,
-   "chapters": 9
+   "total": 10456,
+   "withBn": 10456,
+   "chapters": 10
   }
  }
 }
