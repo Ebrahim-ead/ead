@@ -1,0 +1,78 @@
+/* site-extra.css — মোবাইল/টাচ নিয়ম ও হাতে টিউন করা অংশ।
+   assets/site.css জেনারেটেড; এখানে রাখা নিরাপদ। */
+
+@media (max-width:820px){
+  /* ফোনের GPU-তে সবচেয়ে ভারী স্তরগুলো */
+  .orb,.grid-tex,.motion-sparks,.m-cursor{display:none!important}
+  .aura{animation:none!important}
+  header.top,.nav,.badge,.card,.qcard{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  header.top{background:rgba(4,12,16,.985)!important;animation:none!important}
+  html[data-theme="light"] header.top{background:rgba(247,250,252,.99)!important}
+  *{will-change:auto!important}
+  .card,.qcard,.article-card{transition:none!important}
+  input,select,textarea{font-size:16px!important}      /* iOS ফোকাসে zoom বন্ধ */
+  ::-webkit-scrollbar{width:8px;height:8px}
+}
+@media (hover:none) and (pointer:coarse){
+  .h-btn,.theme-toggle,.burger,.h-drawer-btn,.h-icon{min-height:44px}
+  .h-btn{padding:10px 16px}
+  .nav a{min-height:44px;display:flex;align-items:center}
+  .card:hover,.qcard:hover,.hero-photo:hover{transform:none!important}
+  .btn,.h-btn,.q-btn,.theme-toggle,.burger,.nav a,.article-card-more{-webkit-tap-highlight-color:rgba(245,184,28,.18)}
+  .btn:active,.h-btn:active,.q-btn:active,.theme-toggle:active,.burger:active{transform:scale(.97)}
+}
+@media (max-width:760px){
+  .logo-copy small,.badge,.h-badge,.h-note{font-size:13px}
+  .h-toolbar,.q-toolbar{position:static!important}
+  #h-results,#q-results{margin-top:10px!important}
+  footer .fgrid{gap:20px}
+  footer .soc a{min-width:44px;min-height:44px}
+}
+@media (max-width:420px){
+  h1.big{font-size:clamp(28px,8.4vw,40px)}
+  .h-intro,.q-intro{padding-top:22px;padding-bottom:18px}
+}
+/* লম্বা শব্দ/টেবিল ফোনে স্ক্রল ভাঙে না */
+.article-body,.h-v-text,.q-v{overflow-wrap:anywhere}
+.article-body img,.article-body table{max-width:100%;height:auto}
+.article-body table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.article-body img,.h-item img{height:auto}
+/* দৃশ্যের বাইরের অংশ আঁকা হয় না → লম্বা পাতায় স্ক্রল মসৃণ */
+.article-body>section{content-visibility:auto;contain-intrinsic-size:auto 320px}
+/* সূত্র-লাইন (হাদিস/কুরআন পাতার ছোট করে লেখা অংশ) */
+.h-src-line,.q-src-line{font-size:13.5px;color:var(--muted);margin-top:6px}
+.h-src-line a,.q-src-line a,.h-credit a,.q-credit a{color:var(--gold2);text-decoration:underline;text-underline-offset:3px}
+.h-src-more,.q-src-more{margin-top:10px;max-width:760px;border:1px solid var(--line);border-radius:12px;
+  background:var(--card);padding:0 14px;font-size:13.5px;color:var(--muted)}
+.h-src-more summary,.q-src-more summary{cursor:pointer;padding:10px 0;color:var(--gold2);font-weight:600}
+.h-src-more[open],.q-src-more[open]{padding-bottom:12px}
+.h-src-more p,.q-src-more p{margin:8px 0;line-height:1.75}
+.h-credit,.q-credit{text-align:center;font-size:13px;padding:18px 0 8px}
+/* ফুটার মোবাইলে কম ফাঁকা */
+@media (min-width:761px){ footer p{max-width:46ch} }
+footer .footer-heading{font-size:14.5px;margin-bottom:8px}
+/* --- optimized site rules: mobile & touch --------------------------------
+   ফোনে সবচেয়ে ব্যয়বহুল স্তরগুলো বন্ধ/হালকা করা হয়, চেহারা একই থাকে। */
+
+@media (max-width:820px){
+  .orb,.grid-tex,.motion-sparks{display:none!important}
+  .aura{animation:none!important}
+  header.top,.nav,.badge,.card,.qcard{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  header.top{background:rgba(4,12,16,.985)!important}
+  html[data-theme="light"] header.top{background:rgba(247,250,252,.99)!important}
+  input,select,textarea{font-size:16px!important}   /* iOS ফোকাসে zoom বন্ধ */
+  ::-webkit-scrollbar{width:8px;height:8px}
+}
+@media (hover:none) and (pointer:coarse){
+  .h-btn,.theme-toggle,.burger,.h-drawer-btn,.h-icon{min-height:44px}
+  .h-btn{padding:10px 16px}
+  .nav a{min-height:44px;display:flex;align-items:center}
+  .card:hover,.qcard:hover,.hero-photo:hover{transform:none!important}
+}
+@media (max-width:760px){
+  .logo-copy small,.badge,.h-badge,.h-note{font-size:13px}
+}
+/* দৃশ্যের বাইরের কার্ড আঁকা হয় না → খুব লম্বা পাতায় স্ক্রল মসৃণ */
+.article-body>section{content-visibility:auto;contain-intrinsic-size:auto 320px}
+/* ছবি সবসময় অনুপাত ধরে ছোট হবে */
+.article-body img,.h-item img{height:auto}
