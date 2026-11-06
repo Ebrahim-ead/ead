@@ -14,6 +14,9 @@ on:
       - 'tools/clean_yajurveda.py'
       - 'tools/audit_site.mjs'
       - 'tools/test_reader.mjs'
+      - 'tools/check_perf.mjs'
+      - 'assets/*.css'
+      - 'assets/*.js'
       - 'assets/grantho/**'
       - 'grantho/**'
       - '*.html'            # প্রবন্ধ-পাতা যোগ/সম্পাদনা হলেও অডিট চলবে
@@ -61,6 +64,12 @@ jobs:
         run: |
           node tools/test_reader.mjs 2>&1 | tee /tmp/reader.txt
 
+      # স্ক্রল-মসৃণতার নিয়ম: প্রতি-ফ্রেমে লেআউট-পড়া নেই, will-change পুরো
+      # পাতায় নেই, content-visibility সত্যিই প্রযোজ্য, TOC-এ ব্লার নেই।
+      - name: পারফরম্যান্স-নিয়ম
+        run: |
+          node tools/check_perf.mjs 2>&1 | tee /tmp/perf.txt
+
       # ব্যর্থ হলে কারণ জানা দরকার — Actions-এর লগ বাইরে থেকে পড়া যায় না,
       # তাই আউটপুট রিপোতেই প্রকাশ (নিশ্চিত করা আছে যে এতে লুপ হবে না)।
       - name: ব্যর্থ হলে ডায়াগনস্টিক প্রকাশ
@@ -78,6 +87,9 @@ jobs:
             echo ""
             echo "--- রিডার-টেস্ট আউটপুট ---"
             cat /tmp/reader.txt 2>/dev/null || echo '(রিডার-টেস্ট চলেইনি)'
+            echo ""
+            echo "--- পারফরম্যান্স-নিয়ম আউটপুট ---"
+            cat /tmp/perf.txt 2>/dev/null || echo '(পারফরম্যান্স-চেক চলেইনি)'
           } > ci-diagnostics/site-tests.txt
           git config user.name  "grantho-bot"
           git config user.email "bot@users.noreply.github.com"
