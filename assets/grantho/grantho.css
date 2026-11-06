@@ -211,3 +211,10 @@ html[data-theme="light"] .g-front > summary { color:#7a4f00 }
   .g-front-t { padding-left:13px;padding-right:13px;font-size:13.6px }
 }
 @media print { .g-front { break-inside:avoid } }
+
+/* বাইবেলের অনুচ্ছেদ-শিরোনাম («সৃষ্টির কথা») — উৎসে বোল্ড ছাপা, পাঠ নয়,
+   তাই পদের আগে আলাদা ছোট শিরোনাম হিসেবে দেখানো হয়। */
+.g-v-hd { margin:0 0 7px;font-size:13.2px;font-weight:700;letter-spacing:.01em;
+  color:var(--gold2);text-transform:none }
+.g-v + .g-v .g-v-hd { margin-top:2px }
+html[data-theme="light"] .g-v-hd { color:#7a4f00 }

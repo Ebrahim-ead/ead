@@ -1,0 +1,260 @@
+name: Fetch (বাংলা বাইবেল)
+
+# কেন এই ওয়ার্কফ্লো: ebanglalibrary.com-এর «বাংলা বাইবেল»-এ ৬৬টি পুস্তক আর
+# প্রায় ১,১৮৯টি অধ্যায়-পাতা আছে — এক রানে সব নামাতে গেলে নেটওয়ার্ক-ঝুঁকি বাড়ে।
+# তাই এটি ধাপে ধাপে এগোয়: প্রতিটি পুস্তক নামার সাথে সাথেই ডিস্কে লেখা হয়,
+# পরের রান --resume দিয়ে বাকিগুলো থেকে শুরু করে, আর সময়-বাজেট শেষ হলে
+# অগ্রগতি কমিট হয়ে যায়। ফলে মাঝপথে থেমে গেলেও নামানো পাঠ হারায় না।
+#
+# নীতি: উৎসে যা নেই তা অনুমান করে বসানো হয় না — কোনো পদ/অধ্যায় না মিললে
+# সেটি তৈরি করা হয় না, শুধু রিপোর্টে (assets/grantho/data/_debug/) লেখা থাকে।
+
+on:
+  workflow_dispatch:
+    inputs:
+      from:
+        description: 'কত নম্বর পুস্তক থেকে (১ = আদিপুস্তক)'
+        default: '1'
+      to:
+        description: 'কত নম্বর পুস্তক পর্যন্ত (০ = সব)'
+        default: '0'
+      budget:
+        description: 'সর্বোচ্চ কত মিনিট নামাবে (০ = সীমা নেই)'
+        default: '45'
+      probe_only:
+        description: 'শুধু উৎস-প্রোব (পাঠ নামানো হবে না)'
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fetch-bible.yml'
+      - 'tools/fetch_bible.py'
+  schedule:
+    # বাকি থাকলে পরের রানে নিজেই এগিয়ে যায়; সম্পূর্ণ হলে প্রথম ধাপেই বেরিয়ে যায়
+    - cron: '17 */2 * * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: fetch-bible
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      PYTHONUNBUFFERED: '1'
+      BOT_BRANCH: arena/bot-bible
+      SLUG: bible
+      DBG: assets/grantho/data/_debug
+      FROM: ${{ inputs.from || '1' }}
+      TO: ${{ inputs.to || '0' }}
+      BUDGET: ${{ inputs.budget || '45' }}
+      PROBE_ONLY: ${{ inputs.probe_only || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: ঠিক করা (git)
+        run: |
+          git config user.name  "grantho-bot"
+          git config user.email "bot@users.noreply.github.com"
+          mkdir -p "$DBG"
+          echo "রান: $GITHUB_RUN_ID · $(date -u '+%d/%m %H:%M:%S') UTC · sha ${GITHUB_SHA:0:7}" \
+            > "$DBG/bible_run.txt"
+
+      # ── ০) বর্তমান অবস্থা ───────────────────────────────────────
+      # সব পুস্তক আগেই নেমে গেলে নেটওয়ার্ক-কল না করেই রান শেষ হয়।
+      - name: ০) বর্তমান অবস্থা
+        id: state
+        run: |
+          python3 -u - <<'PY' | tee "$DBG/bible_state.txt"
+          import json, pathlib
+          p = pathlib.Path('assets/grantho/data/bible/index.json')
+          if not p.exists():
+              print('ডেটা নেই — সব পুস্তক নামানো বাকি')
+              print('complete=false')
+              raise SystemExit(0)
+          j = json.loads(p.read_text(encoding='utf-8'))
+          chs = j.get('chapters', [])
+          miss = sum(len(c.get('missing', [])) for c in chs)
+          print(f'পুস্তক {len(chs)} · পদ {j.get("total")} · অসম্পূর্ণ অধ্যায় {miss}')
+          print('complete=' + ('true' if len(chs) >= 66 and not miss else 'false'))
+          PY
+          echo "complete=$(grep -o 'complete=[a-z]*' "$DBG/bible_state.txt" | tail -1 | cut -d= -f2)" \
+            >> "$GITHUB_OUTPUT"
+
+      # ── ০.৫) পুস্তক-সূচি ────────────────────────────────────────
+      - name: ০.৫) পুস্তক-সূচি আবিষ্কার
+        if: steps.state.outputs.complete != 'true'
+        run: |
+          python3 -u tools/fetch_bible.py --discover 2>&1 | tee "$DBG/bible_discover.txt" || true
+          tail -6 "$DBG/bible_discover.txt" || true
+
+      # ── ০.৭৫) প্রোব: নমুনা পাতার গঠন যাচাই ─────────────────────
+      # কেন: কাঁচা HTML-এর গঠন বদলালে পার্সার চুপচাপ ফাঁকা ডেটা লিখতে পারত।
+      # তিনটি নমুনা (পুরাতন নিয়মের প্রথম, নতুন নিয়মের প্রথম, শেষ পুস্তক)
+      # পার্স করে ফল ও কাঁচা পাতা _debug-এ রাখা হয়।
+      - name: ০.৭৫) উৎস-প্রোব
+        if: steps.state.outputs.complete != 'true'
+        run: |
+          python3 -u tools/fetch_bible.py --probe --probe-books 1 40 66 2>&1 \
+            | tee "$DBG/bible_probe_log.txt" || true
+          tail -20 "$DBG/bible_probe_log.txt" || true
+
+      # ── ১) পাঠ নামানো ──────────────────────────────────────────
+      - name: ১) পাঠ নামানো
+        if: steps.state.outputs.complete != 'true' && inputs.probe_only != true
+        run: |
+          python3 -u tools/fetch_bible.py --fetch --from "$FROM" --to "$TO" \
+            --resume --delay 0.7 --budget "$BUDGET" 2>&1 \
+            | tee -a "$DBG/bible_run.txt" | tail -80 || true
+
+      # ── ২) স্বতন্ত্র যাচাই ──────────────────────────────────────
+      # পার্সার পাস করলেও ডেটা ফাইলে গঠনগত ভুল থাকতে পারে (নম্বর উল্টাপাল্টা,
+      # ফাঁকা পাঠ)। তখন কাঁচা/ভাঙা ডেটা প্রকাশ না করে আগের অবস্থায় ফেরানো হয়।
+      - name: ২) ডেটা যাচাই
+        if: always()
+        run: |
+          set +e
+          python3 -u - <<'PY' | tee "$DBG/bible_verify.txt"
+          import json, pathlib
+          d = pathlib.Path('assets/grantho/data/bible')
+          idx_p = d / 'index.json'
+          bad, warn = [], []
+          if not idx_p.exists():
+              print('যাচাই: index.json নেই (এই রানে পাঠ নামেনি)')
+              raise SystemExit(0)
+          idx = json.loads(idx_p.read_text(encoding='utf-8'))
+          files = sorted(d.glob('ch*.json'))
+          tot = 0
+          for fp in files:
+              j = json.loads(fp.read_text(encoding='utf-8'))
+              vs = j.get('verses', [])
+              tot += len(vs)
+              ns = [v.get('n') for v in vs]
+              if ns != list(range(1, len(ns) + 1)):
+                  bad.append(f'{fp.name}: n ক্রম ১..{len(ns)} নয়')
+              if any(not str(v.get('bn') or '').strip() for v in vs):
+                  bad.append(f'{fp.name}: ফাঁকা পাঠের পদ আছে')
+              groups = j.get('suktas', [])
+              if groups and len(groups) != j.get('suktaCount'):
+                  bad.append(f'{fp.name}: suktaCount ≠ গ্রুপ-সংখ্যা')
+              # পদ-নম্বরের বৈশিষ্ট্য: উৎসের ছাপা অনুযায়ী প্রতি অধ্যায়ে ১ থেকে
+              # শুরু হওয়ার কথা। না হলে ডেটা ফেলা হবে না (পাঠ ঠিকই আছে), শুধু
+              # সতর্কতায় লেখা হবে — কারণ এটি উৎসের বৈশিষ্ট্যও হতে পারে।
+              prev_ch, prev_vn = None, 0
+              for v in vs:
+                  if v.get('ch') != prev_ch:
+                      if v.get('vn') != 1:
+                          warn.append(f'{fp.name}: অধ্যায় {v.get("ch")} পদ {v.get("vn")} থেকে শুরু')
+                      prev_ch, prev_vn = v.get('ch'), v.get('vn')
+                  else:
+                      if v.get('vn', 0) <= prev_vn:
+                          warn.append(f'{fp.name}: অধ্যায় {prev_ch}-এ পদ-ক্রম ভাঙা')
+                      prev_vn = v.get('vn')
+          if idx.get('total') != tot:
+              bad.append(f'index.total {idx.get("total")} ≠ ফাইলের মোট {tot}')
+          if len(idx.get('chapters', [])) != len(files):
+              bad.append(f'সূচির পুস্তক {len(idx.get("chapters", []))} ≠ ফাইল {len(files)}')
+          print(f'যাচাই: পুস্তক-ফাইল {len(files)} · মোট পদ {tot} · '
+                f'সমস্যা {len(bad)} · সতর্কতা {len(warn)}')
+          for x in bad[:12]:
+              print('  ✗', x)
+          for x in warn[:12]:
+              print('  ⚠', x)
+          if not bad:
+              print('নম্বর-যাচাই: পাস (প্রতি পুস্তকে n ১..N, প্রতি অধ্যায়ে পদ-নম্বর ক্রমে)')
+          raise SystemExit(1 if bad else 0)
+          PY
+          chk=$?
+          set -e
+          if [ "$chk" -ne 0 ]; then
+            echo '!! যাচাই ব্যর্থ — এই রানের ডেটা প্রকাশ করা হবে না, আগের অবস্থায় ফেরানো হলো' \
+              >> "$DBG/bible_verify.txt"
+            rm -rf "assets/grantho/data/$SLUG"
+            git checkout -- "assets/grantho/data/$SLUG" 2>/dev/null || true
+          fi
+
+      # ── ৩) সাইট-পাতা বিল্ড ─────────────────────────────────────
+      - name: ৩) সাইট-পাতা বিল্ড
+        if: always()
+        run: |
+          python3 -u tools/build_pages.py 2>&1 | tee -a "$DBG/bible_run.txt" | tail -15 || true
+
+      # ── ৩.৫) বেসলাইন ───────────────────────────────────────────
+      # গার্ড ডেটা হারালে বেসলাইন ধরে ফিরিয়ে আনে। অল্প অংশ নামলেই বেসলাইন
+      # বানালে সেই অল্পটাই "ভালো অবস্থা" ধরা হতো — তাই যথেষ্ট পাঠ এলে তবেই।
+      - name: ৩.৫) বেসলাইন হালনাগাদ
+        if: always()
+        run: |
+          python3 -u - <<'PY' | tee -a "$DBG/bible_run.txt"
+          import json, pathlib
+          p = pathlib.Path('assets/grantho/data/bible/index.json')
+          ok = False
+          if p.exists():
+              j = json.loads(p.read_text(encoding='utf-8'))
+              ok = len(j.get('chapters', [])) >= 60 and j.get('total', 0) >= 15000
+              print(f'বেসলাইন: পুস্তক {len(j.get("chapters", []))} · পদ {j.get("total")} · '
+                    + ('হালনাগাদ হবে' if ok else 'এখন নয় (যথেষ্ট পাঠ নামেনি)'))
+          else:
+              print('বেসলাইন: ডেটা নেই — এখন নয়')
+          pathlib.Path('/tmp/ok').write_text('1' if ok else '0')
+          PY
+          if [ "$(cat /tmp/ok)" = "1" ]; then
+            python3 tools/guard_data.py --set-baseline 2>&1 | tail -3 || true
+          fi
+
+      # ── ৪) কমিট + প্রকাশ ──────────────────────────────────────
+      - name: ৪) কমিট + প্রকাশ
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "── git status:"
+            git status --porcelain | head -20
+            echo "── ডাটা ফোল্ডার:"
+            ls -la "assets/grantho/data/$SLUG" 2>&1 | head -6
+            echo "── শেষ: $(date -u '+%d/%m %H:%M:%S') UTC"
+          } >> "$DBG/bible_run.txt"
+          git add -A || true
+          if git diff --cached --quiet; then
+            echo 'প্রকাশ করার মতো কিছু নেই'
+            exit 0
+          fi
+          MSG="বাংলা বাইবেল: নামানো পাঠ ও ডায়াগনস্টিক ($(date -u '+%d/%m %H:%M') UTC)"
+          git commit -m "$MSG" || exit 1
+          git fetch origin main --depth=1 || true
+          git rebase origin/main || git rebase --abort || true
+          if git push origin HEAD:main; then
+            echo '✓ main-এ প্রকাশ হয়েছে'
+            exit 0
+          fi
+          echo 'সরাসরি push ব্যর্থ — বট-ব্র্যাঞ্চ দিয়ে চেষ্টা'
+          git fetch origin "${BOT_BRANCH}" --depth=1 || true
+          if ! git push origin "HEAD:refs/heads/${BOT_BRANCH}" \
+             && ! git push --force origin "HEAD:refs/heads/${BOT_BRANCH}"; then
+            echo '⛔ বট-ব্র্যাঞ্চেও push হলো না' >&2
+            exit 1
+          fi
+          NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
+          if [ -z "$NUM" ]; then
+            gh pr create --base main --head "${BOT_BRANCH}" --title "$MSG" \
+              --body "রিপোর্ট: assets/grantho/data/_debug/bible_report.txt ও bible_verify.txt" || true
+            sleep 5
+            NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
+          fi
+          if [ -z "$NUM" ]; then echo '⛔ PR তৈরি হয়নি' >&2; exit 1; fi
+          gh pr merge "$NUM" --merge || { echo "⛔ merge ব্যর্থ (PR #$NUM)" >&2; exit 1; }
+          echo "✓ প্রকাশ হয়েছে (PR #$NUM)"

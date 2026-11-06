@@ -1,3 +1,4 @@
+import datetime
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """assets/grantho/data/<slug>/index.json → grantho/hindu/<slug>.html + হাব-কার্ড।
@@ -19,7 +20,7 @@ OUT = ROOT / "grantho/hindu"
 # ব্যবহারকারীর সিদ্ধান্ত (২০২৬-১১-০৫): «শুধুমাত্র ভগবত গীতা আর চারটা বেদের
 # ভিতর শুধুমাত্র ঋগ্বেদ রাখো; বাকি সবগুলো বাদ দাও।» তাই ডেটা/কার্ড কেবল
 # এই দুটিরই তৈরি হয় — অন্য কোনো index.json পড়া হয় না।
-ACTIVE = ("gita", "rigveda", "yajurveda-shukla")
+ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "bible")
 
 BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
 BN_MAP = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
@@ -80,6 +81,21 @@ BOOKS = {
         excerpt="ভবিষ্যৎ-কথা ও ব্রত-মাহাত্ম্যের পুরাণ — বাংলা অনুবাদসহ।",
     ),
 }
+
+# বাইবেল — খ্রিস্টান অংশের প্রথম গ্রন্থ। পাতা grantho/christian/ ফোল্ডারে,
+# তাই hub-লিংক এক ধাপ ওপরে (../christian.html) আর ক্রাম্ব থেকে টেমপ্লেটের
+# «হিন্দু» অ্যাংকরটি বাদ দিতে হয় (crumbDrop)।
+BOOKS["bible"] = dict(
+    kind="bible", dir="christian", title=("বাংলা বাইবেল", ""),
+    hub="../christian.html", hubname="খ্রিস্টান", crumbDrop="হিন্দু",
+    kicker="খ্রিস্টান · বাইবেল", crumb="বাংলা বাইবেল",
+    intro=("বাংলা বাইবেলের সম্পূর্ণ পাঠ — পুরাতন ও নতুন নিয়মের পুস্তকগুলো "
+           "অধ্যায় ও পদ ধরে সাজানো (ebanglalibrary.com)।"),
+    word="পদ", chword="পুস্তক", groupword="অধ্যায়",
+    src=("বাংলা অনুবাদ — ebanglalibrary.com («বাংলা বাইবেল»)। ব্যবহারকারীর নির্দেশ অনুযায়ী "
+         "ইংরেজি অনুবাদ যোগ করা হয়নি — কেবল বাংলা পাঠ। উৎসে যে পদ পাওয়া যায়নি তা "
+         "অনুমান করে বসানো হয় না, সেগুলো রিপোর্টে নথিভুক্ত থাকে।"),
+    excerpt="সৃষ্টি থেকে নতুন নিয়ম পর্যন্ত — পুস্তক, অধ্যায় ও পদ-নম্বরসহ সম্পূর্ণ বাংলা পাঠ।")
 
 BOOKS["yajurveda-shukla"] = dict(
     kind="veda", title=("শুক্ল যজুর্বেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
@@ -154,9 +170,13 @@ EXTRA_CSS = re.compile(
     r'(?:\s*<link[^>]*\?v=\d+"[^>]*>)?')
 
 
-def normalize(slug: str, html: str) -> str:
-    """new/পুরোনো নির্বিশেষে প্রতিটি বানানো পাতায় একই head ও ফুটার।"""
-    href = f"{SITE}/grantho/hindu/{slug}.html"
+def normalize(slug: str, html: str, sub: str = "hindu") -> str:
+    """new/পুরোনো নির্বিশেষে প্রতিটি বানানো পাতায় একই head ও ফুটার।
+
+    `sub` = grantho/-এর নিচে কোন ফোল্ডারে পাতাটি থাকে (হিন্দু গ্রন্থে "hindu",
+    বাইবেলে "christian") — ক্যানোনিকাল ঠিকানা এর ওপরেই দাঁড়ায়।
+    """
+    href = f"{SITE}/grantho/{sub}/{slug}.html"
     # ১) SEO ট্যাগ — আগে থাকলে হালনাগাদ, না থাকলে যোগ (canonical বারবার যোগ হয় না)
     if 'property="og:image"' in html:
         html = re.sub(r'(<meta property="og:image" content=")[^"]*(")', lambda m: m.group(1) + OG_CARD + m.group(2), html, count=1)
@@ -248,6 +268,14 @@ def _apply_identity(h, slug, meta, main, sub):
             last = anchors[-1]
             hub = f'<a href="{meta["hub"]}">{meta["hubname"]}</a>'
             mid = mid[:last.start()] + hub + mid[last.end():]
+        if meta.get("crumbDrop"):
+            # টেমপ্লেট হিন্দু পাতার, তাই ক্রাম্বে «হিন্দু» অ্যাংকর থেকে যায় —
+            # অন্য ধর্মের পাতায় সেটি ভুল পরিচয়, তাই অ্যাংকর+বিভাজকসহ বাদ।
+            for a in list(re.finditer(r'<a href="[^"]*"[^>]*>.*?</a>\s*(?:<span>›</span>)?',
+                                      mid, re.S)):
+                if meta["crumbDrop"] in a.group(0):
+                    mid = mid[:a.start()] + mid[a.end():]
+                    break
         sep = '<span>›</span>'
         k = mid.rfind(sep)
         if k >= 0:
@@ -260,6 +288,7 @@ def _apply_identity(h, slug, meta, main, sub):
 
 def make_page(slug, idx, meta):
     main, sub = meta["title"]
+    outdir = OUT.parent / meta.get("dir", "hindu")   # হিন্দু বা খ্রিস্টান ফোল্ডার
     nch = len(idx["chapters"])
     total, withbn = idx["total"], idx.get("withBn", 0)
     withsk = count_with_sk(slug, idx)
@@ -276,7 +305,9 @@ def make_page(slug, idx, meta):
     nsuk = idx.get("suktaTotal") or sum(c.get("suktaCount", 0) for c in idx["chapters"])
     nshl = idx.get("shlokaTotal") or sum(c.get("shlokaCount", 0) for c in idx["chapters"])
     if nsuk:
-        facts += f'<span class="g-fact"><b>{commas(nsuk)}</b> সূক্ত</span>'
+        # ঋগ্বেদে «সূক্ত», বাইবেলে «অধ্যায়» — ডেটার groupWord থেকে
+        gw = idx.get("groupWord") or meta.get("groupword") or "সূক্ত"
+        facts += f'<span class="g-fact"><b>{commas(nsuk)}</b> {gw}</span>'
     if nshl:
         facts += f'<span class="g-fact"><b>{commas(nshl)}</b> শ্লোক</span>'
     h = re.sub(r'<div class="g-facts">.*?</div>', '<div class="g-facts">' + facts + '</div>',
@@ -301,8 +332,11 @@ def make_page(slug, idx, meta):
                    '', h, count=1, flags=re.S)
 
     src = meta["src"]
-    # সংস্কৃত পাঠের প্রাপ্যতা — আগে হার্ডকোডেড দাবি ছিল যা ডেটার সাথে মিলত না
-    if withsk == 0:
+    # সংস্কৃত পাঠের প্রাপ্যতা — আগে হার্ডকোডেড দাবি ছিল যা ডেটার সাথে মিলত না।
+    # বাইবেলের ক্ষেত্রে এই টীকা অর্থহীন (সেখানে সংস্কৃতের প্রশ্নই নেই)।
+    if meta.get("kind") == "bible":
+        pass
+    elif withsk == 0:
         src += (f' এই সংস্করণে সংস্কৃত মূল পাঠ ছাপা হয়নি, তাই {meta["word"]}ে কেবল বাংলা অনুবাদ আছে'
                 ' — কোনো অনুমানভিত্তিক সংস্কৃত পাঠ বসানো হয় না।')
     elif withsk < total:
@@ -320,8 +354,8 @@ def make_page(slug, idx, meta):
     fulldesc = f'{label}-র {commas(withbn)}টি {meta["word"]} বাংলা অনুবাদসহ — ebanglalibrary.com।'
     # সতর্কতা: দশার-অভাবে হঠাৎ বড় পতন (যেমন ৯২২২ → ২১ শ্লোক) সাইটে বসিয়ে দেব না।
     env = os.environ.get("GRANTHO_ALLOW_SHRINK", "").strip().lower() in ("1", "true", "yes")
-    if not env and (OUT / f"{slug}.html").exists():
-        old_html = (OUT / f"{slug}.html").read_text(encoding="utf-8")
+    if not env and (outdir / f"{slug}.html").exists():
+        old_html = (outdir / f"{slug}.html").read_text(encoding="utf-8")
         m = re.search(r'<span class="g-fact"><b>([০-৯,]+)</b>\s*' + re.escape(meta["word"]),
                       old_html)
         if m:
@@ -339,8 +373,37 @@ def make_page(slug, idx, meta):
                       f'{label} — {commas(withbn)} {meta["word"]}'),
                      (r'(<meta name="twitter:description" content=")[^"]*(")', fulldesc)):
         h = re.sub(pat, lambda m, v=val: m.group(1) + v + m.group(2), h, count=1)
-    (OUT / f"{slug}.html").write_text(normalize(slug, h), encoding="utf-8")
+    outdir.mkdir(parents=True, exist_ok=True)
+    (outdir / f"{slug}.html").write_text(
+        normalize(slug, h, meta.get("dir", "hindu")), encoding="utf-8")
     return dict(slug=slug, total=total, withbn=withbn, nch=nch)
+
+
+def refresh_sitemap(entries):
+    """বানানো পাতাগুলোর ঠিকানা sitemap.xml-এ আছে কি না দেখে, না থাকলে যোগ।
+
+    কেন: সাইটম্যাপ হাতে রাখা হয়, তাই নতুন গ্রন্থ-পাতা (যেমন বাইবেল) যোগ হলে
+    সেটি বাদ পড়ে যেত — সার্চ-ইঞ্জিন তখন পাতাটি খুঁজে পেত না।
+    """
+    f = ROOT / "sitemap.xml"
+    if not f.exists():
+        return 0
+    s = f.read_text(encoding="utf-8")
+    added = 0
+    for slug, sub in entries:
+        url = f"{SITE}/grantho/{sub}/{slug}.html"
+        if url in s:
+            continue
+        # বিদ্যমান এন্ট্রির সাথে একই ফরম্যাট (এক লাইনে, lastmod সহ)
+        today = datetime.date.today().isoformat()
+        block = (f'  <url><loc>{url}</loc><lastmod>{today}</lastmod>'
+                 f'<changefreq>weekly</changefreq><priority>0.7</priority></url>\n')
+        s = s.replace("</urlset>", block + "</urlset>", 1)
+        added += 1
+    if added:
+        f.write_text(s, encoding="utf-8")
+        print(f"  সাইটম্যাপে যোগ: {added}টি পাতা")
+    return added
 
 
 def card(href, kicker, title, sub, excerpt, soon=False):
@@ -356,8 +419,8 @@ def card(href, kicker, title, sub, excerpt, soon=False):
             f'<span class="article-card-more">পড়ুন <b aria-hidden="true">→</b></span></a></article>')
 
 
-def replace_grid(page, inner):
-    p = OUT / page
+def replace_grid(page, inner, sub="hindu"):
+    p = (OUT if sub == "hindu" else OUT.parent / sub) / page
     if not p.exists():
         print("  (পাতা নেই)", page)
         return
@@ -503,6 +566,28 @@ def main():
                            f'{commas(rv["nch"])} মণ্ডল', s, count=1, flags=re.S)
         hp.write_text(s, encoding="utf-8")
         print("হিন্দু-হাব:", ved, "/", pur)
+
+    # ---- খ্রিস্টান: বাংলা বাইবেল
+    built = [(r["slug"], "hindu") for r in made]
+    if "bible" in ACTIVE:
+        idx = load("bible")
+        meta = BOOKS.get("bible")
+        if idx and meta:
+            r = make_page("bible", idx, meta)
+            if r:
+                built.append(("bible", "christian"))
+                chs = idx["chapters"]
+                old = sum(1 for c in chs if c.get("testament") == "old")
+                part = sum(1 for c in chs if c.get("missing"))
+                sub = (f'{commas(r["withbn"])} পদ · {commas(r["nch"])} পুস্তক · '
+                       f'পুরাতন নিয়ম {commas(old)}, নতুন নিয়ম {commas(r["nch"] - old)}'
+                       + (f' · {commas(part)} পুস্তক অসম্পূর্ণ' if part else ""))
+                replace_grid("christian.html",
+                             card("christian/bible.html", "খ্রিস্টান · বাইবেল",
+                                  "বাংলা বাইবেল", sub, meta["excerpt"]), sub="")
+                print(f"bible: {r['withbn']}/{r['total']} · {r['nch']} পুস্তক · "
+                      f"{idx.get('suktaTotal') or sum(c.get('suktaCount', 0) for c in chs)} অধ্যায়")
+    refresh_sitemap(built)
     return 0
 
 
