@@ -98,6 +98,7 @@ jobs:
           git fetch origin "${BOT_BRANCH}" --depth=1
           if git rev-parse --verify -q "FETCH_HEAD^{commit}" >/dev/null; then
             git checkout FETCH_HEAD -- "$DBG/filled" 2>/dev/null && echo "✓ ক্যাশ ফেরত"
+            git checkout FETCH_HEAD -- "$DBG/pagemap.json" 2>/dev/null && echo "✓ পাতা-ম্যাপ ফেরত"
             git checkout FETCH_HEAD -- "$DBG/probe" 2>/dev/null || true
             git reset -q || true
             echo "ক্যাশ করা পাতা: $(ls "$DBG/filled" 2>/dev/null | wc -l)"

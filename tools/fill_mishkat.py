@@ -597,10 +597,10 @@ def probe(sample=None) -> str:
 
 
 def _write_stats(todo_n: int, ok: int, bad: int, hows: collections.Counter,
-                 fails: dict) -> None:
+                 fails: dict, bonus: int = 0) -> None:
     """ফলের সারসংক্ষেপ `_debug/mishkat/fill_stats.txt`-এ (কমেন্টেও ওঠে)।"""
     os.makedirs(os.path.dirname(CACHE), exist_ok=True)
-    lines = [f"fill: চেষ্টা {todo_n} · সফল {ok} · ব্যর্থ {bad} · "
+    lines = [f"fill: চেষ্টা {todo_n} · সফল {ok} · ব্যর্থ {bad} · বোনাস {bonus} · "
              f"{time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime())}",
              "কীভাবে পাওয়া গেল / কেন ব্যর্থ:"]
     for how, c in hows.most_common():
@@ -614,51 +614,160 @@ def _write_stats(todo_n: int, ok: int, bad: int, hows: collections.Counter,
     print(txt, flush=True)
 
 
+# ------------------------------------------------- পাতা-ID খোঁজা (নম্বর → URL)
+# উৎসের পাতা-ID সব জায়গায় 34945+n নয়: শেষ অধ্যায়গুলোতে (৫,৩৭৯+) হিসাব ১–২ ঘর
+# সরে যায়, তাই ২৪০টি পাতা «নম্বর-মেলেনি» বলে বাদ পড়েছিল। এখন তিন ধাপে খোঁজা হয় —
+# জানা ম্যাপ, আশপাশের অফসেট, আর পাতার নিজস্ব prev/next লিংক ধরে হাঁটা।
+# যাচাই সবসময় কড়া: পাতার নিজস্ব নম্বর n হতে হবে, অন্য পাতা n বলে চলবে না।
+PAGEMAP = os.path.join(DATA, "_debug", "mishkat", "pagemap.json")
+OFFSETS = (0, -1, 1, -2, 2, -3, 3, -4, 4, -5, 5, -6, 6, -8, 8)
+
+
+def load_pagemap() -> dict[int, int]:
+    if os.path.exists(PAGEMAP):
+        try:
+            with open(PAGEMAP, encoding="utf-8") as f:
+                return {int(k): int(v) for k, v in json.load(f).items()}
+        except Exception:                            # noqa: BLE001
+            return {}
+    return {}
+
+
+def save_pagemap(pm: dict[int, int]) -> None:
+    os.makedirs(os.path.dirname(PAGEMAP), exist_ok=True)
+    with open(PAGEMAP, "w", encoding="utf-8") as f:
+        json.dump({str(k): pm[k] for k in sorted(pm)}, f, separators=(",", ":"))
+
+
+def page_facts(html_src: str) -> tuple[list[int], int | None, int | None]:
+    """পাতার নিজস্ব হাদিস-নম্বর, পরের ও আগের পাতার ID।"""
+    payload = flight_payload(html_src)
+    items = find_hadith_items(payload, flight_rows(payload))
+    own = [bn2num(i.get("hadith_number")) for i in items] or page_numbers(html_src)
+    nxt = prv = None
+    for it in items:
+        nxt = nxt or it.get("nextHadithId")
+        prv = prv or it.get("prevHadithId")
+        if nxt and prv:
+            break
+    for key, val in (("nextHadithId", nxt), ("prevHadithId", prv)):
+        if val is None:
+            m = re.search(r'"%s"\s*:\s*"?(\d+)' % key, html_src)
+            if m:
+                if key == "nextHadithId":
+                    nxt = int(m.group(1))
+                else:
+                    prv = int(m.group(1))
+    return [x for x in own if x], nxt, prv
+
+
+def find_page(n: int, sleep: float, pagemap: dict[int, int], harvest=None,
+              max_tries: int = 22) -> tuple[str | None, int | None, str]:
+    """n-এর পাতা খোঁজে → (html, পাতা-ID, কীভাবে মিলল)।"""
+    guess = PAGE0 + n
+    queue = ([pagemap[n]] if n in pagemap else []) + [guess + d for d in OFFSETS]
+    links: list[int] = []
+    tried: set[int] = set()
+    while (queue or links) and len(tried) < max_tries:
+        pid = queue.pop(0) if queue else links.pop(0)
+        if pid in tried or pid <= PAGE0:
+            continue
+        tried.add(pid)
+        try:
+            html_src = get(f"{BASE}/hadith/{pid}", sleep=sleep)
+        except Exception:                            # noqa: BLE001
+            continue
+        own, nxt, prv = page_facts(html_src)
+        if n in own:
+            return html_src, pid, ("ম্যাপ" if pid == pagemap.get(n) else
+                                   "সরাসরি" if pid == guess else
+                                   f"অফসেট{pid - guess:+d}" if abs(pid - guess) <= 8 else "লিংক-হাঁটা")
+        if harvest:
+            for other in own:
+                if other != n:
+                    harvest(other, html_src, pid)
+        if nxt:
+            links.append(int(nxt))
+        if prv:
+            links.append(int(prv))
+    return None, None, f"ব্যর্থ:পাতা-মেলেনি({len(tried)}টি-দেখা)"
+
+
 def fill(limit: int = 0, sleep: float = 0.8) -> None:
     os.makedirs(CACHE, exist_ok=True)
-    todo = []
-    for ch, gaps in missing_numbers().items():
-        for a, b in gaps:
+    os.makedirs(FAILED_DIR, exist_ok=True)
+    gaps = missing_numbers()
+    needed: set[int] = set()
+    todo: list[tuple[int, int]] = []
+    for ch, gl in gaps.items():
+        for a, b in gl:
             for n in range(a, b + 1):
+                needed.add(n)
                 if not os.path.exists(cache_path(n)):
                     todo.append((ch, n))
     if limit:
         todo = todo[:limit]
-    print(f"নামাতে হবে {len(todo)} হাদিস-পাতা (ক্যাশে আছে {len(os.listdir(CACHE))})", flush=True)
-    ok = bad = 0
+    pagemap = load_pagemap()
+    print(f"নামাতে হবে {len(todo)} হাদিস-পাতা (ক্যাশে আছে {len(os.listdir(CACHE))}"
+          f" · পাতা-ম্যাপে {len(pagemap)})", flush=True)
+    ok = bad = bonus = 0
     hows: collections.Counter = collections.Counter()
     fails: dict[str, list[int]] = {}
-    os.makedirs(FAILED_DIR, exist_ok=True)
+
+    def store(num: int, v: dict) -> None:
+        json.dump(v, open(cache_path(num), "w", encoding="utf-8"),
+                  ensure_ascii=False, separators=(",", ":"))
+
+    def harvest(other: int, html_src: str, pid: int) -> None:
+        """হাঁটার পথে অন্য কোনো ফাঁকা নম্বরের পাতা মিলে গেলে সেটাও তুলে রাখি।"""
+        nonlocal bonus
+        if other not in needed or os.path.exists(cache_path(other)):
+            return
+        v, _how = parse_hadith_page_ex(html_src, other)
+        if v:
+            store(other, v)
+            pagemap[other] = pid
+            bonus += 1
+
     for i, (ch, n) in enumerate(todo, 1):
-        url = f"{BASE}/hadith/{PAGE0 + n}"
-        how = "ব্যর্থ:নেটওয়ার্ক"
-        v = None
+        if os.path.exists(cache_path(n)):          # হাঁটার পথে আগেই জুটে গেছে
+            continue
+        how, v = "ব্যর্থ:নেটওয়ার্ক", None
         try:
-            v, how = parse_hadith_page_ex(get(url, sleep=sleep), n)
+            html_src, pid, fhow = find_page(n, sleep, pagemap, harvest)
+            if html_src:
+                v, phow = parse_hadith_page_ex(html_src, n)
+                how = f"{phow} · পাতা {pid} ({fhow})" if v else f"{phow} · পাতা {pid}"
+                if v:
+                    pagemap[n] = pid
+            else:
+                how = fhow
         except Exception as e:                       # noqa: BLE001
             how = f"ব্যর্থ:এক্সেপশন({type(e).__name__})"
             print(f"  ✗ {n} ({ch}) {e}", flush=True)
-        hows[how] += 1
+        hows[how.split(" · ")[0]] += 1
         if not v:
             bad += 1
             fails.setdefault(how, []).append(n)
-            # প্রথম কয়েকটি ব্যর্থ পাতার কাঁচা HTML রেখে দিই — পরে দেখে ঠিক করা যায়
             if len(os.listdir(FAILED_DIR)) < 2:
                 try:
                     open(os.path.join(FAILED_DIR, f"{n}.html"), "w",
-                         encoding="utf-8").write(get(url, sleep=0.2)[:400_000])
+                         encoding="utf-8").write(get(f"{BASE}/hadith/{PAGE0 + n}",
+                                                     sleep=0.2)[:400_000])
                 except Exception:                    # noqa: BLE001
                     pass
             print(f"  ⚠ {n} ({ch}) {how} — বাদ", flush=True)
         else:
-            json.dump(v, open(cache_path(n), "w", encoding="utf-8"),
-                      ensure_ascii=False, separators=(",", ":"))
+            store(n, v)
             ok += 1
         if i % 25 == 0 or i < 4:
-            print(f"  ✓ {i}/{len(todo)} · শেষ {n} · সফল {ok} · ব্যর্থ {bad}", flush=True)
-            _write_stats(len(todo), ok, bad, hows, fails)     # মাঝপথে থেমে গেলেও রিপোর্ট থাকে
-    print(f"শেষ: নামানো {ok} · ব্যর্থ {bad}", flush=True)
-    _write_stats(len(todo), ok, bad, hows, fails)
+            print(f"  ✓ {i}/{len(todo)} · শেষ {n} · সফল {ok} · ব্যর্থ {bad} · বোনাস {bonus}",
+                  flush=True)
+            _write_stats(len(todo), ok, bad, hows, fails, bonus)
+            save_pagemap(pagemap)
+    print(f"শেষ: নামানো {ok} · ব্যর্থ {bad} · বোনাস {bonus}", flush=True)
+    _write_stats(len(todo), ok, bad, hows, fails, bonus)
+    save_pagemap(pagemap)
 
 
 # ------------------------------------------------------------------ build
