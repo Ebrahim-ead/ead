@@ -82,6 +82,7 @@
 <section style="padding-top:12px"><div class="wrap"><div class="askbox rv">
   <div class="two"><div><label for="an">নাম <small>(ঐচ্ছিক)</small></label><input id="an" placeholder="নাম বা ছদ্মনাম"></div><div><label for="ac">ইমেইল / ফোন <small>(ঐচ্ছিক)</small></label><input id="ac" placeholder="যোগাযোগের মাধ্যম"></div></div>
   <label for="at">আলোচনার বিষয়</label><select id="at"><option>নাস্তিকতা ও অজ্ঞেয়বাদ</option><option>তুলনামূলক ধর্মতত্ত্ব</option><option>স্রষ্টার অস্তিত্বের যুক্তি</option><option>বিজ্ঞান, জীবন ও মহাবিশ্ব</option><option>দুর্ভোগ ও ঈশ্বরের নীরবতা</option><option>নৈতিকতা ও জীবনের অর্থ</option><option>প্রবন্ধের সূত্র বা সংশোধনী</option></select>
+  <label for="ar" style="margin-top:14px">ধর্মীয় পরিচয় <small>(ঐচ্ছিক)</small></label><select id="ar"><option value="">বলতে চাই না</option><option>ইসলাম</option><option>হিন্দু</option><option>খ্রিস্টান</option><option>বৌদ্ধ</option><option>ইহুদি</option><option>নাস্তিক / অজ্ঞেয়বাদী</option><option>অন্য ধর্ম</option><option>ধর্মীয় নয়</option></select>
   <label for="aq" style="margin-top:14px">আপনার যুক্তি, প্রশ্ন বা মতামত</label><textarea id="aq" placeholder="নাস্তিকতা বা তুলনামূলক ধর্মতত্ত্বের বিষয়টি সংক্ষেপে লিখুন…"></textarea>
   <button type="button" class="askbtn" id="askbtn">বার্তা প্রস্তুত করুন</button><div id="askm" role="status" aria-live="polite"></div>
   <p style="color:#9fb0c6;font-size:13.6px;margin-top:14px">বার্তাটি কপি করে <a href="https://www.facebook.com/ebrahim.rahul" target="_blank" rel="noopener" style="color:#ffd56a">Facebook</a>, <a href="https://www.instagram.com/ead2212/" target="_blank" rel="noopener" style="color:#ffd56a">Instagram</a> অথবা <a href="https://www.reddit.com/user/Zealousideal_Dig2819/" target="_blank" rel="noopener" style="color:#ffd56a">Reddit</a> অথবা <a href="https://x.com/ebrahimn23o" target="_blank" rel="noopener" style="color:#ffd56a">X</a>-এ পাঠাতে পারবেন; সাইটে কোনো লাইভ জমা বা প্রকাশনা হয় না।</p>
@@ -331,14 +332,16 @@
       asb.onclick = function () {
         var an = document.getElementById("an"), ac = document.getElementById("ac"),
             at2 = document.getElementById("at"), aq = document.getElementById("aq"),
+            ar = document.getElementById("ar"),
             m = document.getElementById("askm");
         var q = (aq.value || "").trim();
         if (q.length < 8) { m.textContent = "অনুগ্রহ করে আপনার প্রশ্নটি একটু বিস্তারিত লিখুন।"; return; }
         var txt = "প্রশ্ন (" + at2.value + "): " + q +
+          (ar && ar.value ? "\nধর্মীয় পরিচয়: " + ar.value : "") +
           (an.value ? "\nনাম: " + an.value : "") + (ac.value ? "\nযোগাযোগ: " + ac.value : "");
         m.textContent = "";
         var status = document.createElement("p");
-        status.textContent = "বার্তাটি তৈরি হয়েছে। নিচের বাক্স থেকে দেখে কপি করুন, অথবা WhatsApp-এ খসড়াটি খুলুন।";
+        status.textContent = "বার্তাটি তৈরি হয়েছে। কপি করুন, অথবা সরাসরি WhatsApp বা Messenger-এ পাঠান।";
         m.appendChild(status);
         var preview = document.createElement("textarea");
         preview.className = "ask-message-preview";
@@ -372,8 +375,16 @@
         whatsapp.href = "https://wa.me/8801783543026?text=" + encodeURIComponent(txt);
         whatsapp.target = "_blank";
         whatsapp.rel = "noopener";
-        whatsapp.textContent = "WhatsApp-এ খুলুন ↗";
-        actions.appendChild(copy); actions.appendChild(whatsapp);
+        whatsapp.textContent = "WhatsApp-এ পাঠান ↗";
+        /* Messenger: m.me/ইউজারনেম?text= আগে-ভরা বার্তা সাপোর্ট করে; মেসেঞ্জার
+           অ্যাপ/ওয়েবে খসড়াটি খুলে যায়, ব্যবহারকারী চাপ দিলেই যায়। */
+        var messenger = document.createElement("a");
+        messenger.className = "btn ghost ask-msgr";
+        messenger.href = "https://m.me/ebrahim.rahul?text=" + encodeURIComponent(txt);
+        messenger.target = "_blank";
+        messenger.rel = "noopener";
+        messenger.textContent = "Messenger-এ পাঠান ↗";
+        actions.appendChild(copy); actions.appendChild(whatsapp); actions.appendChild(messenger);
         m.appendChild(actions);
       };
     }
