@@ -167,7 +167,7 @@ def clean(dry=False):
     idx = json.loads(idxp.read_text(encoding="utf-8"))
 
     moved = []
-    st = dict(preface=0, heading=0, sk=0, ortho=0, title=0, renum=0, dup=0)
+    st = dict(preface=0, preParts=0, heading=0, sk=0, ortho=0, title=0, renum=0, dup=0)
     chars_before = chars_after = 0
     n_mantra = n_mantrabn = 0
 
@@ -207,8 +207,15 @@ def clean(dry=False):
         if extra_head:
             mantras = [v for v in mantras if not is_heading(v.get("bn"))]
             headings += extra_head
-        st["heading"] += len(headings) + (1 if old_head and not headings else 0)
-        st["preface"] += len(preface) + (1 if old_pre and not preface else 0)
+        # অধ্যায়-ভিত্তিক গণনা: নতুন নামানো ডেটায় খণ্ড গোনা হতো, দ্বিতীয় রানে
+        # (খণ্ড তখন আলাদা ঘরে) অধ্যায় — ফলে একই লেবেলে দুই রকম সংখ্যা বসত।
+        # এখন দুই ক্ষেত্রেই «কত অধ্যায়ে আছে», আর আলাদা করে অনুচ্ছেদ-সংখ্যা।
+        if headings or old_head:
+            st["heading"] += 1
+        if preface or old_pre:
+            st["preface"] += 1
+            parts = preface or [x for x in old_pre.split("\n\n") if x.strip()]
+            st["preParts"] += len(parts)
 
         # (গ) বানান স্বাভাবিক করা (সব খণ্ডে — ভূমিকা ও মন্ত্র দুটোতেই)
         for v in front + mantras:
@@ -306,8 +313,9 @@ def clean(dry=False):
               f"(পার্থক্য {chars_after - chars_before})")
         return 1
 
-    print(f'মন্ত্র: {n_mantra} (বাংলাসহ {n_mantrabn}) · ভূমিকাযুক্ত অধ্যায়: {st["preface"]} · '
-          f'শিরোনাম-লাইন: {st["heading"]} · নম্বর ঠিক: {st["renum"]} · বানান বদল: {st["ortho"]} · '
+    print(f'মন্ত্র: {n_mantra} (বাংলাসহ {n_mantrabn}) · ভূমিকাযুক্ত অধ্যায়: {st["preface"]} '
+          f'(অনুচ্ছেদ {st["preParts"]}) · শিরোনামযুক্ত অধ্যায়: {st["heading"]} · '
+          f'নম্বর ঠিক: {st["renum"]} · বানান বদল: {st["ortho"]} · '
           f'sk থেকে ফেরানো: {st["sk"]} · শিরোনাম ঠিক: {st["title"]} · '
           f'উৎস-ডুপ্লিকেট অধ্যায়: {st["dup"]} · অক্ষর অটুট: {chars_after}'
           + (" · [dry-run]" if dry else ""))
