@@ -310,6 +310,13 @@ def make_page(slug, idx, meta):
         facts += f'<span class="g-fact"><b>{commas(nsuk)}</b> {gw}</span>'
     if nshl:
         facts += f'<span class="g-fact"><b>{commas(nshl)}</b> শ্লোক</span>'
+    # ইংরেজি অনুবাদ (বাইবেল): কত পদে মিলেছে তা ডেটা থেকেই
+    enj = OUT / slug / "en" / "joined.json"
+    en_n = 0
+    if enj.exists():
+        en_n = json.loads(enj.read_text(encoding="utf-8")).get("enVerses", 0)
+    if en_n:
+        facts += f'<span class="g-fact"><b>{commas(en_n)}</b> পদে ইংরেজি</span>'
     h = re.sub(r'<div class="g-facts">.*?</div>', '<div class="g-facts">' + facts + '</div>',
                h, count=1, flags=re.S)
 
@@ -347,6 +354,10 @@ def make_page(slug, idx, meta):
         src += f' {commas(total - withbn)}টি {meta["word"]}র বাংলা উৎসে পাওয়া যায়নি — সেগুলো পরে যোগ হবে।'
     if idx.get("note"):   # ডেটার টীকা সবার শেষে (আগে দুবার যোগ হতো)
         src += " " + idx["note"]
+    if en_n:
+        src += (" ইংরেজি অনুবাদ: The New American Bible — vatican.va। যেসব অধ্যায়ে বাংলার সঙ্গে "
+                "পদ-সংখ্যা ও পদ-নম্বর হুবহু মিলেছে, সেখানেই ইংরেজি দেখানো হয়; যে অধ্যায়ে দুই "
+                "সংস্করণের পদ-বিন্যাস আলাদা, সেখানে ইংরেজি বাদ রাখা হয়েছে (অনুমান করে বসানো হয় না)।")
     h = re.sub(r'<div class="g-src"><b>পাঠ সম্পর্কে।</b>.*?</div>',
                f'<div class="g-src"><b>পাঠ সম্পর্কে।</b> {src}</div>', h, count=1, flags=re.S)
 

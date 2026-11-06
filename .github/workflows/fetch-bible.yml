@@ -54,6 +54,7 @@ jobs:
       FROM: ${{ inputs.from || '1' }}
       TO: ${{ inputs.to || '0' }}
       BUDGET: ${{ inputs.budget || '45' }}
+      EN_BUDGET: '40'
       PROBE_ONLY: ${{ inputs.probe_only || 'false' }}
     steps:
       - uses: actions/checkout@v4
@@ -88,8 +89,10 @@ jobs:
           j = json.loads(p.read_text(encoding='utf-8'))
           chs = j.get('chapters', [])
           miss = sum(len(c.get('missing', [])) for c in chs)
-          print(f'পুস্তক {len(chs)} · পদ {j.get("total")} · অসম্পূর্ণ অধ্যায় {miss}')
-          print('complete=' + ('true' if len(chs) >= 66 and not miss else 'false'))
+          en_done = pathlib.Path('assets/grantho/data/_debug/bible_en_done.txt').exists()
+          print(f'পুস্তক {len(chs)} · পদ {j.get("total")} · অসম্পূর্ণ অধ্যায় {miss} · '
+                f'ইংরেজি-হাঁটা শেষ: {"হ্যাঁ" if en_done else "না"}')
+          print('complete=' + ('true' if len(chs) >= 66 and not miss and en_done else 'false'))
           PY
           echo "complete=$(grep -o 'complete=[a-z]*' "$DBG/bible_state.txt" | tail -1 | cut -d= -f2)" \
             >> "$GITHUB_OUTPUT"
@@ -120,7 +123,18 @@ jobs:
             --resume --delay 0.7 --budget "$BUDGET" 2>&1 \
             | tee -a "$DBG/bible_run.txt" | tail -80 || true
 
-      # ── ২) স্বতন্ত্র যাচাই ──────────────────────────────────────
+      # ── .৫) ইংরেজি অনুবাদ (NAB, vatican.va) ───────────────────
+      # পাতার কোড পরপর হেঁটে প্রতি পাতার নিজের ব্রেডক্রাম্ব দিয়ে পুস্তক-অধ্যায়
+      # চেনা হয়; তারপর বাংলার সঙ্গে পদ হুবহু মিললেই ইংরেজি বসে (না মিললে বাদ
+      # + অমিল-তালিকা)। বাজেট আলাদা, যাতে বাংলা-ফেচের সময় না কাড়ে।
+      - name: ১.৫) ইংরেজি (NAB) নামানো + মেলানো
+        if: inputs.probe_only != true
+        run: |
+          python3 -u tools/fetch_bible_en.py --fetch --delay 0.7 --budget "$EN_BUDGET" 2>&1 \
+            | tee -a "$DBG/bible_run.txt" | tail -40 || true
+          python3 -u tools/fetch_bible_en.py --join 2>&1 | tee "$DBG/bible_en_join.txt" || true
+
+      # ── ) স্বতন্ত্র যাচাই ──────────────────────────────────────
       # পার্সার পাস করলেও ডেটা ফাইলে গঠনগত ভুল থাকতে পারে (নম্বর উল্টাপাল্টা,
       # ফাঁকা পাঠ)। তখন কাঁচা/ভাঙা ডেটা প্রকাশ না করে আগের অবস্থায় ফেরানো হয়।
       - name: ২) ডেটা যাচাই
@@ -145,7 +159,8 @@ jobs:
               ns = [v.get('n') for v in vs]
               if ns != list(range(1, len(ns) + 1)):
                   bad.append(f'{fp.name}: n ক্রম ১..{len(ns)} নয়')
-              if any(not str(v.get('bn') or '').strip() for v in vs):
+              # উৎসে ফাঁকা পদ-নম্বর (srcEmpty) বৈধ — পাঠ উৎসেই নেই; অনুমান করি না
+              if any(not str(v.get('bn') or '').strip() and not v.get('srcEmpty') for v in vs):
                   bad.append(f'{fp.name}: ফাঁকা পাঠের পদ আছে')
               groups = j.get('suktas', [])
               if groups and len(groups) != j.get('suktaCount'):
@@ -163,6 +178,24 @@ jobs:
                       if v.get('vn', 0) <= prev_vn:
                           warn.append(f'{fp.name}: অধ্যায় {prev_ch}-এ পদ-ক্রম ভাঙা')
                       prev_vn = v.get('vn')
+          en_dir = d / 'en'
+          n_en = 0
+          if en_dir.exists():
+              for fp in sorted(en_dir.glob('ch*.json')):
+                  e = json.loads(fp.read_text(encoding='utf-8'))
+                  ev = e.get('verses') or {}
+                  n_en += len(ev)
+                  bp = d / fp.name
+                  if not bp.exists():
+                      bad.append(f'en/{fp.name}: বাংলা ফাইল নেই')
+                      continue
+                  ns = {str(v['n']) for v in json.loads(bp.read_text(encoding='utf-8'))['verses']}
+                  stray = [k for k in ev if k not in ns]
+                  if stray:
+                      bad.append(f'en/{fp.name}: পদের বাইরের কী {stray[:3]}')
+                  if any(not str(x).strip() for x in ev.values()):
+                      bad.append(f'en/{fp.name}: ফাঁকা ইংরেজি পাঠ')
+          print(f'ইংরেজি: {n_en} পদ মেলানো')
           if idx.get('total') != tot:
               bad.append(f'index.total {idx.get("total")} ≠ ফাইলের মোট {tot}')
           if len(idx.get('chapters', [])) != len(files):
@@ -215,6 +248,18 @@ jobs:
             python3 tools/guard_data.py --set-baseline 2>&1 | tail -3 || true
           fi
 
+      # ── ৩.৭৫) ডায়াগনস্টিক আর্টিফ্যাক্ট ───────────────────────────
+      # লগ পড়া যায় না বলেই এই ফাইলগুলোই আসল চোখ: প্রোব, রিপোর্ট, যাচাই, অমিল।
+      - name: ডায়াগনস্টিক আর্টিফ্যাক্ট
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bible-debug-${{ github.run_number }}
+          path: |
+            assets/grantho/data/_debug/bible_*.txt
+            assets/grantho/data/_debug/bible_*.json
+          if-no-files-found: ignore
+
       # ── ৪) কমিট + প্রকাশ ──────────────────────────────────────
       - name: ৪) কমিট + প্রকাশ
         if: always()
@@ -243,9 +288,10 @@ jobs:
           fi
           echo 'সরাসরি push ব্যর্থ — বট-ব্র্যাঞ্চ দিয়ে চেষ্টা'
           git fetch origin "${BOT_BRANCH}" --depth=1 || true
-          if ! git push origin "HEAD:refs/heads/${BOT_BRANCH}" \
-             && ! git push --force origin "HEAD:refs/heads/${BOT_BRANCH}"; then
-            echo '⛔ বট-ব্র্যাঞ্চেও push হলো না' >&2
+          # বট-ব্র্যাঞ্চ রানারের একার; পুরোনো স্ন্যাপশট থাকলে সাধারণ push ফিরে
+          # যায়, তাই ফোর্স-পুশ নিরাপদ (মানুষের ব্র্যাঞ্চ নয়)।
+          if ! git push --force origin "HEAD:refs/heads/${BOT_BRANCH}"; then
+            echo '⛔ বট-ব্র্যাঞ্চেও push হলো না' >> "$DBG/bible_run.txt"
             exit 1
           fi
           NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
@@ -255,6 +301,23 @@ jobs:
             sleep 5
             NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
           fi
-          if [ -z "$NUM" ]; then echo '⛔ PR তৈরি হয়নি' >&2; exit 1; fi
-          gh pr merge "$NUM" --merge || { echo "⛔ merge ব্যর্থ (PR #$NUM)" >&2; exit 1; }
-          echo "✓ প্রকাশ হয়েছে (PR #$NUM)"
+          if [ -z "$NUM" ]; then echo '⛔ PR তৈরি হয়নি' >> "$DBG/bible_run.txt"; exit 1; fi
+          # আগে এখানেই রান থেমে যেত: PR তৈরির সাথে সাথে merge চাইলে চেক
+          # pending থাকায় «not mergeable»। তাই আগে চেক শেষ হওয়া পর্যন্ত অপেক্ষা।
+          for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            ST=$(gh pr checks "$NUM" --json state -q '[.[].state] | unique | join(",")' 2>/dev/null || echo "")
+            case "$ST" in
+              *FAILURE*|*ERROR*) echo "⛔ চেক ব্যর্থ (PR #$NUM): $ST"; break ;;
+              *PENDING*|*QUEUED*|*EXPECTED*) sleep 30 ;;
+              *) break ;;
+            esac
+          done
+          if gh pr merge "$NUM" --merge; then
+            echo "✓ প্রকাশ হয়েছে (PR #$NUM)"
+            echo "প্রকাশ: PR #$NUM merge হয়েছে" >> "$DBG/bible_run.txt"
+          else
+            # মার্জ ব্যর্থ হলেও রান ব্যর্থ নয়: ডেটা বট-ব্র্যাঞ্চে নিরাপদে থাকে,
+            # পরের রান (২ ঘণ্টা পর) আবার চেষ্টা করবে।
+            echo "⚠ merge ব্যর্থ (PR #$NUM) — পরের রানে আবার চেষ্টা হবে"
+            echo "প্রকাশ: merge ব্যর্থ (PR #$NUM)" >> "$DBG/bible_run.txt"
+          fi

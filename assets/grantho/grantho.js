@@ -45,7 +45,15 @@
      verseWord থেকে। একইভাবে গ্রুপ-শব্দ (ঋগ্বেদে «সূক্ত», বাইবেলে «অধ্যায়») ও
      অধ্যায়-শব্দ (বাইবেলে «পুস্তক») ডেটা থেকেই নেওয়া হয়, হার্ডকোড নয়। */
   var VW = "শ্লোক", GW = "সূক্ত", CW = "অধ্যায়";
-  var state = { bn: true, sk: true, q: "", onlyBn: false };
+  var state = { bn: true, sk: true, q: "", onlyBn: false, lang: "both" };
+  /* ইংরেজি অনুবাদ (বাইবেল): অধ্যায়ভিত্তিক আলাদা ফাইল en/chN.json — বাংলা পাঠের
+     ফাইলে হাত দেওয়া হয় না, তাই দুই উৎস স্বাধীনভাবে নামে ও হালনাগাদ হয়। */
+  var chapterEn = null;
+  /* ইংরেজি ডেটার আকার যাচাই: verses অবশ্যই অবজেক্ট (n→পাঠ); ভুল ফাইল লোড
+     হলে (যেমন পদ-তালিকার অ্যারে) যেন প্রতি পদে আবর্জনা না বসে। */
+  function enMap(e) {
+    return (e && e.verses && typeof e.verses === "object" && !Array.isArray(e.verses)) ? e.verses : {};
+  }
   var cache = {};
 
   /* ---------- সহায়ক ---------- */
@@ -119,7 +127,10 @@
 
   function verseHTML(v) {
     var q = state.q ? state.q.toLowerCase() : "";
-    var hit = q && ((v.sk || "").toLowerCase().indexOf(q) > -1 || (v.bn || "").toLowerCase().indexOf(q) > -1);
+    var en = enMap(chapterEn)[String(v.n)] || "";
+    var hit = q && ((v.sk || "").toLowerCase().indexOf(q) > -1 ||
+                    (v.bn || "").toLowerCase().indexOf(q) > -1 ||
+                    en.toLowerCase().indexOf(q) > -1);
     var la = (typeof v.n === "number") ? v.n : 0;
     var sk = (v.sk || "").replace(/\n+/g, "<br>");
     var parts = state.bn ? (cuts[la] || null) : null;
@@ -138,8 +149,16 @@
           bn(i + 1) + '</span>' + esc(x) + '</p>';
       }).join("");
       out += '</div>';
-    } else if (state.bn && v.bn) {
+    } else if (state.bn && v.bn && state.lang !== "en") {
       out += '<p class="g-v-bn">' + esc(v.bn).replace(/\n+/g, "</p><p class=\"g-v-bn\">") + '</p>';
+    }
+    /* উৎসে পদ-নম্বর ছাপা কিন্তু পাঠ নেই (ebanglalibrary-র কিছু পাতায় এমন আছে,
+       যেমন আদিপুস্তক ৩৬:৭-৮) — লুকিয়ে না রেখে স্পষ্ট নোট দেখাই। */
+    if (v.srcEmpty && state.lang !== "en") {
+      out += '<p class="g-v-empty">এই পদ-নম্বরটি উৎসে আছে, কিন্তু উৎস-পাতায় এর পাঠ দেওয়া হয়নি।</p>';
+    }
+    if (en && state.lang !== "bn") {
+      out += '<p class="g-v-en" lang="en">' + esc(en) + '</p>';
     }
     /* উৎস-কৃতিত্ব গ্রন্থের শুরুতে একবারই — প্রতি মন্ত্রে পুনরাবৃত্তি নয় */
     out += '</div></article>';
@@ -147,20 +166,29 @@
   }
 
   /* সার্চ পুরো গ্রন্থ জুড়ে — একবার সব অধ্যায় এনে মিলিয়ে রাখি */
-  var allLoaded = null;
+  var allLoaded = null, enByCh = {};
   function loadAll() {
     if (allLoaded) return Promise.resolve(allLoaded);
     return Promise.all(index.chapters.map(function (c) {
       return loadJSON(BASE + "ch" + c.id + ".json");
-    })).then(function (list) { allLoaded = list; return list; });
+    })).then(function (list) {
+      allLoaded = list;
+      return Promise.all(list.map(function (c, i) {
+        return loadJSON(BASE + "en/ch" + index.chapters[i].id + ".json")
+          .then(function (e) { enByCh[index.chapters[i].id] = e; })
+          .catch(function () {});
+      }));
+    }).then(function () { return allLoaded; });
   }
 
   function searchHTML(q) {
     var low = q.toLowerCase(), rows = [], total = 0;
     allLoaded.forEach(function (c) {
+      var enm = enMap(enByCh[c.id]);
       var hit = c.verses.filter(function (v) {
         return (v.sk || "").toLowerCase().indexOf(low) > -1 ||
-               (v.bn || "").toLowerCase().indexOf(low) > -1;
+               (v.bn || "").toLowerCase().indexOf(low) > -1 ||
+               ((enm[String(v.n)] || "").toLowerCase().indexOf(low) > -1);
       });
       if (!hit.length) return;
       total += hit.length;
@@ -171,44 +199,20 @@
         if (v.spk) out += '<p class="g-v-spk">' + esc(v.spk) + '</p>';
         if (v.sk) out += '<p class="g-v-sk" lang="sa">' + esc(v.sk).replace(/\n+/g, "<br>") + '</p>';
         if (v.bn) out += '<p class="g-v-bn">' + esc(v.bn) + '</p>';
+        if (enm[String(v.n)]) out += '<p class="g-v-en" lang="en">' + esc(enm[String(v.n)]) + '</p>';
         return out + "</div></article>";
       }).join(""));
     });
     return { html: rows.join("") || '<p class="g-empty">কিছু মেলেনি। অন্য শব্দে চেষ্টা করুন।</p>', total: total };
   }
 
-  /* ---------- পৃষ্ঠা-ভাগ ----------
-     বৃহৎ মণ্ডল (ঋগ্বেদ ১০ম: ১,৭২৯ কার্ড) একসঙ্গে বসালে ব্রাউজার হ্যাং করে।
-     তাই অধ্যায়ের পাঠ কয়েকটি পৃষ্ঠায় ভাগে দেখাই; নম্বর ও ক্রম অটুট থাকে। */
-  var PAGE_SIZE = 200;
-  var pageNo = 0;
-
-  function setPage(n) {
-    pageNo = Math.max(0, n);
-    renderVerses();
-    try { window.scrollTo({ top: root.offsetTop - 70, behavior: "smooth" }); } catch (e) {}
-  }
-
-  function pagerHTML(pages, i) {
-    if (pages <= 1) return "";
-    var out = '<nav class="g-pager" aria-label="পৃষ্ঠা">';
-    out += '<button type="button" class="g-pg-btn" data-pg="' + (i - 1) + '"' +
-      (i <= 0 ? " disabled" : "") + '>‹ আগের পৃষ্ঠা</button>';
-    out += '<span class="g-pg-info">পৃষ্ঠা ' + bn(i + 1) + " / " + bn(pages) + '</span>';
-    out += '<button type="button" class="g-pg-btn" data-pg="' + (i + 1) + '"' +
-      (i >= pages - 1 ? " disabled" : "") + '>পরের পৃষ্ঠা ›</button>';
-    return out + '</nav>';
-  }
-
-  function wirePager() {
-    var els = bodyEl.querySelectorAll(".g-pg-btn");
-    for (var i = 0; i < els.length; i++) {
-      els[i].addEventListener("click", function () {
-        if (this.disabled) return;
-        setPage(parseInt(this.getAttribute("data-pg"), 10) || 0);
-      });
-    }
-  }
+  /* ---------- পুরো অধ্যায় এক পৃষ্ঠায় ----------
+     «আগের/পরের পৃষ্ঠা» পেজার-ব্যবস্থাটি সরানো হয়েছে (পাঠকের দাবি): প্রতিটি
+     অধ্যায়ের সম্পূর্ণ পাঠ এখন একটানা এক পৃষ্ঠায়। বড় অধ্যায়ে (ঋগ্বেদ ১০ম:
+     ১,৭২৯ কার্ড) একবারে সব কার্ড বসালে ব্রাউজার ঝুলে যায়, তাই হাদিস-পাঠকের
+     মতো CHUNK ব্যাচে আঁকা হয় — চোখে এক পৃষ্ঠাই, সংখ্যা ও ক্রম অটুট। */
+  var CHUNK = 150;
+  var paintToken = 0;
 
   function renderVerses() {
     if (!chapter) return;
@@ -230,9 +234,6 @@
 
     var all = chapter.verses;
     if (state.onlyBn) all = all.filter(function (v) { return v.bn; });
-    var pages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
-    if (pageNo >= pages) pageNo = pages - 1;
-    var list = all.slice(pageNo * PAGE_SIZE, (pageNo + 1) * PAGE_SIZE);
 
     /* বাংলা অনুবাদের কভারেজ — প্রতি মন্ত্রে পুনরাবৃত্তি না করে একবার */
     if (bnNoteEl) {
@@ -251,29 +252,29 @@
       }
     }
     var hasS = useLayout();
-    var html = "", curS = null, sMeta = {};
+    var parts = [], curS = null, sMeta = {};
     if (hasS) {
       chapter.suktas.forEach(function (x) { sMeta[x.id] = x; });
-      list.forEach(function (v) {
+      all.forEach(function (v) {
         var sid = inSukta[v.n];
         if (sid && sid !== curS) {
           curS = sid;
           var sm = sMeta[sid] || {};
-          html += '<h3 class="g-sukta-h" id="sukta' + sid + '">' +
+          parts.push('<h3 class="g-sukta-h" id="sukta' + sid + '">' +
             '<span class="g-sukta-n">' + GW + ' ' + bn(sid) + '</span>' +
             '<span class="g-sukta-m">' + VW + " " + bn(sm.vfrom || sm.from) + "–" +
             bn(sm.vto || sm.to) +
-            (sm.shloka ? " · " + bn(sm.shloka) + " শ্লোক" : "") + '</span></h3>';
+            (sm.shloka ? " · " + bn(sm.shloka) + " শ্লোক" : "") + '</span></h3>');
         }
-        html += verseHTML(v);
+        parts.push(verseHTML(v));
       });
     } else {
-      html = list.map(verseHTML).join("");
+      parts = all.map(verseHTML);
     }
     /* উৎসের অনুক্রমণিকা/ভূমিকা-অনুবাদ মন্ত্র নয় — তাই আলাদা ব্লকে, কল্যাপ্স করা
        অবস্থায় (পাঠ অটুট থাকে, কিন্তু মন্ত্র-তালিকা পরিষ্কার থাকে)। */
     var front = "";
-    if (!state.q && pageNo === 0 && (chapter.preface || chapter.heading)) {
+    if (!state.q && (chapter.preface || chapter.heading)) {
       var sumTxt = chapter.heading ? esc(chapter.heading).replace(/\n+/g, " · ") : "অনুক্রমণিকা";
       front = '<details class="g-front"><summary>' + sumTxt +
         ' <span class="g-front-tag">উৎসের ভূমিকা-অনুবাদ · মন্ত্র-গণনার বাইরে</span></summary>' +
@@ -283,35 +284,50 @@
           }).join("") +
         "</details>";
     }
-    var pg = pagerHTML(pages, pageNo);
-    bodyEl.innerHTML = (pages > 1 ? pg : "") + front +
-      (html || '<p class="g-empty">কিছু পাওয়া যায়নি।</p>') +
-      (pages > 1 ? pg : "");
-    wirePager();
     if (titleEl) titleEl.textContent = chapter.bn;
     if (metaEl) {
       var mm = bn(chapter.count) + " " + VW;
       if (hasS) mm += " · " + bn(chapter.suktaCount || 0) + " " + GW;
       if (chapter.preface || chapter.heading) mm += " · অনুক্রমণিকা সহ";
+      var enCount = Object.keys(enMap(chapterEn)).length;
+      if (enCount) {
+        mm += " · ইংরেজি " + bn(enCount) + " পদে";
+      }
       metaEl.textContent = mm;
     }
-    var hits = bodyEl.querySelectorAll(".g-v.hit").length;
+    if (langBox) langBox.hidden = !chapterEn;
+    /* প্রথমে ভূমিকা-ব্লক, তারপর পাঠ ব্যাচে ব্যাচে — অন্য অধ্যায় খুললে পুরোনো
+       ব্যাচ থেমে যায় (paintToken), তাই দুই অধ্যায়ের পাঠ কখনো মেশে না। */
+    var token = ++paintToken;
+    bodyEl.innerHTML = front;
+    var at = 0;
+    (function step() {
+      if (token !== paintToken || !bodyEl.isConnected) return;
+      var slice = parts.slice(at, at + CHUNK);
+      bodyEl.insertAdjacentHTML("beforeend", slice.join("") ||
+        (at === 0 ? '<p class="g-empty">কিছু পাওয়া যায়নি।</p>' : ""));
+      at += CHUNK;
+      if (at < parts.length) setTimeout(step, 0);
+    })();
     if (searchEl) {
       var note = document.getElementById("g-hits");
-      if (note) note.textContent = state.q ? (hits ? bn(hits) + "টি " + VW + " পাওয়া গেছে" : "কিছু মেলেনি") : "";
+      if (note) note.textContent = "";
     }
   }
 
   /* ---------- অধ্যায় খোলা ---------- */
   function openChapter(id) {
     chapterId = id;
-    pageNo = 0;
+    paintToken++;
     save({ last: id });
     renderChapters();
     bodyEl.innerHTML = '<p class="g-loading">লোড হচ্ছে…</p>';
-    loadJSON(BASE + "ch" + id + ".json").then(function (c) {
+    Promise.all([
+      loadJSON(BASE + "ch" + id + ".json"),
+      loadJSON(BASE + "en/ch" + id + ".json").catch(function () { return null; })
+    ]).then(function (r) {
       if (chapterId !== id) return;
-      chapter = c;
+      chapter = r[0]; chapterEn = r[1];
       renderVerses();
       try { window.scrollTo({ top: root.offsetTop - 70, behavior: "smooth" }); } catch (e) {}
       var h = location.hash;
@@ -322,6 +338,40 @@
     }).catch(function () {
       bodyEl.innerHTML = '<p class="g-empty">অধ্যায়টি লোড করা গেল না। পুনরায় চেষ্টা করুন।</p>';
     });
+  }
+
+  /* ---------- ভাষা-নিয়ন্ত্রণ ----------
+     টেমপ্লেটে হাত না দিয়ে রানটাইমে বসাই, যাতে সব পাতা (পুরোনো-নতুন) পায়;
+     ইংরেজি ডেটা না থাকলে বাক্সটি লুকানো থাকে। */
+  var langBox = null;
+  function buildLangBox() {
+    var anchor = document.getElementById("g-bn-btn");
+    if (!anchor || !anchor.parentNode) return;
+    langBox = document.createElement("div");
+    langBox.className = "g-lang";
+    langBox.setAttribute("role", "group");
+    langBox.setAttribute("aria-label", "পাঠের ভাষা");
+    [["both", "বাংলা+ইংরেজি"], ["bn", "শুধু বাংলা"], ["en", "শুধু ইংরেজি"]].forEach(function (x) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "g-lang-btn"; b.setAttribute("data-lang", x[0]);
+      b.textContent = x[1];
+      b.addEventListener("click", function () {
+        state.lang = x[0]; save({ lang: state.lang }); syncLang(); renderVerses();
+      });
+      langBox.appendChild(b);
+    });
+    anchor.parentNode.insertBefore(langBox, anchor.nextSibling);
+    langBox.hidden = true;
+    syncLang();
+  }
+  function syncLang() {
+    if (!langBox) return;
+    var bs = langBox.querySelectorAll(".g-lang-btn");
+    for (var i = 0; i < bs.length; i++) {
+      var on = bs[i].getAttribute("data-lang") === state.lang;
+      bs[i].classList.toggle("on", on);
+      bs[i].setAttribute("aria-pressed", on ? "true" : "false");
+    }
   }
 
   /* ---------- নিয়ন্ত্রণ ---------- */
@@ -358,6 +408,7 @@
   if (typeof st.sk === "boolean") state.sk = st.sk;
   if (typeof st.bn === "boolean") state.bn = st.bn;
   if (typeof st.onlyBn === "boolean") state.onlyBn = st.onlyBn;
+  if (st.lang === "both" || st.lang === "bn" || st.lang === "en") state.lang = st.lang;
   var skBtn0 = document.getElementById("g-sk-btn"), bnBtn0 = document.getElementById("g-bn-btn");
   if (skBtn0) { skBtn0.classList.toggle("on", state.sk); skBtn0.setAttribute("aria-pressed", state.sk ? "true" : "false"); }
   if (bnBtn0) { bnBtn0.classList.toggle("on", state.bn); bnBtn0.setAttribute("aria-pressed", state.bn ? "true" : "false"); }
@@ -374,6 +425,7 @@
       var lab = onlyBnEl.closest ? onlyBnEl.closest("label") : onlyBnEl.parentNode;
       if (lab) lab.hidden = true;
     }
+    buildLangBox();
     bind();
     var start = 1;
     var m = (location.hash || "").match(/^#ch(\d+)$/);

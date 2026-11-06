@@ -102,6 +102,21 @@ html[data-theme="light"] .g-ch .meta{color:#5c7183}
   font-family:"Noto Serif Devanagari","Sanskrit Text",Georgia,serif;word-break:break-word}
 html[data-theme="light"] .g-v-sk{color:#12232e}
 .g-v-bn{margin:0;font-size:15px;line-height:1.95;color:var(--text)}
+
+/* ---------- ইংরেজি অনুবাদ ও উৎস-ফাঁকা নোট ---------- */
+.g-v-en{margin:6px 0 0;padding:7px 10px;border-left:2px solid rgba(148,163,184,.35);
+  color:rgba(203,213,225,.82);font-size:14.5px;line-height:1.65;
+  font-family:Georgia,"Times New Roman",serif;font-style:italic}
+.g-v-empty{margin:6px 0 0;padding:6px 10px;border:1px dashed rgba(148,163,184,.4);
+  border-radius:8px;color:rgba(148,163,184,.75);font-size:13px}
+.g-lang{display:inline-flex;gap:4px;margin-left:10px;padding:3px;border:1px solid rgba(148,163,184,.28);
+  border-radius:10px;background:rgba(15,23,42,.5)}
+.g-lang[hidden]{display:none}
+.g-lang-btn{border:0;background:transparent;color:rgba(203,213,225,.75);cursor:pointer;
+  padding:6px 10px;border-radius:8px;font-size:12.5px;font-family:inherit}
+.g-lang-btn.on{background:rgba(148,163,184,.22);color:#e2e8f0}
+.g-lang-btn:hover{background:rgba(148,163,184,.15)}
+@media (max-width:640px){.g-lang{margin-left:0;margin-top:6px;width:100%;justify-content:space-between}}
 .g-v-gap{margin:0;font-size:13px;color:var(--muted);font-style:italic;
   border-left:3px solid rgba(245,184,28,.35);padding-left:10px}
 
@@ -168,25 +183,6 @@ html[data-theme="light"] .g-intro h1 span{color:#8a5a00}
 }
 
 /* ---- পৃষ্ঠা-ভাগ (বৃহৎ মণ্ডলে ব্রাউজার আটকায় না) ---- */
-.g-pager{
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  flex-wrap:wrap;margin:6px 0 14px;
-}
-.g-pg-btn{
-  font:inherit;font-size:13.5px;line-height:1;padding:9px 14px;
-  border-radius:10px;cursor:pointer;
-  border:1px solid rgba(148,163,184,.32);
-  background:rgba(148,163,184,.08);color:inherit;
-  transition:background .15s,border-color .15s,transform .15s;
-}
-.g-pg-btn:hover:not(:disabled){background:rgba(148,163,184,.18);border-color:rgba(148,163,184,.5)}
-.g-pg-btn:active:not(:disabled){transform:translateY(1px)}
-.g-pg-btn:disabled{opacity:.4;cursor:default}
-.g-pg-info{font-size:13px;opacity:.75;font-variant-numeric:tabular-nums}
-@media(max-width:620px){
-  .g-pg-btn{padding:8px 11px;font-size:12.5px}
-  .g-pg-info{width:100%;text-align:center;order:-1}
-}
 
 /* ── উৎসের অনুক্রমণিকা/ভূমিকা-অনুবাদ ────────────────────────────────
    এগুলো মন্ত্র নয়, তাই মন্ত্র-তালিকার বাইরে আলাদা কল্যাপ্সিবল ব্লকে থাকে:
