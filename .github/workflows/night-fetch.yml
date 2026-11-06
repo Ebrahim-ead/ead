@@ -85,38 +85,39 @@ jobs:
             echo "কোনো পরিবর্তন নেই — প্রকাশ লাগবে না"
             exit 0
           fi
-          git commit -m "ebanglalibrary: স্বয়ংক্রিয় আপডেট ($(date -u +%d/%m %H:%M) UTC)" || true
+          git commit -m "ebanglalibrary: স্বয়ংক্রিয় আপডেট ($(date -u '+%d/%m %H:%M') UTC)" || true
           git fetch origin main --depth=1 || true
           git rebase origin/main || git rebase --abort || true
+          # ${BOT_BRANCH} শুধু প্রকাশের স্টেজিং। এতে পুরোনো কমিট জমে থাকলে (২৪৯টি জমেছিল)
+          # সাধারণ push non-fast-forward হিসেবে প্রত্যাখ্যাত হতো — ফলে ধাপটি প্রতি রাতে ব্যর্থ।
+          # তাই প্রথমে সাধারণ push, ব্যর্থ হলে main-ভিত্তিক HEAD দিয়ে ব্র্যাঞ্চ রিসেট।
+          git fetch origin "${BOT_BRANCH}" --depth=1 || true
           if ! git push origin "HEAD:refs/heads/${BOT_BRANCH}"; then
-            echo "⛔ bot-ব্রাঞ্চে push হলো না — কিছু প্রকাশ করা হয়নি" >&2
-            exit 1
+            echo "সাধারণ push ব্যর্থ — স্টেজিং-ব্র্যাঞ্চ সরে গেছে; রিসেট করে আবার চেষ্টা"
+            if ! git push --force origin "HEAD:refs/heads/${BOT_BRANCH}"; then
+              echo "⛔ bot-ব্রাঞ্চে push হলো না — কিছু প্রকাশ করা হয়নি" >&2
+              exit 1
+            fi
           fi
           NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
           if [ -z "$NUM" ]; then
             gh pr create --base main --head "${BOT_BRANCH}" \
-              --title "বাংলা অনুবাদ: স্বয়ংক্রিয় আপডেট ($(date -u +%d/%m %H:%M) UTC)" \
+              --title "বাংলা অনুবাদ: স্বয়ংক্রিয় আপডেট ($(date -u '+%d/%m %H:%M') UTC)" \
               --body "রাতের স্বয়ংক্রিয় রান — নতুন বাংলা অনুবাদ ও পাতা-বিল্ড।" || true
             sleep 5
             NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
           fi
           echo "PR: ${NUM:-নেই}"
           if [ -n "$NUM" ]; then
-            gh pr merge "$NUM" --merge || { echo "⛔ merge ব্যর্থ" >&2; exit 1; }
+            gh pr merge "$NUM" --merge || { echo "⛔ merge ব্যর্থ (PR #$NUM) — কনফ্লিক্ট বা চেক ব্যর্থ হতে পারে" >&2; exit 1; }
           fi
 
-      - name: ৪) আবার নিজেকে চালু (রাতের সিরিজ)
+      - name: ৪) রাতের সিরিজ (schedule-ই যথেষ্ট)
         if: always()
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          N=$(date -u +%H)
-          echo "এখন UTC ঘণ্টা: $N"
-          # রাতের সিরিজ: UTC ১৬–২৩ ও ০০–০২ (ঢাকা সময় ~২২টা–৮টা)
-          if [ "$N" -ge 16 ] || [ "$N" -le 2 ]; then
-            sleep 20
-            gh workflow run night-fetch.yml --ref main || echo "পুনরায় চালু করা গেল না"
-          else
-            echo "দিনের বেলা — সিরিজ থামানো হলো"
-          fi
+          # আগে এই ধাপ sleep 20 দিয়ে নিজেকেই workflow_dispatch-এ ডাকত। ফলে cron-এর
+          # ৩০-মিনিটের বদলে প্রতি ~৪০ সেকেন্ডে রান চলত — প্রতি রাতে শতশত রান, আর
+          # প্রতিটির ধাপ ০ থেকে fetch-ebl.yml-ও ডিসপ্যাচ হতো। উপরে schedule-এর
+          # cron: '*/30 16-23,0-2 * * * একই রাতের জানালা (ঢাকা ~২২টা–৮টা) কাভার করে,
+          # তাই আত্ম-ডিসপ্যাচ বাদ — সিরিজ এখন cron থেকেই চলবে।
+          echo "রাতের সিরিজ cron (*/30 16-23,0-2 UTC) থেকে চলবে; আত্ম-ডিসপ্যাচ নেই।"

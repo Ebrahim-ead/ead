@@ -44,7 +44,7 @@ BOOKS = {
         kicker="হিন্দু · বেদ · ঋগ্বেদ", crumb="ঋগ্বেদ সংহিতা",
         intro="ঋগ্বেদের বাংলা অনুবাদ — রমেশচন্দ্র দত্তের অনুবাদ (ebanglalibrary.com)।",
         word="মন্ত্র", chword="মণ্ডল",
-        src="বাংলা অনুবাদ ebanglalibrary.com থেকে (অনুবাদ: রমেশচন্দ্র দত্ত)। এই সংস্করণে সংস্কৃত মূল পাঠ ছাপা হয়নি, তাই শ্লোকে কেবল বাংলা অনুবাদ আছে — কোনো অনুমানভিত্তিক সংস্কৃত পাঠ বসানো হয় না.",
+        src="বাংলা অনুবাদ ebanglalibrary.com থেকে (অনুবাদ: রমেশচন্দ্র দত্ত)।",
         excerpt="দেবতাদের স্তবসমূহ — রমেশচন্দ্র দত্তের বাংলা অনুবাদে ১০ মণ্ডলের ১০,৪৫৬ মন্ত্র।",
     ),
     "samaveda": dict(
@@ -197,10 +197,26 @@ def load(slug):
     return idx
 
 
+def count_with_sk(slug: str, idx: dict) -> int:
+    """কতটি শ্লোক/মন্ত্রে আসলেই সংস্কৃত পাঠ আছে — পাতার দাবি যেন ডেটার সাথে মেলে।"""
+    n = 0
+    for c in idx.get("chapters", []):
+        fp = DATA / slug / f"ch{c['id']}.json"
+        if not fp.exists():
+            continue
+        try:
+            d = json.loads(fp.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        n += sum(1 for v in d.get("verses", []) if str(v.get("sk") or "").strip())
+    return n
+
+
 def make_page(slug, idx, meta):
     main, sub = meta["title"]
     nch = len(idx["chapters"])
     total, withbn = idx["total"], idx.get("withBn", 0)
+    withsk = count_with_sk(slug, idx)
     h = TEMPLATE
 
     h = h.replace("সামবেদ সংহিতা", f"{main} {sub}".strip())
@@ -222,20 +238,37 @@ def make_page(slug, idx, meta):
         facts += f'<span class="g-fact"><b>{commas(nsuk)}</b> সূক্ত</span>'
     if nshl:
         facts += f'<span class="g-fact"><b>{commas(nshl)}</b> শ্লোক</span>'
-    if idx.get("note"):
-        meta = dict(meta)
-        meta["src"] = meta["src"] + " " + idx["note"]
     h = re.sub(r'<div class="g-facts">.*?</div>', '<div class="g-facts">' + facts + '</div>',
                h, count=1, flags=re.S)
+
+    # সার্চ-বাক্স: টেমপ্লেটের লেবেল অন্য গ্রন্থে ভুল হতো, আর সংস্কৃত না থাকলে "(সংস্কৃত)" বিভ্রান্তিকর
+    ph = f'{meta["word"]}ে খুঁজুন'
+    if withsk and withsk == total:
+        ph += " (সংস্কৃত বা বাংলা)"
+    elif withsk == 0:
+        ph += " (বাংলা)"
+    h = re.sub(r'(<input id="g-search"[^>]*placeholder=")[^"]*(")', lambda m: m.group(1) + ph + m.group(2), h, count=1)
+    h = re.sub(r'(<input id="g-search"[^>]*aria-label=")[^"]*(")',
+               lambda m: m.group(1) + f'{meta["word"]}ে খুঁজুন' + m.group(2), h, count=1)
+    if withsk == 0:
+        h = re.sub(r'\s*<button[^>]*id="g-sk-btn".*?</button>', '', h, count=1, flags=re.S)
 
     h = h.replace('data-granth="samaveda"', f'data-granth="{slug}"').replace(
         'data-base="../../assets/grantho/data/samaveda/"',
         f'data-base="../../assets/grantho/data/{slug}/"')
     src = meta["src"]
-    if idx.get("note"):
-        src += " " + idx["note"]
+    # সংস্কৃত পাঠের প্রাপ্যতা — আগে হার্ডকোডেড দাবি ছিল যা ডেটার সাথে মিলত না
+    if withsk == 0:
+        src += (f' এই সংস্করণে সংস্কৃত মূল পাঠ ছাপা হয়নি, তাই {meta["word"]}ে কেবল বাংলা অনুবাদ আছে'
+                ' — কোনো অনুমানভিত্তিক সংস্কৃত পাঠ বসানো হয় না।')
+    elif withsk < total:
+        src += (f' সংস্কৃত মূল পাঠ আংশিক — {commas(total)}টি {meta["word"]}ের মধ্যে কেবল {commas(withsk)}টিতে'
+                f' উৎসে সংস্কৃত পাওয়া গেছে, সেগুলোতেই তা ছাপা হয়েছে; বাকিগুলোতে কেবল বাংলা অনুবাদ আছে।'
+                ' কোনো অনুমানভিত্তিক সংস্কৃত পাঠ বসানো হয় না।')
     if withbn < total:
         src += f' {commas(total - withbn)}টি {meta["word"]}র বাংলা উৎসে পাওয়া যায়নি — সেগুলো পরে যোগ হবে।'
+    if idx.get("note"):   # ডেটার টীকা সবার শেষে (আগে দুবার যোগ হতো)
+        src += " " + idx["note"]
     h = re.sub(r'<div class="g-src"><b>পাঠ সম্পর্কে।</b>.*?</div>',
                f'<div class="g-src"><b>পাঠ সম্পর্কে।</b> {src}</div>', h, count=1, flags=re.S)
 

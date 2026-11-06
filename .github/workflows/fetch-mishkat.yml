@@ -116,6 +116,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "কোনো নতুন ফল নেই"; exit 0
           fi
-          git commit -m "মিশকাত: $MODE-র ফল ($(date -u +%d/%m %H:%M) UTC)" || true
+          git commit -m "মিশকাত: $MODE-র ফল ($(date -u '+%d/%m %H:%M') UTC)" || true
           git push --force origin "HEAD:refs/heads/${BOT_BRANCH}" \
             || { echo "⛔ push হলো না"; git log --oneline -1; exit 1; }
