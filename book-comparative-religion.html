@@ -391,7 +391,7 @@
         if (q.length < 8) { m.textContent = "অনুগ্রহ করে আপনার প্রশ্নটি একটু বিস্তারিত লিখুন।"; return; }
         var txt = "প্রশ্ন (" + at2.value + "): " + q +
           (an.value ? "\nনাম: " + an.value : "") + (ac.value ? "\nযোগাযোগ: " + ac.value : "");
-        m.innerHTML = 'ধন্যবাদ! বার্তাটি কপি করার চেষ্টা করা হয়েছে। <a target="_blank" rel="noopener" style="color:#ffd56a;text-decoration:underline" href="https://www.facebook.com/ebrahim.rahul">Facebook</a>, <a target="_blank" rel="noopener" style="color:#e56a9b;text-decoration:underline" href="https://www.instagram.com/ead2212/">Instagram</a>, <a target="_blank" rel="noopener" style="color:#ff7043;text-decoration:underline" href="https://www.reddit.com/user/Zealousideal_Dig2819/">Reddit</a>, <a target="_blank" rel="noopener" style="color:#fff;text-decoration:underline" href="https://x.com/ebrahimn23o">X</a> অথবা <a target="_blank" rel="noopener" style="color:#54d88a;text-decoration:underline" href="https://wa.me/8801783543026">WhatsApp</a>-এ পাঠান।';
+        m.innerHTML = 'ধন্যবাদ! বার্তাটি কপি করার চেষ্টা করা হয়েছে। <a target="_blank" rel="noopener" class="soc-fb" href="https://www.facebook.com/ebrahim.rahul">Facebook</a>, <a target="_blank" rel="noopener" class="soc-ig" href="https://www.instagram.com/ead2212/">Instagram</a>, <a target="_blank" rel="noopener" class="soc-rd" href="https://www.reddit.com/user/Zealousideal_Dig2819/">Reddit</a>, <a target="_blank" rel="noopener" class="soc-x" href="https://x.com/ebrahimn23o">X</a> অথবা <a target="_blank" rel="noopener" class="soc-wa" href="https://wa.me/8801783543026">WhatsApp</a>-এ পাঠান।';
         try { navigator.clipboard.writeText(txt); } catch (e) { }
       };
     }
