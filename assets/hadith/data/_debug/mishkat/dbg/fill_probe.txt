@@ -1,0 +1,74 @@
+probe: 3 পাতা · 2026-11-06 00:09 UTC
+
+[3] https://muslimbangla.com/hadith/34948
+  html 107940B · flight 57725B · rows 50 · items 1
+  <title>: মিশকাতুল মাসাবীহ - হাদীস নং ৩ | মুসলিম বাংলা
+  পাতার নম্বর-লেবেল: [3, 3, 3, 3, 3, 3]
+  items-এর hadith_number: ['3']
+  ফিল্ড-সেট (সংশ্লিষ্ট 6):
+    ×1 ['hadith']
+    ×1 ['book', 'book_id', 'chapter', 'chapter_id', 'created_at', 'description', 'description_ar', 'description_en', 'description_shamela', 'description_shamela_without_harkat', 'description_without_harkat', 'explanation']
+    ×1 ['english_title', 'has_title', 'id', 'title', 'title_ar', 'title_en', 'translation_type']
+    ×1 ['id', 'range_end', 'range_start', 'title', 'title_ar', 'title_en']
+    ×1 ['id', 'title', 'title_ar', 'title_en']
+    ×1 ['href', 'rel', 'sizes', 'type']
+  দীর্ঘ টেক্সটের পাথ (16টি, প্রথম ৮):
+    bn    202B $2[3].children[3].children[3].children[2][3].children · '\n            window.dataLayer = wind'
+    bn    228B $2[3].className · 'kalpurush_b05ba820-module__6KMS3a__v'
+    bn    202B $3[3].children[3].children[3].children[2][3].children · '\n            window.dataLayer = wind'
+    bn    228B $3[3].className · 'kalpurush_b05ba820-module__6KMS3a__v'
+    bn    411B $1c[3].children[1][3].children · 'বাংলাদেশের সকল শহর, জেলা, উপজেলা এমন'
+    bn    411B $25[3].children[0][3].children[1][3].children · 'বাংলাদেশের সকল শহর, জেলা, উপজেলা এমন'
+    bn    886B $29[3].children[3].children[1][0][3].d · 'M380.9 97.1C339 55.1 283.2 32 223.9 '
+    bn    886B $2c[3].children[3].children[1][0][3].d · 'M380.9 97.1C339 55.1 283.2 32 223.9 '
+  parse ✓ [payload:নম্বর-মিল] বাংলা 542B · আরবি 250B · g=বিশুদ্ধ (পারিভাষিক সহীহ)
+    b[:70]: 'আবু হুরায়রাহ্ (রাঃ) হতেও সামান্য শাব্দিক পরিবর্তনে হাদীসটি বর্ণিত রয়েছ'
+
+[4] https://muslimbangla.com/hadith/34949
+  html 105576B · flight 56502B · rows 46 · items 1
+  <title>: মিশকাতুল মাসাবীহ - হাদীস নং ৪ | মুসলিম বাংলা
+  পাতার নম্বর-লেবেল: [4, 4, 4, 4, 4, 4]
+  items-এর hadith_number: ['4']
+  ফিল্ড-সেট (সংশ্লিষ্ট 6):
+    ×1 ['hadith']
+    ×1 ['book', 'book_id', 'chapter', 'chapter_id', 'created_at', 'description', 'description_ar', 'description_en', 'description_shamela', 'description_shamela_without_harkat', 'description_without_harkat', 'explanation']
+    ×1 ['english_title', 'has_title', 'id', 'title', 'title_ar', 'title_en', 'translation_type']
+    ×1 ['id', 'range_end', 'range_start', 'title', 'title_ar', 'title_en']
+    ×1 ['id', 'title', 'title_ar', 'title_en']
+    ×1 ['href', 'rel', 'sizes', 'type']
+  দীর্ঘ টেক্সটের পাথ (16টি, প্রথম ৮):
+    bn    202B $2[3].children[3].children[3].children[2][3].children · '\n            window.dataLayer = wind'
+    bn    228B $2[3].className · 'kalpurush_b05ba820-module__6KMS3a__v'
+    bn    202B $3[3].children[3].children[3].children[2][3].children · '\n            window.dataLayer = wind'
+    bn    228B $3[3].className · 'kalpurush_b05ba820-module__6KMS3a__v'
+    bn    411B $1c[3].children[1][3].children · 'বাংলাদেশের সকল শহর, জেলা, উপজেলা এমন'
+    bn    411B $25[3].children[0][3].children[1][3].children · 'বাংলাদেশের সকল শহর, জেলা, উপজেলা এমন'
+    bn    886B $29[3].children[3].children[1][0][3].d · 'M380.9 97.1C339 55.1 283.2 32 223.9 '
+    bn    886B $2c[3].children[3].children[1][0][3].d · 'M380.9 97.1C339 55.1 283.2 32 223.9 '
+  parse ✓ [payload:নম্বর-মিল] বাংলা 306B · আরবি 271B · g=বিশুদ্ধ (পারিভাষিক সহীহ)
+    b[:70]: 'হযরত আব্দুল্লাহ ইবনে উমর (রাযিঃ) থেকে বর্ণিত, রাসূলুল্লাহ (ﷺ) ইরশাদ কর'
+
+[45] https://muslimbangla.com/hadith/34990
+  html 107574B · flight 57370B · rows 48 · items 1
+  <title>: মিশকাতুল মাসাবীহ - হাদীস নং ৪৫ | মুসলিম বাংলা
+  পাতার নম্বর-লেবেল: [45, 45, 45, 45, 45, 45]
+  items-এর hadith_number: ['45']
+  ফিল্ড-সেট (সংশ্লিষ্ট 7):
+    ×1 ['hadith']
+    ×1 ['book', 'book_id', 'chapter', 'chapter_id', 'created_at', 'description', 'description_ar', 'description_en', 'description_shamela', 'description_shamela_without_harkat', 'description_without_harkat', 'explanation']
+    ×1 ['english_title', 'has_title', 'id', 'title', 'title_ar', 'title_en', 'translation_type']
+    ×1 ['id', 'range_end', 'range_start', 'title', 'title_ar', 'title_en']
+    ×1 ['id', 'title', 'title_ar', 'title_en']
+    ×1 ['id', 'reference', 'title']
+    ×1 ['href', 'rel', 'sizes', 'type']
+  দীর্ঘ টেক্সটের পাথ (17টি, প্রথম ৮):
+    bn    202B $2[3].children[3].children[3].children[2][3].children · '\n            window.dataLayer = wind'
+    bn    228B $2[3].className · 'kalpurush_b05ba820-module__6KMS3a__v'
+    bn    202B $3[3].children[3].children[3].children[2][3].children · '\n            window.dataLayer = wind'
+    bn    228B $3[3].className · 'kalpurush_b05ba820-module__6KMS3a__v'
+    bn    411B $1c[3].children[1][3].children · 'বাংলাদেশের সকল শহর, জেলা, উপজেলা এমন'
+    bn    411B $25[3].children[0][3].children[1][3].children · 'বাংলাদেশের সকল শহর, জেলা, উপজেলা এমন'
+    bn    886B $29[3].children[3].children[1][0][3].d · 'M380.9 97.1C339 55.1 283.2 32 223.9 '
+    bn    886B $2c[3].children[3].children[1][0][3].d · 'M380.9 97.1C339 55.1 283.2 32 223.9 '
+  parse ✓ [payload:নম্বর-মিল] বাংলা 408B · আরবি 293B · g=তাহকীক চলমান
+    b[:70]: 'হযরত আবু উমামা (রাযিঃ) বলেন, একদিন এক ব্যক্তি রাসূলুল্লাহ (ﷺ)-কে জিজ্ঞ'
