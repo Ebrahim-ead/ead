@@ -62,8 +62,11 @@ async function testPage(file) {
   const { window } = dom;
   window.scrollTo = () => {};
   window.fetch = async (u) => {
-    const name = String(u).split('/').pop().split('?')[0];
-    const fp = path.join(dataDir, name);
+    const su = String(u);
+    const name = su.split('/').pop().split('?')[0];
+    // ইংরেজি ডেটা সাব-ফোল্ডারে (en/chN.json) — ফাইলনামে নামালে বাংলা
+    // চ্যাপ্টার-ফাইলটিই ফিরত যেত (একবার এমন ভুল ধরা পড়েছে)
+    const fp = su.includes('/en/') ? path.join(dataDir, 'en', name) : path.join(dataDir, name);
     const ok = fs.existsSync(fp);
     return {
       ok,
@@ -157,6 +160,34 @@ async function testPage(file) {
     if (ch.preface && !frontEl) errs.push('ভূমিকা ডেটায় আছে কিন্তু রেন্ডার হয়নি');
     if (frontEl && !ch.preface) errs.push('ভূমিকা নেই অথচ ব্লক রেন্ডার হয়েছে');
     if (frontEl && frontEl.open) errs.push('ভূমিকা-ব্লক খোলা অবস্থায় আছে (কল্যাপ্স থাকার কথা)');
+
+    // ইংরেজি অনুবাদ (বাইবেল): ডেটা থাকলে রেন্ডার, টগল ও নম্বর-মিল যাচাই
+    const enPath = path.join(dataDir, 'en', `ch${idx.chapters[0].id}.json`);
+    if (fs.existsSync(enPath)) {
+      const en = JSON.parse(fs.readFileSync(enPath, 'utf8'));
+      const enWant = Object.keys(en.verses || {}).length;
+      const enGot = doc.querySelectorAll('.g-v-en').length;
+      if (enWant && enGot !== enWant) errs.push(`ইংরেজি লাইন ${enGot} ≠ ডেটার ${enWant}`);
+      const lb = doc.querySelector('.g-lang');
+      if (!lb || lb.hidden) errs.push('ইংরেজি ডেটা আছে, তবু ভাষা-টগল দেখা যায়নি');
+      const ns = new Set(vs.map((v) => String(v.n)));
+      const stray = Object.keys(en.verses || {}).filter((k) => !ns.has(k));
+      if (stray.length) errs.push(`ইংরেজি-কী পদের বাইরে: ${stray.slice(0, 3).join(',')}`);
+      const se = vs.filter((v) => v.srcEmpty).length;
+      if (se && doc.querySelectorAll('.g-v-empty').length < se) {
+        errs.push(`উৎস-ফাঁকা নোট ${doc.querySelectorAll('.g-v-empty').length} < ডেটার ${se}`);
+      }
+      const click = (mode) => {
+        const b = [...doc.querySelectorAll('.g-lang-btn')].find((x) => x.getAttribute('data-lang') === mode);
+        if (b) b.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+      };
+      click('en'); await wait(900);
+      if (doc.querySelectorAll('.g-v-bn').length) errs.push('«শুধু ইংরেজি» মোডে বাংলা থেকে গেছে');
+      if (enWant && !doc.querySelectorAll('.g-v-en').length) errs.push('«শুধু ইংরেজি» মোডে ইংরেজি নেই');
+      click('bn'); await wait(900);
+      if (doc.querySelectorAll('.g-v-en').length) errs.push('«শুধু বাংলা» মোডে ইংরেজি থেকে গেছে');
+      click('both'); await wait(900);
+    }
 
     // সব খণ্ডে বাংলা থাকলে অকেজো ছাঁকনি দেখানো যাবে না
     const onlyBn = doc.getElementById('g-only-bn');

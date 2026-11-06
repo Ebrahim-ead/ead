@@ -52,7 +52,7 @@ BN = "০১২৩৪৫৬৭৮৯"
 # পার্সারের সংস্করণ। ছাঁকনি/বিভাজন বদলালে এটি বাড়ানো হয় — তখন পুরোনো
 # নামানো ডেটা আর "সম্পূর্ণ" গণ্য হয় না ও পরের রানে নতুন করে নামে
 # (নইলে পুরোনো বাগে কাটা পাঠ থেকেই যেত)। প্রতি চ্যাপ্টার-ফাইলে `pv` হিসেবে ছাপ থাকে।
-PARSER_VERSION = 2
+PARSER_VERSION = 3   # v3: উৎসের ফাঁকা পদ-নম্বরগুলোও রাখা হয় (`srcEmpty` চিহ্নসহ)
 # নেভিগেশন/ব্রেডক্রাম্বের লাইন — পাঠ নয়
 NAV_LINE = re.compile(
     r"^(Bookmark|Menu|Previous (Lesson|Page)|Next (Lesson|Page|Topic)|"
@@ -70,6 +70,10 @@ def bn_digits(n):
 
 
 # ---------------------------------------------------------------- সূচি
+def BN_DIGITS_2(n):
+    return "".join(BN[int(d)] for d in f"{n:02d}")
+
+
 def discover(book_url=BOOK_URL, save=True):
     """বই-পাতার সম্পূর্ণ বৃক্ষ: ৬৬ পুস্তক ও তাদের অধ্যায়-পাতার ঠিকানা।
 
@@ -77,34 +81,64 @@ def discover(book_url=BOOK_URL, save=True):
     টপিক-লিংক) — তাই একটিমাত্র অনুরোধেই সব পাওয়া যায়। ক্রম অপরিবর্তিত রাখা হয়,
     কারণ টেস্টামেন্ট-বিভাজন ও পুস্তক-ক্রম এই ক্রমের ওপরই দাঁড়িয়ে।
     """
-    h = F.get(book_url)
-    if not h:
-        raise SystemExit("বই-পাতা নামানো যায়নি — উৎস কি ব্লক করছে?")
-    books, cur, seen = [], None, set()
-    # প্রতিটি লিংকের ঠিকানা + লেবেল (ক্রমে)
-    pat = re.compile(
-        r'<a[^>]+href="(https://www\.ebanglalibrary\.com/(lessons|topics)/[^"#?]+)"'
-        r'[^>]*>(.*?)</a>', re.S | re.I)
-    for m in pat.finditer(h):
-        url = htmllib.unescape(m.group(1))
-        kind = m.group(2)
-        label = F.text_of(m.group(3)).strip()
-        label = re.sub(r"\s+", " ", label)
-        if kind == "lessons":
-            # «১. আদিপুস্তক (Genesis)» → ক্রম, বাংলা নাম, ইংরেজি নাম
-            mm = re.match(r"^(\d+)\.\s*(.+?)\s*\(([^)]+)\)\s*$", label)
-            if mm:
-                num, bname, ename = int(mm.group(1)), mm.group(2).strip(), mm.group(3).strip()
-            else:
-                num, bname, ename = len(books) + 1, label, ""
-            cur = dict(i=len(books) + 1, num=num, bn=bname, en=ename,
-                       lesson=url, topics=[], topicLabels=[])
-            books.append(cur)
-            seen.add(url)
-        elif cur is not None and url not in seen:
-            seen.add(url)
-            cur["topics"].append(url)
-            cur["topicLabels"].append(label)
+    books = []
+    for attempt in range(1, 4):
+        h = F.get(book_url)
+        if not h:
+            raise SystemExit("বই-পাতা নামানো যায়নি — উৎস কি ব্লক করছে?")
+        books, cur, seen = [], None, set()
+        # প্রতিটি লিংকের ঠিকানা + লেবেল (ক্রমে)
+        pat = re.compile(
+            r'<a[^>]+href="(https://www\.ebanglalibrary\.com/(lessons|topics)/[^"#?]+)"'
+            r'[^>]*>(.*?)</a>', re.S | re.I)
+        for m in pat.finditer(h):
+            url = htmllib.unescape(m.group(1))
+            kind = m.group(2)
+            label = F.text_of(m.group(3)).strip()
+            label = re.sub(r"\s+", " ", label)
+            # উৎসের লেবেলে পদের সংখ্যাও ছাপা থাকে («১. আদিপুস্তক (Genesis) 50
+            # Topics») — সেটি বাদ না দিলে নাম-রেগেক্স ভেঙে bn-এ আবর্জনা ঢুকত।
+            label = re.sub(r"\s*\d+\s*Topics\s*$", "", label).strip()
+            if kind == "lessons":
+                mm = re.match(r"^(\d+)\.\s*(.+?)\s*\(([^)]+)\)\s*$", label)
+                if mm:
+                    num, bname, ename = int(mm.group(1)), mm.group(2).strip(), mm.group(3).strip()
+                else:
+                    num, bname, ename = len(books) + 1, label, ""
+                cur = dict(i=len(books) + 1, num=num, bn=bname, en=ename,
+                           lesson=url, topics=[], topicLabels=[])
+                books.append(cur)
+                seen.add(url)
+            elif cur is not None and url not in seen:
+                seen.add(url)
+                cur["topics"].append(url)
+                cur["topicLabels"].append(label)
+        if len(books) >= 66:
+            break
+        # উৎসের বই-পাতা বিশাল; মাঝে মাঝে প্রতিক্রিয়া অসম্পূর্ণ এসে পুস্তক তালিকা
+        # মাঝপথে থেমে যেত (৫০/৬৬) — ফলে ১৬টি পুস্তক কখনোই নামত না। তাই
+        # ৬৬ না পাওয়া পর্যন্ত আবার নামানো হয়।
+        print(f"⚠ বই-পাতা অসম্পূর্ণ মনে হচ্ছে ({len(books)} পুস্তক) — আবার নামাই "
+              f"(চেষ্টা {attempt + 1}/৩)", flush=True)
+        time.sleep(2)
+    if len(books) != 66:
+        print(f"⚠ সতর্ক: বই-পাতায় {len(books)}টি পুস্তক মিলল (প্রত্যাশা ৬৬) — "
+              f"উৎসের সূচি বদলেছে কি না দেখা দরকার", flush=True)
+    # ভাঙা টপিক-লিংক সারাই: উৎসে মাঝে মাঝে href অসম্পূর্ণ থাকে (জাখারিয়া ১৩ →
+    # «topics/চ/»)। একই বইয়ের প্রতিবেশী লিংকের slug-নিয়ম আর লেবেল থেকে সঠিক
+    # ঠিকানা নিশ্চিতভাবে গড়া যায়, তাই পাঠ না হারিয়ে লিংক সারানো হয়।
+    for b in books:
+        if len(b["topics"]) < 2:
+            continue
+        prefix = b["topics"][0].rstrip("/").rsplit("/", 1)[0]
+        base_slug = b["topics"][0].rstrip("/").rsplit("/", 1)[-1].rsplit("-", 1)[0]
+        for k in range(1, len(b["topics"])):
+            want = f"-{BN_DIGITS_2(k + 1)}/"
+            if not b["topics"][k].endswith(want):
+                fixed = f"{prefix}/{base_slug}-{BN_DIGITS_2(k + 1)}/"
+                print(f"  ℹ ভাঙা লিংক সারানো হলো: {b['bn']} · টপিক {k + 1} → "
+                      f"{fixed.rsplit('/', 2)[-2]}/{fixed.rsplit('/', 1)[-1]}", flush=True)
+                b["topics"][k] = fixed
     # টেস্টামেন্ট: পাতায় «ওল্ড টেস্টামেন্ট»/«নিউ টেস্টামেন্ট» বিভাজন থাকে।
     # লিংক-ক্রমে কোন পুস্তক কোন বিভাগে তা ধরা যায় বিভাজক-শব্দের অবস্থান থেকে।
     marks = []
@@ -268,7 +302,13 @@ def _parse_region(region, h, title, expect_first=1):
     # নম্বরহীন লেজ প্রথম পদের আগে বসে (উৎসে ভূমিকা-জাতীয় অংশ থাকলে)
     if tail:
         notes.append("নম্বরহীন অগ্রভাগ মিলেছে")
-    verses = [v for v in verses if v["bn"].strip()]
+    # উৎসে কখনো পদ-নম্বর ছাপা থাকে কিন্তু পাঠ থাকে না (আদিপুস্তক ৩৬-এর ৭, ৮,
+    # ৪১-৪৩ — উৎস-পাতা দেখে নিশ্চিত হওয়া)। আগে এগুলো চুপচাপ বাদ পড়ত, ফলে
+    # পাঠকের কাছে পদ-সংখ্যা গোনা অবস্থায় থেকে যেত। এখন নম্বরগুলো থাকে, কেবল
+    # `srcEmpty` চিহ্ন লাগে — পাঠ তৈরি করা হয় না, লুকানোও হয় না।
+    for v in verses:
+        if not v["bn"].strip():
+            v["srcEmpty"] = True
     return verses, notes
 
 
@@ -350,6 +390,8 @@ def build_book(book, chapters, missing):
                  "spk": "", "bnSrc": F.SRC}
             if v.get("hd"):
                 d["hd"] = v["hd"]
+            if v.get("srcEmpty"):
+                d["srcEmpty"] = True
             verses.append(d)
         groups.append({"id": chno, "from": start, "to": n,
                        "vfrom": vs[0]["vn"], "vto": vs[-1]["vn"],
@@ -363,6 +405,10 @@ def build_book(book, chapters, missing):
         "testament": book.get("testament", ""), "pv": PARSER_VERSION,
         **({"missing": missing} if missing else {}),
     }
+
+
+def _verses_of(obj):
+    return obj.get("verses", [])
 
 
 def write_index(books):
@@ -495,6 +541,13 @@ def cmd_fetch(args):
         report.append(line)
         if notes:
             report.append("     নোট: " + "; ".join(notes[:8]))
+        se = {}
+        for v in obj["verses"]:
+            if v.get("srcEmpty"):
+                se.setdefault(v["ch"], []).append(v["vn"])
+        if se:
+            report.append("     উৎসে ফাঁকা পদ (নম্বর ছাপা, পাঠ নেই): " +
+                          "; ".join(f"অ{c}: " + ",".join(map(str, ns)) for c, ns in se.items()))
         prog[str(b["i"])] = {"count": obj["count"], "groups": obj["suktaCount"],
                              "missing": missing, "when": int(time.time())}
         prog_path.write_text(json.dumps(prog, ensure_ascii=False), encoding="utf-8")
@@ -506,11 +559,13 @@ def cmd_fetch(args):
     idx = write_index(books)
     onfile = idx["chapters"]
     tot_missing = sum(len(x.get("missing", [])) for x in onfile)
+    tot_empty = sum(1 for x in onfile for v in _verses_of(x) if v.get("srcEmpty"))
     head = (f"=== বাংলা বাইবেল — ফল ===\n"
             f"পুস্তক: {len(made)} (এই রানে নতুন {done} · আগে থেকে ছিল {skipped}) · "
             f"মোট পদ: {idx['total']} · বাংলাসহ: {idx['withBn']}\n"
             f"অধ্যায় বিল্ডি: {sum(x['suktaCount'] for x in made)} · "
-            f"নামেনি এমন অধ্যায়: {tot_missing}\n")
+            f"নামেনি এমন অধ্যায়: {tot_missing}\n"
+            f"উৎসে ফাঁকা পদ (নম্বর আছে, পাঠ উৎসেই নেই): {tot_empty}\n")
     txt = head + "\n".join(report) + "\n=== শেষ ===\n"
     (DBG / "bible_report.txt").write_text(txt, encoding="utf-8")
     print(head)
