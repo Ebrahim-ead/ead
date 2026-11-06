@@ -8,8 +8,15 @@
   header.top,.nav,.badge,.card,.qcard{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
   header.top{background:rgba(4,12,16,.985)!important;animation:none!important}
   html[data-theme="light"] header.top{background:rgba(247,250,252,.99)!important}
-  *{will-change:auto!important}
-  .card,.qcard,.article-card{transition:none!important}
+  /* `*{will-change:auto}` পুরো পাতায় বসালে ব্রাউজার প্রতিটি এলিমেন্টের
+     জন্য নতুন রেন্ডার-লেয়ার বানাতে জোর করে — উল্টো ভারী হয়ে যায়।
+     তাই আগে যেগুলো লেয়ার চেয়েছিল কেবল সেগুলোই ছাড়া হয়। */
+  .card,.qcard,.article-card,.btn,.nav,.badge,.article-body>section,
+  [class*="rv"]{will-change:auto!important}
+  /* কার্ডের hover-lift ফোনে অর্থহীন, কিন্তু transition:none দিলে
+     তালিকার stagger (--d দিয়ে আসা) ভেঙে যায় — তাই কেবল রূপান্তর থামানো,
+     opacity-অ্যানিমেশন অটুট। */
+  .card:hover,.qcard:hover,.article-card:hover{transform:none!important}
   input,select,textarea{font-size:16px!important}      /* iOS ফোকাসে zoom বন্ধ */
   ::-webkit-scrollbar{width:8px;height:8px}
 }
@@ -37,8 +44,20 @@
 .article-body img,.article-body table{max-width:100%;height:auto}
 .article-body table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .article-body img,.h-item img{height:auto}
-/* দৃশ্যের বাইরের অংশ আঁকা হয় না → লম্বা পাতায় স্ক্রল মসৃণ */
-.article-body>section{content-visibility:auto;contain-intrinsic-size:auto 320px}
+/* দৃশ্যের বাইরের অংশ আঁকা হয় না → লম্বা পাতায় স্ক্রল মসৃণ
+   ----------------------------------------------------------------
+   নোট: আগের নিয়ম ছিল `.article-body>section`, কিন্তু ১১টি প্রবন্ধের
+   কোনোটিতেই বডি-লেখা <section>-এ মোড়া নয় — ফলে নিয়মটি কার্যত কখনো
+   লাগেনি, আর ৩৪৪ KB-র প্রবন্ধেও পুরো DOM একবারে পেইন্ট হয়েছে।
+   এখন দুই কাঠামোই ধরা হয়; তালিকা-বিন্দু আলাদা চাঙ্ক হিসেবে আঁকা হয়,
+   তাই একবারে ৬৪০টি <li> রেন্ডার করতে হয় না। */
+/* কেবল ব্লক-স্তরে (section/ul), আর `auto` দিয়ে মাপা-উচ্চতা মনে রাখা হয়।
+   ছোট ব্লকে (p/h2/h3) দিলে আনুমানিক উচ্চতার হেরফেরে স্ক্রলবার লাফাত —
+   যা পাঠের অভিজ্ঞতা খারাপ করে; তাই ওগুলো বাদ। */
+.article-body>section,
+.article-body>ul{content-visibility:auto}
+.article-body>section{contain-intrinsic-size:auto 320px}
+.article-body>ul{contain-intrinsic-size:auto 260px}
 /* সূত্র-লাইন (হাদিস/কুরআন পাতার ছোট করে লেখা অংশ) */
 .h-src-line,.q-src-line{font-size:13.5px;color:var(--muted);margin-top:6px}
 .h-src-line a,.q-src-line a,.h-credit a,.q-credit a{color:var(--gold2);text-decoration:underline;text-underline-offset:3px}
@@ -122,7 +141,10 @@ html[data-theme="light"] .soc-wa{color:#0f6b41}
     width:214px;max-height:calc(100vh - 150px);overflow:auto;z-index:40;
     padding:13px 12px 15px;border:1px solid var(--line);border-radius:16px;
     background:linear-gradient(170deg,rgba(10,24,33,.94),rgba(5,14,21,.96));
-    box-shadow:0 22px 46px rgba(0,0,0,.36);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+    /* ব্লার বাদ: প্যানেলের পটভূমি ইতিমধ্যেই ৯৪–৯৬% অস্বচ্ছ, তাই চোখে
+       পার্থক্য নেই — অথচ স্ক্রল/উদ্বোধনের সময় প্রতিটি ফ্রেমে ব্লার
+       পুনর্গণনা ফোনে সবচেয়ে খরচা কাজগুলোর একটি। */
+    box-shadow:0 22px 46px rgba(0,0,0,.36);
     opacity:0;transform:translateY(10px);pointer-events:none;
     transition:opacity .32s ease,transform .36s var(--ease);
     scrollbar-width:thin}

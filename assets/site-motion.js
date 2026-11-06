@@ -96,11 +96,21 @@
     bar.setAttribute("aria-hidden", "true");
     document.body.appendChild(bar);
 
+    /* window.scrollY ও scrollHeight পড়া = লেআউট-পুনর্গণনা। প্রতি ফ্রেমে
+       পড়লে মোবাইলে স্ক্রল থমকে যায়; তাই মানগুলো স্ক্রল/রিসাইজে একবার
+       মাপা হয়, আর ফ্রেমে শুধু সস্তা তুলনা হয়। */
+    var max = 0, y = 0;
+    function measure() {
+      y = window.pageYOffset || document.documentElement.scrollTop || 0;
+      max = document.documentElement.scrollHeight - window.innerHeight;
+    }
+    measure();
+    window.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure, { passive: true });
+
     var last = -1;
     return function tick() {
-      var doc = document.documentElement;
-      var max = doc.scrollHeight - window.innerHeight;
-      var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      var p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
       if (Math.abs(p - last) < 0.0015) return;
       last = p;
       bar.style.transform = "scaleX(" + p.toFixed(4) + ")";
@@ -116,10 +126,14 @@
     var bar = document.querySelector("header.top");
     if (!bar) return;
     var stuck = false;
-    return function tick() {
-      var s = window.scrollY > 24;
+    /* ২৪px সীমা পার হলেই কেবল একটি ক্লাস বদলায় — প্রতি ফ্রেমে scrollY
+       পড়া বন্ধ, কারণ সেটাই লেআউট-থ্র্যাশিংয়ের মূল কারণ ছিল। */
+    function apply() {
+      var s = (window.pageYOffset || 0) > 24;
       if (s !== stuck) { stuck = s; bar.classList.toggle("m-stuck", s); }
-    };
+    }
+    apply();
+    window.addEventListener("scroll", apply, { passive: true });
   }
 
   /* ------------------------------------------------------ *
@@ -165,17 +179,19 @@
 
     var ring = cursor();
     if (ring) tickers.push(ring);
-    tickers.push(progress(), header());
     tickers = tickers.filter(Boolean);
+
+    /* progress ও header এখন নিজেরাই scroll/resize-এ চলে (passive),
+       তাই এদের আর প্রতি-ফ্রেম লুপে রাখা হয় না। ফলে ফোনে স্ক্রল করার
+       সময় অকারণ rAF ফ্রেম জ্বলে না — ফ্রেম-টাইম ও ব্যাটারি দুটোই বাঁচে। */
+    var still = [progress(), header()].filter(Boolean);
+    still.forEach(function (t) { t(); });
 
     theme();
 
-    if (!reduced.matches) {
+    if (!reduced.matches && tickers.length) {
       running = true;
       requestAnimationFrame(loop);
-    } else {
-      /* still place the static pieces once */
-      tickers.forEach(function (t) { t(); });
     }
 
     /* re-stagger when the layout changes (language toggle, zoom) */
@@ -190,8 +206,10 @@
 
   /* if the reader flips the preference mid-visit, stop the loop */
   var onChange = function () {
-    if (reduced.matches) running = false;
-    else if (!running && tickers.length) { running = true; requestAnimationFrame(loop); }
+    if (reduced.matches) { running = false; return; }
+    /* লুপ কেবল তখনই দরকার, যখন সত্যিই প্রতি-ফ্রেম টিকার আছে
+       (pointer ring)। না থাকলে অকারণ ফ্রেম চালানো অর্থহীন। */
+    if (!running && tickers.length) { running = true; requestAnimationFrame(loop); }
   };
   if (reduced.addEventListener) reduced.addEventListener("change", onChange);
   else if (reduced.addListener) reduced.addListener(onChange);

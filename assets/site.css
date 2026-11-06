@@ -54,7 +54,7 @@ button,input,select,textarea{font:inherit;color:inherit}
   box-shadow:0 0 14px rgba(245,184,28,.6);transition:width .12s linear}
 header.top{position:sticky;top:0;z-index:70;border-bottom:1px solid var(--line);
   background:linear-gradient(180deg,rgba(4,12,16,.96),rgba(4,12,16,.76));
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);animation:dropIn .6s var(--ease) both}
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:dropIn .6s var(--ease) both}
 @keyframes dropIn{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
 header.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
   background:linear-gradient(90deg,transparent,rgba(245,184,28,.65),transparent);opacity:.8}
@@ -741,7 +741,9 @@ html[data-theme="light"] .nav.open{background:rgba(248,251,253,.99);border-color
       inset 0 1px rgba(255,255,255,.12),inset 0 -18px 30px rgba(0,0,0,.18);
     backdrop-filter:blur(22px) saturate(1.22);-webkit-backdrop-filter:blur(22px) saturate(1.22);
     transform:translate(-50%,-22px) rotateX(-10deg) scale(.975);transform-origin:top center;
-    transform-style:preserve-3d;opacity:0;filter:blur(3px);will-change:transform,opacity,filter;
+    /* `filter:blur()` পুরো নেভ-প্যানেলে বসালে প্রতিটি ফ্রেমে নতুন র‍্যাস্টার হয়;
+       opacity+transform দিয়েই ঢোকার অনুভূতি যথেষ্ট মসৃণ, তাই ব্লার বাদ। */
+    transform-style:preserve-3d;opacity:0;will-change:transform,opacity;
     transition:transform .56s cubic-bezier(.18,.78,.18,1),opacity .26s ease,filter .38s ease,visibility .56s;}
   .nav::before{content:"";position:absolute;top:0;left:14px;right:14px;height:1px;
     background:linear-gradient(90deg,transparent,rgba(255,255,255,.38),rgba(255,213,106,.6),rgba(255,255,255,.24),transparent);
