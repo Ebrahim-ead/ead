@@ -16,6 +16,11 @@
    "total": 1791,
    "withBn": 1791,
    "chapters": 40
+  },
+  "bible": {
+   "total": 24087,
+   "withBn": 23736,
+   "chapters": 46
   }
  }
 }

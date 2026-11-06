@@ -130,10 +130,15 @@ jobs:
       # + অমিল-তালিকা)। বাজেট আলাদা, যাতে বাংলা-ফেচের সময় না কাড়ে।
       - name: ১.৫) ইংরেজি (NAB) নামানো + মেলানো
         if: inputs.probe_only != true
+        env:
+          # পার্সার বদলালে পুরোনো ভাঙা পাঠ গুনে তালিকা আটকে যেত। রি-ওয়াকে
+          # জমা প্রচলিত বই-ফাইল মুছে ফেলা হয়, যাতে নতুন পার্সারই হিসাব দেয়।
+          PV_EN: ${{ vars.BIBLE_PV_EN || '' }}
         run: |
           python3 -u tools/fetch_bible_en.py --fetch --delay 0.7 --budget "$EN_BUDGET" 2>&1 \
             | tee -a "$DBG/bible_run.txt" | tail -40 || true
           python3 -u tools/fetch_bible_en.py --join 2>&1 | tee "$DBG/bible_en_join.txt" || true
+          python3 -u tools/fetch_bible_en.py --verify 2>&1 | tee "$DBG/bible_en_verify.txt" || true
 
       # ── ) স্বতন্ত্র যাচাই ──────────────────────────────────────
       # পার্সার পাস করলেও ডেটা ফাইলে গঠনগত ভুল থাকতে পারে (নম্বর উল্টাপাল্টা,
