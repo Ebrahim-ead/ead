@@ -341,13 +341,30 @@ def make_page(slug, idx, meta):
     # রিডারের নতুন গঠন (পুস্তক → অধ্যায় → পদ): টেমপ্লেটে ব্লকগুলো হাতে বসানো
     # থাকে, কিন্তু গ্রুপ-তথ্য (testament/অধ্যায়-সংখ্যা/ইংরেজি-কভারেজ) ডেটা
     # থেকে এখানেই বসানো হয় — পুরোনো টেমপ্লেটেও কার্যকর।
+    # প্যানেলের শিরোনাম ডেটার chword থেকেই («পুস্তক») — হার্ডকোডেড «অধ্যায়» ভুল ছিল
+    if meta.get("kind") == "bible":
+        h = h.replace('<b id="g-side-title">অধ্যায়</b>',
+                      f'<b id="g-side-title">{meta.get("chword") or "পুস্তক"}</b>')
+        # প্যানেলের id — ভাঁজ-নিয়ন্ত্রণ ও স্ক্রলযোগ্য বডি এর ওপরেই দাঁড়িয়ে
+        h = h.replace('<aside class="g-side">', '<aside class="g-side" id="g-side">', 1)
     if meta.get("kind") == "bible" and 'id="g-book-list"' not in h:
-        # পুরোনো টেমপ্লেটে কেবল খণ্ড-তালিকা ছিল — নতুন স্তরগুলোর কনটেইনার বসাই
+        # পুরোনো টেমপ্লেটে কেবল খণ্ড-তালিকা ছিল — নতুন স্তরগুলোর কনটেইনার বসাই,
+        # সাথে মোবাইলে ভাঁজ-বোতাম ও গুটিয়ে রাখা যায় এমন বডি।
+        h = h.replace('<div class="g-side-head">',
+                      '<div class="g-side-head">'
+                      '<button class="g-side-toggle" id="g-side-toggle" type="button" '
+                      'aria-expanded="true" aria-controls="g-side-body">'
+                      '<b id="g-side-title">পুস্তক</b>'
+                      '<span>তালিকা <span class="g-side-chev" aria-hidden="true"></span></span>'
+                      '</button>', 1)
         h = h.replace('<div id="g-chapter-list"></div>',
+                      '<div class="g-side-now" id="g-side-now" aria-live="polite"></div>'
+                      '<div class="g-side-body" id="g-side-body">'
                       '<div id="g-testament" class="g-tset" role="group" '
                       'aria-label="নিয়ম" hidden></div>'
                       '<div id="g-book-list"></div>'
-                      '<div id="g-chapter-list" hidden></div>', 1)
+                      '<div id="g-chapter-list" hidden></div>'
+                      '</div>', 1)
         h = h.replace('<div id="g-bn-note"',
                       '<div id="g-crumb2" class="g-crumb2" hidden></div>'
                       '<div id="g-chapter-grid" class="g-chgrid" role="group" '

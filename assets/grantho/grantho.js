@@ -146,7 +146,9 @@
       var meta = bn(c.count) + " " + VW;
       if (c.suktaCount) meta += " · " + bn(c.suktaCount) + " " + GW;
       if (c.prefaceCount) meta += " · অনুক্রমণিকা";
-      var tag = c._en ? ' <span class="g-bk-en">' + esc(c._en) + "</span>" : "";
+      /* ইংরেজি নাম ডেটার `en` থেকেই (Genesis, Exodus …) — বাংলা নামের পাশে,
+         ছোট করে ও LTR-এ, যাতে দুই ভাষার নাম একসাথে পড়া যায়। */
+      var tag = c.en ? ' <span class="g-bk-en" lang="en" dir="ltr">' + esc(c.en) + "</span>" : "";
       return '<button class="g-ch g-bk' + (on ? " on" : "") + '" type="button" data-ch="' + c.id + '"' +
         (on ? ' aria-current="true"' : "") + '>' +
         '<span class="num">' + bn(c.num || c.id) + '</span>' +
@@ -161,6 +163,45 @@
         if (grouped) showBookView(id);
         else openChapter(id);
       });
+    });
+    if (totalEl) totalEl.textContent = bn(index.chapters.length) + " " + CW + " · " + bnNum(index.total) + " " + VW;
+  }
+
+  /* ---------- তালিকার ভাঁজ (মোবাইল) ----------
+     ফোনে তালিকা এখন পাঠের *উপরে*; ৪৬ পুস্তক সবসময় খোলা থাকলে অধ্যায়-গ্রিড
+     নিচে ঠেলে দিত। তাই হেডার-বোতামে ভাঁজ/খোলা, আর ভাঁজ করা অবস্থায় হেডারে
+     বর্তমান জায়গা («আদিপুস্তক · অধ্যায় ৩») দেখা যায়। */
+  function syncFold() {
+    var side = document.getElementById("g-side");
+    var btn = document.getElementById("g-side-toggle");
+    if (!side || !btn) return;
+    var folded = side.classList.contains("folded");
+    btn.setAttribute("aria-expanded", folded ? "false" : "true");
+    var now = document.getElementById("g-side-now");
+    if (now) {
+      var bk = bkOf();
+      /* ভাঁজ করা অবস্থায় হেডারে যতটা জায়গা আছে তাতে বইয়ের নামই সবচেয়ে
+         দরকারি — কোন অধ্যায়ে আছেন তা ঠিক নিচেই শিরোনামে দেখা যায়। */
+      var cur = bk.bn || "";
+      now.textContent = cur;
+      now.hidden = !(folded && cur);
+    }
+  }
+
+  function setFolded(on, remember) {
+    var side = document.getElementById("g-side");
+    if (!side) return;
+    side.classList.toggle("folded", !!on);
+    syncFold();
+    if (remember) save({ fold: !!on });
+  }
+
+  function bindFold() {
+    var btn = document.getElementById("g-side-toggle");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var side = document.getElementById("g-side");
+      setFolded(!side.classList.contains("folded"), true);
     });
   }
 
@@ -253,12 +294,30 @@
     if (!bk.bn) return;
     var miss = (bk.grid && bk.grid.missing) || bk.missing || [];
     if (scope === "chapter" && chapter && chapter.id === bookId) {
-      if (titleEl) titleEl.textContent = bk.bn + " · " + GW + " " + bn(chapterId);
+      if (titleEl) {
+        titleEl.textContent = bk.bn + " · " + GW + " " + bn(chapterId);
+        /* ইংরেজি নাম শিরোনামেই, ছোট ও LTR — কোন পুস্তক তা দুই ভাষায় বোঝা যায় */
+        if (bk.en) {
+          var enSpan = document.createElement("span");
+          enSpan.className = "g-head-en";
+          enSpan.lang = "en"; enSpan.dir = "ltr";
+          enSpan.textContent = bk.en;
+          titleEl.appendChild(enSpan);
+        }
+      }
       var gm = (chapter.suktas || []).filter(function (x) { return x.id === chapterId; })[0] || null;
       /* উৎসে না-থাকা অধ্যায়ে «০ পদ» লেখা বিভ্রান্তিকর — সত্য কথাটাই লিখি */
       if (metaEl) metaEl.textContent = gm ? bn(gm.verse || 0) + " " + VW : "উৎসে পাওয়া যায়নি";
     } else {
-      if (titleEl) titleEl.textContent = bk.bn;
+      if (titleEl) {
+        titleEl.textContent = bk.bn;
+        if (bk.en) {
+          var e2 = document.createElement("span");
+          e2.className = "g-head-en"; e2.lang = "en"; e2.dir = "ltr";
+          e2.textContent = bk.en;
+          titleEl.appendChild(e2);
+        }
+      }
       var mtxt = bn(bk.count || 0) + " " + VW + " · " + bn(bk.suktaCount || 0) + " " + GW;
       if (miss.length) mtxt += " · " + bn(miss.length) + "টি উৎসে নেই";
       if (metaEl) metaEl.textContent = mtxt;
@@ -329,6 +388,7 @@
     refreshCrumb();
     enNote();
     setPrevNext();
+    syncFold();
     save({ book: id });
   }
 
@@ -609,6 +669,7 @@
     if (grouped) {
       renderChapterGrid();
       refreshCrumb();
+      syncFold();
     } else {
       renderChapters();
     }
@@ -623,7 +684,7 @@
     ]).then(function (r) {
       if (chapterId !== id || (grouped && bookId !== fileId)) return;
       chapter = r[0]; chapterEn = r[1];
-      if (grouped) { syncHead(); refreshCrumb(); enNote(); }
+      if (grouped) { syncHead(); refreshCrumb(); enNote(); syncFold(); }
       renderVerses();
       try { window.scrollTo({ top: (gridEl || root).offsetTop - 90, behavior: "smooth" }); } catch (e) {}
       var h = location.hash;
@@ -767,6 +828,12 @@
               d.chapters.some(function (c) { return (+c.suktaCount || 0) > 0; });
     buildLangBox();
     bind();
+    bindFold();
+    /* ফোনে ডিফল্ট ভাঁজ (অধ্যায়-গ্রিড আগে দেখা যায়), ডেস্কটপে খোলা; পাঠক
+       নিজে খুললে/বন্ধ করলে সেটাই মনে রাখা হয়। */
+    var narrow = false;
+    try { narrow = window.matchMedia("(max-width: 980px)").matches; } catch (e) {}
+    if (grouped) setFolded(typeof st.fold === "boolean" ? st.fold : narrow, false);
     var m = (location.hash || "").match(/^#ch(\d+)$/) || (location.hash || "").match(/^#b(\d+)c(\d+)$/);
     var startBook = null, startCh = null;
     if (location.hash && /^#b\d+c\d+$/.test(location.hash)) {
