@@ -30,6 +30,7 @@ on:
     paths:
       - '.github/workflows/fetch-bible.yml'
       - 'tools/fetch_bible.py'
+      - 'tools/fetch_bible_en.py'
   schedule:
     # বাকি থাকলে পরের রানে নিজেই এগিয়ে যায়; সম্পূর্ণ হলে প্রথম ধাপেই বেরিয়ে যায়
     - cron: '17 */2 * * *'
