@@ -20,6 +20,7 @@
 """
 import argparse
 import json
+import os
 import re
 import sys
 import time
@@ -36,7 +37,11 @@ RAW = EN / "raw"
 DBG = OUT.parent / "_debug"   # fetch_bible.py-এর সাথে একই ফোল্ডার
 MANIFEST = DBG / "bible_books.json"          # fetch_bible.py-র discover-এর লেখা
 EN_SRC = "The New American Bible — vatican.va"
-PV_EN = 4                                    # ইংরেজি পার্সারের সংস্করণ
+# ইংরেজি পার্সারের সংস্করণ — ৪: প্রথম ব্যবহারযোগ্য সমন্বিত পার্সার
+# (একা-সংখ্যা লাইন, পাঠান্তর্গত [n] টীকা-কাটা, পদ-ক্রম-যাচাই, সামসঙ্গীত alias)।
+# CI থেকে PV_EN env দিয়ে বদলানো যায় — কিছু বদলালে তবেই বাড়াতে হয়, নইলে
+# প্রতিটি রানে অকারণ রি-ওয়াক হতো।
+PV_EN = int(os.environ.get("PV_EN") or 4)
 
 BASE = "https://www.vatican.va/archive/ENG0839/"
 ALPHA = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -297,7 +302,12 @@ def save_raw(name, chapters, report):
     fp = RAW / f"raw{book['i']}.json"
     if fp.exists():
         try:
-            prev = json.loads(fp.read_text(encoding="utf-8")).get("chapters", {})
+            old = json.loads(fp.read_text(encoding="utf-8"))
+            # কেবল একই পার্সারে বানানো অধ্যায় ধরে রাখা — পুরোনো (PV_EN≠বর্তমান)
+            # অধ্যায় মাসানো মানে দূষণ জায়গায় পাকা হয়ে যাওয়া। নতুন পার্সার
+            # সব অধ্যায় আবার পড়বে, তাই পুরোনোটা বাদ দেওয়াই নিরাপদ।
+            if old.get("pvEn") == PV_EN:
+                prev = old.get("chapters", {})
         except Exception:  # noqa: BLE001
             prev = {}
     allch = {**prev, **{str(k): v for k, v in chapters.items()}}
@@ -310,11 +320,18 @@ def save_raw(name, chapters, report):
     return 1
 
 
-def cmd_join(args):
+def join_bookkeeping():
     """বাংলা পদের সঙ্গে ইংরেজি মেলানো — কেবল হুবহু মিললে।"""
     if not (OUT / "index.json").exists():
         print("⛔ বাংলা ডেটা নেই")
         return 2
+    bad_pv = [p.name for p in RAW.glob("raw*.json")
+              if json.loads(p.read_text(encoding="utf-8")).get("pvEn") != PV_EN][:5]
+    if bad_pv:
+        # পুরোনো পার্সারে জমানো পাঠের সঙ্গে নতুন পার্সারের ফল মেশানো বিপজ্জনক —
+        # কিন্তু অচলও নয়: গঠন একই। তাই থামি না, চোখে আঙুল দিই।
+        print(f"⚠ {len(bad_pv)}+ পুরোনো পার্সারের raw-ফাইল (pvEn≠{PV_EN}) — "
+              f"যেমন {', '.join(bad_pv)}; মেলানোর আগে রি-ওয়াক দরকার")
     EN.mkdir(parents=True, exist_ok=True)
     idx = json.loads((OUT / "index.json").read_text(encoding="utf-8"))
     aligned = skipped = 0
@@ -375,17 +392,51 @@ def cmd_join(args):
     return 0
 
 
+def cmd_verify(args):
+    """মেলানো ইংরেজির স্বাস্থ্য-পরীক্ষা: যেসব লক্ষণ লাইভে দেখা গিয়েছিল।
+
+    (ক) পদের ভেতরে টীকা/ক্রস-রেফের চিহ্ন («[12]», «⇒») — পাঠ নয়;
+    (খ) পদের শুরুতে জমে থাকা সংখ্যা («2 বার্তা…») — পদ-নম্বরের অবশিষ্ট;
+    (গ) পুস্তক-ভিত্তিক মিল-হার, যাতে কোন বই পিছিয়ে আছে চোখে পড়ে।
+    """
+    EN.mkdir(parents=True, exist_ok=True)
+    rep, dirty = [], 0
+    total = 0
+    for fp in sorted(EN.glob("ch*.json"), key=lambda x: int(re.sub(r"\D", "", x.stem))):
+        e = json.loads(fp.read_text(encoding="utf-8"))
+        vs = e.get("verses") or {}
+        total += len(vs)
+        bad = [(k, v) for k, v in vs.items()
+               if re.search(r"\[\d{1,3}\]|⇒", v)
+               or re.match(r"^\d{1,3}\s+\S", v)]
+        if bad:
+            dirty += len(bad)
+            rep.append(f"⚠ ch{fp.stem[2:]}: {len(bad)}টি পদে দূষণ — "
+                       + " | ".join(f"{k}: {v[:60]}" for k, v in bad[:2]))
+        rep.append(f"  · ch{fp.stem[2:]} ({e.get('id')}): মিলিত অধ্যায় "
+                   f"{len(e.get('aligned') or [])} · বাদ {len(e.get('skipped') or [])} · "
+                   f"ইংরেজি পদ {len(vs)}")
+    txt = (f"=== ইংরেজি যাচাই ===\nইংরেজি পদ: {total} · দূষিত পদ: {dirty}\n"
+           + "\n".join(rep) + "\n=== শেষ ===\n")
+    (DBG / "bible_en_verify.txt").write_text(txt, encoding="utf-8")
+    print(f"ইংরেজি যাচাই: পদ {total} · দূষিত {dirty}")
+    return 0 if not dirty else 3
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--fetch", action="store_true")
     ap.add_argument("--join", action="store_true")
+    ap.add_argument("--verify", action="store_true")
     ap.add_argument("--delay", type=float, default=0.7)
     ap.add_argument("--budget", type=int, default=40)
     args = ap.parse_args()
     if args.fetch:
         return cmd_fetch(args)
     if args.join:
-        return cmd_join(args)
+        return join_bookkeeping()
+    if args.verify:
+        return cmd_verify(args)
     ap.print_help()
     return 1
 
