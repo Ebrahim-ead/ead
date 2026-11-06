@@ -247,7 +247,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "কোনো পরিবর্তন নেই — প্রকাশ লাগবে না"; exit 0
           fi
-          git commit -m "ঋগ্বেদ ১০ম মণ্ডল: স্বয়ংক্রিয় আপডেট ($(date -u +%d/%m %H:%M) UTC)" || true
+          git commit -m "ঋগ্বেদ ১০ম মণ্ডল: স্বয়ংক্রিয় আপডেট ($(date -u '+%d/%m %H:%M') UTC)" || true
           git fetch origin main || true
           git rebase origin/main || git rebase --abort || true
           # bot-ব্রাঞ্চ পুরনো স্ন্যাপশট ধরে রেখেছিল, তাই সাধারণ push প্রতিবার
@@ -260,7 +260,7 @@ jobs:
           NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
           if [ -z "$NUM" ]; then
             gh pr create --base main --head "${BOT_BRANCH}" \
-              --title "ঋগ্বেদ: ১০ম মণ্ডলের নতুন সূক্ত ($(date -u +%d/%m %H:%M) UTC)" \
+              --title "ঋগ্বেদ: ১০ম মণ্ডলের নতুন সূক্ত ($(date -u '+%d/%m %H:%M') UTC)" \
               --body "স্বয়ংক্রিয় ফেচ — ১০ম মণ্ডলের নতুন সূক্ত যোগ ও পাতা-বিল্ড।" || true
             sleep 5
             NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
