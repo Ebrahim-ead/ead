@@ -127,7 +127,12 @@ jobs:
 
       - name: ২) নম্বর-ক্রমে সাজানো + index হালনাগাদ
         if: env.MODE == 'all' || env.MODE == 'fill' || env.MODE == 'build'
-        run: python3 -u tools/fill_mishkat.py --build
+        run: |
+          set -o pipefail
+          mkdir -p assets/hadith/data/_debug/mishkat
+          # build.txt আগে হালনাগাদ হতো না — রিপোর্টে পুরোনো সংখ্যা দেখাত
+          python3 -u tools/fill_mishkat.py --build 2>&1 \
+            | tee assets/hadith/data/_debug/mishkat/build.txt | tail -60
 
       - name: ৩) যাচাই
         if: always()
