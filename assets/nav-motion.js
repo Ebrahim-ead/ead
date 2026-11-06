@@ -16,7 +16,11 @@
   var links = [].slice.call(nav.querySelectorAll("a"));
   if (!links.length) return;
 
-  var active = nav.querySelector("a.on") || links[0];
+  /* একটি দাগই থাকবে: পুরোনো টেমপ্লেটে দুই লিংকে «current» বসে থাকলেও
+     (ধর্মীয় গ্রন্থ পাতায় «পরিচিতি»-ও রঙিন হতো) গ্লাইড কেবল
+     true-current লিংকের নিচে বসবে, নইলে প্রথমটির নিচে। */
+  var current = links.filter(function (a) { return a.getAttribute("aria-current") === "page"; });
+  var active = current[0] || links.filter(function (a) { return a.classList.contains("on"); })[0] || links[0];
   var hovered = null;
 
   function place(el) {

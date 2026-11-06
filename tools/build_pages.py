@@ -350,13 +350,23 @@ def make_page(slug, idx, meta):
     if meta.get("kind") == "bible" and 'id="g-book-list"' not in h:
         # পুরোনো টেমপ্লেটে কেবল খণ্ড-তালিকা ছিল — নতুন স্তরগুলোর কনটেইনার বসাই,
         # সাথে মোবাইলে ভাঁজ-বোতাম ও গুটিয়ে রাখা যায় এমন বডি।
-        h = h.replace('<div class="g-side-head">',
-                      '<div class="g-side-head">'
-                      '<button class="g-side-toggle" id="g-side-toggle" type="button" '
-                      'aria-expanded="true" aria-controls="g-side-body">'
-                      '<b id="g-side-title">পুস্তক</b>'
-                      '<span>তালিকা <span class="g-side-chev" aria-hidden="true"></span></span>'
-                      '</button>', 1)
+        # হেডে আর কিছু নয়: বাঁয়ে পুস্তকের শব্দ (এটিই ভাঁজ-বোতাম), ডানে
+        # বড় করে «তালিকা»। আগের «অধ্যায় / ৪৬ পুস্তক · ২৪,০৮৭ পদ» ফোনের
+        # মোটা লাইনে জায়গা নিত, আর সহজে চোখেও পড়ত না।
+        _HEAD = ('<div class="g-side-head">'
+                 '<button class="g-side-toggle" id="g-side-toggle" type="button" '
+                 'aria-expanded="true" aria-controls="g-side-body">'
+                 '<b id="g-side-title">পুস্তক</b>'
+                 '<span class="g-side-word">তালিকা '
+                 '<span class="g-side-chev" aria-hidden="true"></span></span>'
+                 '</button></div>')
+        # পুরো হেড-div একবারে বদলাই (পুরোনো গঠনে ভেতরে «অধ্যায়»+গণনা ছিল,
+        # তাই শুধু বোতাম বসিয়ে দিলে ওই দুটো বাইরে পড়ে থাকত)।
+        h, n = re.subn(r'<div class="g-side-head">.*?</div>', _HEAD, h, count=1, flags=re.S)
+        if not n:
+            # হেড-div না থাকলে তালিকার গোড়ায় বসাই
+            h = h.replace('<div id="g-book-list">', _HEAD + '<div id="g-book-list">', 1)
+
         h = h.replace('<div id="g-chapter-list"></div>',
                       '<div class="g-side-now" id="g-side-now" aria-live="polite"></div>'
                       '<div class="g-side-body" id="g-side-body">'

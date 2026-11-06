@@ -161,6 +161,9 @@ async function testPage(file) {
     if (rendered > vs.length) errs.push(`রেন্ডার খণ্ড ${rendered} > চ্যাপ্টার-ফাইলের ${vs.length}`);
     if (!chTitle || chTitle.includes('লোড হচ্ছে')) {
       errs.push(`অধ্যায়-শিরোনাম লোড হয়নি («${chTitle}»)`);
+    } else if (/[ং-৯][A-Za-z]/.test(chTitle)) {
+      /* বাংলা লেখার সাথে ইংরেজি ব্যাজ জোড়া লেগে গেলে («অধ্যায় ১Psalms») */
+      errs.push(`শিরোনামে ইংরেজি নাম বাংলার সাথে জোড়া লেগে গেছে («${chTitle}»)`);
     }
     // সবচেয়ে জোরালো যাচাই: রেন্ডার হওয়া প্রথম খণ্ডের পাঠ এই গ্রন্থের নিজের
     // চ্যাপ্টার-ফাইলের প্রথম খণ্ডের সাথে মিলতে হবে — অন্য গ্রন্থের ডেটা লোড
@@ -343,6 +346,23 @@ async function testPage(file) {
     if (st && idx.chword && st.textContent.trim() !== idx.chword) {
       errs.push(`তালিকা-শিরোনাম «${st.textContent.trim()}» — ডেটার শব্দ «${idx.chword}» হওয়া উচিত`);
     }
+    /* হেডে শুধু দুই শব্দ: «পুস্তক» (ভাঁজ-বোতাম) আর «তালিকা»। সংখ্যা/গণনা
+       («৪৬ পুস্তক · ২৪,০৮৭ পদ») ফোনের মোটা লাইনে জায়গা নিত, চোখেও পড়ত না। */
+    const head = doc.querySelector('.g-side-head');
+    if (head) {
+      const words = head.textContent.replace(/\s+/g, ' ').trim();
+      const num = words.match(/[০-৯][০-৯,]*/);
+      if (num) errs.push(`তালিকা-হেডে এখনও সংখ্যা আছে («${words}»)`);
+      const hasChapterWord = /(^|\s)অধ্যায়(\s|$)/.test(words);
+      if (hasChapterWord) errs.push(`তালিকা-হেডে «অধ্যায়» লেবেল থেকে গেছে («${words}»)`);
+      const wordEl = head.querySelector('.g-side-word');
+      if (!wordEl) errs.push('হেডে বড় «তালিকা» লেখা (.g-side-word) নেই');
+      else if (wordEl.textContent.trim() !== 'তালিকা') {
+        errs.push(`হেডে «তালিকা» লেখার জায়গায় «${wordEl.textContent.trim()}»`);
+      }
+    } else {
+      errs.push('.g-side-head পাওয়া যায়নি');
+    }
     // ভাঁজ-বোতাম কাজ করে ও বর্তমান পুস্তক দেখায়
     const tb = doc.getElementById('g-side-toggle');
     const side = doc.getElementById('g-side');
@@ -386,7 +406,70 @@ async function testPage(file) {
   return errs.length === 0;
 }
 
+/* ---------------------------------------------------------------
+ * হাব-পরীক্ষা: নেভ-হাইলাইট ও কার্ডের মাপ
+ *  কেন: (১) grantho.html শাখার টেমপ্লেটে দুইটি লিংকে
+ *  `class="on" aria-current="page"` বসে থাকত — «ধর্মীয় গ্রন্থ» খুললেও
+ *  টপ-নেভে «পরিচিতি» রঙিন হয়ে যেত। (২) হাবের কার্ডে ট্যাগ, বিবরণ,
+ *  «প্রবেশ করুন» — সব মিলিয়ে অনেক বড়; ব্যবহারকারীর চাহিদা: শুধু নাম।
+ * --------------------------------------------------------------- */
+function hubPages() {
+  const out = [path.join(ROOT, 'grantho.html')];
+  for (const d of ['grantho', path.join('grantho', 'hindu'), path.join('grantho', 'christian')]) {
+    const dir = path.join(ROOT, d);
+    if (!fs.existsSync(dir)) continue;
+    for (const f of fs.readdirSync(dir)) if (f.endsWith('.html')) out.push(path.join(dir, f));
+  }
+  return out;
+}
+
+function testHub(file) {
+  const errs = [];
+  const rel = path.relative(ROOT, file);
+  const doc = new JSDOM(fs.readFileSync(file, 'utf8')).window.document;
+  const nav = doc.getElementById('site-nav');
+  if (!nav) {
+    errs.push('#site-nav পাওয়া যায়নি');
+  } else {
+    const cur = [...nav.querySelectorAll('a[aria-current="page"]')];
+    if (cur.length > 1) {
+      errs.push(`নেভে ${cur.length}টি লিংকে aria-current — একটির বেশি চলবে না (${cur.map((a) => a.textContent.trim()).join(', ')})`);
+    }
+    if (!cur.length) errs.push('নেভে কোনও লিংকেই aria-current নেই — বর্তমান পাতা বোঝা যায় না');
+    for (const a of nav.querySelectorAll('a.on')) {
+      if (!a.getAttribute('aria-current')) {
+        errs.push(`«${a.textContent.trim()}» লিংকে «on» আছে কিন্তু aria-current নেই`);
+      }
+    }
+    if (/grantho/.test(rel) && rel !== 'grantho.html') {
+      const about = [...nav.querySelectorAll('a')].find((a) => /about\.html$/.test(a.getAttribute('href') || ''));
+      if (about && (about.classList.contains('on') || about.hasAttribute('aria-current'))) {
+        errs.push('«পরিচিতি» লিংক ভুলভাবে হাইলাইট হয়েছে');
+      }
+    }
+  }
+
+  if (rel === 'grantho.html') {
+    const cards = [...doc.querySelectorAll('.g-grid .article-card')];
+    if (cards.length !== 4) errs.push(`ধর্ম-হাবে ৪টি কার্ড থাকার কথা, পাওয়া গেল ${cards.length}`);
+    for (const c of cards) {
+      if (!c.classList.contains('cmp-card')) errs.push('হাব-কার্ডে .cmp-card ক্লাস নেই');
+      for (const bad of ['article-card-excerpt', 'article-card-subtitle', 'article-card-more', 'article-card-kicker']) {
+        if (c.querySelector(`.${bad}`)) errs.push(`কার্ডে এখনও .${bad} আছে — শুধু টপিকের নাম থাকার কথা`);
+      }
+      if (c.querySelectorAll('h3').length !== 1) errs.push('কার্ডে ঠিক একটি h3 থাকা দরকার');
+      const href = c.querySelector('a.article-card-link')?.getAttribute('href') || '';
+      if (!href || href === '#') errs.push('কার্ডের লিংক নেই');
+    }
+  }
+
+  console.log(`${errs.length ? '✗' : '✓'} ${rel} — নেভ/কার্ড`);
+  for (const e of errs) console.log(`   ! ${e}`);
+  return errs.length === 0;
+}
+
 let ok = true;
 for (const f of pages()) ok = (await testPage(f)) && ok;
+for (const f of hubPages()) ok = testHub(f) && ok;
 console.log(ok ? '\nসব পাতা নিজের ডেটাই দেখাচ্ছে ✓' : '\nকিছু পাতায় সমস্যা আছে ✗');
 process.exit(ok ? 0 : 1);
