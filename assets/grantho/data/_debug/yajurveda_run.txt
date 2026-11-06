@@ -1,1 +1,34 @@
 রান: 42162330304 · 06/11 04:24:43 UTC · sha b9cc394
+মণ্ডল 1: 2088 মন্ত্র → 191 সূক্ত · 3427 শ্লোক
+মণ্ডল 2: 414 মন্ত্র → 43 সূক্ত · 847 শ্লোক
+মণ্ডল 3: 601 মন্ত্র → 62 সূক্ত · 1137 শ্লোক
+মণ্ডল 4: 566 মন্ত্র → 58 সূক্ত · 1017 শ্লোক
+মণ্ডল 5: 679 মন্ত্র → 87 সূক্ত · 1011 শ্লোক
+মণ্ডল 6: 748 মন্ত্র → 75 সূক্ত · 1502 শ্লোক
+মণ্ডল 7: 830 মন্ত্র → 104 সূক্ত · 1874 শ্লোক
+মণ্ডল 8: 1699 মন্ত্র → 103 সূক্ত · 2699 শ্লোক
+মণ্ডল 9: 1102 মন্ত্র → 114 সূক্ত · 1976 শ্লোক
+মণ্ডল 10: 1729 মন্ত্র → 191 সূক্ত · 3801 শ্লোক
+
+মোট: 1028 সূক্ত · 19291 শ্লোক · 5861 মন্ত্র ভাগ করা হয়েছে
+rigveda: 10456/10456 · 10
+yajurveda-shukla: 1791/1791 · 40
+  গ্রিড আপডেট: veda.html
+উপনিষদ মোট: 0
+হিন্দু-হাব: 12247 / 0
+── git status:
+ M assets/grantho/data/_debug/yajurveda_clean.txt
+ M assets/grantho/data/_debug/yajurveda_report.txt
+ M assets/grantho/data/_debug/yajurveda_run.txt
+ M assets/grantho/data/_debug/yajurveda_sk_moved.json
+?? assets/grantho/data/_fetch_report_yajurveda-shukla.txt
+── ডাটা ফোল্ডার:
+total 3164
+drwxr-xr-x 2 runner runner   4096 Nov  6 04:24 .
+drwxr-xr-x 6 runner runner   4096 Nov  6 04:26 ..
+-rw-r--r-- 1 runner runner 229393 Nov  6 04:26 ch1.json
+-rw-r--r-- 1 runner runner  71939 Nov  6 04:26 ch10.json
+-rw-r--r-- 1 runner runner  91634 Nov  6 04:26 ch11.json
+-rw-r--r-- 1 runner runner 132614 Nov  6 04:26 ch12.json
+-rw-r--r-- 1 runner runner  86990 Nov  6 04:26 ch13.json
+── শেষ: 06/11 04:26:13 UTC
