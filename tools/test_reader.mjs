@@ -85,10 +85,46 @@ async function testPage(file) {
 
   const doc = window.document;
   const idx = fs.existsSync(idxPath) ? JSON.parse(fs.readFileSync(idxPath, 'utf8')) : null;
-  const list = doc.getElementById('g-chapter-list');
-  const nbtn = list ? list.children.length : 0;
+  /* দুই স্তর (পুস্তক → অধ্যায় → পদ): বাইবেলের ডেটাতেই চেনা যায় */
+  const twoLevel = !!idx && idx.chapters.some((c) => c.testament === 'old' || c.testament === 'new')
+    && idx.chapters.some((c) => (+c.suktaCount || 0) > 0);
+  /* দুই স্তর: গ্রুপযুক্ত গ্রন্থে (বাইবেল) বাঁ পাশে পুস্তক, বইয়ে ক্লিকে আগে
+     অধ্যায়-গ্রিড, তারপর অধ্যায়ের পদ। একক-স্তরে আগের মতোই খণ্ড-তালিকা। */
+  const list = doc.getElementById(twoLevel ? 'g-book-list' : 'g-chapter-list');
+  const nbtn = list ? list.querySelectorAll('[data-ch]').length : 0;
   if (idx && nbtn !== idx.chapters.length) {
     errs.push(`অধ্যায়-বাটন ${nbtn} ≠ ডেটার ${idx.chapters.length}`);
+  }
+  if (twoLevel) {
+    // পুরাতন/নতুন নিয়ম-ভাগ: সংখ্যা ডেটার সাথে মিলতে হবে, আর ছাঁকনিতে দেখা যাবে
+    const tb = doc.getElementById('g-testament');
+    const nOld = idx.chapters.filter((c) => (c.testament || (c.id <= 39 ? 'old' : 'new')) === 'old').length;
+    const nNew = idx.chapters.length - nOld;
+    const grp = [...doc.querySelectorAll('#g-book-list .g-tgroup')].map((e) => e.textContent);
+    if (!tb || tb.hidden) errs.push('নিয়ম-ছাঁকনি দেখা যাচ্ছে না');
+    if (!grp.some((t) => /পুরাতন/.test(t) && t.includes(String(nOld).replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[d])))) {
+      errs.push(`পুরাতন নিয়ম-শিরোনাম নেই/ভুল (${grp.join(' | ')})`);
+    }
+    if (!grp.some((t) => /নতুন/.test(t))) errs.push('নতুন নিয়ম-শিরোনাম নেই');
+    const btn = [...tb.querySelectorAll('.g-tbtn')].find((b) => b.dataset.t === 'new');
+    if (btn) {
+      btn.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+      await wait(300);
+      const vis = [...list.querySelectorAll('[data-ch]')].filter((b) => !b.hidden).length;
+      if (vis !== nNew) errs.push(`«নতুন নিয়ম» ছাঁকনিতে ${vis} পুস্তক, হওয়া উচিত ${nNew}`);
+      const all = [...tb.querySelectorAll('.g-tbtn')].find((b) => b.dataset.t === 'all');
+      all.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+      await wait(300);
+    }
+    // বইয়ে ক্লিক: আগে শুধু অধ্যায় — পদ তখনো নয়
+    list.querySelector('[data-ch]').dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    await wait(500);
+    const grid = doc.getElementById('g-chapter-grid');
+    const c0 = idx.chapters[0];
+    const wantCh = (+c0.suktaCount || 0) + ((c0.missing || []).length);
+    const gotCh = grid ? grid.querySelectorAll('[data-c]').length : 0;
+    if (gotCh !== wantCh) errs.push(`অধ্যায়-বাটন ${gotCh} ≠ ডেটার ${wantCh}`);
+    if (doc.querySelectorAll('.g-v').length) errs.push('বই খোলার সাথে সাথেই পদ দেখাচ্ছে (আগে অধ্যায়-তালিকা হওয়া উচিত)');
   }
   // অধ্যায়-তালিকায় গ্রন্থের নাম থাকে না (সেটি অধ্যায়ের শিরোনাম) — তাই এখানে
   // শুধু বাটনগুলো খালি নয় এবং সংখ্যা ডেটার সাথে মিলছে, এটুকুই দেখা হয়।
@@ -101,14 +137,27 @@ async function testPage(file) {
   // খণ্ড-সংখ্যা সমান হতে বাধ্য নয় — বড় গ্রন্থে রিডার ধাপে ধাপে দেখায়।
   let rendered = 0;
   let chTitle = '';
-  if (list && list.children.length && idx) {
-    list.children[0].dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+  if (list && nbtn && idx) {
+    if (twoLevel) {
+      // বই ইতিমধ্যেই খোলা; অধ্যায় ১-এ ক্লিক → নিচে তার পদ
+      const g1 = doc.querySelector('#g-chapter-grid [data-c="1"]');
+      if (!g1) errs.push('অধ্যায়-গ্রিডে «১» নেই');
+      else g1.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    } else {
+      list.children[0].dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    }
     await wait(1200);
     rendered = doc.querySelectorAll('.g-v').length;
     const tEl = doc.getElementById('g-ch-title');
     chTitle = tEl ? tEl.textContent.trim() : '';
-    const vs = JSON.parse(fs.readFileSync(path.join(dataDir, `ch${idx.chapters[0].id}.json`), 'utf8')).verses;
+    const chFile = JSON.parse(fs.readFileSync(path.join(dataDir, `ch${idx.chapters[0].id}.json`), 'utf8'));
+    const vs = twoLevel
+      ? chFile.verses.filter((v) => v.ch === 1)
+      : chFile.verses;
     if (rendered < 1) errs.push('একটিও খণ্ড রেন্ডার হয়নি');
+    if (twoLevel && rendered !== vs.length) {
+      errs.push(`অধ্যায় ১-এ ${rendered} পদ, ফাইলে ${vs.length} — পুরো বই নয়, কেবল অধ্যায় দেখানোর কথা`);
+    }
     if (rendered > vs.length) errs.push(`রেন্ডার খণ্ড ${rendered} > চ্যাপ্টার-ফাইলের ${vs.length}`);
     if (!chTitle || chTitle.includes('লোড হচ্ছে')) {
       errs.push(`অধ্যায়-শিরোনাম লোড হয়নি («${chTitle}»)`);
@@ -155,7 +204,7 @@ async function testPage(file) {
     }
 
     // উৎসের অনুক্রমণিকা/ভূমিকা আলাদা ব্লকে দেখাতে হবে (মন্ত্র-তালিকায় নয়)
-    const ch = JSON.parse(fs.readFileSync(path.join(dataDir, `ch${idx.chapters[0].id}.json`), 'utf8'));
+    const ch = chFile;
     const frontEl = doc.querySelector('.g-front');
     if (ch.preface && !frontEl) errs.push('ভূমিকা ডেটায় আছে কিন্তু রেন্ডার হয়নি');
     if (frontEl && !ch.preface) errs.push('ভূমিকা নেই অথচ ব্লক রেন্ডার হয়েছে');
@@ -165,13 +214,16 @@ async function testPage(file) {
     const enPath = path.join(dataDir, 'en', `ch${idx.chapters[0].id}.json`);
     if (fs.existsSync(enPath)) {
       const en = JSON.parse(fs.readFileSync(enPath, 'utf8'));
-      const enWant = Object.keys(en.verses || {}).length;
+      const enAll = en.verses || {};
+      const enWant = twoLevel
+        ? Object.keys(enAll).filter((k) => vs.some((v) => String(v.n) === k)).length
+        : Object.keys(enAll).length;
       const enGot = doc.querySelectorAll('.g-v-en').length;
       if (enWant && enGot !== enWant) errs.push(`ইংরেজি লাইন ${enGot} ≠ ডেটার ${enWant}`);
       const lb = doc.querySelector('.g-lang');
       if (!lb || lb.hidden) errs.push('ইংরেজি ডেটা আছে, তবু ভাষা-টগল দেখা যায়নি');
-      const ns = new Set(vs.map((v) => String(v.n)));
-      const stray = Object.keys(en.verses || {}).filter((k) => !ns.has(k));
+      const ns = new Set(chFile.verses.map((v) => String(v.n)));
+      const stray = Object.keys(enAll).filter((k) => !ns.has(k));
       if (stray.length) errs.push(`ইংরেজি-কী পদের বাইরে: ${stray.slice(0, 3).join(',')}`);
       const se = vs.filter((v) => v.srcEmpty).length;
       if (se && doc.querySelectorAll('.g-v-empty').length < se) {
@@ -213,6 +265,54 @@ async function testPage(file) {
     }
   }
 
+  /* ২খ) দুই-স্তরের নেভিগেশনের ফাঁদগুলো — লাইভে যেগুলো একবার ধরা পড়েছিল */
+  if (twoLevel && idx) {
+    const grid = doc.getElementById('g-chapter-grid');
+    const clickGrid = async (n) => {
+      const b = grid.querySelector(`[data-c="${n}"]`);
+      if (b) b.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+      await new Promise((r) => setTimeout(r, 700));
+    };
+    const bookWithMissing = idx.chapters.find((c) => (c.missing || []).length &&
+      (c.suktaCount || 0) > 2);
+    if (bookWithMissing) {
+      const mb = doc.querySelector(`#g-book-list [data-ch="${bookWithMissing.id}"]`);
+      mb.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+      await new Promise((r) => setTimeout(r, 600));
+      const missId = +bookWithMissing.missing[0];
+      const cell = grid.querySelector(`[data-c="${missId}"]`);
+      if (!cell) errs.push(`পাঠ-হীন অধ্যায় ${missId}-এর ঘর গ্রিডে নেই`);
+      else if (!cell.classList.contains('off')) errs.push(`অধ্যায় ${missId} «পাঠ নেই» হিসেবে চিহ্নিত নয়`);
+      // নেভিগেশন ফাঁকা অধ্যায় পার হবে, আর পুরো বই ঢালবে না
+      const before = missId - 1;
+      if (before >= 1) {
+        await clickGrid(before);
+        const nv = doc.getElementById('g-next');
+        const expectNext = missId + 1;
+        if (!/অধ্যায়/.test(nv.textContent) || !nv.textContent.includes(String(expectNext).replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[d]))) {
+          errs.push(`অধ্যায় ${before} থেকে «পরের» ফাঁকা অধ্যায় ${missId} পার হচ্ছে না («${nv.textContent.trim()}»)`);
+        }
+      }
+      await clickGrid(missId);
+      const nv2 = doc.querySelectorAll('#g-body .g-v').length;
+      if (nv2) errs.push(`পাঠ-হীন অধ্যায় ${missId}-এ ${nv2}টি পদ দেখাচ্ছে (পুরো বই ঢেলে দেওয়া হয়েছে)`);
+      if (!doc.querySelector('.g-miss')) errs.push(`পাঠ-হীন অধ্যায় ${missId}-এ স্পষ্ট বার্তা নেই`);
+    }
+    // ইংরেজি-কভারেজ নোট: যে বইয়ে ইংরেজি নেই সেখানে নোট, যেখানে সব ঠিক সেখানে নয়
+    const noEn = idx.chapters.find((c) => c.aligned === 0);
+    const allEn = idx.chapters.find((c) => c.aligned > 0 && !c.skipped);
+    for (const [bk, want] of [[noEn, true], [allEn, false]]) {
+      if (!bk) continue;
+      doc.querySelector(`#g-book-list [data-ch="${bk.id}"]`)
+        .dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+      await new Promise((r) => setTimeout(r, 600));
+      const note = doc.getElementById('g-en-note');
+      if (!note) { errs.push('ইংরেজি-কভারেজ নোটের জায়গা নেই'); break; }
+      if (want && note.hidden) errs.push(`${bk.bn}: ইংরেজি নেই অথচ নোট দেখাচ্ছে না`);
+      if (!want && !note.hidden) errs.push(`${bk.bn}: ইংরেজি ঠিক আছে অথচ সতর্ক-নোট দেখাচ্ছে`);
+    }
+  }
+
   // ৩) অন্য গ্রন্থের নাম পাতায় থেকে গেলে তাও ভুল
   const others = ['ঋগ্বেদ', 'সামবেদ', 'কৃষ্ণ যজুর্বেদ', 'অথর্ববেদ', 'শ্রীমদ্ভগবদ্গীতা']
     .filter((w) => !a.title.includes(w) && !slug.includes(w.split(' ')[0]));
@@ -224,7 +324,9 @@ async function testPage(file) {
   const facts = (html.match(/<div class="g-facts">([\s\S]*?)<\/div>/) || [])[1] || '';
   const factNums = [...facts.replace(/<[^>]+>/g, ' ').matchAll(/[০-৯,]+/g)].map((m) => m[0]);
   console.log(`${errs.length ? '✗' : '✓'} ${rel}`);
-  console.log(`   data-base=${a.base} · অধ্যায়-বাটন ${nbtn} · খণ্ড ${rendered} · শিরোনাম «${chTitle}»` +
+  console.log(`   data-base=${a.base} · ${twoLevel ? 'পুস্তক' : 'অধ্যায়'}-বাটন ${nbtn}` +
+    (twoLevel ? ` · অধ্যায়-গ্রিড ${doc.querySelectorAll('#g-chapter-grid [data-c]').length}` : '') +
+    ` · খণ্ড ${rendered} · শিরোনাম «${chTitle}»` +
     (idx ? ` · ডেটা: ${idx.total} ${idx.verseWord || ''} / ${idx.chapters.length} অধ্যায়` : '') +
     ` · ফ্যাক্টস: ${factNums.join(' ')}`);
   for (const e of errs) console.log(`   ! ${e}`);

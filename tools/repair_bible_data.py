@@ -389,21 +389,13 @@ def main():
                 if clean != en:
                     en = clean
                     hit += 1
-                # (খ) শুরুর সংখ্যা — টীকা-চিহ্ন, কেবল ব্যতিক্রম: সংখ্যাটি
-                # ঠিক পরের পদ-নম্বর হলে সেটি পাঠের নিজের নম্বর (কাটা হয় না)
+                # (খ) শুরুর সংখ্যা — পুরোনো পার্সারের জমে থাকা নম্বর-অবশিষ্ট।
+                # নিয়ম একটাই: সংখ্যাটি নিজের vn+১ হলে তা ওই পদের নম্বরই,
+                # কাটা হয়; নইলে («40 days…») পাঠের অংশ, ছোঁয়া হয় না।
                 m = re.match(r"^(\d{1,3})\s+(\S)", en)
-                if m:
-                    n0 = int(m.group(1))
-                    after = en[m.start(2):]
-                    # পাঠের নিজের নম্বরও হতে পারে («2 Joram, son of Ahab…»
-                    # আসলে Kins 2:3-এর ২ নং পদ) — তখনই রাখি, যখন ঠিক পরের
-                    # পদ-নম্বর হয় এবং পাশে টীকা-আবর্জনা না থাকে।
-                    keep = (n0 == v["vn"] + 1
-                            and not re.match(r"^\s*\[", after)
-                            and "*" not in en[:80])
-                    if not keep:
-                        en = after
-                        hit += 1
+                if m and int(m.group(1)) == v["vn"] + 1:
+                    en = en[m.start(2):]
+                    hit += 1
                 if en != (v.get("en") or ""):
                     v["en"] = en
         # সিলমোহর প্রতিটি ফাইলে, বদল হোক বা না হোক: এই রিপেয়ারের পর সব raw
@@ -452,20 +444,81 @@ def main():
         print("\n".join(rep))
         return 0
 
-    if changed:
-        # সূচি নতুন করে — ফাইলগুলোর বর্তমান সত্য থেকেই
-        sys.path.insert(0, str(Path(__file__).resolve().parent))
-        import fetch_bible as FB
-        books = FB.load_manifest()
-        idx2 = FB.write_index(books)
-        rep.append(f"✓ সূচি: পুস্তক {len(idx2['chapters'])} · পদ {idx2['total']} · "
-                   f"বাংলাসহ {idx2['withBn']}")
+    # ── ৬খ) সূচি নতুন করে — ফাইলগুলোর বর্তমান সত্য থেকেই ───────────
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import fetch_bible as FB
+    books = FB.load_manifest()
+    idx2 = FB.write_index(books)
+    rep.append(f"✓ সূচি: পুস্তক {len(idx2['chapters'])} · পদ {idx2['total']} · "
+               f"বাংলাসহ {idx2['withBn']}")
+
+    # ── ৬গ) পুস্তকের ইংরেজি নাম: উৎস-স্লাগের ভুল («রোমীয় …-acts») ──
+    # পুরোনো discover-এ স্লাগের শেষ অংশই নাম হিসেবে নেওয়া হতো, তাই রোমীয়
+    # পুস্তকের `en` = «Acts»। সত্য-নাম ডেটার ভেতরেই প্রমাণিত, তবু সাবধানে:
+    # কেবল স্লাগ-হিন্ট ও সূচির `en` একই ভুল দেখালেই ঠিক করা হয়।
+    import urllib.parse as _up
+    NAME_FIX = {45: ("রোমীয়", "Acts", "Romans")}
+    fixed_names = 0
+    for c in idx2["chapters"]:
+        if c["id"] not in NAME_FIX:
+            continue
+        bn_name, wrong, right = NAME_FIX[c["id"]]
+        # «য়» দুইভাবে লেখা হতে পারে (U+09DF যুক্তাক্ষর vs য+়) — NFC-তে মিলিয়ে নিই
+        import unicodedata as _ud
+        same_bn = _ud.normalize("NFC", c.get("bn", "")) == _ud.normalize("NFC", bn_name)
+        slug_hint = _up.unquote(c.get("url", "").rstrip("/").rsplit("-", 1)[-1]).lower()
+        if c.get("en") == wrong and same_bn and slug_hint == wrong.lower():
+            c["en"] = right
+            fixed_names += 1
+    if fixed_names:
+        rep.append(f"✓ সূচি: {fixed_names}টি পুস্তকের ইংরেজি নাম ঠিক হলো "
+                   "(রোমীয়: Acts → Romans)")
+
+    # ── ৬ঘ) গ্রিড ও ইংরেজি-কভারেজ তথ্য ───────────────────────────
+    # পাঠক-পাতায় পুস্তক-তালিকা থেকেই অধ্যায়-সংখ্যা দেখানো যায়, আর কোন বইয়ে
+    # ইংরেজি কতটা মিলেছে তা নীরে না রেখে লেখা যায়। সবই বর্তমান ফাইল থেকে।
+    by_id = {b.get("i"): b for b in books}
+    for c in idx2["chapters"]:
+        d = load(DATA / f"ch{c['id']}.json")
+        per = {}
+        for v in d.get("verses", []):
+            per[str(v["ch"])] = per.get(str(v["ch"]), 0) + 1
+        c["perChapter"] = per
+        bm = by_id.get(c["id"]) or {}
+        labels = []
+        for k, text in enumerate(bm.get("topicLabels") or [], start=1):
+            nums = re.findall(r"[0-9০-৯]+", text or "")
+            labels.append(nums[-1] if nums else "")
+        missing = sorted(set(c.get("missing") or []))
+        c["grid"] = {"count": (+c.get("suktaCount", 0)) + len(missing),
+                     "server": labels, "missing": missing}
+        en_fp = DATA / "en" / f"ch{c['id']}.json"
+        if en_fp.exists():
+            e = load(en_fp)
+            c["aligned"] = len(e.get("aligned") or [])
+            c["skipped"] = len(e.get("skipped") or [])
+            c["enVerses"] = len(e.get("verses") or {})
+
+    if not dry:
+        (DATA / "index.json").write_text(
+            json.dumps(idx2, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
     # ── ৭) ইংরেজি পুনঃমিলন ────────────────────────────────────────
     if not args.no_join:
         import fetch_bible_en as FE
         rc = FE.join_bookkeeping()
         rep.append(f"✓ ইংরেজি join: rc={rc}")
+        # join-এর পর কভারেজ-সংখ্যা বদলাতে পারে — সূচিতে আবার বসাই
+        idx4 = load(DATA / "index.json")
+        for c in idx4["chapters"]:
+            en_fp = DATA / "en" / f"ch{c['id']}.json"
+            e = load(en_fp) if en_fp.exists() else {}
+            c["aligned"] = len(e.get("aligned") or [])
+            c["skipped"] = len(e.get("skipped") or [])
+            c["enVerses"] = len(e.get("verses") or {})
+        if not dry:
+            (DATA / "index.json").write_text(
+                json.dumps(idx4, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         done = DBG / "bible_en_done.txt"
         if done.exists():
             done.unlink()      # পুরোনো সমাপ্তি-চিহ্ন বাতিল; নতুন রান নিজে দেবে

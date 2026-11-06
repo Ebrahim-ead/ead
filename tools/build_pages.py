@@ -338,6 +338,23 @@ def make_page(slug, idx, meta):
         h = re.sub(r'\s*<label[^>]*>\s*<input[^>]*id="g-only-bn"[^>]*>[^<]*</label>',
                    '', h, count=1, flags=re.S)
 
+    # রিডারের নতুন গঠন (পুস্তক → অধ্যায় → পদ): টেমপ্লেটে ব্লকগুলো হাতে বসানো
+    # থাকে, কিন্তু গ্রুপ-তথ্য (testament/অধ্যায়-সংখ্যা/ইংরেজি-কভারেজ) ডেটা
+    # থেকে এখানেই বসানো হয় — পুরোনো টেমপ্লেটেও কার্যকর।
+    if meta.get("kind") == "bible" and 'id="g-book-list"' not in h:
+        # পুরোনো টেমপ্লেটে কেবল খণ্ড-তালিকা ছিল — নতুন স্তরগুলোর কনটেইনার বসাই
+        h = h.replace('<div id="g-chapter-list"></div>',
+                      '<div id="g-testament" class="g-tset" role="group" '
+                      'aria-label="নিয়ম" hidden></div>'
+                      '<div id="g-book-list"></div>'
+                      '<div id="g-chapter-list" hidden></div>', 1)
+        h = h.replace('<div id="g-bn-note"',
+                      '<div id="g-crumb2" class="g-crumb2" hidden></div>'
+                      '<div id="g-chapter-grid" class="g-chgrid" role="group" '
+                      'aria-label="অধ্যায়"></div>'
+                      '<div id="g-en-note" class="g-en-note" hidden></div>'
+                      '<div id="g-bn-note"', 1)
+
     src = meta["src"]
     # সংস্কৃত পাঠের প্রাপ্যতা — আগে হার্ডকোডেড দাবি ছিল যা ডেটার সাথে মিলত না।
     # বাইবেলের ক্ষেত্রে এই টীকা অর্থহীন (সেখানে সংস্কৃতের প্রশ্নই নেই)।
