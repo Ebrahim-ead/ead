@@ -1425,41 +1425,56 @@ html[data-theme="light"] .motion-sparks i{background:#a4710a;opacity:.18;box-sha
 .g-crumb a{color:var(--gold2);text-decoration:none}
 .g-crumb a:hover{text-decoration:underline}
 .g-crumb span{opacity:.6;margin:0 7px}
-.g-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:26px}
+.g-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px;
+  align-items:stretch}
 .g-grid .article-card{margin:0;max-width:none}
 .g-grid .article-card h3{font-size:clamp(17px,2.4vw,21px);margin:10px 0 6px;line-height:1.45}
 /* ---------- ছোট টপিক-কার্ড (ধর্মীয় গ্রন্থ হাব) ----------
    hub-এ প্রতিটি ধর্মের জন্য কেবল নামটুকুই থাকে — ট্যাগ, লিড, বিবরণ
    আর «প্রবেশ করুন» বাটন বাদ; তাই কার্ডকে চিপের মাপে নামানো হয়েছে। */
-.g-grid{gap:12px;margin-top:20px}
-.cmp-card{border-radius:14px;
-  box-shadow:0 10px 26px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.06)}
+/* কম্প্যাক্ট হাব-কার্ড: বাঁয়ে নাম ও হিসাব, ডানে তির। দুই কলামে
+   সমান উচ্চতা; হোভারে হালকা উঁচু হওয়া — বাড়তি কারুকাজ নয়। */
+.cmp-card{border-radius:15px;background:linear-gradient(165deg,rgba(255,255,255,.045),rgba(255,255,255,.012));
+  border:1px solid var(--line);
+  box-shadow:0 8px 22px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.05);
+  transition:transform .3s var(--ease),border-color .3s,box-shadow .3s,background .3s}
 .cmp-card::before{display:none}
-.cmp-card .article-card-link{display:flex;align-items:center;gap:10px;padding:14px 16px}
-.cmp-card .cmp-title,.g-grid .cmp-card .cmp-title{margin:0;font-size:clamp(16px,2.2vw,18px);line-height:1.4}
-.cmp-card:hover{transform:translateY(-2px)}
-.cmp-card.is-soon{opacity:.86}
-/* কার্ডের ভেতরের গঠন: নাম (+ নিচে ছোট হিসাব) বাঁয়ে, তির ডানে */
-.cmp-card .article-card-link{gap:12px;padding:13px 15px}
-.cmp-body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.cmp-card .article-card-link{display:flex;flex-direction:row;align-items:center;justify-content:space-between;
+  gap:12px;padding:15px 16px;height:auto}
+.cmp-card .article-card-link>*{position:relative}
 .cmp-card .cmp-title,.g-grid .cmp-card .cmp-title{margin:0;font-size:clamp(16px,2.1vw,18.5px);
-  line-height:1.45;font-weight:700;color:var(--text)}
-.cmp-meta{font-size:12.5px;line-height:1.6;color:var(--muted);font-weight:500}
-.cmp-go{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;
-  font-size:13px;color:var(--gold2);background:rgba(245,184,28,.1);
-  border:1px solid rgba(245,184,28,.22);transition:transform .22s,background .22s,color .22s}
-.cmp-card:hover .cmp-go{transform:translateX(3px);background:rgba(245,184,28,.2);color:#ffe9a8}
+  line-height:1.45;font-weight:700;letter-spacing:-.005em;color:var(--text)}
+.cmp-body{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.cmp-meta{font-size:12.8px;line-height:1.6;color:var(--muted);font-weight:500}
+.cmp-go{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;
+  font-size:13px;color:var(--gold2);background:rgba(245,184,28,.09);
+  border:1px solid rgba(245,184,28,.22);
+  transition:transform .24s var(--ease),background .24s,color .24s,border-color .24s}
+.cmp-card:hover{transform:translateY(-3px);border-color:rgba(245,184,28,.42);
+  box-shadow:0 16px 34px rgba(0,0,0,.28),0 0 0 1px rgba(245,184,28,.1)}
+.cmp-card:hover .cmp-go{transform:translateX(3px);background:rgba(245,184,28,.2);
+  border-color:rgba(245,184,28,.5);color:#ffe9a8}
+.cmp-card .article-card-link:focus-visible{outline:2px solid var(--gold2);outline-offset:-3px;
+  border-radius:14px}
 /* যেগুলো এখনো তৈরি হয়নি — তিরের বদলে ছোট্ট «শীঘ্রই» চিহ্ন */
-.cmp-card.is-soon .cmp-go{width:auto;padding:1px 9px;border-radius:999px;
-  font-weight:700;background:rgba(245,184,28,.13);font-size:0}
+.cmp-card.is-soon{opacity:.82}
+.cmp-card.is-soon:hover{transform:none;border-color:var(--line);box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.cmp-card.is-soon .cmp-go{width:auto;padding:2px 10px;border-radius:999px;
+  font-weight:700;background:rgba(245,184,28,.11);font-size:0}
 .cmp-card.is-soon .cmp-go::before{content:"শীঘ্রই";font-size:11px}
-html[data-theme="light"] .cmp-card{box-shadow:0 10px 26px rgba(33,58,67,.12),inset 0 1px 0 rgba(255,255,255,.9)}
-html[data-theme="light"] .cmp-card .cmp-go{color:#8a5a00;background:rgba(177,119,7,.1);border-color:rgba(166,108,0,.26)}
+html[data-theme="light"] .cmp-card{background:linear-gradient(165deg,rgba(255,255,255,.9),rgba(255,255,255,.62));
+  border-color:rgba(27,57,75,.14);
+  box-shadow:0 8px 20px rgba(33,58,67,.09),inset 0 1px 0 rgba(255,255,255,.95)}
+html[data-theme="light"] .cmp-card:hover{border-color:rgba(155,101,0,.45);
+  box-shadow:0 14px 30px rgba(33,58,67,.14)}
+html[data-theme="light"] .cmp-card .cmp-go{color:#8a5a00;background:rgba(177,119,7,.09);
+  border-color:rgba(166,108,0,.26)}
 html[data-theme="light"] .cmp-card .cmp-meta{color:#4d6a7c}
 /* মোবাইলে এক কলাম — কার্ড আরও চওড়া ও নিচু */
 @media(max-width:760px){
-  .cmp-card .article-card-link{padding:12px 14px}
+  .cmp-card .article-card-link{padding:13px 14px;gap:10px}
   .cmp-card .cmp-title,.g-grid .cmp-card .cmp-title{font-size:16px}
+  .cmp-meta{font-size:12.5px}
 }
 .g-soon{display:inline-flex;align-items:center;gap:7px;margin-left:8px;padding:2px 9px;
   border-radius:999px;font-size:11.5px;font-weight:700;vertical-align:middle;

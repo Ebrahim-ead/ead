@@ -30,10 +30,20 @@
   var active = current[0] || links.filter(function (a) { return a.classList.contains("on"); })[0] || links[0];
   var hovered = null;
 
+  /* পিলের জায়গা নেভের সাপেক্ষে মাপা হয় — offsetLeft ব্যবহার করা যাবে না:
+     «ধর্মীয় গ্রন্থ» এখন .nav-item-এর ভেতরে, আর ওটার position:relative
+     থাকায় offsetLeft নিজের পিতার সাপেক্ষে প্রায় ০ হয়ে যায় → পিল
+     নেভের বাঁ প্রান্তে (হোমের ওপরে) গিয়ে বসে যেত। getBoundingClientRect
+     নেস্টিং নির্বিশেষে সবসময় ভিউপোর্টের সাপেক্ষে সত্যিকারের অবস্থান দেয়। */
   function place(el) {
     if (!el) return;
-    var w = el.offsetWidth - 12;
-    nav.style.setProperty("--nav-glide-x", (el.offsetLeft + 6) + "px");
+    var navRect = nav.getBoundingClientRect();
+    var r = el.getBoundingClientRect();
+    if (!r.width) return;
+    /* nav-এর ভেতরে কতটুকু জায়গা আছে তার বাইরে যেন পিল না বেরোয় */
+    var x = Math.max(0, r.left - navRect.left);
+    var w = Math.min(r.width, navRect.width - x) - 12;
+    nav.style.setProperty("--nav-glide-x", (x + 6) + "px");
     nav.style.setProperty("--nav-glide-w", (w > 0 ? w : 0) + "px");
     nav.style.setProperty("--nav-glide-o", "1");
   }

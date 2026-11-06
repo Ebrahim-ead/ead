@@ -425,10 +425,21 @@ function hubPages() {
   return out;
 }
 
-function testHub(file) {
+async function testHub(file) {
   const errs = [];
   const rel = path.relative(ROOT, file);
-  const doc = new JSDOM(fs.readFileSync(file, 'utf8')).window.document;
+  /* CSS বাইরের ফাইলে থাকে; jsdom নিজে থেকে সেটা আনে না (resources});
+     তাই শেয়ার্ড স্টাইলশিটটা সরাসরি ঢুকিয়ে দিই — তবেই computed style
+     দিয়ে লেআউট-বাগ (যেমন কার্ড উল্লম্ব হয়ে যাওয়া) ধরা পড়ে। */
+  const sheet = ['site.css', 'site-extra.css']
+    .map((f) => path.join(ROOT, 'assets', f))
+    .filter((f) => fs.existsSync(f))
+    .map((f) => `<style>${fs.readFileSync(f, 'utf8')}</style>`)
+    .join('\n');
+  const html = fs.readFileSync(file, 'utf8').replace('</head>', sheet + '</head>');
+  const dom = new JSDOM(html, { pretendToBeVisual: true });
+  const { window } = dom;
+  const doc = window.document;
   const nav = doc.getElementById('site-nav');
   if (!nav) {
     errs.push('#site-nav পাওয়া যায়নি');
@@ -531,6 +542,13 @@ function testHub(file) {
     else if (body.textContent.replace(/\s+/g, '').length > 70) {
       errs.push(`কার্ডের লেখা এখনও লম্বা (${body.textContent.trim().length} অক্ষর) — ছোট রাখার কথা`);
     }
+    /* লেআউট: কম্প্যাক্ট কার্ডে নাম বাঁয়ে, তির ডানে (row)।
+       সাধারণ .article-card-link-এ flex-direction:column থাকে; কোনো
+       নিয়মে row স্পষ্ট না থাকলে তির নিচে নেমে কার্ড উঁচু ও ফাঁকা দেখায়। */
+    const linkCss = window.getComputedStyle(c.querySelector('a.article-card-link'));
+    if (linkCss.flexDirection && linkCss.flexDirection !== 'row') {
+      errs.push(`কার্ডের লেআউট উল্লম্ব (flex-direction:${linkCss.flexDirection}) — row হওয়া দরকার`);
+    }
     const a = c.querySelector('a.article-card-link');
     const href = a?.getAttribute('href') || '';
     if (!href) errs.push('কার্ডের লিংক নেই');
@@ -539,6 +557,53 @@ function testHub(file) {
     }
     if (c.classList.contains('is-soon') && href !== '#') {
       errs.push('«শীঘ্রই» কার্ডের লিংক «#» হওয়া উচিত');
+    }
+  }
+
+  /* নেভের সোনালি পিল: ভুয়া লেআউট দিয়ে যাচাই — current লিংকের
+     সত্যিকারের অবস্থানেই পিল বসছে কি না। আগে offsetLeft ব্যবহার করা
+     হত; «ধর্মীয় গ্রন্থ» .nav-item-এর ভেতরে যাওয়ায় offsetLeft প্রায় ০
+     হয়ে পিল নেভের বাঁ প্রান্তে (হোমের ওপরে) বসে যেত। */
+  {
+    const nav2 = doc.getElementById('site-nav');
+    const links = [...nav2.querySelectorAll('a')].filter((a) => !a.closest('.nav-sub'));
+    const rect = (el, left) => ({ left, right: left + 82, width: 82, height: 34, top: 18, bottom: 52, x: left, y: 18 });
+    Object.defineProperty(nav2, 'getBoundingClientRect',
+      { value: () => ({ left: 620, right: 1420, width: 800, height: 70, top: 0, bottom: 70 }), configurable: true });
+    links.forEach((a, i) => Object.defineProperty(a, 'getBoundingClientRect',
+      { value: () => rect(a, 640 + i * 90), configurable: true }));
+
+    const jd = new JSDOM(html, { runScripts: 'outside-only', pretendToBeVisual: true,
+      url: 'https://example.invalid/ead/' + rel.split(path.sep).join('/') });
+    const w2 = jd.window;
+    w2.matchMedia = (q) => ({ matches: !/reduced-motion|max-width/.test(q),
+      addEventListener() {}, addListener() {} });
+    w2.requestAnimationFrame = (cb) => setTimeout(cb, 0);
+    const n2 = w2.document.getElementById('site-nav');
+    const l2 = [...n2.querySelectorAll('a')].filter((a) => !a.closest('.nav-sub'));
+    Object.defineProperty(n2, 'getBoundingClientRect',
+      { value: () => ({ left: 620, right: 1420, width: 800, height: 70, top: 0, bottom: 70 }) });
+    l2.forEach((a, i) => Object.defineProperty(a, 'getBoundingClientRect',
+      { value: () => rect(a, 640 + i * 90) }));
+    try {
+      w2.eval(fs.readFileSync(path.join(ROOT, 'assets/nav-motion.js'), 'utf8'));
+      /* jsdom-এ readyState থাকে «loading», তাই স্ক্রিপ্ট বুট হয়
+         DOMContentLoaded-এ — হাতে পাঠিয়ে দিই। */
+      w2.document.dispatchEvent(new w2.Event('DOMContentLoaded'));
+      await new Promise((r) => setTimeout(r, 60));
+      const x = n2.style.getPropertyValue('--nav-glide-x');
+      if (!x) errs.push('নেভের পিলের অবস্থান বসেনি (--nav-glide-x শূন্য)');
+      else {
+        /* current লিংকের ভুয়া left − nav.left + 6 */
+        const cur = l2.findIndex((a) => a.getAttribute('aria-current') === 'page' ||
+          (a.parentElement && a.parentElement.classList.contains('current')));
+        const want = (640 + (cur < 0 ? 0 : cur) * 90) - 620 + 6;
+        if (Math.abs(parseFloat(x) - want) > 1) {
+          errs.push(`নেভের পিল ভুল জায়গায় (${x}, হওয়া উচিত ${want}px) — offsetLeft ব্যবহার করলে নেস্টেড আইটেমে ০ হয়ে যায়`);
+        }
+      }
+    } catch (e) {
+      errs.push('nav-motion চালাতে গিয়ে ত্রুটি: ' + e.message);
     }
   }
 
@@ -596,7 +661,7 @@ function testReaderTools(file) {
 
 let ok = true;
 for (const f of pages()) ok = (await testPage(f)) && ok;
-for (const f of hubPages()) ok = testHub(f) && ok;
+for (const f of hubPages()) ok = (await testHub(f)) && ok;
 for (const f of essayPages()) ok = testReaderTools(f) && ok;
 console.log(ok ? '\nসব পাতা নিজের ডেটাই দেখাচ্ছে ✓' : '\nকিছু পাতায় সমস্যা আছে ✗');
 process.exit(ok ? 0 : 1);
