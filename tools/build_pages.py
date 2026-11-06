@@ -197,8 +197,13 @@ def load(slug):
     return idx
 
 
+# দেবনাগরী *অক্ষর* — দাঁড়ি (U+0964) ও অঙ্ক বাদ: সেগুলো বাংলা লেখাতেও বসে,
+# তাই শুধু তাদের উপস্থিতিতে পাঠকে সংস্কৃত ধরলে ভুল দাবি ছাপা হয়।
+DEVANAGARI_LETTERS = re.compile(r"[\u0904-\u0939\u093D\u0950\u0958-\u0961\u0972-\u097F]")
+
+
 def count_with_sk(slug: str, idx: dict) -> int:
-    """কতটি শ্লোক/মন্ত্রে আসলেই সংস্কৃত পাঠ আছে — পাতার দাবি যেন ডেটার সাথে মেলে।"""
+    """কতটি শ্লোক/মন্ত্রে আসলেই সংস্কৃত (দেবনাগরী) পাঠ আছে — পাতার দাবি যেন ডেটার সাথে মেলে।"""
     n = 0
     for c in idx.get("chapters", []):
         fp = DATA / slug / f"ch{c['id']}.json"
@@ -208,7 +213,7 @@ def count_with_sk(slug: str, idx: dict) -> int:
             d = json.loads(fp.read_text(encoding="utf-8"))
         except Exception:
             continue
-        n += sum(1 for v in d.get("verses", []) if str(v.get("sk") or "").strip())
+        n += sum(1 for v in d.get("verses", []) if DEVANAGARI_LETTERS.search(str(v.get("sk") or "")))
     return n
 
 
