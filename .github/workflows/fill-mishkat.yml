@@ -62,11 +62,19 @@ jobs:
       - name: মোড নির্ধারণ
         run: |
           if [ "$MODE" = "auto" ] || [ -z "$MODE" ]; then
+            # ট্রিগার-ফাইলের প্রথম লাইন: «<মোড> [limit] [sleep]» — যেমন «fill 25»
             if [ -f assets/hadith/data/_trigger/mishkat-fill ]; then
-              MODE=$(head -1 assets/hadith/data/_trigger/mishkat-fill | tr -s ' \t' ' ' | cut -d' ' -f1)
+              read -r M L S _ <<EOF
+          $(head -1 assets/hadith/data/_trigger/mishkat-fill)
+          EOF
+              [ -n "$M" ] && MODE="$M"
+              [ -n "$L" ] && LIMIT="$L"
+              [ -n "$S" ] && SLEEP="$S"
             fi
             [ -z "$MODE" ] && MODE=all
             echo "MODE=$MODE" >> "$GITHUB_ENV"
+            echo "LIMIT=$LIMIT" >> "$GITHUB_ENV"
+            echo "SLEEP=$SLEEP" >> "$GITHUB_ENV"
           fi
           echo "চলবে: MODE=$MODE · LIMIT=$LIMIT · SLEEP=$SLEEP"
 
@@ -181,7 +189,8 @@ jobs:
             mkdir -p assets/hadith/data/_debug
             [ -d "$OUT/mishkat" ] && cp -r "$OUT/mishkat" assets/hadith/data/
             [ -f "$OUT/index.json" ] && cp "$OUT/index.json" assets/hadith/data/
-            [ -d "$OUT/dbg" ] && cp -r "$OUT/dbg" assets/hadith/data/_debug/mishkat
+            # ভেতরের ফাইলগুলো কপি করি — নইলে mishkat/dbg/ নামে ডুপ্লিকেট ফোল্ডার হয়
+            [ -d "$OUT/dbg" ] && cp -r "$OUT/dbg/." assets/hadith/data/_debug/mishkat/
             git add -f assets/hadith/data
             echo "== পরিবর্তন"
             git status --porcelain | head -15
@@ -189,7 +198,7 @@ jobs:
             if git diff --cached --quiet; then
               echo "কোনো পরিবর্তন নেই — push লাফ"
             else
-              git commit -q -m "মিশকাত: ফাঁকা হাদিস পূরণ + নম্বর-ক্রম ($(date -u +%d/%m %H:%M) UTC)"
+              git commit -q -m "মিশকাত: ফাঁকা হাদিস পূরণ + নম্বর-ক্রম ($(date -u '+%d/%m %H:%M') UTC)"
               git push origin "HEAD:refs/heads/${BOT_BRANCH}" && echo "✓ ${BOT_BRANCH}-এ গেছে $(git rev-parse --short HEAD)"
             fi
           } 2>&1 | tee /tmp/push.log
