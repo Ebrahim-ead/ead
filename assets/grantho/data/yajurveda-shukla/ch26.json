@@ -1,9 +1,9 @@
 {
  "id": 26,
- "bn": "শুক্ল যজুর্বেদ সংহিতা — ২৬ শুক্লযজুর্বেদ ষড়বিং",
- "count": 27,
+ "bn": "ষড়বিংশ অধ্যায় · উত্তরার্ধ",
+ "count": 26,
  "from": 1,
- "to": 27,
+ "to": 26,
  "verses": [
   {
    "n": "অনুক্রমণিকা",
@@ -225,5 +225,6 @@
    "seg": 26
   }
  ],
- "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a8%e0%a7%ac-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%b7%e0%a6%a1%e0%a6%bc%e0%a6%ac%e0%a6%bf%e0%a6%82/"
+ "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a8%e0%a7%ac-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%b7%e0%a6%a1%e0%a6%bc%e0%a6%ac%e0%a6%bf%e0%a6%82/",
+ "withBn": 26
 }

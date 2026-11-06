@@ -53,8 +53,8 @@ for(const f of files){
     const p=raw.startsWith('http')?path.join(ROOTDIR,raw.replace(/^https?:\/\/[^/]+\/ead\//,''))
       :raw.startsWith('/')?path.join(ROOTDIR,raw.replace(/^\/ead\//,''))
       :path.resolve(path.dirname(path.resolve(f)),raw);
-    if(!fs.existsSync(p)){ errs.push('missing script: '+src); continue; }
-    try{ new window.Function(fs.readFileSync(p,'utf8')).call(window); }catch(e){ errs.push('ext JS '+src+': '+e.message); }
+    if(!fs.existsSync(p)){ errs.push('missing script: '+raw); continue; }
+    try{ new window.Function(fs.readFileSync(p,'utf8')).call(window); }catch(e){ errs.push('ext JS '+raw+': '+e.message); }
   }
   // structure checks
   const need=['site.css','site-extra.css'];
@@ -64,6 +64,34 @@ for(const f of files){
     if(!/name="robots"[^>]*noindex/.test(html)) errs.push('404 should be noindex');
     if(/rel="canonical"/.test(html)) errs.push('404 should not have canonical');
   } else if(!/rel="canonical"/.test(html)) errs.push('no canonical');
+  // গ্রন্থ-পাতার পরিচয়: data-granth/data-base যেন পাতার নিজের slug-এর ডেটা-ফোল্ডার
+  // দেখায়। build_pages.py টেমপ্লেট হিসেবে অন্য গ্রন্থের পাতা ব্যবহার করে, আর আগে
+  // পরিচয়-বদলি হার্ডকোডেড "সামবেদ …" স্ট্রিং ধরে লেখা ছিল — ফলে টেমপ্লেট ঋগ্বেদ হলে
+  // শুক্ল যজুর্বেদের পাতা ঋগ্বেদের ডেটাই লোড করত। এই চেক সেই অমিল ধরে।
+  const slug = path.basename(f, '.html');
+  const mG = html.match(/data-granth="([^"]*)"/);
+  const mB = html.match(/data-base="([^"]*)"/);
+  if (mG && mG[1] !== slug) errs.push(`data-granth "${mG[1]}" ≠ পাতার slug "${slug}"`);
+  if (mB) {
+    const parts = mB[1].replace(/\/+$/, '').split('/');
+    if (parts[parts.length - 1] !== slug) errs.push(`data-base "${mB[1]}" অন্য গ্রন্থের ফোল্ডার দেখাচ্ছে (slug "${slug}")`);
+    const idxFp = path.resolve(path.dirname(f), mB[1], 'index.json');
+    if (!fs.existsSync(idxFp)) errs.push(`data-base ফোল্ডারে index.json নেই: ${path.relative(ROOTDIR, idxFp)}`);
+    // অধ্যায়-শিরোনাম ও সংখ্যা ch{n}.json থেকেই রেন্ডার হয়, তাই index.json-এর
+    // সাথে মিল থাকা দরকার — নইলে পাতায় পুরোনো/ভুল শিরোনাম দেখায়
+    try {
+      const idx = JSON.parse(fs.readFileSync(idxFp, 'utf8'));
+      for (const c of (idx.chapters || [])) {
+        const cfp = path.join(path.dirname(idxFp), `ch${c.id}.json`);
+        if (!fs.existsSync(cfp)) { errs.push(`চ্যাপ্টার-ফাইল নেই: ch${c.id}.json`); continue; }
+        const ch = JSON.parse(fs.readFileSync(cfp, 'utf8'));
+        if (ch.bn && c.bn && ch.bn !== c.bn) errs.push(`চ্যাপ্টার ${c.id}: শিরোনাম মিলছে না («${ch.bn}» ≠ «${c.bn}»)`);
+        if (ch.count !== undefined && c.count !== undefined && ch.count !== c.count) {
+          errs.push(`চ্যাপ্টার ${c.id}: সংখ্যা মিলছে না (${ch.count} ≠ ${c.count})`);
+        }
+      }
+    } catch (e) { errs.push('ডেটা-যাচাই ব্যর্থ: ' + e.message); }
+  }
   if(/data:image\/[a-z+]*;base64/.test(html)) errs.push('base64 image');
   if(!/id="yr"/.test(html)) errs.push('no footer year');
   if(errs.length){issues++;console.log('✗ '+f);errs.slice(0,6).forEach(e=>console.log('    '+e));}
