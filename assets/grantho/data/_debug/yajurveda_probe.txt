@@ -1,0 +1,22 @@
+=== শুক্ল যজুর্বেদ — উৎস-প্রোব ===
+বই-পাতার সূচিতে লেসন: 40
+   · https://www.ebanglalibrary.com/lessons/০১-শুক্লযজুর্বেদ-পূর্বা/
+   · https://www.ebanglalibrary.com/lessons/০২-শুক্লযজুর্বেদ-দ্বিতী/
+   · https://www.ebanglalibrary.com/lessons/০৩-শুক্লযজুর্বেদ-তৃতীয়/
+   · …https://www.ebanglalibrary.com/lessons/৩৯-শুক্লযজুর্বেদ-ঊনচত্ব/
+   · …https://www.ebanglalibrary.com/lessons/৪০-শুক্লযজুর্বেদ-চত্বার/
+প্রথম লেসন | https://www.ebanglalibrary.com/lessons/০১-শুক্লযজুর্বেদ-পূর্বা/
+   html=OK 233940 B · text=84211 B · মন্ত্র=32 · লগইন-দেয়াল=True
+   নমুনা n=1 · bn=27638 অক্ষর · sk-দেবনাগরী=False
+   নমুনা n=2 · bn=5489 অক্ষর · sk-দেবনাগরী=False
+সূচির দ্বিতীয় লেসন | https://www.ebanglalibrary.com/lessons/০২-শুক্লযজুর্বেদ-দ্বিতী/
+   html=OK 162187 B · text=28537 B · মন্ত্র=33 · লগইন-দেয়াল=True
+   নমুনা n=2 · bn=49 অক্ষর · sk-দেবনাগরী=False
+   নমুনা n=3 · bn=906 অক্ষর · sk-দেবনাগরী=False
+সাইটম্যাপে «যজুর্বেদ» মিল: 48
+   · https://www.ebanglalibrary.com/books/শুক্ল-যজুর্বেদ-সংহিতা-অন/
+   · https://www.ebanglalibrary.com/books/কৃষ্ণ-যজুর্বেদ-সংহিতা-অন/
+   · https://www.ebanglalibrary.com/books/যজুর্বেদ-সংহিতা-অনুবাদ-ব/
+   · https://www.ebanglalibrary.com/lessons/যজুর্বেদ-সংহিতা-০১-প্রথম/
+   · https://www.ebanglalibrary.com/lessons/০১-শুক্লযজুর্বেদ-পূর্বা/
+   · https://www.ebanglalibrary.com/lessons/০২-শুক্লযজুর্বেদ-দ্বিতী/
