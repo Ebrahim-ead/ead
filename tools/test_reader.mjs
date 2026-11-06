@@ -111,6 +111,42 @@ async function testPage(file) {
     // সবচেয়ে জোরালো যাচাই: রেন্ডার হওয়া প্রথম খণ্ডের পাঠ এই গ্রন্থের নিজের
     // চ্যাপ্টার-ফাইলের প্রথম খণ্ডের সাথে মিলতে হবে — অন্য গ্রন্থের ডেটা লোড
     // হলে (যেমন data-base ভুল থাকলে) এখানেই ধরা পড়ে।
+    // প্রদর্শিত নম্বর: সংখ্যাই হতে হবে এবং ১..N ক্রমে — নইলে পাঠককে
+    // মন্ত্র উল্টাপাল্টা মনে হয় (যজুর্বেদে একবার এমনই হয়েছিল)
+    const badges = [...doc.querySelectorAll('.g-v-num')].map((e) => e.textContent.trim());
+    if (badges.some((b) => !/^[০-৯]+$/.test(b))) {
+      errs.push(`সংখ্যা-ব্যাজে অ-সংখ্যা লেবেল: ${badges.filter((b) => !/^[০-৯]+$/.test(b)).slice(0, 3).join(', ')}`);
+    }
+    const BN = { '০':0,'১':1,'২':2,'৩':3,'৪':4,'৫':5,'৬':6,'৭':7,'৮':8,'৯':9 };
+    const nums = badges.map((b) => [...b].reduce((a, c) => a * 10 + (BN[c] ?? NaN), 0));
+    const shownNums = nums.filter((x) => !Number.isNaN(x));
+    if (shownNums.length > 1) {
+      const seqOK = shownNums.every((x, i) => i === 0 ? true : x > shownNums[i - 1]);
+      if (!seqOK) errs.push(`প্রদর্শিত নম্বর ক্রমে নেই: ${shownNums.slice(0, 8).join(',')}`);
+      if (shownNums[0] !== 1) errs.push(`প্রথম নম্বর ${shownNums[0]} — ১ থেকে শুরু হওয়ার কথা`);
+    }
+
+    // উৎসের অনুক্রমণিকা/ভূমিকা আলাদা ব্লকে দেখাতে হবে (মন্ত্র-তালিকায় নয়)
+    const ch = JSON.parse(fs.readFileSync(path.join(dataDir, `ch${idx.chapters[0].id}.json`), 'utf8'));
+    const frontEl = doc.querySelector('.g-front');
+    if (ch.preface && !frontEl) errs.push('ভূমিকা ডেটায় আছে কিন্তু রেন্ডার হয়নি');
+    if (frontEl && !ch.preface) errs.push('ভূমিকা নেই অথচ ব্লক রেন্ডার হয়েছে');
+    if (frontEl && frontEl.open) errs.push('ভূমিকা-ব্লক খোলা অবস্থায় আছে (কল্যাপ্স থাকার কথা)');
+
+    // সব খণ্ডে বাংলা থাকলে অকেজো ছাঁকনি দেখানো যাবে না
+    const onlyBn = doc.getElementById('g-only-bn');
+    if (idx.withBn === idx.total && onlyBn && !onlyBn.hidden &&
+        !(onlyBn.closest && onlyBn.closest('label') && onlyBn.closest('label').hidden)) {
+      errs.push('সব খণ্ডে বাংলা আছে, তবু «কেবল যেগুলোর অনুবাদ আছে» ছাঁকনি দেখা যাচ্ছে');
+    }
+
+    // অধ্যায়-তালিকার বাটনে ভূমিকার উপস্থিতি দেখানো হচ্ছে কি না
+    const c0 = idx.chapters[0];
+    const btn0 = list.children[0] ? list.children[0].textContent : '';
+    if (c0.prefaceCount && !btn0.includes('অনুক্রমণিকা')) {
+      errs.push('অধ্যায়-বাটনে ভূমিকা-চিহ্ন নেই (prefaceCount আছে)');
+    }
+
     const strip = (x) => String(x || '').replace(/\s+/g, ' ').trim();
     const firstBn = strip(vs[0] && vs[0].bn).slice(0, 60);
     const shown = [...doc.querySelectorAll('.g-v .g-v-bn')]

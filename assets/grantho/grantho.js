@@ -86,6 +86,7 @@
       var meta = bn(c.count) + " " + VW;
       if (c.suktaCount) meta += " · " + bn(c.suktaCount) + " সূক্ত";
       else if (c.from && c.to && c.count > 1) meta += " · " + bn(c.from) + " – " + bn(c.to) + " নং";
+      if (c.prefaceCount) meta += " · অনুক্রমণিকা";
       return '<button class="g-ch' + (on ? " on" : "") + '" type="button" data-ch="' + c.id + '"' +
         (on ? ' aria-current="true"' : "") + '>' +
         '<span class="num">' + bn(c.id) + '</span>' +
@@ -262,8 +263,21 @@
     } else {
       html = list.map(verseHTML).join("");
     }
+    /* উৎসের অনুক্রমণিকা/ভূমিকা-অনুবাদ মন্ত্র নয় — তাই আলাদা ব্লকে, কল্যাপ্স করা
+       অবস্থায় (পাঠ অটুট থাকে, কিন্তু মন্ত্র-তালিকা পরিষ্কার থাকে)। */
+    var front = "";
+    if (!state.q && pageNo === 0 && (chapter.preface || chapter.heading)) {
+      var sumTxt = chapter.heading ? esc(chapter.heading).replace(/\n+/g, " · ") : "অনুক্রমণিকা";
+      front = '<details class="g-front"><summary>' + sumTxt +
+        ' <span class="g-front-tag">উৎসের ভূমিকা-অনুবাদ · মন্ত্র-গণনার বাইরে</span></summary>' +
+        String(chapter.preface || "").split(/\n\n+/).filter(function (x) { return x.trim(); })
+          .map(function (par) {
+            return '<p class="g-front-t">' + esc(par).replace(/\n+/g, "</p><p class=\"g-front-t\">") + "</p>";
+          }).join("") +
+        "</details>";
+    }
     var pg = pagerHTML(pages, pageNo);
-    bodyEl.innerHTML = (pages > 1 ? pg : "") +
+    bodyEl.innerHTML = (pages > 1 ? pg : "") + front +
       (html || '<p class="g-empty">কিছু পাওয়া যায়নি।</p>') +
       (pages > 1 ? pg : "");
     wirePager();
@@ -271,6 +285,7 @@
     if (metaEl) {
       var mm = bn(chapter.count) + " " + VW;
       if (hasS) mm += " · " + bn(chapter.suktaCount || 0) + " সূক্ত";
+      if (chapter.preface || chapter.heading) mm += " · অনুক্রমণিকা সহ";
       metaEl.textContent = mm;
     }
     var hits = bodyEl.querySelectorAll(".g-v.hit").length;
@@ -344,6 +359,12 @@
   loadJSON(BASE + "index.json").then(function (d) {
     index = d;
     if (d.verseWord) VW = d.verseWord;
+    /* সব খণ্ডেই বাংলা থাকলে এই ছাঁকনি অকেজো — অথচ বোতামটি থেকে গেলে মনে হয়
+       কিছু বাদ পড়ছে। তাই তখন লুকিয়ে রাখি (সংস্কৃত-টগলের মতোই)। */
+    if (onlyBnEl && d.total && d.withBn === d.total) {
+      var lab = onlyBnEl.closest ? onlyBnEl.closest("label") : onlyBnEl.parentNode;
+      if (lab) lab.hidden = true;
+    }
     bind();
     var start = 1;
     var m = (location.hash || "").match(/^#ch(\d+)$/);

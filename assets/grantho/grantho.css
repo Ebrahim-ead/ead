@@ -187,3 +187,27 @@ html[data-theme="light"] .g-intro h1 span{color:#8a5a00}
   .g-pg-btn{padding:8px 11px;font-size:12.5px}
   .g-pg-info{width:100%;text-align:center;order:-1}
 }
+
+/* ── উৎসের অনুক্রমণিকা/ভূমিকা-অনুবাদ ────────────────────────────────
+   এগুলো মন্ত্র নয়, তাই মন্ত্র-তালিকার বাইরে আলাদা কল্যাপ্সিবল ব্লকে থাকে:
+   পাঠ অটুট থাকে, অথচ মন্ত্রের সারি পরিষ্কার থাকে। */
+.g-front { margin:0 0 18px;border:1px dashed rgba(245,184,28,.32);border-radius:14px;
+  background:rgba(245,184,28,.045) }
+.g-front > summary { cursor:pointer;list-style:none;padding:12px 15px;border-radius:14px;
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:9px;
+  font-size:14px;font-weight:700;color:var(--gold2) }
+.g-front > summary::-webkit-details-marker { display:none }
+.g-front > summary::before { content:"\25B8";font-size:12px;color:var(--muted);flex:0 0 auto }
+.g-front[open] > summary::before { content:"\25BE" }
+.g-front > summary:hover { background:rgba(245,184,28,.08) }
+.g-front > summary:focus-visible { outline:2px solid var(--gold2);outline-offset:2px }
+.g-front-tag { font-weight:500;font-size:12px;color:var(--muted) }
+.g-front-t { margin:0;padding:0 15px 12px;font-size:14px;line-height:1.95;color:var(--text) }
+.g-front[open] > .g-front-t:first-of-type { padding-top:4px }
+.g-front[open] > .g-front-t:last-of-type { padding-bottom:15px }
+html[data-theme="light"] .g-front > summary { color:#7a4f00 }
+@media (max-width:620px) {
+  .g-front > summary { font-size:13.4px;padding:11px 13px }
+  .g-front-t { padding-left:13px;padding-right:13px;font-size:13.6px }
+}
+@media print { .g-front { break-inside:avoid } }
