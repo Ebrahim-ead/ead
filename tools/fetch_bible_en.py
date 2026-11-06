@@ -36,7 +36,7 @@ RAW = EN / "raw"
 DBG = OUT.parent / "_debug"   # fetch_bible.py-এর সাথে একই ফোল্ডার
 MANIFEST = DBG / "bible_books.json"          # fetch_bible.py-র discover-এর লেখা
 EN_SRC = "The New American Bible — vatican.va"
-PV_EN = 2                                    # ইংরেজি পার্সারের সংস্করণ
+PV_EN = 3                                    # ইংরেজি পার্সারের সংস্করণ
 
 BASE = "https://www.vatican.va/archive/ENG0839/"
 ALPHA = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -80,7 +80,13 @@ FOOT_MARK = re.compile(r"^\[\d+\]\s*")
 
 
 def tok_next(tok: str) -> str:
-    """base36-এ পরের পাতা-কোড: 9→A, Z→10, 1Z→20 …"""
+    """পাতা-কোডের পরের মান: 9→A, Z→10, 1Z→20 …
+
+    সাবধান: বাড়াতে হয় শুধু সংখ্যা-অংশটুকু। আগে «P»-উপসর্গসহ পুরো টোকেন
+    base36-এ বাড়ানো হতো — তাই «PZ» (আদিপুস্তক ৩৩)-এর পরে «P10»-এর বদলে
+    «Q0» তৈরি হতো, আর হাঁটা বাইবেল ছেড়ে অন্য ডকুমেন্টের হাজারো পাতায়
+    বাজেট পুড়িয়ে দিত (২,১০৯ পাতায় মাত্র ৩ অধ্যায়)।
+    """
     n = 0
     for ch in tok:
         n = n * 36 + ALPHA.index(ch)
@@ -179,15 +185,16 @@ def cmd_fetch(args):
     prog = json.loads(prog_p.read_text(encoding="utf-8")) if prog_p.exists() else {}
     if prog.get("pvEn") != PV_EN:      # পার্সার বদলেছে — পুরোনো হাঁটা বাতিল
         prog = {}
-    tok = prog.get("token", "P3")
+    tok = prog.get("token", "3")
     pend_name = prog.get("pendName")
     pend = {int(k): v for k, v in (prog.get("pendCh") or {}).items()}
     t0 = time.time()
     misses = 0
     pages = saved = 0
+    unknown_seen = 0
     report = []
     while misses < 3:
-        url = BASE + "__" + tok + ".HTM"
+        url = BASE + "__P" + tok + ".HTM"
         try:
             h = F.get(url)
         except Exception as e:  # noqa: BLE001
@@ -199,6 +206,11 @@ def cmd_fetch(args):
         pages += 1
         lines = [x.strip() for x in F.page_text(h).split("\n")]
         name, ch = page_identity(lines)
+        if name is None and ch is None and unknown_seen < 3:
+            unknown_seen += 1
+            (DBG / "bible_en_unknown.txt").write_text(
+                f"--- টোকেন {tok} ({url}) ---\n" + "\n".join(lines[:40]) + "\n",
+                encoding="utf-8")
         if name and name != pend_name:
             # আগের পুস্তকের জমা পাঠ লিখে দিই
             if pend_name and pend:
