@@ -414,7 +414,9 @@ async function testPage(file) {
  *  «প্রবেশ করুন» — সব মিলিয়ে অনেক বড়; ব্যবহারকারীর চাহিদা: শুধু নাম।
  * --------------------------------------------------------------- */
 function hubPages() {
-  const out = [path.join(ROOT, 'grantho.html')];
+  /* হোমপাতাও যাচাই হয়: নেভ সাইট-ব্যাপী একই, আর index.html-এ
+     ড্রপডাউন/বর্তমান-দাগ হারালে সেটাই সবচেয়ে বেশি চোখে পড়ে। */
+  const out = [path.join(ROOT, 'grantho.html'), path.join(ROOT, 'index.html')];
   for (const d of ['grantho', path.join('grantho', 'hindu'), path.join('grantho', 'christian')]) {
     const dir = path.join(ROOT, d);
     if (!fs.existsSync(dir)) continue;
@@ -431,11 +433,17 @@ function testHub(file) {
   if (!nav) {
     errs.push('#site-nav পাওয়া যায়নি');
   } else {
+    /* বর্তমান পাতা চেনার দুই রূপ: সাধারণ লিংকে a.on + aria-current,
+       আর ধর্মীয় গ্রন্থের নেভ-আইটেমে (.nav-item.current + aria-current) —
+       কারণ ঐটির ভেতরে এখন ড্রপডাউন-বোতামও আছে। */
     const cur = [...nav.querySelectorAll('a[aria-current="page"]')];
-    if (cur.length > 1) {
-      errs.push(`নেভে ${cur.length}টি লিংকে aria-current — একটির বেশি চলবে না (${cur.map((a) => a.textContent.trim()).join(', ')})`);
+    const curItem = [...nav.querySelectorAll('.nav-item.current')];
+    if (cur.length + curItem.length > 1) {
+      errs.push(`নেভে ${cur.length + curItem.length}টি জায়গায় «বর্তমান» চিহ্ন — একটির বেশি চলবে না`);
     }
-    if (!cur.length) errs.push('নেভে কোনও লিংকেই aria-current নেই — বর্তমান পাতা বোঝা যায় না');
+    if (!cur.length && !curItem.length) {
+      errs.push('নেভে কোনও লিংকেই aria-current নেই — বর্তমান পাতা বোঝা যায় না');
+    }
     for (const a of nav.querySelectorAll('a.on')) {
       if (!a.getAttribute('aria-current')) {
         errs.push(`«${a.textContent.trim()}» লিংকে «on» আছে কিন্তু aria-current নেই`);
@@ -445,6 +453,54 @@ function testHub(file) {
       const about = [...nav.querySelectorAll('a')].find((a) => /about\.html$/.test(a.getAttribute('href') || ''));
       if (about && (about.classList.contains('on') || about.hasAttribute('aria-current'))) {
         errs.push('«পরিচিতি» লিংক ভুলভাবে হাইলাইট হয়েছে');
+      }
+    }
+
+    /* নেভ ড্রপডাউন: «ধর্মীয় গ্রন্থ»-এ ক্লিক করলে চার ধর্মের তালিকা খোলে।
+       টেমপ্লেট বদলে ড্রপডাউন হারালে বা লিংক ভাঙলে ধরা পড়বে। */
+    const dd = doc.getElementById('nav-item-grantho');
+    const ddBtn = dd && dd.querySelector('.nav-sub-toggle');
+    const ddPanel = doc.getElementById('nav-sub-grantho');
+    if (!dd || !ddBtn || !ddPanel) {
+      errs.push('«ধর্মীয় গ্রন্থ»-এ নেভ ড্রপডাউন নেই (.nav-sub-toggle/#nav-sub-grantho)');
+    } else {
+      /* <a>-এর ভেতরে <button> ব্রাউজার ভেঙে ফেলে — অবৈধ */
+      if (dd.querySelector('a .nav-sub-toggle') || dd.querySelector('a button')) {
+        errs.push('ড্রপডাউন-বোতাম <a>-এর ভেতরে — অবৈধ HTML');
+      }
+      if (ddBtn.getAttribute('aria-controls') !== 'nav-sub-grantho') {
+        errs.push('ড্রপডাউন-বোতামের aria-controls ভুল');
+      }
+      if (ddBtn.getAttribute('aria-expanded') !== 'false') {
+        errs.push('ড্রপডাউন শুরুতে বন্ধ (aria-expanded="false") থাকা দরকার');
+      }
+      if (ddBtn.getAttribute('type') !== 'button') {
+        errs.push('ড্রপডাউন-বোতামে type="button" নেই');
+      }
+      const subs = [...ddPanel.querySelectorAll('.nav-sub-item')];
+      const names = subs.map((a) => a.querySelector('.nav-sub-name')?.textContent.trim());
+      for (const want of ['ইসলাম', 'হিন্দু', 'খ্রিস্টান', 'বৌদ্ধ']) {
+        if (!names.includes(want)) errs.push(`ড্রপডাউনে «${want}» নেই`);
+      }
+      const fileDir = path.dirname(file);
+      for (const a of subs) {
+        const href = a.getAttribute('href') || '';
+        if (!href || href === '#') { errs.push(`ড্রপডাউনে «${a.textContent.trim()}»-এর লিংক নেই`); continue; }
+        const target = path.resolve(fileDir, href.split('#')[0]);
+        if (!fs.existsSync(target)) errs.push(`ড্রপডাউনের লিংক ভাঙা: ${href}`);
+        else if (!a.classList.contains('is-soon')) {
+          const t = fs.readFileSync(target, 'utf8');
+          if (!/<main/.test(t)) errs.push(`ড্রপডাউনের গন্তব্যে মূল কনটেন্ট নেই: ${href}`);
+        }
+      }
+      const soon = subs.filter((a) => a.classList.contains('is-soon')).map((a) => a.textContent.trim());
+      if (soon.length > 1) errs.push(`একাধিক ধর্ম «শীঘ্রই» দেখাচ্ছে: ${soon.join(', ')}`);
+      if (!ddPanel.querySelector('.nav-sub-all')) errs.push('ড্রপডাউনে «সব ধর্মীয় গ্রন্থ» লিংক নেই');
+      /* সাধারণ লিংক-হাইলাইট আর .nav-item.current মিলিয়ে ঠিক একটিই */
+      const itemCur = nav.querySelectorAll('.nav-item.current').length;
+      const linkCur = nav.querySelectorAll('a[aria-current="page"]').length;
+      if (itemCur + linkCur > 1) {
+        errs.push(`নেভে ${itemCur + linkCur}টি জায়গায় «বর্তমান» চিহ্ন — একটির বেশি চলবে না`);
       }
     }
   }
