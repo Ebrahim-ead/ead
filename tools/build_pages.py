@@ -84,16 +84,17 @@ BOOKS = {
 BOOKS["yajurveda-shukla"] = dict(
     kind="veda", title=("শুক্ল যজুর্বেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
     kicker="হিন্দু · বেদ · শুক্ল যজুর্বেদ", crumb="শুক্ল যজুর্বেদ সংহিতা",
-    intro="শুক্ল যজুর্বেদের বাংলা অনুবাদসহ পাঠ — ebanglalibrary.com।",
+    intro="শুক্ল যজুর্বেদের বাংলা অনুবাদ — দুর্গাদাস লাহিড়ী (ebanglalibrary.com)।",
     word="মন্ত্র", chword="অধ্যায়",
-    src="বাংলা অনুবাদ ও মূল পাঠ ebanglalibrary.com থেকে।",
+    # সতর্কতা: এই সংস্করণে সংস্কৃত মূল পাঠ নেই, তাই «মূল পাঠ» দাবি করা যাবে না
+    src="বাংলা অনুবাদ — দুর্গাদাস লাহিড়ী; ebanglalibrary.com থেকে সংগৃহীত।",
     excerpt="যজ্ঞের বিধি ও মন্ত্রের বেদ — শুক্ল শাখার বাংলা অনুবাদসহ।")
 BOOKS["yajurveda-krishna"] = dict(
     kind="veda", title=("কৃষ্ণ যজুর্বেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
     kicker="হিন্দু · বেদ · কৃষ্ণ যজুর্বেদ", crumb="কৃষ্ণ যজুর্বেদ সংহিতা",
     intro="কৃষ্ণ যজুর্বেদের বাংলা অনুবাদসহ পাঠ — ebanglalibrary.com।",
     word="মন্ত্র", chword="অধ্যায়",
-    src="বাংলা অনুবাদ ও মূল পাঠ ebanglalibrary.com থেকে।",
+    src="বাংলা অনুবাদ ebanglalibrary.com থেকে সংগৃহীত।",
     excerpt="যজ্ঞের বিধি ও মন্ত্রের বেদ — কৃষ্ণ শাখার বাংলা অনুবাদসহ।")
 BOOKS["brahma"] = dict(
     kind="purana", title=("ব্রহ্ম পুরাণ", ""), hub="purana.html", hubname="পুরাণ",

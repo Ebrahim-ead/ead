@@ -197,6 +197,16 @@ jobs:
           echo "" >> "$DBG/yajurveda_fetch.txt"
           echo "চূড়ান্ত: $N মন্ত্র" >> "$DBG/yajurveda_fetch.txt"
 
+      # ── ১.৫) পরিষ্কারক ─────────────────────────────────────────
+      # নামানো ডেটায় ভূমিকা/অনুক্রমণিকা-খণ্ড মন্ত্র-নম্বরের সাথে মিশে থাকে, কয়েকটি
+      # খণ্ডের বাংলা পাঠ ভুল করে sk ঘরে যায়, আর শিরোনাম কাটা-ছাঁটা ঠিকানা-টুকরো
+      # হয়ে আসে — tools/clean_yajurveda.py এগুলো ঠিক করে (আইডেমপোটেন্ট)।
+      - name: ১.৫) ডেটা পরিষ্কার
+        if: always()
+        run: |
+          python3 -u tools/clean_yajurveda.py 2>&1 | tee "$DBG/yajurveda_clean.txt" || true
+          tail -5 "$DBG/yajurveda_clean.txt" || true
+
       # ── ২) ফল-রিপোর্ট ──────────────────────────────────────────
       - name: ২) ফল-রিপোর্ট
         if: always()
