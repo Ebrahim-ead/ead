@@ -414,9 +414,35 @@ def parse_from_html(html_src: str, n: int) -> tuple[dict | None, str]:
 
 
 # ------------------------------------------------------------------ parse
+TAG_DROP_RE = re.compile(r"(?i)<(?!br\s*/?>)[^>]{0,120}>")
+TAG_BLOCK_DROP_RE = re.compile(
+    r"(?is)<(script|style|iframe|object|embed|svg)[^>]*>.*?</\1\s*>")
+
+
+def safe_text(s: str) -> str:
+    """<br> অটুট রাখি (রিডার innerHTML-এ লাইন-ব্রেক দেখায়, বিদ্যমান ৪,৬৮৭টি
+    হাদিসেও তাই আছে); অন্য যেকোনো ট্যাগ বাদ — পাঠে HTML ঢোকা চলবে না।"""
+    if not isinstance(s, str):
+        return s
+    return TAG_DROP_RE.sub("", TAG_BLOCK_DROP_RE.sub("", s))
+
+
+def section_of(item: dict) -> str:
+    """অনুচ্ছেদ-শিরোনাম: chapter-পাতায় titles.title, একক পাতায় title/sub_title।"""
+    t = item.get("titles")
+    if isinstance(t, dict):
+        v = clean(t.get("title"))
+        if v:
+            return v
+    head, sub = clean(item.get("title")), clean(item.get("sub_title"))
+    if head and sub:
+        return f"{head} - {sub}"
+    return head or sub
+
+
 def item_to_verse(rows: dict, item: dict, n: int) -> dict | None:
-    bn = clean(deref(rows, item.get("description")))
-    ar = clean(deref(rows, item.get("description_ar")))
+    bn = safe_text(clean(deref(rows, item.get("description"))))
+    ar = safe_text(clean(deref(rows, item.get("description_ar"))))
     if not (bn or ar):
         return None
     v = {"i": n, "b": LEAD_NUM_RE.sub("", bn), "a": ar, "n": ""}
@@ -424,10 +450,10 @@ def item_to_verse(rows: dict, item: dict, n: int) -> dict | None:
     if g:
         v["g"] = g
         v["gc"] = grade_class(g)
-    sec = clean((item.get("titles") or {}).get("title"))
+    sec = section_of(item)
     if sec:
         v["s"] = sec
-    tah = clean(deref(rows, item.get("tahqeeq_explanation")))
+    tah = safe_text(clean(deref(rows, item.get("tahqeeq_explanation"))))
     if tah:
         v["tah"] = tah
     return v
