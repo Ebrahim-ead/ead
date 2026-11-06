@@ -135,7 +135,7 @@
     listEl.querySelectorAll("[data-ch]").forEach(function (b) {
       b.addEventListener("click", function () { openChapter(+b.dataset.ch); });
     });
-    if (totalEl) totalEl.textContent = bnNum(index.total) + " " + VW + " · " + bn(index.chapters.length) + " " + CW;
+    /* g-total হেড থেকে সরানো হয়েছে — числа/গণনা আর দেখাই না */
   }
 
   function renderBooks() {
@@ -164,7 +164,7 @@
         else openChapter(id);
       });
     });
-    if (totalEl) totalEl.textContent = bn(index.chapters.length) + " " + CW + " · " + bnNum(index.total) + " " + VW;
+    /* g-total হেড থেকে সরানো হয়েছে — числа/গণনা আর দেখাই না */
   }
 
   /* ---------- তালিকার ভাঁজ (মোবাইল) ----------
@@ -259,7 +259,7 @@
         if (b) b.hidden = !keep;
         if (keep) n++;
       });
-      if (!n && totalEl) totalEl.textContent = "কিছু নেই";
+      /* g-total হেড থেকে সরানো হয়েছে — числа/গণনা আর দেখাই না */
     }
   }
 
@@ -295,7 +295,9 @@
     var miss = (bk.grid && bk.grid.missing) || bk.missing || [];
     if (scope === "chapter" && chapter && chapter.id === bookId) {
       if (titleEl) {
-        titleEl.textContent = bk.bn + " · " + GW + " " + bn(chapterId);
+        /* শেষে স্পেস রাখি: পরে append হওয়া EN-ব্যাজ টেক্সটের সাথে জোড়া না লাগে
+           («অধ্যায় ১Psalms» নয়, «অধ্যায় ১ Psalms»)। */
+        titleEl.textContent = bk.bn + " · " + GW + " " + bn(chapterId) + " ";
         /* ইংরেজি নাম শিরোনামেই, ছোট ও LTR — কোন পুস্তক তা দুই ভাষায় বোঝা যায় */
         if (bk.en) {
           var enSpan = document.createElement("span");

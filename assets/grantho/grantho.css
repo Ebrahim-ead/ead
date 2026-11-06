@@ -57,13 +57,21 @@ html[data-theme="light"] .g-toolbar{background:rgba(250,253,254,.95);
   border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.028);
   padding:10px;scrollbar-width:thin}
 .g-side-head{display:flex;justify-content:space-between;align-items:center;gap:8px;
-  padding:4px 6px 10px;border-bottom:1px solid var(--line);margin-bottom:8px}
-.g-side-head b{font-size:13.5px;color:var(--text)}
-.g-side-head span{font-size:11.5px;color:var(--muted)}
+  padding:2px 4px 9px;border-bottom:1px solid var(--line);margin-bottom:8px}
+/* হেডে মাত্র দুই শব্দ: পুস্তক · তালিকা। সংখ্যা/গণনা বাদ — ফোনের ছোট লাইনে
+   সেগুলোই চোখে পড়ত না, শুধু জায়গা নিত। «তালিকা» বড় করে দিলাম যাতে
+   সহজে চোখে ধরে (ভাঁজ করা যায় বোঝানোর সংকেতও এটাই)। */
+.g-side-head b{font-size:15px;color:var(--text);letter-spacing:.1px}
+.g-side-head .g-side-word{display:inline-flex;align-items:center;gap:6px;
+  font-size:16.5px;font-weight:750;color:var(--gold2);letter-spacing:.2px}
+.g-side-head .g-side-chev{font-size:12px;color:var(--gold2);opacity:.85}
 /* হেডারটি নিজেই ভাঁজ-বোতাম: ফোনে তালিকা চেপে ছোট করা যায় (ডেস্কটপে সাধারণ) */
 .g-side-toggle{display:flex;align-items:center;justify-content:space-between;gap:8px;
-  width:100%;padding:2px 2px 0;border:0;background:transparent;color:inherit;
-  font:inherit;text-align:start;cursor:pointer;border-radius:8px}
+  width:100%;padding:4px 4px 3px;border:0;background:transparent;color:inherit;
+  font:inherit;text-align:start;cursor:pointer;border-radius:9px;
+  transition:background .18s ease}
+.g-side-toggle:hover{background:rgba(245,184,28,.07)}
+html[data-theme="light"] .g-side-toggle:hover{background:rgba(177,119,7,.07)}
 .g-side-toggle:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
 .g-side-toggle .g-side-chev{font-size:11px;color:var(--muted);transition:transform .2s}
 .g-side.folded .g-side-toggle .g-side-chev{transform:rotate(-90deg)}
@@ -293,7 +301,7 @@ html[data-theme="light"] .g-tbtn.on{background:rgba(245,184,28,.24);color:#7a4f0
 }
 
 /* শিরোনামে ইংরেজি পুস্তক-নাম: বাংলা নামের পাশে ছোট, এলআর-টি */
-.g-head-en{display:inline-block;margin-inline-start:8px;padding:1px 7px;border-radius:7px;
+.g-head-en{display:inline-block;margin-inline-start:6px;padding:1px 7px;border-radius:7px;
   font:600 11.5px/1.6 "Hind Siliguri",system-ui,sans-serif;letter-spacing:.2px;
   color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--line);
   vertical-align:middle}

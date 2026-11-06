@@ -1428,6 +1428,22 @@ html[data-theme="light"] .motion-sparks i{background:#a4710a;opacity:.18;box-sha
 .g-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:26px}
 .g-grid .article-card{margin:0;max-width:none}
 .g-grid .article-card h3{font-size:clamp(17px,2.4vw,21px);margin:10px 0 6px;line-height:1.45}
+/* ---------- ছোট টপিক-কার্ড (ধর্মীয় গ্রন্থ হাব) ----------
+   hub-এ প্রতিটি ধর্মের জন্য কেবল নামটুকুই থাকে — ট্যাগ, লিড, বিবরণ
+   আর «প্রবেশ করুন» বাটন বাদ; তাই কার্ডকে চিপের মাপে নামানো হয়েছে। */
+.g-grid{gap:12px;margin-top:20px}
+.cmp-card{border-radius:14px;
+  box-shadow:0 10px 26px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.06)}
+.cmp-card::before{display:none}
+.cmp-card .article-card-link{display:flex;align-items:center;gap:10px;padding:14px 16px}
+.cmp-card h3,.g-grid .cmp-card h3{margin:0;font-size:clamp(16px,2.2vw,18px);line-height:1.4}
+.cmp-card:hover{transform:translateY(-2px)}
+.cmp-card.is-soon{opacity:.86}
+.cmp-card.is-soon .article-card-link::after{content:"শীঘ্রই";margin-left:auto;padding:2px 9px;
+  border-radius:999px;font-size:11px;font-weight:700;color:#ffd66e;white-space:nowrap;
+  background:rgba(245,184,28,.13);border:1px solid rgba(245,184,28,.28)}
+html[data-theme="light"] .cmp-card{box-shadow:0 10px 26px rgba(33,58,67,.12),inset 0 1px 0 rgba(255,255,255,.9)}
+html[data-theme="light"] .cmp-card.is-soon .article-card-link::after{color:#8a5a00;background:rgba(177,119,7,.1);border-color:rgba(166,108,0,.26)}
 .g-soon{display:inline-flex;align-items:center;gap:7px;margin-left:8px;padding:2px 9px;
   border-radius:999px;font-size:11.5px;font-weight:700;vertical-align:middle;
   color:#ffd66e;background:rgba(245,184,28,.14);border:1px solid rgba(245,184,28,.3)}
