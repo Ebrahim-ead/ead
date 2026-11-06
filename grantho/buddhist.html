@@ -318,7 +318,8 @@
 
     /* ---- year + subscribe form ---- */
     var yr = document.getElementById("yr");
-    if (yr) yr.textContent = new Date().getFullYear();
+    if (yr) yr.textContent = String(new Date().getFullYear()).replace(/[0-9]/g,
+      function (c) { return "০১২৩৪৫৬৭৮৯"[+c]; });
     var sb = document.getElementById("sb");
     if (sb) {
       sb.onclick = function () {
