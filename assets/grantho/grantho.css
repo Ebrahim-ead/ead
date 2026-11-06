@@ -214,3 +214,58 @@ html[data-theme="light"] .g-front > summary { color:#7a4f00 }
   color:var(--gold2);text-transform:none }
 .g-v + .g-v .g-v-hd { margin-top:2px }
 html[data-theme="light"] .g-v-hd { color:#7a4f00 }
+
+/* ── পুস্তক/অধ্যায় স্তর (বাইবেল) ─────────────────────────────────────
+   ডান পাশে পুরো বইয়ের ১,৫০০ পদ একসাথে না দেখিয়ে: বাঁ পাশে পুস্তক
+   (পুরাতন/নতুন নিয়ম-ভাগে), উপরে অধ্যায়-গ্রিড, নিচে শুধু বাছা অধ্যায়ের পদ। */
+.g-tset{display:flex;gap:5px;padding:2px 4px 9px;flex-wrap:wrap}
+.g-tbtn{flex:1 1 auto;padding:6px 8px;border-radius:9px;border:1px solid var(--line);
+  background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap;
+  font:600 11.5px/1.35 "Hind Siliguri",system-ui,sans-serif}
+.g-tbtn:hover{border-color:rgba(245,184,28,.5);color:var(--text)}
+.g-tbtn.on{background:rgba(245,184,28,.16);border-color:rgba(245,184,28,.55);color:var(--gold2)}
+.g-tgroup{display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+  margin:10px 4px 6px;padding:0 2px;font-size:11.5px;font-weight:700;color:var(--gold2);
+  letter-spacing:.2px}
+.g-tgroup i{font-style:normal;font-weight:600;font-size:10.5px;color:var(--muted)}
+.g-bk-en{font-size:10.5px;font-weight:500;color:var(--muted);direction:ltr;unicode-bidi:embed}
+.g-ch[hidden]{display:none}
+
+/* অধ্যায়-গ্রিড: সংখ্যাগুলোই বাটন */
+.g-chgrid{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 20px}
+.g-chgrid:empty{display:none}
+.g-cg{min-width:46px;padding:9px 10px;border-radius:11px;border:1px solid var(--line);
+  background:rgba(255,255,255,.03);color:var(--text);cursor:pointer;
+  font:700 13px/1 "Hind Siliguri",system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.g-cg:hover{border-color:var(--gold);background:rgba(245,184,28,.12)}
+.g-cg.on{background:rgba(245,184,28,.2);border-color:rgba(245,184,28,.6);color:var(--gold2)}
+.g-cg:focus-visible,.g-tbtn:focus-visible,.g-ch:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+
+/* ব্রেডক্রাম্ব: পুস্তক › অধ্যায় */
+.g-crumb2{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:12.5px;color:var(--muted)}
+.g-crumb2[hidden]{display:none}
+.g-crumb-b{padding:4px 9px;border-radius:8px;border:1px solid var(--line);background:transparent;
+  color:var(--gold2);cursor:pointer;font:600 12px/1.4 "Hind Siliguri",system-ui,sans-serif}
+.g-crumb-b:hover{background:rgba(245,184,28,.12)}
+.g-crumb2 b{color:var(--text);font-weight:700}
+.g-pick{border:1px dashed rgba(245,184,28,.35)!important;border-radius:14px;padding:18px 16px!important;
+  color:var(--muted)!important;font-style:normal!important}
+.g-chap-h{margin-top:0}
+html[data-theme="light"] .g-cg{background:rgba(245,184,28,.07);border-color:rgba(180,120,10,.28)}
+html[data-theme="light"] .g-tbtn.on{background:rgba(245,184,28,.24);color:#7a4f00}
+@media(max-width:980px){
+  .g-tset{position:sticky;top:0;background:var(--bg,#08161f);z-index:1}
+  .g-cg{min-width:42px;padding:8px}
+}
+
+/* ইংরেজি-কভারেজ নোট: কোথায় ইংরেজি নেই তা নীরে না রেখে ছোট করে বলা হয় */
+.g-en-note{margin:0 0 18px;padding:9px 12px;border-radius:11px;font-size:12.4px;line-height:1.7;
+  border:1px solid var(--line);background:rgba(255,255,255,.025);color:var(--muted)}
+.g-en-note[hidden]{display:none}
+.g-en-note b{color:var(--gold2)}
+
+/* পাঠ-হীন অধ্যায়: গ্রিডে থাকে (সংখ্যা হারায় না) কিন্তু আলাদা দেখায় */
+.g-cg.off{opacity:.42;border-style:dashed;cursor:pointer}
+.g-cg.off:hover{opacity:.75}
+.g-miss{border:1px dashed rgba(245,184,28,.4)!important;border-radius:14px;padding:16px!important;
+  line-height:1.8}

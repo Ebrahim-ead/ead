@@ -541,10 +541,17 @@ def write_index(books):
             continue
         total += d["count"]
         withbn += d.get("withBn", 0)
+        # অধ্যায়-গ্রিডের জন্য ডেটাই যথেষ্ট: কোন অধ্যায়ে কত পদ, আর উৎসের
+        # নাম-ক্রম (ফাঁকা অধ্যায় থাকলে তালিকা থেকে লেবেল মেলে)। পাঠক-পাতায়
+        # পুরো বই নামানোর আগেই অধ্যায়-সংখ্যাগুলো দেখানো যায়।
+        per_ch = {}
+        for v in d.get("verses", []):
+            per_ch[str(v.get("ch"))] = per_ch.get(str(v.get("ch")), 0) + 1
         chs.append({"id": d["id"], "bn": d["bn"], "en": d.get("en", ""),
                     "count": d["count"], "from": d["from"], "to": d["to"],
                     "suktaCount": d.get("suktaCount", 0),
                     "testament": d.get("testament", ""), "url": d.get("url", b["lesson"]),
+                    "perChapter": per_ch,
                     **({"missing": d["missing"]} if d.get("missing") else {})})
     idx = {
         "slug": SLUG, "bn": "বাইবেল", "en": "Bangla Bible",

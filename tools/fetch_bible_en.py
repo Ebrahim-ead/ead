@@ -196,6 +196,13 @@ def parse_en_verses(lines):
         verses.append({"vn": num, "en": en})
         expect = num + 1
     for v in verses:
+        # «2 The book of the genealogy…» (মথি ১:১) — নতুন অধ্যায়ের ১ নম্বর পদে
+        # نصের ভেতরে ঢুকে পড়া নিজেরই নম্বর। কেবল ঠিক vn+১ হলে কাটা হয়; নইলে
+        # («40 days…»-এর মতো আসল সংখ্যা) হাত দেওয়া হয় না।
+        m = re.match(r"^(\d{1,3})\s+([A-Z“\"'(\[])", v["en"] or "")
+        if m and int(m.group(1)) == v["vn"] + 1:
+            v["en"] = v["en"][m.start(2):]
+            v["fixedNum"] = True
         if not v["en"].strip():
             v["srcEmpty"] = True      # নম্বর ছাপা, পাঠ উৎসেই নেই
     return [v for v in verses if v["en"] or v.get("srcEmpty")]
@@ -402,13 +409,24 @@ def cmd_verify(args):
     EN.mkdir(parents=True, exist_ok=True)
     rep, dirty = [], 0
     total = 0
+    # বাংলা ফাইল থেকে প্রতিটি বৈশ্বিক n-এর নিজের vn — «সংখ্যা = vn+১» শুধু
+    # তখনই দূষণ, যখন সেটি ওই পদের নিজের নম্বরের অবশিষ্ট (আসল সংখ্যা নয়)।
+    vn_by_n = {}
+    for bp in sorted(OUT.glob("ch*.json")):
+        if not re.fullmatch(r"ch\d+", bp.stem):
+            continue
+        b = json.loads(bp.read_text(encoding="utf-8"))
+        for v in b.get("verses", []):
+            vn_by_n[(b.get("id"), v.get("n"))] = v.get("vn")
     for fp in sorted(EN.glob("ch*.json"), key=lambda x: int(re.sub(r"\D", "", x.stem))):
         e = json.loads(fp.read_text(encoding="utf-8"))
         vs = e.get("verses") or {}
         total += len(vs)
+        def _leaked(k, v):
+            m = re.match(r"^(\d{1,3})\s+\S", v or "")
+            return bool(m) and int(m.group(1)) == (vn_by_n.get((e.get("id"), int(k)), -99) or -99) + 1
         bad = [(k, v) for k, v in vs.items()
-               if re.search(r"\[\d{1,3}\]|⇒", v)
-               or re.match(r"^\d{1,3}\s+\S", v)]
+               if re.search(r"\[\d{1,3}\]|⇒", v) or _leaked(k, v)]
         if bad:
             dirty += len(bad)
             rep.append(f"⚠ ch{fp.stem[2:]}: {len(bad)}টি পদে দূষণ — "
