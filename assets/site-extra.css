@@ -217,3 +217,19 @@ html[data-theme="light"] .g-note b{color:#7a4f00}
   .phead .wrap p{font-size:15.5px;line-height:1.8}
   .g-hint{font-size:12.3px;padding:5px 10px;margin-top:9px}
 }
+
+/* --- প্রবন্ধের উপশিরোনাম (h3) ---------------------------------------------
+   «তাৎপর্য ও সীমা» প্রতিটি ক্ষেত্র-ভাগের শেষে আসে। h2-এর সোনালি রেখা ছাড়া
+   সাধারণ h3 হলে সেটি বডি-টেক্সটের সঙ্গে মিশে যায়; তাই ছোট সোনালি রেখচিহ্ন
+   আর অক্ষর-ফাঁক দিয়ে উপশিরোনামের মর্যাদা বোঝানো হলো। */
+.article-body h3{
+  display:flex;align-items:center;gap:10px;
+  margin:30px 0 11px;color:#f2f6fb;font-size:19px;line-height:1.55;letter-spacing:.2px
+}
+.article-body h3::before{
+  content:"";flex:0 0 auto;width:18px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,#f4c44e,rgba(244,196,78,.15))
+}
+html[data-theme="light"] .article-body h3::before{background:linear-gradient(90deg,#b8860b,rgba(184,134,11,.15))}
+@media(max-width:640px){.article-body h3{font-size:18px;margin-top:25px;gap:8px}
+  .article-body h3::before{width:14px}}
