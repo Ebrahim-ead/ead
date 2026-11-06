@@ -41,8 +41,10 @@
 
   var index = null, chapter = null, chapterId = null;
   var bnNoteEl = document.getElementById("g-bn-note");
-  /* গীতা/পুরাণে «শ্লোক», বেদ-উপনিষদে «মন্ত্র» — index.json-এর verseWord থেকে */
-  var VW = "শ্লোক";
+  /* গীতা/পুরাণে «শ্লোক», বেদ-উপনিষদে «মন্ত্র», বাইবেলে «পদ» — index.json-এর
+     verseWord থেকে। একইভাবে গ্রুপ-শব্দ (ঋগ্বেদে «সূক্ত», বাইবেলে «অধ্যায়») ও
+     অধ্যায়-শব্দ (বাইবেলে «পুস্তক») ডেটা থেকেই নেওয়া হয়, হার্ডকোড নয়। */
+  var VW = "শ্লোক", GW = "সূক্ত", CW = "অধ্যায়";
   var state = { bn: true, sk: true, q: "", onlyBn: false };
   var cache = {};
 
@@ -84,7 +86,7 @@
     listEl.innerHTML = index.chapters.map(function (c) {
       var on = c.id === chapterId;
       var meta = bn(c.count) + " " + VW;
-      if (c.suktaCount) meta += " · " + bn(c.suktaCount) + " সূক্ত";
+      if (c.suktaCount) meta += " · " + bn(c.suktaCount) + " " + GW;
       else if (c.from && c.to && c.count > 1) meta += " · " + bn(c.from) + " – " + bn(c.to) + " নং";
       if (c.prefaceCount) meta += " · অনুক্রমণিকা";
       return '<button class="g-ch' + (on ? " on" : "") + '" type="button" data-ch="' + c.id + '"' +
@@ -96,7 +98,7 @@
     listEl.querySelectorAll("[data-ch]").forEach(function (b) {
       b.addEventListener("click", function () { openChapter(+b.dataset.ch); });
     });
-    if (totalEl) totalEl.textContent = bnNum(index.total) + " " + VW + " · " + bn(index.chapters.length) + " অধ্যায়";
+    if (totalEl) totalEl.textContent = bnNum(index.total) + " " + VW + " · " + bn(index.chapters.length) + " " + CW;
   }
 
   /* ---------- শ্লোক ---------- */
@@ -121,8 +123,12 @@
     var la = (typeof v.n === "number") ? v.n : 0;
     var sk = (v.sk || "").replace(/\n+/g, "<br>");
     var parts = state.bn ? (cuts[la] || null) : null;
+    /* বাইবেলে পদ-নম্বর প্রতি অধ্যায়ে ১ থেকে শুরু, তাই প্রদর্শনের জন্য আলাদা
+       `vn`; `n` পুস্তকের ভেতরে অনন্য ক্রম (অ্যাংকর ও গ্রুপ-সীমার জন্য)। */
+    var shown = (typeof v.vn === "number") ? v.vn : v.n;
     var out = '<article class="g-v' + (hit ? " hit" : "") + '" id="v' + v.n + '">';
-    out += '<div class="g-v-num" aria-hidden="true">' + bn(v.n) + '</div><div class="g-v-body">';
+    out += '<div class="g-v-num" aria-hidden="true">' + bn(shown) + '</div><div class="g-v-body">';
+    if (v.hd) out += '<p class="g-v-hd">' + esc(v.hd) + '</p>';
     if (v.spk && state.sk) out += '<p class="g-v-spk">' + esc(v.spk) + '</p>';
     if (state.sk && sk) out += '<p class="g-v-sk" lang="sa">' + sk + '</p>';
     if (parts) {
@@ -254,8 +260,9 @@
           curS = sid;
           var sm = sMeta[sid] || {};
           html += '<h3 class="g-sukta-h" id="sukta' + sid + '">' +
-            '<span class="g-sukta-n">সূক্ত ' + bn(sid) + '</span>' +
-            '<span class="g-sukta-m">' + VW + " " + bn(sm.from) + "–" + bn(sm.to) +
+            '<span class="g-sukta-n">' + GW + ' ' + bn(sid) + '</span>' +
+            '<span class="g-sukta-m">' + VW + " " + bn(sm.vfrom || sm.from) + "–" +
+            bn(sm.vto || sm.to) +
             (sm.shloka ? " · " + bn(sm.shloka) + " শ্লোক" : "") + '</span></h3>';
         }
         html += verseHTML(v);
@@ -284,7 +291,7 @@
     if (titleEl) titleEl.textContent = chapter.bn;
     if (metaEl) {
       var mm = bn(chapter.count) + " " + VW;
-      if (hasS) mm += " · " + bn(chapter.suktaCount || 0) + " সূক্ত";
+      if (hasS) mm += " · " + bn(chapter.suktaCount || 0) + " " + GW;
       if (chapter.preface || chapter.heading) mm += " · অনুক্রমণিকা সহ";
       metaEl.textContent = mm;
     }
@@ -359,6 +366,8 @@
   loadJSON(BASE + "index.json").then(function (d) {
     index = d;
     if (d.verseWord) VW = d.verseWord;
+    if (d.groupWord) GW = d.groupWord;
+    if (d.chword) CW = d.chword;
     /* সব খণ্ডেই বাংলা থাকলে এই ছাঁকনি অকেজো — অথচ বোতামটি থেকে গেলে মনে হয়
        কিছু বাদ পড়ছে। তাই তখন লুকিয়ে রাখি (সংস্কৃত-টগলের মতোই)। */
     if (onlyBnEl && d.total && d.withBn === d.total) {

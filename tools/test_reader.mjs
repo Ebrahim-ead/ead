@@ -18,10 +18,12 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 function pages() {
   const args = process.argv.slice(2);
   if (args.length) return args.map((a) => path.resolve(ROOT, a));
-  const dir = path.join(ROOT, 'grantho', 'hindu');
-  return fs.readdirSync(dir)
-    .filter((f) => f.endsWith('.html'))
-    .map((f) => path.join(dir, f))
+  // হিন্দু ও খ্রিস্টান — দুই ফোল্ডারের গ্রন্থ-পাতাই পরীক্ষা হয় (বাইবেল খ্রিস্টানে)
+  const dirs = ['hindu', 'christian'].map((d) => path.join(ROOT, 'grantho', d));
+  return dirs.filter((d) => fs.existsSync(d))
+    .flatMap((dir) => fs.readdirSync(dir)
+      .filter((f) => f.endsWith('.html'))
+      .map((f) => path.join(dir, f)))
     .filter((f) => /data-base="/.test(fs.readFileSync(f, 'utf8')));
 }
 
@@ -55,7 +57,7 @@ async function testPage(file) {
 
   const dom = new JSDOM(html, {
     runScripts: 'dangerously', pretendToBeVisual: true,
-    url: `https://example.invalid/ead/grantho/hindu/${slug}.html`,
+    url: `https://example.invalid/ead/${rel.split(path.sep).join('/')}`,
   });
   const { window } = dom;
   window.scrollTo = () => {};
@@ -120,7 +122,30 @@ async function testPage(file) {
     const BN = { '০':0,'১':1,'২':2,'৩':3,'৪':4,'৫':5,'৬':6,'৭':7,'৮':8,'৯':9 };
     const nums = badges.map((b) => [...b].reduce((a, c) => a * 10 + (BN[c] ?? NaN), 0));
     const shownNums = nums.filter((x) => !Number.isNaN(x));
-    if (shownNums.length > 1) {
+    const grouped = vs.some((v) => typeof v.vn === 'number');
+    const want = vs.slice(0, badges.length).map((v) => (typeof v.vn === 'number' ? v.vn : v.n));
+    if (want.length && shownNums.join(',') !== want.join(',')) {
+      errs.push(`প্রদর্শিত নম্বর ডেটার সাথে মিলছে না: পাওয়া ${shownNums.slice(0, 6).join(',')} · আশা ${want.slice(0, 6).join(',')}`);
+    }
+    if (grouped) {
+      // বাইবেলের মতো গ্রুপযুক্ত গ্রন্থ: পদ-নম্বর প্রতি অধ্যায়ে ১ থেকে শুরু ও ক্রমবর্ধমান
+      // (উৎসে কোনো পদ না থাকলে ফাঁক বৈধ — অনুমান করে পদ বসানো হয় না)
+      let pc = null, pv = 0;
+      for (const v of vs) {
+        if (v.ch !== pc) {
+          if (v.vn !== 1) errs.push(`অধ্যায় ${v.ch}: পদ ${v.vn} থেকে শুরু (১ হওয়ার কথা)`);
+          pc = v.ch; pv = v.vn;
+        } else {
+          if (v.vn <= pv) errs.push(`অধ্যায় ${v.ch}: পদ-ক্রম ভাঙা ${pv} → ${v.vn}`);
+          pv = v.vn;
+        }
+        if (errs.length > 12) break;
+      }
+      const g = (JSON.parse(fs.readFileSync(path.join(dataDir, `ch${idx.chapters[0].id}.json`), 'utf8')).suktas) || [];
+      if (g.length && idx.chapters[0].suktaCount !== g.length) {
+        errs.push(`সূচির suktaCount ${idx.chapters[0].suktaCount} ≠ ফাইলের গ্রুপ ${g.length}`);
+      }
+    } else if (shownNums.length > 1) {
       const seqOK = shownNums.every((x, i) => i === 0 ? true : x > shownNums[i - 1]);
       if (!seqOK) errs.push(`প্রদর্শিত নম্বর ক্রমে নেই: ${shownNums.slice(0, 8).join(',')}`);
       if (shownNums[0] !== 1) errs.push(`প্রথম নম্বর ${shownNums[0]} — ১ থেকে শুরু হওয়ার কথা`);

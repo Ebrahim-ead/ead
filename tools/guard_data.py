@@ -23,8 +23,9 @@ BASE_FILE = DATA / "_baseline.json"
 TOL = 0.85          # ১৫%-এর বেশি কমলেই সন্দেহ
 
 # সাইটে কেবল এই দুটি গ্রন্থ থাকবে (ব্যবহারকারীর সিদ্ধান্ত, ২০২৬-১১-০৫)।
-ACTIVE = ("gita", "rigveda", "yajurveda-shukla")
-KEEP_PAGES = {"gita.html", "rigveda.html", "veda.html", "yajurveda-shukla.html"}
+ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "bible")
+KEEP_PAGES = {"gita.html", "rigveda.html", "veda.html", "yajurveda-shukla.html",
+              "bible.html"}
 
 
 def load_json(p, default=None):
@@ -96,10 +97,16 @@ def main():
             import shutil
             shutil.rmtree(d)
             removed.append(d.name)
-    for f in sorted((ROOT / "grantho/hindu").glob("*.html")):
-        if f.name not in KEEP_PAGES:
-            f.unlink()
-            removed.append("পাতা " + f.name)
+    # হিন্দু ও খ্রিস্টান — দুই ফোল্ডারের পাতাই পরিধির বাইরে গেলে সরানো হয়
+    # (বাইবেলের পাতা grantho/christian/-এ, তাই শুধু hindu দেখলে চলত না)
+    for sub in ("hindu", "christian"):
+        d = ROOT / "grantho" / sub
+        if not d.is_dir():
+            continue
+        for f in sorted(d.glob("*.html")):
+            if f.name not in KEEP_PAGES:
+                f.unlink()
+                removed.append(f"পাতা {sub}/{f.name}")
     for f in sorted(DATA.glob("_fetch_report_*.txt")):
         f.unlink()
     if removed:
