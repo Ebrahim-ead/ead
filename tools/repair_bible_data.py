@@ -406,6 +406,17 @@ def main():
                         hit += 1
                 if en != (v.get("en") or ""):
                     v["en"] = en
+        # সিলমোহর প্রতিটি ফাইলে, বদল হোক বা না হোক: এই রিপেয়ারের পর সব raw
+        # নতুন পার্সারের নিয়মে পরিষ্কার। পিভি না বাড়ালে পরের রিওয়াকের
+        # save_raw এগুলো «পুরোনো দূষিত» ভেবে ফেলে দিত — সামসঙ্গীতের মতো বই
+        # আবার অসম্পূর্ণ হয়ে যেত।
+        try:
+            import fetch_bible_en as _FE
+            if d.get("pvEn") != _FE.PV_EN:
+                d["pvEn"] = _FE.PV_EN
+                hit += 1
+        except Exception:  # noqa: BLE001
+            pass
         if hit:
             if not dry:
                 save(fp, d)
