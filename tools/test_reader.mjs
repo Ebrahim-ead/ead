@@ -518,7 +518,11 @@ function testHub(file) {
     for (const bad of ['article-card-excerpt', 'article-card-subtitle', 'article-card-more', 'article-card-kicker']) {
       if (c.querySelector(`.${bad}`)) errs.push(`কার্ডে এখনও .${bad} আছে — ছোট কার্ডে শুধু নাম+হিসাব থাকার কথা`);
     }
-    if (c.querySelectorAll('h3').length !== 1) errs.push('কার্ডে ঠিক একটি h3 থাকা দরকার');
+    /* কার্ডের শিরোনাম এখন h2.cmp-title: h1-এর পর সরাসরি h3 এলে
+       হেডিং-ক্রম লাফ দেয় (অ্যাক্সেসিবিলিটির সাধারণ নিয়ম)। */
+    const head = c.querySelector('.cmp-title');
+    if (!head || head.tagName !== 'H2') errs.push('কার্ডে ঠিক একটি h2.cmp-title থাকা দরকার');
+    if (c.querySelectorAll('h3').length) errs.push('কার্ডে h3 থাকা যাবে না — h2.cmp-title ব্যবহার করুন');
     const meta = c.querySelector('.cmp-meta');
     if (!meta || !meta.textContent.trim()) errs.push('কার্ডে ছোট হিসাবের লাইন (.cmp-meta) নেই');
     if (!c.querySelector('.cmp-go')) errs.push('কার্ডে তির (.cmp-go) নেই');
@@ -543,8 +547,56 @@ function testHub(file) {
   return errs.length === 0;
 }
 
+/* প্রবন্ধের পাঠ-সহায়ক (সূচিপত্র + উদ্ধৃতি-কপি) — assets/reader-tools.js
+   প্রতিটি h2-তে ইউনিক id, ঠিক ততগুলোই সূচি-লিংক, আর এক-ক্লিক-কপি।
+   JS না থাকলে পাঠ অক্ষত থাকে, তাই এই টেস্ট কেবল বাড়তি স্তর যাচাই করে। */
+function essayPages() {
+  return fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'))
+    .map((f) => path.join(ROOT, f))
+    .filter((f) => fs.readFileSync(f, 'utf8').includes('class="article-heading"'));
+}
+
+function testReaderTools(file) {
+  const rel = path.relative(ROOT, file);
+  const html = fs.readFileSync(file, 'utf8');
+  const errs = [];
+  if (!html.includes('assets/reader-tools.js')) errs.push('reader-tools.js লিংক নেই');
+
+  const dom = new JSDOM(html, {
+    runScripts: 'outside-only', pretendToBeVisual: true,
+    url: `https://example.invalid/ead/${rel.split(path.sep).join('/')}`,
+  });
+  const { window } = dom;
+  const d = window.document;
+  window.scrollTo = () => {};
+  if (!window.matchMedia) window.matchMedia = () => ({ matches: false, addEventListener() {} });
+  const js = fs.readFileSync(path.join(ROOT, 'assets/reader-tools.js'), 'utf8');
+  try { window.eval(js); } catch (e) { errs.push('reader-tools চালাতে গিয়ে ত্রুটি: ' + e.message); }
+
+  const heads = [...d.querySelectorAll('.article-body h2')];
+  const toc = d.querySelector('.rd-toc');
+  if (heads.length >= 3) {
+    if (!toc) errs.push('সূচিপত্র (.rd-toc) তৈরি হয়নি');
+    else {
+      const links = [...toc.querySelectorAll('ol a')];
+      if (links.length !== heads.length) errs.push(`সূচিতে ${links.length} লিংক, h2 আছে ${heads.length}`);
+      if (heads.some((h) => !h.id)) errs.push('কিছু h2-তে id বসেনি');
+      if (new Set(heads.map((h) => h.id)).size !== heads.length) errs.push('h2-এর id ইউনিক নয়');
+      const broken = links.filter((a) => !d.getElementById((a.getAttribute('href') || '').slice(1)));
+      if (broken.length) errs.push(`${broken.length}টি সূচি-লিংকের লক্ষ্য (id) নেই`);
+      if (!toc.getAttribute('aria-label')) errs.push('সূচিপত্রে aria-label নেই');
+    }
+  }
+  if (!d.querySelector('.rd-copy')) errs.push('উদ্ধৃতি-কপি বোতাম (.rd-copy) নেই');
+
+  console.log(`${errs.length ? '✗' : '✓'} ${rel} — সূচিপত্র/কপি`);
+  for (const e of errs) console.log(`   ! ${e}`);
+  return errs.length === 0;
+}
+
 let ok = true;
 for (const f of pages()) ok = (await testPage(f)) && ok;
 for (const f of hubPages()) ok = testHub(f) && ok;
+for (const f of essayPages()) ok = testReaderTools(f) && ok;
 console.log(ok ? '\nসব পাতা নিজের ডেটাই দেখাচ্ছে ✓' : '\nকিছু পাতায় সমস্যা আছে ✗');
 process.exit(ok ? 0 : 1);

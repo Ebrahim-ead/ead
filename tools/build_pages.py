@@ -194,6 +194,22 @@ def normalize(slug: str, html: str, sub: str = "hindu") -> str:
             lines.append('<meta name="twitter:card" content="summary_large_image">')
         lines.append(f'<link rel="canonical" href="{href}">')
         html = html.replace("</head>", "\n".join(lines) + "\n</head>", 1)
+    # ১.৫) শেয়ার-ট্যাগের শিরোনাম/বিবরণ সবসময় নিজের পাতার <title>/description থেকেই।
+    #      পুরোনো টেমপ্লেট থেকে «Ebrahim Ead সম্পর্কে» কপি হয়ে শেয়ার-প্রিভিউতে
+    #      ভুল শিরোনাম যেত — রি-বিল্ডেও যেন না ফেরে।
+    _t = re.search(r"<title>(.*?)</title>", html, re.S)
+    _d = re.search(r'<meta name="description" content="([^"]*)"', html)
+    if _t:
+        _title, _desc = _t.group(1).strip(), (_d.group(1) if _d else "")
+        for _attr in ("property", "name"):
+            html = re.sub(rf'(<meta {_attr}="og:title" content=")[^"]*(")',
+                          lambda m, v=_title: m.group(1) + v + m.group(2), html, count=1)
+            html = re.sub(rf'(<meta {_attr}="twitter:title" content=")[^"]*(")',
+                          lambda m, v=_title: m.group(1) + v + m.group(2), html, count=1)
+        html = re.sub(r'(<meta property="og:description" content=")[^"]*(")',
+                      lambda m, v=_desc: m.group(1) + v + m.group(2), html, count=1)
+        html = re.sub(r'(<meta name="twitter:description" content=")[^"]*(")',
+                      lambda m, v=_desc: m.group(1) + v + m.group(2), html, count=1)
     # ২) site-extra.css (মোবাইল/সূত্র/কম্প্যাক্ট ফুটার) — নতুনরা এটা পায় না
     if "site-extra.css" not in html:
         html = html.replace("</head>", '<link rel="stylesheet" href="../../assets/site-extra.css">\n</head>', 1)
@@ -478,12 +494,12 @@ def card(href, kicker, title, sub, excerpt="", soon=False):
     if soon:
         return (f'<article class="article-card rv cmp-card is-soon">'
                 f'<a class="article-card-link" href="#" aria-disabled="true" tabindex="-1">'
-                f'<span class="cmp-body"><h3>{title}</h3>'
+                f'<span class="cmp-body"><h2 class="cmp-title">{title}</h2>'
                 f'<span class="cmp-meta">{sub}</span></span>'
                 f'<span class="cmp-go" aria-hidden="true">→</span></a></article>')
     return (f'<article class="article-card rv cmp-card">'
             f'<a class="article-card-link" href="{href}">'
-            f'<span class="cmp-body"><h3>{title}</h3>'
+            f'<span class="cmp-body"><h2 class="cmp-title">{title}</h2>'
             f'<span class="cmp-meta">{sub}</span></span>'
             f'<span class="cmp-go" aria-hidden="true">→</span></a></article>')
 
