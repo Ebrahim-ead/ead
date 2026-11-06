@@ -204,8 +204,46 @@ jobs:
       - name: ১.৫) ডেটা পরিষ্কার
         if: always()
         run: |
-          python3 -u tools/clean_yajurveda.py 2>&1 | tee "$DBG/yajurveda_clean.txt" || true
-          tail -5 "$DBG/yajurveda_clean.txt" || true
+          # কেন `|| true` নয়: পরিষ্কারক ব্যর্থ হলে (মোট অক্ষর বদলে গেছে) কাঁচা ডেটা
+          # প্রকাশিত হয়ে যেত — অর্থাৎ মন্ত্রের নম্বর আবার উল্টাপাল্টা (১১ নম্বর অধ্যায়ে
+          # ৫৫টি মন্ত্রে ১–৮৩) এবং ভূমিকা আবার মন্ত্র-তালিকায় মিশে যেত। তাই ব্যর্থ হলে
+          # আগে থেকে যাচাই-হওয়া ডেটাই ফিরিয়ে আনা হয়, আর কারণটি রিপোর্টে থাকে।
+          set +e
+          python3 -u tools/clean_yajurveda.py > "$DBG/yajurveda_clean.txt" 2>&1
+          st=$?
+          # নম্বর ও বানানের স্বতন্ত্র যাচাই (পরিষ্কারক পাস করলেও ডেটা ফাইলে হাত পড়তে পারে)
+          python3 -u - <<'PY' >> "$DBG/yajurveda_clean.txt" 2>&1
+          import json, os, pathlib, sys
+          d = pathlib.Path('assets/grantho/data') / os.environ['SLUG']
+          bad = []
+          idx = d / 'index.json'
+          if idx.exists():
+              for c in json.loads(idx.read_text(encoding='utf-8')).get('chapters', []):
+                  fp = d / f'ch{c["id"]}.json'
+                  if not fp.exists():
+                      bad.append(f'অধ্যায় {c["id"]}: ফাইল নেই'); continue
+                  j = json.loads(fp.read_text(encoding='utf-8'))
+                  ns = [v.get('n') for v in j.get('verses', [])]
+                  if ns != list(range(1, len(ns) + 1)):
+                      bad.append(f'অধ্যায় {c["id"]}: নম্বর ১..{len(ns)} ক্রমে নয়')
+                  if not j.get('preface'):
+                      bad.append(f'অধ্যায় {c["id"]}: অনুক্রমণিকা ঘর ফাঁকা')
+                  blob = json.dumps(j, ensure_ascii=False)
+                  if 'ৰ' in blob or 'ৱ' in blob:
+                      bad.append(f'অধ্যায় {c["id"]}: অসম বানান ৰ/ৱ রয়ে গেছে')
+          else:
+              bad.append('index.json নেই')
+          print('নম্বর-যাচাই: ' + ('ব্যর্থ → ' + '; '.join(bad) if bad else 'পাস (৪০ অধ্যায়ে ১..N, বানান ঠিক)'))
+          sys.exit(1 if bad else 0)
+          PY
+          chk=$?
+          set -e
+          if [ "$st" -ne 0 ] || [ "$chk" -ne 0 ]; then
+            echo "!! পরিষ্কারক/যাচাই ব্যর্থ (exit $st/$chk) — আগের যাচাই-হওয়া ডেটা ফেরানো হলো" \
+              >> "$DBG/yajurveda_clean.txt"
+            git checkout -- "assets/grantho/data/$SLUG" || true
+          fi
+          tail -8 "$DBG/yajurveda_clean.txt" || true
 
       # ── ২) ফল-রিপোর্ট ──────────────────────────────────────────
       - name: ২) ফল-রিপোর্ট
