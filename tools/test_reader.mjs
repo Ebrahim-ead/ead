@@ -449,17 +449,36 @@ function testHub(file) {
     }
   }
 
-  if (rel === 'grantho.html') {
-    const cards = [...doc.querySelectorAll('.g-grid .article-card')];
-    if (cards.length !== 4) errs.push(`ধর্ম-হাবে ৪টি কার্ড থাকার কথা, পাওয়া গেল ${cards.length}`);
-    for (const c of cards) {
-      if (!c.classList.contains('cmp-card')) errs.push('হাব-কার্ডে .cmp-card ক্লাস নেই');
-      for (const bad of ['article-card-excerpt', 'article-card-subtitle', 'article-card-more', 'article-card-kicker']) {
-        if (c.querySelector(`.${bad}`)) errs.push(`কার্ডে এখনও .${bad} আছে — শুধু টপিকের নাম থাকার কথা`);
-      }
-      if (c.querySelectorAll('h3').length !== 1) errs.push('কার্ডে ঠিক একটি h3 থাকা দরকার');
-      const href = c.querySelector('a.article-card-link')?.getAttribute('href') || '';
-      if (!href || href === '#') errs.push('কার্ডের লিংক নেই');
+  /* হাবের কার্ড — ছোট, শুধু নাম + এক লাইনের হিসাব + তির।
+     আগে কেবল grantho.html যাচাই হত, তাই ভেতরের হাব (ইসলাম/হিন্দু/বেদ)
+     বড় কার্ড নিয়েই রয়ে গিয়েছিল — ব্যবহারকারী সেটাই ধরেছিলেন।
+     এখন প্রতিটি হাব-পাতার প্রতিটি কার্ড একই নিয়মে যাচাই হয়। */
+  const cards = [...doc.querySelectorAll('.g-grid .article-card')];
+  if (rel === 'grantho.html' && cards.length !== 4) {
+    errs.push(`ধর্ম-হাবে ৪টি কার্ড থাকার কথা, পাওয়া গেল ${cards.length}`);
+  }
+  for (const c of cards) {
+    if (!c.classList.contains('cmp-card')) errs.push('হাব-কার্ডে .cmp-card ক্লাস নেই');
+    for (const bad of ['article-card-excerpt', 'article-card-subtitle', 'article-card-more', 'article-card-kicker']) {
+      if (c.querySelector(`.${bad}`)) errs.push(`কার্ডে এখনও .${bad} আছে — ছোট কার্ডে শুধু নাম+হিসাব থাকার কথা`);
+    }
+    if (c.querySelectorAll('h3').length !== 1) errs.push('কার্ডে ঠিক একটি h3 থাকা দরকার');
+    const meta = c.querySelector('.cmp-meta');
+    if (!meta || !meta.textContent.trim()) errs.push('কার্ডে ছোট হিসাবের লাইন (.cmp-meta) নেই');
+    if (!c.querySelector('.cmp-go')) errs.push('কার্ডে তির (.cmp-go) নেই');
+    const body = c.querySelector('.cmp-body');
+    if (!body) errs.push('কার্ডে .cmp-body নেই');
+    else if (body.textContent.replace(/\s+/g, '').length > 70) {
+      errs.push(`কার্ডের লেখা এখনও লম্বা (${body.textContent.trim().length} অক্ষর) — ছোট রাখার কথা`);
+    }
+    const a = c.querySelector('a.article-card-link');
+    const href = a?.getAttribute('href') || '';
+    if (!href) errs.push('কার্ডের লিংক নেই');
+    if (href === '#' && !c.classList.contains('is-soon')) {
+      errs.push('যে কার্ড তৈরি হয়েছে তার লিংক «#» — যাবে কোথায়?');
+    }
+    if (c.classList.contains('is-soon') && href !== '#') {
+      errs.push('«শীঘ্রই» কার্ডের লিংক «#» হওয়া উচিত');
     }
   }
 
