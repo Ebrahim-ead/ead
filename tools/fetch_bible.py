@@ -49,13 +49,17 @@ BOOK_URL = ("https://www.ebanglalibrary.com/books/"
 MANIFEST = DBG / "bible_books.json"
 
 BN = "০১২৩৪৫৬৭৮৯"
+# পার্সারের সংস্করণ। ছাঁকনি/বিভাজন বদলালে এটি বাড়ানো হয় — তখন পুরোনো
+# নামানো ডেটা আর "সম্পূর্ণ" গণ্য হয় না ও পরের রানে নতুন করে নামে
+# (নইলে পুরোনো বাগে কাটা পাঠ থেকেই যেত)। প্রতি চ্যাপ্টার-ফাইলে `pv` হিসেবে ছাপ থাকে।
+PARSER_VERSION = 2
 # নেভিগেশন/ব্রেডক্রাম্বের লাইন — পাঠ নয়
 NAV_LINE = re.compile(
     r"^(Bookmark|Menu|Previous (Lesson|Page)|Next (Lesson|Page|Topic)|"
     r"Back to (Lesson|Book)|Login|Register|Search|Expand|"
     r"বাংলা বাইবেল|\d+\s*Topics|\d+% Complete|0/\d+ Steps)$")
-# «আদিপুস্তক ০১» / «১. আদিপুস্তক (Genesis)» ধরনের সূচি-পরিচয়
-TITLE_LINE = re.compile(r"^(\d+\.\s*)?[^\d]{2,40}?\s*(\(.*\))?$")
+# লেসন-লেবেল: «১. আদিপুস্তক (Genesis)» — ইংরেজি নাম বন্ধনীতে থাকেই
+LESSON_LABEL = re.compile(r"^\d{1,3}\.\s*\S.*\([^)]+\)\s*$")
 VERSE_START = re.compile(r"^([০-৯]{1,3})[\s\u00a0]+(.*)$", re.S)
 VERSE_MID = re.compile(r"(?<=[।”\"?\u0964])\s*([০-৯]{1,3})[\s\u00a0]+")
 BN_NUM = re.compile(r"[০-৯]")
@@ -248,9 +252,11 @@ def _parse_region(region, h, title, expect_first=1):
         if ln in heads:
             pending_head = ln
             continue
-        # ব্রেডক্রাম্ব/সূচির পরিচয়-লাইন (পুস্তক বা অধ্যায়ের নাম, পাঠ নয়)
-        if len(ln) < 60 and "।" not in ln and (
-                ln == title or TITLE_LINE.match(ln) or "বাংলা বাইবেল" in ln):
+        # ব্রেডক্রাম্ব/সূচির পরিচয়-লাইন — পাঠ নয়। সতর্কতা: আগে এখানে
+        # «ছোট ও দাঁড়িবিহীন» যেকোনো লাইন বাদ পড়ত, ফলে পদের ভাঙা অংশ হারাত
+        # (নমুনা: «তাঁরই প্রতিরূপে»)। তাই এখন কেবল সুনির্দিষ্ট পরিচয়-লাইন বাদ:
+        # বইয়ের নাম, লেসন-লেবেল «১. আদিপুস্তক (Genesis)», আর টপিকের নিজের শিরোনাম।
+        if (ln == title or "বাংলা বাইবেল" in ln or LESSON_LABEL.match(ln)):
             continue
         body.append((ln, pending_head))
         pending_head = None
@@ -354,7 +360,7 @@ def build_book(book, chapters, missing):
         "url": book["lesson"], "verses": verses,
         "suktas": groups, "suktaCount": len(groups),
         "groupWord": "অধ্যায়", "withBn": sum(1 for v in verses if v["bn"]),
-        "testament": book.get("testament", ""),
+        "testament": book.get("testament", ""), "pv": PARSER_VERSION,
         **({"missing": missing} if missing else {}),
     }
 
@@ -452,7 +458,8 @@ def cmd_fetch(args):
             try:
                 old = json.loads(fp.read_text(encoding="utf-8"))
                 if old.get("count") and old.get("suktaCount") == b["ntopics"] \
-                        and not old.get("missing"):
+                        and not old.get("missing") \
+                        and old.get("pv") == PARSER_VERSION:
                     made.append(old)
                     skipped += 1
                     continue
