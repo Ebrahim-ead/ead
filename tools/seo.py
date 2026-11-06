@@ -49,6 +49,10 @@ def url_of(p: pathlib.Path, base: str) -> str:
 
 def add_meta(s: str, base: str, p: pathlib.Path) -> tuple[str, list[str]]:
     notes = []
+    # 404 পাতা ইচ্ছে করেই noindex ও canonical-হীন (audit_site.mjs সেটিই আশা করে);
+    # আগে seo.py এখানে canonical বসিয়ে দিত, ফলে অডিট ❌ হতো।
+    if p.name == "404.html":
+        return s, notes
     og = base + "assets/og-cover.jpg"
     if 'property="og:image"' not in s:
         anchor = re.search(r'<meta property="og:title"[^>]*>', s)

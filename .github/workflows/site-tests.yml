@@ -16,6 +16,8 @@ on:
       - 'tools/test_reader.mjs'
       - 'assets/grantho/**'
       - 'grantho/**'
+      - '*.html'            # প্রবন্ধ-পাতা যোগ/সম্পাদনা হলেও অডিট চলবে
+      - 'assets/site-extra.css'
       - '.github/workflows/site-tests.yml'
     # ci-diagnostics/ ইচ্ছে করেই বাদ — ব্যর্থতার ডায়াগনস্টিক সেখানে প্রকাশ হয়,
     # তাই সেটি ট্রিগারে থাকলে নিজেরই আবার রান হতো (লুপ)।

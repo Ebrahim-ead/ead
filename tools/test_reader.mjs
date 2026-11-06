@@ -659,9 +659,49 @@ function testReaderTools(file) {
   return errs.length === 0;
 }
 
+/* প্রবন্ধ-পাতার পাঠ-গুণ: একটাই h1, h2-এর ক্রম ঠিক, খালি তালিকা-বিন্দু নেই,
+   আর প্রতিটি বিন্দু/অনুচ্ছেদে অর্থপূর্ণ লেখা আছে। বড় প্রবন্ধে ভুল মার্কআপ
+   (যেমন তালিকা-বিন্দু অনুচ্ছেদে ঢুকে যাওয়া) এখানেই ধরা পড়বে। */
+function testEssayQuality(file) {
+  const rel = path.relative(ROOT, file);
+  const html = fs.readFileSync(file, 'utf8');
+  const errs = [];
+  const bodyStart = html.search(/class="[^"]*\barticle-body\b/);
+  const bodyEnd = html.indexOf('</article>', bodyStart);
+  const body = html.slice(bodyStart, bodyEnd === -1 ? undefined : bodyEnd);
+  const h1s = (html.match(/<h1\b/g) || []).length;
+  if (h1s !== 1) errs.push(`h1 আছে ${h1s}টি — ঠিক ১টি হওয়া উচিত`);
+  const firstH1 = html.indexOf('<h1');
+  const firstH2 = html.search(/<h2[\s>]/);
+  if (firstH2 !== -1 && firstH2 < firstH1) errs.push('h1-এর আগেই h2 এসেছে');
+  const items = [...body.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) => m[1].trim());
+  /* আসল উদ্দেশ্য: ফাঁকা/ট্যাগ-মাত্র বিন্দু ধরা — এক-দুই শব্দের বৈধ লেবেল
+     («জবাব:», «মানুষ») যেন ভুলভাবে ধরা না পড়ে। */
+  const blank = (t) => t.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim().length === 0;
+  const empty = items.filter(blank);
+  if (empty.length) errs.push(`${empty.length}টি তালিকা-বিন্দু ফাঁকা`);
+  const paras = [...body.matchAll(/<p>([\s\S]*?)<\/p>/g)].map((m) => m[1].trim());
+  if (paras.some(blank)) errs.push('ফাঁকা অনুচ্ছেদ আছে');
+  const heads = [...body.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map((m) => m[1].trim());
+  if (heads.length < 3) errs.push(`h2 মাত্র ${heads.length}টি — দীর্ঘ প্রবন্ধে অন্তত ৩টি প্রত্যাশিত`);
+  if (heads.some(blank)) errs.push('খালি h2 আছে');
+  console.log(`${errs.length ? '✗' : '✓'} ${rel} — পাঠ-গুণ (${heads.length} সেকশন, ${items.length} বিন্দু)`);
+  for (const e of errs) console.log(`   ! ${e}`);
+  return errs.length === 0;
+}
+
+/* প্রবন্ধ-পাতা: <article> ট্যাগে article-body ক্লাস (অন্য ক্লাসও থাকতে পারে,
+   যেমন "prose article-body logic-body") — তাই শুধু সাবস্ট্রিং নয়, রেগেক্স */
+function allEssays() {
+  return fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'))
+    .map((f) => path.join(ROOT, f))
+    .filter((f) => /class="[^"]*\barticle-body\b/.test(fs.readFileSync(f, 'utf8')));
+}
+
 let ok = true;
 for (const f of pages()) ok = (await testPage(f)) && ok;
 for (const f of hubPages()) ok = (await testHub(f)) && ok;
 for (const f of essayPages()) ok = testReaderTools(f) && ok;
+for (const f of allEssays()) ok = testEssayQuality(f) && ok;
 console.log(ok ? '\nসব পাতা নিজের ডেটাই দেখাচ্ছে ✓' : '\nকিছু পাতায় সমস্যা আছে ✗');
 process.exit(ok ? 0 : 1);
