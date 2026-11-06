@@ -38,7 +38,7 @@ for(const f of files){
 
   // fetch-stub: ব্রাউজারে fetch থাকে; jsdom-এ নেই — লোকাল ফাইল থেকেই সেবা দিই
   window.fetch=(u)=>{try{
-    const rel=String(u.src||u).replace(/^https?:\/\/[^/]+\/ead\//,'').split('?')[0].replace(/^\.\.\/\.\.\//,'');
+    const rel=String(u.src||u).replace(/^https?:\/\/[^/]+\/ead\//,'').replace(/^\/ead\//,'').split('?')[0].replace(/^\.\.\/\.\.\//,'');
     const fp=path.join(ROOTDIR,rel);
     if(!fs.existsSync(fp)) return Promise.resolve({ok:false,status:404,json:()=>Promise.resolve({}),text:()=>Promise.resolve('')});
     const t=fs.readFileSync(fp,'utf8');
@@ -50,7 +50,9 @@ for(const f of files){
   }
   for(const s of [...doc.querySelectorAll('script[src]')]){
     const raw=s.getAttribute('src').split('?')[0];
-    const p=raw.startsWith('http')?path.join('ROOTDIR',raw.replace(/^https?:\/\/[^/]+\/ead\//,'')):path.resolve(path.dirname(path.resolve(f)),raw);
+    const p=raw.startsWith('http')?path.join(ROOTDIR,raw.replace(/^https?:\/\/[^/]+\/ead\//,''))
+      :raw.startsWith('/')?path.join(ROOTDIR,raw.replace(/^\/ead\//,''))
+      :path.resolve(path.dirname(path.resolve(f)),raw);
     if(!fs.existsSync(p)){ errs.push('missing script: '+src); continue; }
     try{ new window.Function(fs.readFileSync(p,'utf8')).call(window); }catch(e){ errs.push('ext JS '+src+': '+e.message); }
   }
@@ -58,7 +60,10 @@ for(const f of files){
   const need=['site.css','site-extra.css'];
   for(const n of need) if(!html.includes(n)) errs.push('missing '+n);
   if(!/property="og:image"/.test(html)) errs.push('no og:image');
-  if(!/rel="canonical"/.test(html)) errs.push('no canonical');
+  if(path.basename(f)==='404.html'){
+    if(!/name="robots"[^>]*noindex/.test(html)) errs.push('404 should be noindex');
+    if(/rel="canonical"/.test(html)) errs.push('404 should not have canonical');
+  } else if(!/rel="canonical"/.test(html)) errs.push('no canonical');
   if(/data:image\/[a-z+]*;base64/.test(html)) errs.push('base64 image');
   if(!/id="yr"/.test(html)) errs.push('no footer year');
   if(errs.length){issues++;console.log('✗ '+f);errs.slice(0,6).forEach(e=>console.log('    '+e));}
