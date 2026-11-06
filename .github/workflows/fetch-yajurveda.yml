@@ -5,8 +5,9 @@ name: Fetch (শুক্ল যজুর্বেদ)
 # (পূর্বার্ধ অধ্যায় ১–২০, উত্তরার্ধ ২১–৪০) — প্রতিটি লেসন = এক অধ্যায়।
 #
 # স্যান্ডবক্স থেকে উৎস-সাইটে যাওয়া যায় না, তাই নামানোর কাজ এখানে (CI)।
-# Actions-এর লগ পড়া যায় না — তাই প্রতিটি ধাপের ফল assets/grantho/data/_debug/
-# ফাইলে লিখে PR-এর সাথে প্রকাশ করা হয় (আগের ওয়ার্কফ্লোগুলোর একই রীতি)।
+# Actions-এর লগ বাইরে থেকে পড়া যায় না — তাই প্রতিটি ধাপের ফল শেল-tee দিয়ে
+# assets/grantho/data/_debug/ ফাইলে লেখা হয় এবং প্রোব-ফল সঙ্গে সঙ্গে main-এ
+# প্রকাশ করা হয়। ফলে পরের ধাপ ব্যর্থ হলেও কারণ জানা যায়।
 
 on:
   workflow_dispatch:
@@ -23,7 +24,7 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write     # bot-ব্রাঞ্চ → PR → merge করতে লাগে
+  pull-requests: write
 
 concurrency:
   group: fetch-yajurveda
@@ -39,6 +40,7 @@ jobs:
       MAXV: ${{ inputs.max || '0' }}
       SLUG: yajurveda-shukla
       BOOK_TITLE: শুক্ল যজুর্বেদ সংহিতা
+      DBG: assets/grantho/data/_debug
       BOOK_URL: https://www.ebanglalibrary.com/books/%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2-%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%b8%e0%a6%82%e0%a6%b9%e0%a6%bf%e0%a6%a4%e0%a6%be-%e0%a6%85%e0%a6%a8/
       LESSON_URL: https://www.ebanglalibrary.com/lessons/%e0%a7%a6%e0%a7%a7-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%aa%e0%a7%82%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a6%be/
     steps:
@@ -55,204 +57,229 @@ jobs:
         run: |
           git config user.name  "grantho-bot"
           git config user.email "bot@users.noreply.github.com"
-          mkdir -p assets/grantho/data/_debug
+          mkdir -p "$DBG"
+          echo "রান: $GITHUB_RUN_ID · $(date -u '+%d/%m %H:%M:%S') UTC · sha ${GITHUB_SHA:0:7}" > "$DBG/yajurveda_run.txt"
 
       # ── ০) উৎস-প্রোব ───────────────────────────────────────────
-      # বইটি লগইন-গেটেড কি না, বই-পাতায় কত লেসন আছে, আর এক লেসনে আসলেই
-      # মন্ত্র-পাঠ পার্স হয় কি না — আগে যাচাই, তারপর নামানো।
-      - name: ০) উৎস-প্রোব (ফল ফাইলে)
+      # বইটি লগইন-গেটেড কি না, বই-পাতায় কত লেসন আছে, এক লেসনে আসলেই
+      # মন্ত্র-পাঠ পার্স হয় কি না। ফল শেল-tee দিয়ে ফাইলে — পাইথন মাঝপথে থামলেও
+      # ততটুকু আউটপুট থেকে যায়।
+      - name: ০) উৎস-প্রোব
         run: |
-          python3 -u - <<'PY'
-          import re, sys, urllib.parse
+          python3 -u - 2>&1 <<'PY' | tee "$DBG/yajurveda_probe.txt"
+          import os, re, sys, urllib.parse
           sys.path.insert(0, 'tools')
           import fetch_ebl as F
-          import os
 
           book = os.environ['BOOK_URL']; lesson = os.environ['LESSON_URL']
-          out = []
           wall_re = re.compile(r'requires a login|Accessing this book|ld-user-register', re.I)
           deva = re.compile(r'[\u0904-\u0939\u093D\u0950\u0958-\u0961\u0972-\u097F]')
 
-          def probe(label, url):
-              h = F.get(url, tries=2, timeout=30)
+          def show(label, url):
+              print(f'--- {label}: {urllib.parse.unquote(url)[-70:]}')
+              try:
+                  h = F.get(url, tries=2, timeout=30) or ''
+                  print(f'    html: {len(h)} B')
+              except Exception as e:
+                  print(f'    get ব্যর্থ: {type(e).__name__} {e}'); h = ''
               txt = ''
-              if h:
-                  try:
-                      txt = F.fetch_paged(url)
-                  except Exception as e:
-                      txt = ''
-                      out.append(f'   fetch_paged ব্যর্থ: {type(e).__name__} {e}')
-              vs = []
-              if txt:
-                  try:
-                      vs = F.parse_verses(txt)
-                  except Exception as e:
-                      out.append(f'   parse_verses ব্যর্থ: {type(e).__name__} {e}')
-              blob = (txt or '') + (h or '')
-              out.append(f'{label} | {urllib.parse.unquote(url)[-72:]}')
-              out.append(f'   html={"OK %d B" % len(h) if h else "FAIL"} · text={len(txt)} B · '
-                         f'মন্ত্র={len(vs)} · লগইন-দেয়াল={bool(wall_re.search(blob))}')
+              try:
+                  txt = F.fetch_paged(url) or ''
+                  print(f'    text: {len(txt)} B')
+              except Exception as e:
+                  print(f'    fetch_paged ব্যর্থ: {type(e).__name__} {e}')
+              try:
+                  vs = F.parse_verses(txt) or []
+              except Exception as e:
+                  print(f'    parse_verses ব্যর্থ: {type(e).__name__} {e}'); vs = []
+              blob = txt + h
+              print(f'    মন্ত্র: {len(vs)} · লগইন-দেয়াল: {bool(wall_re.search(blob))}')
               for v in vs[:2]:
-                  out.append(f'   নমুনা n={v.get("n")} · bn={len(str(v.get("bn") or ""))} অক্ষর · '
-                             f'sk-দেবনাগরী={bool(deva.search(str(v.get("sk") or "")))}')
-              return vs, h
+                  print(f'    নমুনা n={v.get("n")} bn={len(str(v.get("bn") or ""))} অক্ষর '
+                        f'sk-দেবনাগরী={bool(deva.search(str(v.get("sk") or "")))}')
+              return vs
 
-          out.append('=== শুক্ল যজুর্বেদ — উৎস-প্রোব ===')
+          print('=== শুক্ল যজুর্বেদ — উৎস-প্রোব ===')
+          lessons = []
           try:
               lessons = F.book_lessons(book) or []
-              out.append(f'বই-পাতার সূচিতে লেসন: {len(lessons)}')
+              print(f'বই-পাতার সূচিতে লেসন: {len(lessons)}')
               for u in lessons[:3]:
-                  out.append('   · ' + urllib.parse.unquote(u)[-70:])
-              for u in lessons[-2:]:
-                  out.append('   · …' + urllib.parse.unquote(u)[-70:])
+                  print('   · ' + urllib.parse.unquote(u)[-70:])
+              if len(lessons) > 3:
+                  print('   · …')
+                  for u in lessons[-2:]:
+                      print('   · ' + urllib.parse.unquote(u)[-70:])
           except Exception as e:
-              lessons = []
-              out.append(f'বই-পাতা পড়া যায়নি: {type(e).__name__} {e}')
+              print(f'বই-পাতা পড়া যায়নি: {type(e).__name__} {e}')
 
-          probe('প্রথম লেসন', lesson)
+          show('ব্যবহারকারীর লেসন', lesson)
           if lessons and lessons[0] != lesson:
-              probe('সূচির প্রথম লেসন', lessons[0])
+              show('সূচির প্রথম লেসন', lessons[0])
           if len(lessons) > 1:
-              probe('সূচির দ্বিতীয় লেসন', lessons[1])
+              show('সূচির দ্বিতীয় লেসন', lessons[1])
 
-          # সাইটম্যাপ থেকেও খোঁজা (বই-পাতা না মিললে বিকল্প পথ)
           try:
-              sm = F.sitemap_urls(F.COURSE_SITEMAPS + F.LESSON_SITEMAPS + F.TOPIC_SITEMAPS,
-                                  'যজুর্বেদ')
-              out.append(f'সাইটম্যাপে «যজুর্বেদ» মিল: {len(sm)}')
-              for u in sm[:6]:
-                  out.append('   · ' + urllib.parse.unquote(u)[-72:])
+              sm = F.sitemap_urls(F.TOPIC_SITEMAPS + F.LESSON_SITEMAPS, 'যজুর্বেদ')
+              print(f'সাইটম্যাপে «যজুর্বেদ» মিল: {len(sm)}')
+              for u in sm[:8]:
+                  print('   · ' + urllib.parse.unquote(u)[-72:])
           except Exception as e:
-              out.append(f'সাইটম্যাপ-খোঁজ ব্যর্থ: {type(e).__name__} {e}')
-
-          open('assets/grantho/data/_debug/yajurveda_probe.txt', 'w', encoding='utf-8').write(
-              '\n'.join(out) + '\n')
-          print('\n'.join(out))
+              print(f'সাইটম্যাপ-খোঁজ ব্যর্থ: {type(e).__name__} {e}')
+          print('=== প্রোব শেষ ===')
           PY
+          echo "প্রোব-ফাইল: $(wc -c < "$DBG/yajurveda_probe.txt") B" || true
+
+      # ── ০.৫) প্রোব-ফল সঙ্গে সঙ্গে main-এ প্রকাশ ─────────────────
+      # পরের ধাপগুলো ব্যর্থ হলেও কারণটি যেন পড়া যায়।
+      - name: ০.৫) প্রোব-ফল প্রকাশ
+        run: |
+          git add "$DBG" || true
+          if git diff --cached --quiet; then
+            echo 'প্রোব-ফলে নতুন কিছু নেই'
+            exit 0
+          fi
+          git commit -m "শুক্ল যজুর্বেদ: উৎস-প্রোব ফল ($(date -u '+%d/%m %H:%M') UTC)" || exit 1
+          git fetch origin main --depth=1 || true
+          git rebase origin/main || git rebase --abort || true
+          if ! git push origin HEAD:main; then
+            echo '⚠ main-এ সরাসরি push ব্যর্থ — ডায়াগনস্টিক পরে বট-ব্র্যাঞ্চ দিয়ে যাবে'
+            git reset --soft HEAD~1 || true
+          fi
 
       # ── ১) পাঠ নামানো ──────────────────────────────────────────
-      # প্রথমে বই-পাতার সূচি ধরে (--book), না মিললে সাইটম্যাপ-খোঁজ (--book-auto),
-      # তারপরও না মিললে ঠিকানা-প্রিফিক্স (--prefix)। --only-unsaved থাকায়
-      # পরের রানে শুধু বাকি অধ্যায়গুলো নামে, আগের ডেটা অটুট থাকে।
+      # fetch_ebl.py-তে --book একটি ফ্ল্যাগ, বই-পাতার ঠিকানা --url-এ যায়।
+      # পথ: বই-পাতার সূচি → সাইটম্যাপ থেকে বই খোঁজা → ঠিকানা-প্রিফিক্স →
+      # একক লেসন। --only-unsaved: পরের রানে শুধু বাকি অধ্যায় নামে।
       - name: ১) অধ্যায় নামানো
         run: |
-          ARGS=""
-          if [ "$MAXV" != "0" ]; then ARGS="--max $MAXV"; fi
-          COMMON="--slug $SLUG --title $BOOK_TITLE --word মন্ত্র --only-unsaved"
-
-          run_fetch () {
-            echo "── চেষ্টা: $1"
-            shift
-            python3 -u tools/fetch_ebl.py $COMMON "$@" $ARGS > /tmp/fetch.txt 2>&1 \
-              || echo "⚠ ফেচার কোড $? নিয়ে শেষ হলো (ফল খতিয়ে দেখুন)"
-            tail -25 /tmp/fetch.txt
-          }
+          COMMON=(--slug "$SLUG" --title "$BOOK_TITLE" --word মন্ত্র --only-unsaved)
+          if [ "$MAXV" != "0" ]; then COMMON+=(--max "$MAXV"); fi
 
           count () {
-            python3 -c "
+            python3 -c '
           import json, os
-          p = 'assets/grantho/data/' + os.environ['SLUG'] + '/index.json'
+          p = "assets/grantho/data/" + os.environ["SLUG"] + "/index.json"
           try:
-              d = json.load(open(p, encoding='utf-8'))
-              print(sum(int(c.get('count') or 0) for c in d.get('chapters', [])))
+              d = json.load(open(p, encoding="utf-8"))
+              print(sum(int(c.get("count") or 0) for c in d.get("chapters", [])))
           except Exception:
-              print(0)"
+              print(0)'
+          }
+          run_fetch () {
+            local label="$1"; shift
+            echo "" >> "$DBG/yajurveda_fetch.txt"
+            echo "── চেষ্টা: $label → tools/fetch_ebl.py $*" >> "$DBG/yajurveda_fetch.txt"
+            # লেবেল/টেইল stderr-এ — stdout-এ কেবল count, নইলে N=$(run_fetch …) নষ্ট হয়
+            echo "── চেষ্টা: $label" >&2
+            python3 -u tools/fetch_ebl.py "${COMMON[@]}" "$@" >> "$DBG/yajurveda_fetch.txt" 2>&1 \
+              || echo "⚠ ফেচার অশূন্য কোডে শেষ হলো (বিস্তারিত ফাইলে)" >> "$DBG/yajurveda_fetch.txt"
+            tail -12 "$DBG/yajurveda_fetch.txt" >&2
+            count
           }
 
-          run_fetch "বই-পাতার সূচি" --book "$BOOK_URL"
-          N=$(count)
-          echo "মন্ত্র মিলেছে: $N"
+          : > "$DBG/yajurveda_fetch.txt"
+          N=$(run_fetch "বই-পাতার সূচি" --book --url "$BOOK_URL")
+          echo "মন্ত্র: $N"
           if [ "$N" = "0" ]; then
-            run_fetch "সাইটম্যাপ থেকে বই-পাতা" --book-auto --match "শুক্ল যজুর্বেদ|শুক্লযজুর্বেদ"
-            N=$(count); echo "মন্ত্র মিলেছে: $N"
+            N=$(run_fetch "সাইটম্যাপ থেকে বই" --book-auto --match "শুক্ল যজুর্বেদ|শুক্লযজুর্বেদ")
+            echo "মন্ত্র: $N"
           fi
           if [ "$N" = "0" ]; then
-            run_fetch "ঠিকানা-প্রিফিক্স" --prefix "শুক্লযজুর্বেদ"
-            N=$(count); echo "মন্ত্র মিলেছে: $N"
+            N=$(run_fetch "ঠিকানা-প্রিফিক্স" --prefix শুক্লযজুর্বেদ)
+            echo "মন্ত্র: $N"
           fi
           if [ "$N" = "0" ]; then
-            run_fetch "একক লেসন (পরীক্ষা)" --url "$LESSON_URL" --toc --match "শুক্লযজুর্বেদ"
-            N=$(count); echo "মন্ত্র মিলেছে: $N"
+            N=$(run_fetch "একক লেসন" --url "$LESSON_URL")
+            echo "মন্ত্র: $N"
           fi
           echo "চূড়ান্ত: $N মন্ত্র"
+          echo "" >> "$DBG/yajurveda_fetch.txt"
+          echo "চূড়ান্ত: $N মন্ত্র" >> "$DBG/yajurveda_fetch.txt"
 
-      # ── ২) ফল-রিপোর্ট (লগ পড়া যায় না, তাই ফাইলে) ───────────────
+      # ── ২) ফল-রিপোর্ট ──────────────────────────────────────────
       - name: ২) ফল-রিপোর্ট
         if: always()
         run: |
-          python3 -u - <<'PY'
+          python3 -u - 2>&1 <<'PY' | tee "$DBG/yajurveda_report.txt"
           import json, os, pathlib, re
           slug = os.environ['SLUG']
           d = pathlib.Path('assets/grantho/data') / slug
-          out = ['=== শুক্ল যজুর্বেদ — ফল ===']
-          idx = d / 'index.json'
           deva = re.compile(r'[\u0904-\u0939\u093D\u0950\u0958-\u0961\u0972-\u097F]')
+          print('=== শুক্ল যজুর্বেদ — ফল ===')
+          idx = d / 'index.json'
           if idx.exists():
               j = json.loads(idx.read_text(encoding='utf-8'))
               chs = j.get('chapters', [])
-              out.append(f'মোট: {j.get("total")} {j.get("verseWord","মন্ত্র")} · '
-                         f'বাংলাসহ: {j.get("withBn")} · অধ্যায়: {len(chs)}')
+              print(f'মোট: {j.get("total")} {j.get("verseWord", "মন্ত্র")} · '
+                    f'বাংলাসহ: {j.get("withBn")} · অধ্যায়: {len(chs)}')
               sk = bn = tot = 0
               for c in chs:
                   fp = d / f'ch{c["id"]}.json'
                   if not fp.exists():
-                      out.append(f'  অধ্যায় {c["id"]}: ফাইল নেই')
-                      continue
+                      print(f'  অধ্যায় {c["id"]}: ফাইল নেই'); continue
                   vs = json.loads(fp.read_text(encoding='utf-8')).get('verses', [])
                   tot += len(vs)
                   bn += sum(1 for v in vs if str(v.get('bn') or '').strip())
                   sk += sum(1 for v in vs if deva.search(str(v.get('sk') or '')))
-                  out.append(f'  অধ্যায় {c["id"]}: {len(vs)} মন্ত্র · '
-                             f'{c.get("bn") or c.get("title") or ""}')
-              out.append(f'যাচাই: মন্ত্র {tot} · বাংলা {bn} · আসল দেবনাগরী সংস্কৃত {sk}')
+                  print(f'  অধ্যায় {c["id"]}: {len(vs)} মন্ত্র · {c.get("bn") or c.get("title") or ""}')
+              print(f'যাচাই: মন্ত্র {tot} · বাংলা {bn} · আসল দেবনাগরী সংস্কৃত {sk}')
           else:
-              out.append('index.json তৈরি হয়নি — উৎস থেকে কিছু নামেনি '
-                         '(প্রোব-রিপোর্ট দেখুন: লগইন-দেয়াল বা সূচি না মেলার কারণে হতে পারে)')
-          dbg = pathlib.Path('assets/grantho/data/_debug')
-          dbg.mkdir(parents=True, exist_ok=True)
-          (dbg / 'yajurveda_report.txt').write_text('\n'.join(out) + '\n', encoding='utf-8')
-          print('\n'.join(out[:40]))
+              print('index.json তৈরি হয়নি — উৎস থেকে কিছু নামেনি।')
+              print('সম্ভাব্য কারণ: লেসন-পাতা লগইন ছাড়া পাঠ দেয় না (প্রোব-রিপোর্টে '
+                    '«লগইন-দেয়াল: True» দেখা গেলে এটাই কারণ)।')
+          print('=== রিপোর্ট শেষ ===')
           PY
+          true
 
       # ── ৩) সাইট-পাতা বিল্ড ─────────────────────────────────────
       - name: ৩) সাইট-পাতা বিল্ড
         if: always()
         run: |
-          python3 -u tools/build_pages.py 2>&1 | tail -20 || echo "⚠ বিল্ড ব্যর্থ"
+          python3 -u tools/build_pages.py 2>&1 | tee -a "$DBG/yajurveda_run.txt" | tail -15 || true
 
-      # ── ৪) কমিট + প্রকাশ (PR → main, অটো-মার্জ) ──────────────────
+      # ── ৪) কমিট + প্রকাশ ──────────────────────────────────────
+      # ডেটা/পাতা থাকলে তা-ও, না থাকলে অন্তত ডায়াগনস্টিক ফাইলগুলো — সবসময় প্রকাশ।
       - name: ৪) কমিট + প্রকাশ
         if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git add grantho assets/grantho/data || true
+          {
+            echo "── git status:"
+            git status --porcelain
+            echo "── ডাটা ফোল্ডার:"
+            ls -la "assets/grantho/data/$SLUG" 2>&1 | head -8
+            echo "── শেষ: $(date -u '+%d/%m %H:%M:%S') UTC"
+          } >> "$DBG/yajurveda_run.txt"
+          git add -A || true
           if git diff --cached --quiet; then
-            echo "কোনো পরিবর্তন নেই — প্রকাশ লাগবে না"
+            echo 'প্রকাশ করার মতো কিছু নেই'
             exit 0
           fi
-          git commit -m "শুক্ল যজুর্বেদ: স্বয়ংক্রিয় আপডেট ($(date -u '+%d/%m %H:%M') UTC)" || true
+          git commit -m "শুক্ল যজুর্বেদ: নামানো পাঠ ও ডায়াগনস্টিক ($(date -u '+%d/%m %H:%M') UTC)" || exit 1
           git fetch origin main --depth=1 || true
           git rebase origin/main || git rebase --abort || true
-          # স্টেজিং-ব্র্যাঞ্চ: সাধারণ push প্রত্যাখ্যাত হলে রিসেট (night-fetch.yml-এর মতো)
+          if git push origin HEAD:main; then
+            echo '✓ main-এ প্রকাশ হয়েছে'
+            exit 0
+          fi
+          # সরাসরি push না চললে বট-ব্র্যাঞ্চ → PR → merge
+          echo 'সরাসরি push ব্যর্থ — বট-ব্র্যাঞ্চ দিয়ে চেষ্টা'
           git fetch origin "${BOT_BRANCH}" --depth=1 || true
-          if ! git push origin "HEAD:refs/heads/${BOT_BRANCH}"; then
-            echo "সাধারণ push ব্যর্থ — স্টেজিং-ব্র্যাঞ্চ রিসেট করা হচ্ছে"
-            if ! git push --force origin "HEAD:refs/heads/${BOT_BRANCH}"; then
-              echo "⛔ bot-ব্রাঞ্চে push হলো না — কিছু প্রকাশ করা হয়নি" >&2
-              exit 1
-            fi
+          if ! git push origin "HEAD:refs/heads/${BOT_BRANCH}" \
+             && ! git push --force origin "HEAD:refs/heads/${BOT_BRANCH}"; then
+            echo '⛔ বট-ব্র্যাঞ্চেও push হলো না' >&2
+            exit 1
           fi
           NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
           if [ -z "$NUM" ]; then
             gh pr create --base main --head "${BOT_BRANCH}" \
-              --title "শুক্ল যজুর্বেদ সংহিতা: স্বয়ংক্রিয় আপডেট ($(date -u '+%d/%m %H:%M') UTC)" \
-              --body "ebanglalibrary.com থেকে নামানো অধ্যায় + পাতা-বিল্ড। রিপোর্ট: assets/grantho/data/_debug/yajurveda_report.txt ও yajurveda_probe.txt" || true
+              --title "শুক্ল যজুর্বেদ: নামানো পাঠ ও ডায়াগনস্টিক ($(date -u '+%d/%m %H:%M') UTC)" \
+              --body "রিপোর্ট: assets/grantho/data/_debug/yajurveda_report.txt" || true
             sleep 5
             NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
           fi
-          echo "PR: ${NUM:-নেই}"
-          if [ -n "$NUM" ]; then
-            gh pr merge "$NUM" --merge || { echo "⛔ merge ব্যর্থ (PR #$NUM)" >&2; exit 1; }
-            echo "✓ প্রকাশ হয়েছে (PR #$NUM)"
-          fi
+          if [ -z "$NUM" ]; then echo '⛔ PR তৈরি হয়নি' >&2; exit 1; fi
+          gh pr merge "$NUM" --merge || { echo "⛔ merge ব্যর্থ (PR #$NUM)" >&2; exit 1; }
+          echo "✓ প্রকাশ হয়েছে (PR #$NUM)"
