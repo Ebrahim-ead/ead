@@ -177,6 +177,13 @@
   </div>
   <div class="copy">© <span id="yr"></span> <b>Ebrahim Ead</b> · নাস্তিকতা ও তুলনামূলক ধর্মতত্ত্ব</div>
 </div></footer>
+<script>
+/* ফুটারের বছর — বাংলা অঙ্কে (বাকি সাইটের সঙ্গে সামঞ্জস্য) */
+(function () {
+  var yr = document.getElementById("yr");
+  if (yr) yr.textContent = String(new Date().getFullYear()).replace(/[0-9]/g, function (c) { return "০১২৩৪৫৬৭৮৯"[+c]; });
+})();
+</script>
 <script src="assets/nav-motion.js" defer></script>
 <script src="assets/site-motion.js" defer></script>
 <script src="assets/quran/quran.js" defer></script>
