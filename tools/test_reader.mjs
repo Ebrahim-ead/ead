@@ -313,6 +313,58 @@ async function testPage(file) {
     }
   }
 
+  /* ২গ) তালিকার জায়গা (মোবাইল) ও পুস্তকের ইংরেজি নাম */
+  const cssPath = path.join(ROOT, 'assets/grantho/grantho.css');
+  const css = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, 'utf8') : '';
+  if (twoLevel && css) {
+    // ফোনে তালিকা পাঠের *উপরে* থাকতে হবে — নিচে থাকলে পাঠক ১,৫০০+ পদ পেরোত
+    const mSide = css.match(/\.g-side\{[^}]*order:(\d)/);
+    const mMain = css.match(/\.g-main\{order:(\d)/);
+    if (!mSide || !mMain) errs.push('মোবাইল-নিয়মে তালিকা/পাঠের ক্রম (order) নেই');
+    else if (+mSide[1] >= +mMain[1]) {
+      errs.push(`মোবাইলে তালিকা (order ${mSide[1]}) পাঠের (order ${mMain[1]}) নিচে — উপরে হওয়া উচিত`);
+    }
+    if (!/\.g-side\.folded \.g-side-body\{display:none\}/.test(css)) {
+      errs.push('তালিকা ভাঁজ করার নিয়ম নেই');
+    }
+    // প্রতিটি পুস্তকের নামের পাশে ইংরেজি নাম (ডেটার `en`)
+    const tags = [...doc.querySelectorAll('#g-book-list .g-bk-en')].map((e) => e.textContent.trim());
+    if (tags.length !== idx.chapters.length) {
+      errs.push(`ইংরেজি নাম ${tags.length}টি, পুস্তক ${idx.chapters.length}টি — সবগুলোর নাম থাকা দরকার`);
+    }
+    const want = idx.chapters.map((c) => (c.en || '').trim()).filter(Boolean);
+    const missing = want.filter((w) => !tags.includes(w));
+    if (missing.length) errs.push(`ইংরেজি নাম বাদ পড়েছে: ${missing.slice(0, 4).join(', ')}`);
+    if (doc.querySelector('.g-bk-en')?.getAttribute('dir') !== 'ltr') {
+      errs.push('ইংরেজি নাম LTR-এ নেই (বাংলা মাঝে বসে বিকৃত দেখাবে)');
+    }
+    // তালিকা-হেডার ডেটার chword («পুস্তক») দেখাবে, হার্ডকোডেড «অধ্যায়» নয়
+    const st = doc.getElementById('g-side-title');
+    if (st && idx.chword && st.textContent.trim() !== idx.chword) {
+      errs.push(`তালিকা-শিরোনাম «${st.textContent.trim()}» — ডেটার শব্দ «${idx.chword}» হওয়া উচিত`);
+    }
+    // ভাঁজ-বোতাম কাজ করে ও বর্তমান পুস্তক দেখায়
+    const tb = doc.getElementById('g-side-toggle');
+    const side = doc.getElementById('g-side');
+    if (!tb || !side) errs.push('তালিকা ভাঁজের বোতাম নেই');
+    else {
+      const wasFolded = side.classList.contains('folded');
+      tb.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+      await new Promise((r) => setTimeout(r, 250));
+      if (side.classList.contains('folded') === wasFolded) errs.push('ভাঁজ-বোতামে কিছুই বদলায় না');
+      if (side.classList.contains('folded')) {
+        const now = doc.getElementById('g-side-now');
+        if (!now || now.hidden || !now.textContent.trim()) {
+          errs.push('ভাঁজ করা তালিকায় বর্তমান পুস্তকের নাম দেখাচ্ছে না');
+        }
+      }
+      if (side.classList.contains('folded') !== wasFolded) {
+        tb.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+        await new Promise((r) => setTimeout(r, 250));
+      }
+    }
+  }
+
   // ৩) অন্য গ্রন্থের নাম পাতায় থেকে গেলে তাও ভুল
   const others = ['ঋগ্বেদ', 'সামবেদ', 'কৃষ্ণ যজুর্বেদ', 'অথর্ববেদ', 'শ্রীমদ্ভগবদ্গীতা']
     .filter((w) => !a.title.includes(w) && !slug.includes(w.split(' ')[0]));
