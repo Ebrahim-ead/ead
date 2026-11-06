@@ -1,9 +1,9 @@
 {
  "id": 16,
- "bn": "শুক্ল যজুর্বেদ সংহিতা — ১৬ শুক্লযজুর্বেদ ষোড়শ অ",
- "count": 60,
+ "bn": "ষোড়শ অধ্যায় · পূর্বার্ধ",
+ "count": 59,
  "from": 1,
- "to": 60,
+ "to": 66,
  "verses": [
   {
    "n": "অনুক্রমণিকা",
@@ -489,5 +489,6 @@
    "seg": 66
   }
  ],
- "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a7%e0%a7%ac-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%b7%e0%a7%8b%e0%a6%a1%e0%a6%bc%e0%a6%b6-%e0%a6%85/"
+ "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a7%e0%a7%ac-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%b7%e0%a7%8b%e0%a6%a1%e0%a6%bc%e0%a6%b6-%e0%a6%85/",
+ "withBn": 59
 }

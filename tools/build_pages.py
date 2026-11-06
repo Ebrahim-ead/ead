@@ -218,6 +218,46 @@ def count_with_sk(slug: str, idx: dict) -> int:
     return n
 
 
+def _apply_identity(h, slug, meta, main, sub):
+    """পাতার নিজস্ব পরিচয় বসানো — টেমপ্লেট যেকোনো গ্রন্থের পাতাই হোক।
+
+    আগে এখানে হার্ডকোডেড "সামবেদ …" স্ট্রিং বদলানো হতো; কিন্তু _pick_template()
+    samaveda.html না পেয়ে rigveda.html ফলব্যাক করায় সেই বদলিগুলো মিলত না — ফলে
+    শুক্ল যজুর্বেদের পাতায় data-base ঋগ্বেদের ফোল্ডারেই থেকে গিয়েছিল এবং
+    পাঠকে ঋগ্বেদের মন্ত্র দেখাত। তাই সব বদলি এখন রেগেক্স-ভিত্তিক।
+    """
+    label = f"{main} {sub}".strip()
+    crumb = meta.get("crumb") or label
+    # ডেটা-উৎস: রিডার-JS এখান থেকেই গ্রন্থের ফোল্ডার ধরে — এটি ভুল হলে অন্য গ্রন্থের পাঠ দেখায়
+    h = re.sub(r'data-granth="[^"]*"', f'data-granth="{slug}"', h, count=1)
+    h = re.sub(r'data-base="[^"]*"', f'data-base="../../assets/grantho/data/{slug}/"', h, count=1)
+    # কিকার (g-kicker / g-kicker2 দুই রূপই টেমপ্লেটে থাকতে পারে)
+    if meta.get("kicker"):
+        h = re.sub(r'(<span class="g-kicker2?">)[^<]*(</span>)',
+                   lambda m: m.group(1) + meta["kicker"] + m.group(2), h)
+    # শিরোনাম <h1> (অ্যাট্রিবিউট থাকলেও অটুট রাখা হয়)
+    inner = f"{main} <span>{sub}</span>" if sub else main
+    h = re.sub(r'(<h1[^>]*>).*?(</h1>)', lambda m: m.group(1) + inner + m.group(2),
+               h, count=1, flags=re.S)
+    # ব্রেডক্রাম্ব: «ধর্মীয় গ্রন্থ › হিন্দু ›» অংশ অটুট রেখে হাব-লিংক ও গ্রন্থের নাম বদলানো
+    cm = re.search(r'(<p class="g-crumb">)(.*?)(</p>)', h, re.S)
+    if cm:
+        mid = cm.group(2)
+        anchors = list(re.finditer(r'<a href="[^"]*"[^>]*>.*?</a>', mid, re.S))
+        if anchors:
+            last = anchors[-1]
+            hub = f'<a href="{meta["hub"]}">{meta["hubname"]}</a>'
+            mid = mid[:last.start()] + hub + mid[last.end():]
+        sep = '<span>›</span>'
+        k = mid.rfind(sep)
+        if k >= 0:
+            mid = mid[:k + len(sep)] + crumb
+        h = h[:cm.start()] + cm.group(1) + mid + cm.group(3) + h[cm.end():]
+    # টেমপ্লেটের অন্য গ্রন্থের নাম শিরোনাম-জুড়ে ছড়িয়ে থাকলে তাও বদলানো
+    h = h.replace("সামবেদ সংহিতা", label).replace("ঋগ্বেদ সংহিতা", label)
+    return h
+
+
 def make_page(slug, idx, meta):
     main, sub = meta["title"]
     nch = len(idx["chapters"])
@@ -225,12 +265,7 @@ def make_page(slug, idx, meta):
     withsk = count_with_sk(slug, idx)
     h = TEMPLATE
 
-    h = h.replace("সামবেদ সংহিতা", f"{main} {sub}".strip())
-    h = h.replace("হিন্দু · বেদ · সামবেদ", meta["kicker"])
-    h = h.replace('<a href="veda.html">বেদ</a>',
-                  f'<a href="{meta["hub"]}">{meta["hubname"]}</a>')
-    h = h.replace('<h1>সামবেদ <span>সংহিতা</span></h1>',
-                  f'<h1>{main} <span>{sub}</span></h1>' if sub else f'<h1>{main}</h1>')
+    h = _apply_identity(h, slug, meta, main, sub)
     h = re.sub(r'(<div class="g-intro">.*?<p>)[^<]*(</p>)',
                lambda m: m.group(1) + meta["intro"] + m.group(2), h, count=1, flags=re.S)
 
@@ -259,9 +294,6 @@ def make_page(slug, idx, meta):
     if withsk == 0:
         h = re.sub(r'\s*<button[^>]*id="g-sk-btn".*?</button>', '', h, count=1, flags=re.S)
 
-    h = h.replace('data-granth="samaveda"', f'data-granth="{slug}"').replace(
-        'data-base="../../assets/grantho/data/samaveda/"',
-        f'data-base="../../assets/grantho/data/{slug}/"')
     src = meta["src"]
     # সংস্কৃত পাঠের প্রাপ্যতা — আগে হার্ডকোডেড দাবি ছিল যা ডেটার সাথে মিলত না
     if withsk == 0:

@@ -1,8 +1,8 @@
 {
  "id": 39,
- "bn": "শুক্ল যজুর্বেদ সংহিতা — ৩৯ শুক্লযজুর্বেদ ঊনচত্ব",
- "count": 13,
- "from": 1,
+ "bn": "ঊনচত্বারিংশ অধ্যায় · উত্তরার্ধ",
+ "count": 12,
+ "from": 2,
  "to": 13,
  "verses": [
   {
@@ -113,5 +113,6 @@
    "seg": 13
   }
  ],
- "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a9%e0%a7%af-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%8a%e0%a6%a8%e0%a6%9a%e0%a6%a4%e0%a7%8d%e0%a6%ac/"
+ "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a9%e0%a7%af-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%8a%e0%a6%a8%e0%a6%9a%e0%a6%a4%e0%a7%8d%e0%a6%ac/",
+ "withBn": 12
 }

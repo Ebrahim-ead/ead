@@ -1,9 +1,9 @@
 {
  "id": 2,
- "bn": "শুক্ল যজুর্বেদ সংহিতা — ০২ শুক্লযজুর্বেদ দ্বিতী",
- "count": 33,
- "from": 1,
- "to": 33,
+ "bn": "দ্বিতীয় অধ্যায় · পূর্বার্ধ",
+ "count": 31,
+ "from": 2,
+ "to": 34,
  "verses": [
   {
    "n": "অনুক্রমণিকা",
@@ -275,5 +275,6 @@
    "seg": 34
   }
  ],
- "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a6%e0%a7%a8-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%a6%e0%a7%8d%e0%a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/"
+ "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a6%e0%a7%a8-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%a6%e0%a7%8d%e0%a6%ac%e0%a6%bf%e0%a6%a4%e0%a7%80/",
+ "withBn": 31
 }

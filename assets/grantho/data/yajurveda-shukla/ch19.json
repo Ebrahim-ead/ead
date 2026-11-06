@@ -1,9 +1,9 @@
 {
  "id": 19,
- "bn": "শুক্ল যজুর্বেদ সংহিতা — ১৯ শুক্লযজুর্বেদ ঊনবিংশ",
- "count": 87,
+ "bn": "ঊনবিংশ অধ্যায় · পূর্বার্ধ",
+ "count": 85,
  "from": 1,
- "to": 87,
+ "to": 95,
  "verses": [
   {
    "n": "অনুক্রমণিকা",
@@ -708,5 +708,6 @@
    "seg": 95
   }
  ],
- "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a7%e0%a7%af-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%8a%e0%a6%a8%e0%a6%ac%e0%a6%bf%e0%a6%82%e0%a6%b6/"
+ "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a7%e0%a7%af-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%8a%e0%a6%a8%e0%a6%ac%e0%a6%bf%e0%a6%82%e0%a6%b6/",
+ "withBn": 85
 }

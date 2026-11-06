@@ -1,0 +1,52 @@
+name: Site Tests (পাতা ও ডেটা যাচাই)
+
+# কেন: শুক্ল যজুর্বেদের পাতা একবার ঋগ্বেদের ডেটা লোড করেছিল — build_pages.py
+# টেমপ্লেট হিসেবে অন্য গ্রন্থের পাতা নেয়, আর পরিচয়-বদলিগুলো হার্ডকোডেড
+# "সামবেদ …" স্ট্রিং ধরে লেখা ছিল বলে data-base ঋগ্বেদের ফোল্ডারেই থেকে গিয়েছিল।
+# পাতা দেখতে ঠিক লাগছিল (শিরোনাম/ফ্যাক্টস ঠিক), তাই চোখে পড়েনি। এই টেস্টগুলো
+# সেই অমিল ধরে: প্রতিটি গ্রন্থ-পাতা নিজের ডেটাই দেখাচ্ছে কি না।
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/build_pages.py'
+      - 'tools/clean_yajurveda.py'
+      - 'tools/audit_site.mjs'
+      - 'tools/test_reader.mjs'
+      - 'assets/grantho/**'
+      - 'grantho/**'
+      - '.github/workflows/site-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read      # শুধু যাচাই — কিছু পুশ করে না
+
+concurrency:
+  group: site-tests
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: jsdom ইনস্টল
+        run: npm i jsdom --no-audit --no-fund
+
+      # প্রতিটি পাতায় JS error, ভাঙা স্ক্রিপ্ট, SEO, ফুটার — এবং এখন গ্রন্থ-পরিচয়:
+      # data-granth/data-base পাতার নিজের slug-এর ফোল্ডার দেখায় কি না, আর
+      # চ্যাপ্টার-ফাইলের শিরোনাম/সংখ্যা index.json-এর সাথে মেলে কি না।
+      - name: সাইট-অডিট
+        run: node tools/audit_site.mjs
+
+      # রিডার চালিয়ে দেখা: পাতার নিজের data-base থেকে ডেটা লোড করে অধ্যায়-তালিকা,
+      # অধ্যায়-শিরোনাম ও প্রথম খণ্ডের পাঠ সেই গ্রন্থের চ্যাপ্টার-ফাইলের সাথে মেলে কি না।
+      - name: রিডার-টেস্ট
+        run: node tools/test_reader.mjs

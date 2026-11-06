@@ -1,9 +1,9 @@
 {
  "id": 18,
- "bn": "শুক্ল যজুর্বেদ সংহিতা — ১৮ শুক্লযজুর্বেদ অষ্টাদ",
- "count": 62,
+ "bn": "অষ্টাদশ অধ্যায় · পূর্বার্ধ",
+ "count": 61,
  "from": 1,
- "to": 62,
+ "to": 77,
  "verses": [
   {
    "n": "অনুক্রমণিকা",
@@ -505,5 +505,6 @@
    "seg": 77
   }
  ],
- "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a7%e0%a7%ae-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%85%e0%a6%b7%e0%a7%8d%e0%a6%9f%e0%a6%be%e0%a6%a6/"
+ "url": "https://www.ebanglalibrary.com/lessons/%e0%a7%a7%e0%a7%ae-%e0%a6%b6%e0%a7%81%e0%a6%95%e0%a7%8d%e0%a6%b2%e0%a6%af%e0%a6%9c%e0%a7%81%e0%a6%b0%e0%a7%8d%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%85%e0%a6%b7%e0%a7%8d%e0%a6%9f%e0%a6%be%e0%a6%a6/",
+ "withBn": 61
 }

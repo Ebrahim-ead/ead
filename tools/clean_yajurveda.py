@@ -141,7 +141,7 @@ def clean(dry=False):
     idx = json.loads(idxp.read_text(encoding="utf-8"))
     moved = []
     n_preface = n_sk = n_title = n_dup = 0
-    n_mantra = n_mantrabn = 0
+    n_mantra = n_mantrabn = n_chfile = 0
 
     for c in idx.get("chapters", []):
         fp = d / f'ch{c["id"]}.json'
@@ -204,6 +204,17 @@ def clean(dry=False):
         elif why:
             log.append(f'চ্যাপ্টার {c["id"]}: শিরোনাম বদলানো হয়নি — {why}')
 
+        # ৬) চ্যাপ্টার-ফাইলের নিজস্ব ঘরগুলো index-এর সাথে মেলানো।
+        #    রিডার অধ্যায়-শিরোনাম ও সংখ্যা ch{n}.json থেকেই পড়ে
+        #    (grantho.js: titleEl.textContent = chapter.bn) — তাই এগুলো না
+        #    মেলানো পর্যন্ত পাতায় পুরোনো কাটা-শিরোনাম ও ভুল সংখ্যা দেখায়।
+        for k, v in (("bn", c["bn"]), ("count", c["count"]),
+                     ("withBn", c.get("withBn")), ("from", c.get("from")), ("to", c.get("to"))):
+            if v is not None and blob.get(k) != v:
+                if k == "bn":
+                    n_chfile += 1
+                blob[k] = v
+
         if not dry:
             fp.write_text(json.dumps(blob, ensure_ascii=False, indent=1), encoding="utf-8")
 
@@ -227,7 +238,8 @@ def clean(dry=False):
                 json.dumps(moved, ensure_ascii=False, indent=1), encoding="utf-8")
 
     print(f'মন্ত্র: {n_mantra} (বাংলাসহ {n_mantrabn}) · অনুক্রমণিকা-খণ্ড: {n_preface} · '
-          f'sk থেকে ফেরানো: {n_sk} · শিরোনাম ঠিক: {n_title} · ডুপ্লিকেট-নম্বর অধ্যায়: {n_dup}'
+          f'sk থেকে ফেরানো: {n_sk} · শিরোনাম ঠিক: {n_title} · '
+          f'চ্যাপ্টার-ফাইল সিঙ্ক: {n_chfile} · ডুপ্লিকেট-নম্বর অধ্যায়: {n_dup}'
           + (" · [dry-run, কিছু লেখা হয়নি]" if dry else ""))
     for line in log[:40]:
         print("  " + line)
