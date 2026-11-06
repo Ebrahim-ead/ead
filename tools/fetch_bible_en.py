@@ -36,7 +36,7 @@ RAW = EN / "raw"
 DBG = OUT.parent / "_debug"   # fetch_bible.py-এর সাথে একই ফোল্ডার
 MANIFEST = DBG / "bible_books.json"          # fetch_bible.py-র discover-এর লেখা
 EN_SRC = "The New American Bible — vatican.va"
-PV_EN = 1                                    # ইংরেজি পার্সারের সংস্করণ
+PV_EN = 2                                    # ইংরেজি পার্সারের সংস্করণ
 
 BASE = "https://www.vatican.va/archive/ENG0839/"
 ALPHA = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -71,8 +71,8 @@ for _i, _n in enumerate(NAB_ORDER, 1):
         NAB_ID["psalm"] = _i
 
 NAV_SKIP = re.compile(
-    r"^(new american bible|intratext.*|\d{4}\s*\d{2}\s*\d{2}|help|previous|next|"
-    r"click here.*|table of contents|statistics.*|back|up)$", re.I)
+    r"^(the new american bible|new american bible|intratext.*|\d{4}\s*\d{2}\s*\d{2}|"
+    r"help|previous|next|click here.*|table of contents|statistics.*|back|up)$", re.I)
 CHAPTER_LINE = re.compile(r"^chapter\s+(\d+)$", re.I)
 INTRO_LINE = re.compile(r"^introduction$", re.I)
 NUM_LINE = re.compile(r"^(\d{1,3})$")
@@ -93,28 +93,31 @@ def tok_next(tok: str) -> str:
 
 
 def page_identity(lines):
-    """পাতার নিজের পরিচয়: (পুস্তক-নাম, অধ্যায়-নম্বর) বা (নাম, None) ভূমিকা হলে।"""
-    book, ch, intro = None, None, False
-    for ln in lines:
-        if CHAPTER_LINE.match(ln):
-            ch = int(CHAPTER_LINE.match(ln).group(1))
-            break
-        if INTRO_LINE.match(ln):
-            intro = True
-            break
-    if ch is None and not intro:
-        return None, None
-    for ln in lines:
-        if NAV_SKIP.match(ln) or NUM_LINE.match(ln) or not ln:
-            continue
+    """পাতার নিজের পরিচয়: (পুস্তক-নাম, অধ্যায়-নম্বর) বা (নাম, None) ভূমিকা হলে।
+
+    পুস্তক-নাম = «Chapter N» (বা «Introduction») লাইনের ঠিক আগের অখালি লাইন —
+    ব্রেডক্রাম্বের শেষ ধাপ। আগে উপর থেকে প্রথম অ-ন্যাভ লাইন নেওয়া হতো, তাই
+    পাতার নিজের শিরোনাম-লাইন («The New American Bible - IntraText») পুস্তক
+    সেজে যেত আর সব পাতা এক নামের নিচে জমা হয়ে বাদ পড়ত।
+    """
+    idx = None
+    for i, ln in enumerate(lines):
         if CHAPTER_LINE.match(ln) or INTRO_LINE.match(ln):
+            idx = i
+            break
+    if idx is None:
+        return None, None
+    ch = int(CHAPTER_LINE.match(lines[idx]).group(1)) if CHAPTER_LINE.match(lines[idx]) else None
+    for j in range(idx - 1, -1, -1):
+        ln = lines[j]
+        if not ln or NAV_SKIP.match(ln) or NUM_LINE.match(ln):
             continue
-        if ln.lower().startswith("the pentateuch") or ln.lower() in (
+        if ln.lower().startswith("the pentateuch") or ln.lower().startswith(
+                "the new american bible") or ln.lower() in (
                 "old testament", "new testament"):
             continue
-        book = ln
-        break
-    return book, ch
+        return ln, ch
+    return None, ch
 
 
 def parse_en_verses(lines):
@@ -174,6 +177,8 @@ def cmd_fetch(args):
     RAW.mkdir(parents=True, exist_ok=True)
     prog_p = DBG / "bible_en_progress.json"
     prog = json.loads(prog_p.read_text(encoding="utf-8")) if prog_p.exists() else {}
+    if prog.get("pvEn") != PV_EN:      # পার্সার বদলেছে — পুরোনো হাঁটা বাতিল
+        prog = {}
     tok = prog.get("token", "P3")
     pend_name = prog.get("pendName")
     pend = {int(k): v for k, v in (prog.get("pendCh") or {}).items()}
@@ -205,7 +210,7 @@ def cmd_fetch(args):
                 pend[ch] = vs
         prog = {"token": tok, "pendName": pend_name,
                 "pendCh": {str(k): v for k, v in pend.items()},
-                "when": int(time.time())}
+                "pvEn": PV_EN, "when": int(time.time())}
         prog_p.write_text(json.dumps(prog, ensure_ascii=False), encoding="utf-8")
         if pages % 25 == 0:
             print(f"  … {pages} পাতা · এখন: {pend_name} অধ্যায় {ch} "
@@ -220,7 +225,7 @@ def cmd_fetch(args):
         saved += save_raw(pend_name, pend, report)
         prog["pendName"], prog["pendCh"] = None, {}
         prog_p.write_text(json.dumps(prog, ensure_ascii=False), encoding="utf-8")
-    if misses >= 3:   # কর্পাসের শেষ পর্যন্ত হাঁটা হয়েছে — পরের রানে নেটওয়ার্ক লাগবে না
+    if misses >= 3 and saved:   # কর্পাসের শেষ পর্যন্ত হাঁটা + কিছু পেয়েছি
         (DBG / "bible_en_done.txt").write_text(
             f"পাতা {pages} · পুস্তক-ফাইল {saved} · {time.strftime('%d/%m %H:%M')} UTC\n",
             encoding="utf-8")

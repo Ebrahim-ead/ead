@@ -52,7 +52,7 @@ BN = "০১২৩৪৫৬৭৮৯"
 # পার্সারের সংস্করণ। ছাঁকনি/বিভাজন বদলালে এটি বাড়ানো হয় — তখন পুরোনো
 # নামানো ডেটা আর "সম্পূর্ণ" গণ্য হয় না ও পরের রানে নতুন করে নামে
 # (নইলে পুরোনো বাগে কাটা পাঠ থেকেই যেত)। প্রতি চ্যাপ্টার-ফাইলে `pv` হিসেবে ছাপ থাকে।
-PARSER_VERSION = 3   # v3: উৎসের ফাঁকা পদ-নম্বরগুলোও রাখা হয় (`srcEmpty` চিহ্নসহ)
+PARSER_VERSION = 4   # v4: একাকী পদ-নম্বর-লাইন (পাঠবিহীন) আলাদা পদ হিসেবে ধরা হয়
 # নেভিগেশন/ব্রেডক্রাম্বের লাইন — পাঠ নয়
 NAV_LINE = re.compile(
     r"^(Bookmark|Menu|Previous (Lesson|Page)|Next (Lesson|Page|Topic)|"
@@ -60,7 +60,11 @@ NAV_LINE = re.compile(
     r"বাংলা বাইবেল|\d+\s*Topics|\d+% Complete|0/\d+ Steps)$")
 # লেসন-লেবেল: «১. আদিপুস্তক (Genesis)» — ইংরেজি নাম বন্ধনীতে থাকেই
 LESSON_LABEL = re.compile(r"^\d{1,3}\.\s*\S.*\([^)]+\)\s*$")
-VERSE_START = re.compile(r"^([০-৯]{1,3})[\s\u00a0]+(.*)$", re.S)
+# পদ-শুরু: সংখ্যার পর পাঠ থাকা সাধারণ caso; কিন্তু উৎসে মাঝে মাঝে পদ-নম্বরটি
+# আলাদা লাইনে থাকে আর পাঠ পরের লাইনে, বা পাঠ-ই নেই (ফাঁকা পদ)। আগে এমন
+# একাকী সংখ্যা-লাইন পদ শুরু করত না — আগের পদের সাথে লেগে যেত, ফলে পদ হারাত
+# আর ভুল «পদ মেলেনি» নোট উঠত। এখন সংখ্যা-লাইন একাই পদ-শুরু (পাঠ পরে জোড়া হয়)।
+VERSE_START = re.compile(r"^([০-৯]{1,3})(?:[\s\u00a0]+(.*))?$", re.S)
 VERSE_MID = re.compile(r"(?<=[।”\"?\u0964])\s*([০-৯]{1,3})[\s\u00a0]+")
 BN_NUM = re.compile(r"[০-৯]")
 
@@ -86,6 +90,19 @@ def discover(book_url=BOOK_URL, save=True):
         h = F.get(book_url)
         if not h:
             raise SystemExit("বই-পাতা নামানো যায়নি — উৎস কি ব্লক করছে?")
+        # বই-পাতাটিও পৃষ্ঠায় ভাগ করা («1 of 2», ?ld-lesson-page=N) — দ্বিতীয়
+        # পৃষ্ঠায় বাকি পুস্তকগুলো। না ধরলে সূচি মাঝপথে থেমে যেত (৫০/৬৬)।
+        for pg in range(2, 6):
+            sep = "&" if "?" in book_url else "?"
+            h2 = F.get(f"{book_url}{sep}ld-lesson-page={pg}")
+            if not h2:
+                break
+            new_lessons = len(re.findall(
+                r'href="https://www\.ebanglalibrary\.com/lessons/[^"#?]+"', h2))
+            if not new_lessons:
+                break
+            h = h + "\n" + h2
+            print(f"  · বই-পাতার {pg}-তম পৃষ্ঠা যোগ হলো", flush=True)
         books, cur, seen = [], None, set()
         # প্রতিটি লিংকের ঠিকানা + লেবেল (ক্রমে)
         pat = re.compile(
@@ -513,7 +530,15 @@ def cmd_fetch(args):
                 pass
         chapters, missing, notes = [], [], []
         for k, url in enumerate(b["topics"], start=1):
-            h = F.get(url)
+            h = None
+            for try_i in range(3):     # নেটওয়ার্ক-ঝলকানিতে যেন অধ্যায় না হারায়
+                try:
+                    h = F.get(url)
+                except Exception:  # noqa: BLE001
+                    h = None
+                if h:
+                    break
+                time.sleep(2 * (try_i + 1))
             if not h:
                 missing.append(k)
                 notes.append(f"অধ্যায় {bn_digits(k)}: পাতা নামেনি")
