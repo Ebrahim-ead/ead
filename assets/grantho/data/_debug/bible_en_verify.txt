@@ -1,41 +1,68 @@
-=== ইংরেজি যাচাই ===
-ইংরেজি পদ: 20322 · দূষিত পদ: 0
+ইংরেজি যাচাই: পদ 17652 · দূষিত 361
+652 · দূষিত পদ: 361
+⚠ ch1: 43টি পদে দূষণ — 56: The man and his wife were both naked, yet they felt no shame | 80: When he expelled the man, he settled him east of the garden 
   · ch1 (1): মিলিত অধ্যায় 47 · বাদ 3 · ইংরেজি পদ 1428
-  · ch2 (2): মিলিত অধ্যায় 35 · বাদ 4 · ইংরেজি পদ 1080
+⚠ ch2: 28টি পদে দূষণ — 22: Pharaoh then commanded all his subjects, "Throw into the riv | 47: He saw the Israelites and knew... Basket: literally, "chest"
+  · ch2 (2): মিলিত অধ্যায় 36 · বাদ 3 · ইংরেজি পদ 1114
+⚠ ch3: 19টি পদে দূষণ — 17: Then, having split the bird down the middle without separati | 33: For its token offering the priest shall then burn some of th
   · ch3 (3): মিলিত অধ্যায় 25 · বাদ 2 · ইংরেজি পদ 810
+⚠ ch4: 27টি পদে দূষণ — 54: All this the Israelites fulfilled as the LORD had commanded  | 139: He then gave this ransom silver to Aaron and his sons, as th
   · ch4 (4): মিলিত অধ্যায় 30 · বাদ 5 · ইংরেজি পদ 1125
+⚠ ch5: 23টি পদে দূষণ — 46: That is why you had to stay as long as you did at Kadesh. Th | 83: However, in obedience to the command of the LORD, our God, y
   · ch5 (5): মিলিত অধ্যায় 27 · বাদ 7 · ইংরেজি পদ 745
+⚠ ch6: 20টি পদে দূষণ — 42: They assured Joshua, "The LORD has delivered all this land i | 59: While all Israel crossed over on dry ground, the priests car
   · ch6 (6): মিলিত অধ্যায় 24 · বাদ 0 · ইংরেজি পদ 658
-  · ch7 (7): মিলিত অধ্যায় 19 · বাদ 2 · ইংরেজি পদ 539
+⚠ ch7: 19টি পদে দূষণ — 36: The territory of the Amorites extended from the Akrabbim pas | 90: After him there was Shamgar, son of Anath, who slew six hund
+  · ch7 (7): মিলিত অধ্যায় 21 · বাদ 0 · ইংরেজি পদ 616
+⚠ ch8: 4টি পদে দূষণ — 22: Thus it was that Naomi returned with the Moabite daughter-in | 45: So she stayed gleaning with the servants of Boaz until the e
   · ch8 (8): মিলিত অধ্যায় 4 · বাদ 0 · ইংরেজি পদ 85
-  · ch9 (9): মিলিত অধ্যায় 28 · বাদ 3 · ইংরেজি পদ 716
-  · ch10 (10): মিলিত অধ্যায় 22 · বাদ 2 · ইংরেজি পদ 619
-  · ch11 (11): মিলিত অধ্যায় 19 · বাদ 3 · ইংরেজি পদ 711
-  · ch12 (12): মিলিত অধ্যায় 22 · বাদ 3 · ইংরেজি পদ 659
-  · ch13 (13): মিলিত অধ্যায় 26 · বাদ 3 · ইংরেজি পদ 795
+  · ch9 (9): মিলিত অধ্যায় 0 · বাদ 31 · ইংরেজি পদ 0
+  · ch10 (10): মিলিত অধ্যায় 0 · বাদ 24 · ইংরেজি পদ 0
+  · ch11 (11): মিলিত অধ্যায় 0 · বাদ 22 · ইংরেজি পদ 0
+  · ch12 (12): মিলিত অধ্যায় 0 · বাদ 25 · ইংরেজি পদ 0
+  · ch13 (13): মিলিত অধ্যায় 0 · বাদ 29 · ইংরেজি পদ 0
+⚠ ch15: 8টি পদে দূষণ — 11: Total of the gold - and silver ware: five thousand four hund | 81: The priests, the Levites, and some of the common people took
   · ch15 (15): মিলিত অধ্যায় 10 · বাদ 0 · ইংরেজি পদ 280
+⚠ ch17: 4টি পদে দূষণ — 22: He sent letters to all the royal provinces, to each province | 45: The matter was investigated and verified, and both of them w
   · ch17 (17): মিলিত অধ্যায় 8 · বাদ 2 · ইংরেজি পদ 134
-  · ch18 (18): মিলিত অধ্যায় 27 · বাদ 15 · ইংরেজি পদ 592
-  · ch19 (19): মিলিত অধ্যায় 0 · বাদ 15 · ইংরেজি পদ 0
-  · ch20 (20): মিলিত অধ্যায় 29 · বাদ 2 · ইংরেজি পদ 859
+⚠ ch18: 26টি পদে দূষণ — 22: In all this Job did not sin, nor did he say anything disresp | 35: Then they sat down upon the ground with him seven days and s
+  · ch18 (18): মিলিত অধ্যায় 39 · বাদ 3 · ইংরেজি পদ 913
+⚠ ch19: 2টি পদে দূষণ — 6: The LORD watches over the way of the just, but the way of th | 134: The LORD is just and loves just deeds; the upright shall see
+  · ch19 (19): মিলিত অধ্যায় 2 · বাদ 13 · ইংরেজি পদ 13
+⚠ ch20: 23টি পদে দূষণ — 33: But he who obeys me dwells in security, in peace, without fe | 55: But the wicked will be cut off from the land, the faithless 
+  · ch20 (20): মিলিত অধ্যায় 31 · বাদ 0 · ইংরেজি পদ 899
+⚠ ch21: 4টি পদে দূষণ — 18: For in much wisdom there is much sorrow, and he who stores u | 143: Behold, only this have I found out: God made mankind straigh
   · ch21 (21): মিলিত অধ্যায় 10 · বাদ 2 · ইংরেজি পদ 186
   · ch22 (22): মিলিত অধ্যায় 0 · বাদ 0 · ইংরেজি পদ 0
-  · ch23 (23): মিলিত অধ্যায় 40 · বাদ 10 · ইংরেজি পদ 768
+⚠ ch23: 34টি পদে দূষণ — 31: The strong man shall turn to tow, and his work shall become  | 53: As for you, let man alone, in whose nostrils is but a breath
+  · ch23 (23): মিলিত অধ্যায় 47 · বাদ 3 · ইংরেজি পদ 935
+⚠ ch25: 5টি পদে দূষণ — 22: "Let all their evil come before you; deal with them As you h | 44: "You summoned as for a feast day terrors against me from all
   · ch25 (25): মিলিত অধ্যায় 5 · বাদ 0 · ইংরেজি পদ 154
-  · ch26 (26): মিলিত অধ্যায় 39 · বাদ 9 · ইংরেজি পদ 987
+⚠ ch26: 27টি পদে দূষণ — 28: Like the bow which appears in the clouds on a rainy day was  | 38: which he unrolled before me. It was covered with writing fro
+  · ch26 (26): মিলিত অধ্যায় 44 · বাদ 4 · ইংরেজি পদ 1107
+⚠ ch27: 7টি পদে দূষণ — 21: Daniel remained there until the first year of King Cyrus. Sh | 70: At Daniel's request the king made Shadrach, Meshach, and Abe
   · ch27 (27): মিলিত অধ্যায় 8 · বাদ 4 · ইংরেজি পদ 231
+⚠ ch28: 7টি পদে দূষণ — 58: The wind has bound them up in its pinions; they shall have o | 73: I will go back to my place until they pay for their guilt an
   · ch28 (28): মিলিত অধ্যায় 8 · বাদ 6 · ইংরেজি পদ 112
   · ch29 (29): মিলিত অধ্যায় 1 · বাদ 0 · ইংরেজি পদ 20
-  · ch30 (30): মিলিত অধ্যায় 8 · বাদ 1 · ইংরেজি পদ 119
+⚠ ch30: 6টি পদে দূষণ — 15: Their king shall go into captivity, he and his princes with  | 31: And the most stouthearted of warriors shall flee naked on th
+  · ch30 (30): মিলিত অধ্যায় 9 · বাদ 0 · ইংরেজি পদ 145
   · ch31 (31): মিলিত অধ্যায় 0 · বাদ 0 · ইংরেজি পদ 0
   · ch32 (32): মিলিত অধ্যায় 2 · বাদ 2 · ইংরেজি পদ 21
-  · ch33 (33): মিলিত অধ্যায় 4 · বাদ 3 · ইংরেজি পদ 61
+⚠ ch33: 3টি পদে দূষণ — 16: Make yourself bald, pluck out your hair, for the children wh | 29: With a leader to break the path they shall burst open the ga
+  · ch33 (33): মিলিত অধ্যায় 5 · বাদ 2 · ইংরেজি পদ 74
   · ch34 (34): মিলিত অধ্যায় 1 · বাদ 2 · ইংরেজি পদ 19
-  · ch35 (35): মিলিত অধ্যায় 2 · বাদ 1 · ইংরেজি পদ 36
+⚠ ch35: 3টি পদে দূষণ — 17: Shall he, then, keep on brandishing his sword to slay people | 37: But the LORD is in his holy temple; silence before him, all 
+  · ch35 (35): মিলিত অধ্যায় 3 · বাদ 0 · ইংরেজি পদ 55
+⚠ ch36: 2টি পদে দূষণ — 18: Neither their silver nor their gold shall be able to save th | 33: Is this the exultant city that dwelt secure; That told herse
   · ch36 (36): মিলিত অধ্যায় 3 · বাদ 0 · ইংরেজি পদ 53
+⚠ ch37: 1টি পদে দূষণ — 38: On that day, says the LORD of hosts, I will take you, Zerubb
   · ch37 (37): মিলিত অধ্যায় 2 · বাদ 0 · ইংরেজি পদ 38
+⚠ ch38: 9টি পদে দূষণ — 44: On that day, says the LORD of hosts, you will invite one ano | 69: He replied, "To build a temple for it in the land of Shinar;
   · ch38 (38): মিলিত অধ্যায় 10 · বাদ 3 · ইংরেজি পদ 154
+⚠ ch39: 2টি পদে দূষণ — 14: Cursed is the deceiver, who has in his flock a male, but und | 31: You have wearied the LORD with your words, yet you say, "How
   · ch39 (39): মিলিত অধ্যায় 2 · বাদ 2 · ইংরেজি পদ 31
+⚠ ch40: 5টি পদে দূষণ — 48: He went and dwelt in a town called Nazareth, so that what ha | 65: And a voice came from the heavens, saying, "This is my belov
   · ch40 (40): মিলিত অধ্যায় 27 · বাদ 1 · ইংরেজি পদ 1034
   · ch41 (41): মিলিত অধ্যায় 15 · বাদ 1 · ইংরেজি পদ 625
   · ch42 (42): মিলিত অধ্যায় 22 · বাদ 2 · ইংরেজি পদ 1058
