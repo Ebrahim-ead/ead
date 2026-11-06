@@ -17,10 +17,12 @@ on:
       - 'assets/grantho/**'
       - 'grantho/**'
       - '.github/workflows/site-tests.yml'
+    # ci-diagnostics/ ইচ্ছে করেই বাদ — ব্যর্থতার ডায়াগনস্টিক সেখানে প্রকাশ হয়,
+    # তাই সেটি ট্রিগারে থাকলে নিজেরই আবার রান হতো (লুপ)।
   workflow_dispatch:
 
 permissions:
-  contents: read      # শুধু যাচাই — কিছু পুশ করে না
+  contents: write     # ব্যর্থ হলে ডায়াগনস্টিক প্রকাশ করতে (Actions-এর লগ পড়া যায় না)
 
 concurrency:
   group: site-tests
@@ -35,18 +37,54 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # jsdom ও টেস্ট-টুল Node 22-এ যাচাই করা; রানারের সংস্করণও একই রাখি,
+          # নইলে লোকালে-পাস করা টেস্ট CI-তে ভিন্ন আচরণ করতে পারে।
+          node-version: '22'
 
-      - name: jsdom ইনস্টল
-        run: npm i jsdom --no-audit --no-fund
+      - name: নির্ভরতা ইনস্টল
+        run: |
+          npm ci --no-audit --no-fund 2>&1 | tail -5 || npm i jsdom --no-audit --no-fund 2>&1 | tail -5
+          node -v; node -e "console.log('jsdom', require('jsdom/package.json').version)"
 
-      # প্রতিটি পাতায় JS error, ভাঙা স্ক্রিপ্ট, SEO, ফুটার — এবং এখন গ্রন্থ-পরিচয়:
+      # প্রতিটি পাতায় JS error, ভাঙা স্ক্রিপ্ট, SEO, ফুটার — এবং গ্রন্থ-পরিচয়:
       # data-granth/data-base পাতার নিজের slug-এর ফোল্ডার দেখায় কি না, আর
       # চ্যাপ্টার-ফাইলের শিরোনাম/সংখ্যা index.json-এর সাথে মেলে কি না।
       - name: সাইট-অডিট
-        run: node tools/audit_site.mjs
+        run: |
+          node tools/audit_site.mjs 2>&1 | tee /tmp/audit.txt
 
       # রিডার চালিয়ে দেখা: পাতার নিজের data-base থেকে ডেটা লোড করে অধ্যায়-তালিকা,
       # অধ্যায়-শিরোনাম ও প্রথম খণ্ডের পাঠ সেই গ্রন্থের চ্যাপ্টার-ফাইলের সাথে মেলে কি না।
       - name: রিডার-টেস্ট
-        run: node tools/test_reader.mjs
+        run: |
+          node tools/test_reader.mjs 2>&1 | tee /tmp/reader.txt
+
+      # ব্যর্থ হলে কারণ জানা দরকার — Actions-এর লগ বাইরে থেকে পড়া যায় না,
+      # তাই আউটপুট রিপোতেই প্রকাশ (নিশ্চিত করা আছে যে এতে লুপ হবে না)।
+      - name: ব্যর্থ হলে ডায়াগনস্টিক প্রকাশ
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p ci-diagnostics
+          {
+            echo "=== Site Tests ব্যর্থ · রান $GITHUB_RUN_ID · $(date -u '+%d/%m %H:%M:%S') UTC ==="
+            echo "কমিট: $GITHUB_SHA · রানার node: $(node -v)"
+            echo ""
+            echo "--- সাইট-অডিট আউটপুট ---"
+            cat /tmp/audit.txt 2>/dev/null || echo '(অডিট-আউটপুট নেই)'
+            echo ""
+            echo "--- রিডার-টেস্ট আউটপুট ---"
+            cat /tmp/reader.txt 2>/dev/null || echo '(রিডার-টেস্ট চলেইনি)'
+          } > ci-diagnostics/site-tests.txt
+          git config user.name  "grantho-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add ci-diagnostics/site-tests.txt
+          if git diff --cached --quiet; then
+            echo 'ডায়াগনস্টিকে নতুন কিছু নেই'
+            exit 0
+          fi
+          git commit -m "ci: Site Tests ব্যর্থ — ডায়াগনস্টিক ($(date -u '+%d/%m %H:%M') UTC)"
+          git fetch origin main --depth=1 || true
+          git rebase origin/main || git rebase --abort || true
+          git push origin HEAD:main || echo '⚠ ডায়াগনস্টিক পুশ হলো না'
