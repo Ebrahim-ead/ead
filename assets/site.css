@@ -1439,11 +1439,28 @@ html[data-theme="light"] .motion-sparks i{background:#a4710a;opacity:.18;box-sha
 .cmp-card h3,.g-grid .cmp-card h3{margin:0;font-size:clamp(16px,2.2vw,18px);line-height:1.4}
 .cmp-card:hover{transform:translateY(-2px)}
 .cmp-card.is-soon{opacity:.86}
-.cmp-card.is-soon .article-card-link::after{content:"শীঘ্রই";margin-left:auto;padding:2px 9px;
-  border-radius:999px;font-size:11px;font-weight:700;color:#ffd66e;white-space:nowrap;
-  background:rgba(245,184,28,.13);border:1px solid rgba(245,184,28,.28)}
+/* কার্ডের ভেতরের গঠন: নাম (+ নিচে ছোট হিসাব) বাঁয়ে, তির ডানে */
+.cmp-card .article-card-link{gap:12px;padding:13px 15px}
+.cmp-body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.cmp-card h3,.g-grid .cmp-card h3{margin:0;font-size:clamp(16px,2.1vw,18.5px);
+  line-height:1.45;font-weight:700}
+.cmp-meta{font-size:12.5px;line-height:1.6;color:var(--muted);font-weight:500}
+.cmp-go{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;
+  font-size:13px;color:var(--gold2);background:rgba(245,184,28,.1);
+  border:1px solid rgba(245,184,28,.22);transition:transform .22s,background .22s,color .22s}
+.cmp-card:hover .cmp-go{transform:translateX(3px);background:rgba(245,184,28,.2);color:#ffe9a8}
+/* যেগুলো এখনো তৈরি হয়নি — তিরের বদলে ছোট্ট «শীঘ্রই» চিহ্ন */
+.cmp-card.is-soon .cmp-go{width:auto;padding:1px 9px;border-radius:999px;
+  font-weight:700;background:rgba(245,184,28,.13);font-size:0}
+.cmp-card.is-soon .cmp-go::before{content:"শীঘ্রই";font-size:11px}
 html[data-theme="light"] .cmp-card{box-shadow:0 10px 26px rgba(33,58,67,.12),inset 0 1px 0 rgba(255,255,255,.9)}
-html[data-theme="light"] .cmp-card.is-soon .article-card-link::after{color:#8a5a00;background:rgba(177,119,7,.1);border-color:rgba(166,108,0,.26)}
+html[data-theme="light"] .cmp-card .cmp-go{color:#8a5a00;background:rgba(177,119,7,.1);border-color:rgba(166,108,0,.26)}
+html[data-theme="light"] .cmp-card .cmp-meta{color:#4d6a7c}
+/* মোবাইলে এক কলাম — কার্ড আরও চওড়া ও নিচু */
+@media(max-width:760px){
+  .cmp-card .article-card-link{padding:12px 14px}
+  .cmp-card h3,.g-grid .cmp-card h3{font-size:16px}
+}
 .g-soon{display:inline-flex;align-items:center;gap:7px;margin-left:8px;padding:2px 9px;
   border-radius:999px;font-size:11.5px;font-weight:700;vertical-align:middle;
   color:#ffd66e;background:rgba(245,184,28,.14);border:1px solid rgba(245,184,28,.3)}

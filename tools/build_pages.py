@@ -466,17 +466,26 @@ def refresh_sitemap(entries):
     return added
 
 
-def card(href, kicker, title, sub, excerpt, soon=False):
+def card(href, kicker, title, sub, excerpt="", soon=False):
+    """হাবের কার্ড — ছোট, শুধু নাম আর এক লাইনের হিসাব।
+
+    কেন: আগে প্রতিটি কার্ডে ট্যাগ, বড় শিরোনাম, দুই লাইনের বিবরণ আর
+    «পড়ুন →» বাটন ছিল — ফোনে ইসলামের ভেতরে কুরআন/হাদিস দেখতে অনেক
+    স্ক্রল করতে হত। এখন ট্যাগ ও বড় বিবরণ বাদ (`excerpt` আর ব্যবহার হয়
+    না, শুধু interface মিলিয়ে রাখতে আছে); নামের নিচে ছোট মিউটেড লাইনে
+    সংখ্যা (`sub`), ডানে সরু তির।
+    """
     if soon:
-        return (f'<article class="article-card rv is-soon"><a class="article-card-link" href="#" '
-                f'aria-disabled="true" tabindex="-1"><span class="article-card-kicker">{kicker}</span>'
-                f'<h3>{title}<span class="g-soon">শীঘ্রই আসছে</span></h3>'
-                f'<p class="article-card-subtitle">{sub}</p><p class="article-card-excerpt">{excerpt}</p>'
-                f'<span class="article-card-more">শীঘ্রই আসছে</span></a></article>')
-    return (f'<article class="article-card rv"><a class="article-card-link" href="{href}">'
-            f'<span class="article-card-kicker">{kicker}</span><h3>{title}</h3>'
-            f'<p class="article-card-subtitle">{sub}</p><p class="article-card-excerpt">{excerpt}</p>'
-            f'<span class="article-card-more">পড়ুন <b aria-hidden="true">→</b></span></a></article>')
+        return (f'<article class="article-card rv cmp-card is-soon">'
+                f'<a class="article-card-link" href="#" aria-disabled="true" tabindex="-1">'
+                f'<span class="cmp-body"><h3>{title}</h3>'
+                f'<span class="cmp-meta">{sub}</span></span>'
+                f'<span class="cmp-go" aria-hidden="true">→</span></a></article>')
+    return (f'<article class="article-card rv cmp-card">'
+            f'<a class="article-card-link" href="{href}">'
+            f'<span class="cmp-body"><h3>{title}</h3>'
+            f'<span class="cmp-meta">{sub}</span></span>'
+            f'<span class="cmp-go" aria-hidden="true">→</span></a></article>')
 
 
 def replace_grid(page, inner, sub="hindu"):
@@ -485,7 +494,10 @@ def replace_grid(page, inner, sub="hindu"):
         print("  (পাতা নেই)", page)
         return
     s = p.read_text(encoding="utf-8")
-    m = re.search(r'<div class="g-grid">.*?</div>\s*(?=<div class="g-note"|<a class="g-back")', s, re.S)
+    # গ্রিডের শেষে সব পাতায় g-note/g-back থাকে না (হিন্দু-হাবে নেই) —
+    # তাই ওগুলো থাকলে সেখানেই থামি, নাহলে বন্ধ-ট্যাগের আগেই।
+    m = re.search(r'<div class="g-grid">.*?</div>\s*(?=<div class="g-note"|<a class="g-back"|</section>|</main>)',
+                  s, re.S)
     if not m:
         print("  (গ্রিড খুঁজে পাইনি)", page)
         return
@@ -538,8 +550,9 @@ def main():
         if slug in byslug:
             r, m = byslug[slug]
             k, t = labels[slug]
+            # «বাংলা অনুবাদসহ» বাদ: কার্ড ছোট রাখার চাহিদা — সংখ্যাটাই যথেষ্ট
             grid += card(f"{slug}.html", k, t,
-                         f'{commas(r["withbn"])} {m["word"]} · {commas(r["nch"])} {m["chword"]} · বাংলা অনুবাদসহ',
+                         f'{commas(r["withbn"])} {m["word"]} · {commas(r["nch"])} {m["chword"]}',
                          m["excerpt"])
         elif slug in ACTIVE and slug in ("yajurveda-shukla", "yajurveda-krishna"):
             k, t = labels[slug]
@@ -607,25 +620,51 @@ def main():
                           "উৎসে যেগুলো পূর্ণ পাওয়া যায়নি সেগুলো পরে যোগ হবে।", soon=True))
     print("উপনিষদ মোট:", upa_total)
 
-    # ---- হিন্দু-হাব সারাংশ
+    # ---- হিন্দু-হাব: কার্ডগুলো ডেটা থেকেই বানাই
+    #   আগে এই পাতা হাতে লেখা কার্ড ধরে সংখ্যা আপডেট করত, ফলে কার্ডের
+    #   গঠন (বড় বিবরণ/বাটন) বদলাতে গেলে হাতে-এডিট ছাড়া উপায় ছিল না —
+    #   রি-বিল্ডে সেটা ফিরেও যেত। এখন বেদের মতোই replace_grid দিয়ে তৈরি।
     if made or puranas or upa_cards:
-        hp = ROOT / "grantho/hindu.html"
-        s = hp.read_text(encoding="utf-8")
-        ved = sum(r["withbn"] for _, r, _ in vedas)
-        pur = sum(r["withbn"] for _, r, _ in puranas)
+        hp_cards = ""
         g = load("gita")
-        if g and 'href="hindu/gita.html"' in s:
-            s = re.sub(r'(href="hindu/gita\.html">.*?<p class="article-card-subtitle">)[^<]*',
-                       lambda m: m.group(1) + f'{commas(g["withBn"])} শ্লোক · '
-                       f'{commas(len(g["chapters"]))} অধ্যায়', s, count=1, flags=re.S)
-        if ved and 'href="hindu/rigveda.html"' in s:
-            rv = next((r for sl, r, _ in vedas if sl == "rigveda"), None)
-            if rv:
-                s = re.sub(r'(href="hindu/rigveda\.html">.*?<p class="article-card-subtitle">)[^<]*',
-                           lambda m: m.group(1) + f'{commas(rv["withbn"])} মন্ত্র · '
-                           f'{commas(rv["nch"])} মণ্ডল', s, count=1, flags=re.S)
-        hp.write_text(s, encoding="utf-8")
-        print("হিন্দু-হাব:", ved, "/", pur)
+        if g:
+            hp_cards += card("hindu/gita.html", "হিন্দু · গীতা", "শ্রীমদ্ভগবদ্গীতা",
+                             f'{commas(g["withBn"])} শ্লোক · {commas(len(g["chapters"]))} অধ্যায়')
+        rv = next((r for sl, r, _ in vedas if sl == "rigveda"), None)
+        if rv:
+            hp_cards += card("hindu/rigveda.html", "হিন্দু · বেদ", "ঋগ্বেদ সংহিতা",
+                             f'{commas(rv["withbn"])} মন্ত্র · {commas(rv["nch"])} মণ্ডল')
+        yv = next((r for sl, r, _ in vedas if sl == "yajurveda-shukla"), None)
+        if yv:
+            hp_cards += card("hindu/yajurveda-shukla.html", "হিন্দু · বেদ", "শুক্ল যজুর্বেদ সংহিতা",
+                             f'{commas(yv["withbn"])} মন্ত্র · {commas(yv["nch"])} অধ্যায়')
+        if hp_cards:
+            replace_grid("hindu.html", hp_cards, sub="")
+        print("হিন্দু-হাব:", sum(r["withbn"] for _, r, _ in vedas), "/",
+              sum(r["withbn"] for _, r, _ in puranas))
+
+    # ---- ইসলাম-হাব: কুরআন ও হাদিসের কার্ড (হাতে লেখা নয়)
+    #   সংখ্যা ডেটা থেকেই — পাঠ বাড়লে/কমলে কার্ড নিজেই ঠিক হয়।
+    isl = ""
+    qf = ROOT / "assets/quran/data/index.json"
+    hf = ROOT / "assets/hadith/data/index.json"
+    if qf.exists():
+        q = json.loads(qf.read_text(encoding="utf-8"))
+        n_sura = len(q.get("suras") or [])
+        isl += card("../quran.html", "ইসলাম · কুরআন", "আল-কুরআনুল কারীম",
+                    f'{commas(n_sura)} সূরা · {commas(q.get("total") or 0)} আয়াত')
+    if hf.exists():
+        h = json.loads(hf.read_text(encoding="utf-8"))
+        isl += card("../hadith.html", "ইসলাম · হাদিস", "হাদিস",
+                    f'সিহাহ সিত্তাহ — {commas(h.get("total") or 0)} হাদিস')
+    if isl:
+        replace_grid("islam.html", isl, sub="")
+        print("ইসলাম-হাব: কার্ড তৈরি")
+
+    # ---- বৌদ্ধ-হাব: পাঠ এখনো নেই, তবু কার্ডটাও একই ছোট গঠনে
+    replace_grid("buddhist.html",
+                 card("", "বৌদ্ধ · গ্রন্থ", "ত্রিপিটক ও বৌদ্ধ সাহিত্য",
+                      "ধাপে ধাপে যোগ হচ্ছে", soon=True), sub="")
 
     # ---- খ্রিস্টান: বাংলা বাইবেল
     built = [(r["slug"], "hindu") for r in made]
@@ -639,9 +678,8 @@ def main():
                 chs = idx["chapters"]
                 old = sum(1 for c in chs if c.get("testament") == "old")
                 part = sum(1 for c in chs if c.get("missing"))
-                sub = (f'{commas(r["withbn"])} পদ · {commas(r["nch"])} পুস্তক · '
-                       f'পুরাতন নিয়ম {commas(old)}, নতুন নিয়ম {commas(r["nch"] - old)}'
-                       + (f' · {commas(part)} পুস্তক অসম্পূর্ণ' if part else ""))
+                # কার্ড ছোট রাখার চাহিদা — নিয়ম-ভাগ বাদ, শুধু পদ/পুস্তক/অধ্যায়
+                sub = f'{commas(r["withbn"])} পদ · {commas(r["nch"])} পুস্তক'
                 replace_grid("christian.html",
                              card("christian/bible.html", "খ্রিস্টান · বাইবেল",
                                   "বাংলা বাইবেল", sub, meta["excerpt"]), sub="")
