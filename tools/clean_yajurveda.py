@@ -1,32 +1,44 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""শুক্ল যজুর্বেদ (slug: yajurveda-shukla) — নামানো ডেটার পরিষ্কারক।
+"""শুক্ল যজুর্বেদ (slug: yajurveda-shukla) — নামানো ডেটার পরিষ্কারক (সংস্করণ ২)।
 
-CI-তে fetch_ebl.py যে ডেটা নামিয়েছে তাতে চারটি গঠনগত সমস্যা ধরা পড়েছে
-(প্রমাণ: assets/grantho/data/_debug/yajurveda_probe.txt ও আগের বিশ্লেষণ):
+ব্যবহারকারীর নির্দেশ: «প্রত্যেকটা মন্ত্র যেন থাকে, কোন মন্ত্র যেন উল্টাপাল্টা না
+হয়, অপ্রয়োজনীয় কথা সব সরাই দাও»। সেই তিন দাবি মেটাতে এই টুল যা করে:
 
-১) প্রতি অধ্যায়ে মন্ত্র-ধারার আগে অনুক্রমণিকা/ভূমিকার অনুবাদ খণ্ড আছে, আর
-   পার্সার সেগুলোর নম্বর ধরেছে পাশের সংখ্যা থেকে — ফলে নম্বর দুবার আসে
-   (যেমন চ্যাপ্টার ১: ১,২,৩ তারপর আবার ২,৩,৪…৩১)। সমাধান: প্রথম
-   নম্বর-রিস্টার্টের আগের খণ্ডগুলোকে «অনুক্রমণিকা» লেবেল দেওয়া; আসল
-   মন্ত্র-নম্বর অটুট থাকে, আর উৎসের নম্বর srcN-এ জমা থাকে।
+১) মন্ত্র-নম্বর ঠিক করা (উল্টাপাল্টা দূর)
+   উৎসের পাঠে মন্ত্র-নম্বরের কোনো চিহ্নই নেই (০/১৭৯১ খণ্ডে পাঠের শুরুতে নম্বর
+   পাওয়া গেছে), অথচ ফেচার নম্বর বসিয়েছিল উৎস-পাতার অন্য চিহ্ন থেকে। ফলে
+   ২২/৪০ অধ্যায়ে নম্বর অসংগত ছিল: চ্যাপ্টার ৩৪-এ ধারা শুরুই হতো «১০, ২, ৩, ৪…»
+   দিয়ে, চ্যাপ্টার ১১-এ ৫৫টি মন্ত্রের নম্বর ছড়িয়ে ছিল ১–৮৩ পর্যন্ত (২৮টি গ্যাপ),
+   চ্যাপ্টার ১ ও ২ শুরু হতো ২ নম্বর থেকে। এখন নম্বর বসে পড়ার ক্রমে ১..N, আর
+   উৎসের পুরোনো চিহ্ন `srcN` ঘরে অটুট থাকে (তথ্য হারায় না)।
 
-২) কয়েকটি খণ্ডে বাংলা পাঠ ভুল করে `sk` ঘরে গেছে। পুরো বইয়ে একটিতেও আসল
-   দেবনাগরী অক্ষর নেই (উৎসে সংস্কৃত মূল ছাপাই নেই), তাই দেবনাগরীবিহীন
-   `sk` সবসময়ই ভুল ঘর — পাঠ `bn`-এ ফিরিয়ে `sk` ফাঁকা করা হয়, আর মূল টুকরো
-   _debug/yajurveda_sk_moved.json-এ জমা থাকে (কিছু মুছে ফেলা হয় না)।
+২) প্রতিটি মন্ত্র অটুট রাখা
+   মন্ত্র-তালিকা থেকে কিছুই মুছে ফেলা হয় না। অধ্যায়ের শুরুতে থাকা
+   অনুক্রমণিকা/ভূমিকা-অনুবাদ আর অধ্যায়-শিরোনামের লাইন — এগুলো মন্ত্র নয়,
+   তাই সেগুলো আলাদা ঘরে (`preface`, `heading`) সরানো হয় এবং রিডারে আলাদা
+   ব্লকে দেখানো হয়। পাঠের এক অক্ষরও ফেলা যায় না: পরিষ্কারের আগে ও পরে
+   মোট অক্ষর-সংখ্যা মিলিয়ে দেখা হয় (অস্বাভাবিক কম পড়লে টুল থেমে যায়)।
 
-৩) অধ্যায়ের শিরোনাম ছিল কাটা-ছাঁটা ঠিকানা-টুকরো («০১ শুক্লযজুর্বেদ পূর্বা»)।
-   উৎসের লেসন-শিরোনাম অনুযায়ী পূর্ণ রূপ বসানো হয় («প্রথম অধ্যায় · পূর্বার্ধ»)।
-   নিরাপত্তার জন্য প্রতিটি শিরোনাম উৎসের সেই কাটা-টুকরোর সাথে মিলিয়ে যাচাই
-   করা হয় — না মিললে পুরোনো শিরোনামই থাকে।
+৩) অপ্রয়োজনীয়/অস্বাভাবিক জিনিস সরানো
+   - ভুল ঘরে থাকা পাঠ: কয়েকটি খণ্ডের বাংলা পাঠ চলে গিয়েছিল `sk` ঘরে। পুরো
+     বইয়ে একটিতেও আসল দেবনাগরী অক্ষর নেই (উৎসে সংস্কৃত মূল ছাপাই নেই),
+     তাই দেবনাগরীবিহীন `sk` = ভুল ঘর; পাঠ ফিরিয়ে দেওয়া হয়, মূল টুকরো
+     _debug/yajurveda_sk_moved.json-এ জমা থাকে।
+   - বানান: উৎসের পাঠে অসমীয়া «ৰ» (U+09F0) ও «ৱ» (U+09F1) বসে আছে যেখানে
+     বাংলায় র/ব হয় — «ব্ৰহ্ম» → «ব্রহ্ম», «শত্ৰু» → «শত্রু», «ইন্দ্ৰ» → «ইন্দ্র»,
+     «উপজিৱিকা» → «উপজিবিকা»। মোট ১৪০০-এর বেশি জায়গায়। প্রতিটি বদল
+     এক-অক্ষরের বিনিময়, তাই পাঠের দৈর্ঘ্য বদলায় না।
+   - অধ্যায়-শিরোনাম: কাটা ঠিকানা-টুকরো («০১ শুক্লযজুর্বেদ পূর্বা») বদলে পূর্ণ রূপ
+     («প্রথম অধ্যায় · পূর্বার্ধ»), উৎসের টুকরোর সাথে মিলিয়ে যাচাইসহ।
+   - index-এর ভুল দাবি («মূল সংস্কৃত পাঠ …») বদলে ডেটার সাথে মেলানো।
 
-৪) index-এর note দাবি করত «মূল সংস্কৃত পাঠ ও বাংলা অনুবাদ», কিন্তু সংস্কৃত
-   পাঠ এই সংস্করণে নেই — দাবিটি ডেটার সাথে মেলানো হয়।
-
-সতর্কতা: «হোম», «প্রকাশক», «সূচি», «পরবর্তী»-র মতো শব্দ এখানে সাইটের
-নেভিগেশন-ঝুট নয়, অনুবাদকের গদ্যের অংশ (হোম-কৰ্ম্ম, বেদার্থপ্রকাশক, সূচিত,
-পরবর্তী কণ্ডিকা) — তাই সেগুলো কাটা হয় না। পাঠ ছাঁটাইয়ের নামে নষ্ট করা যাবে না।
+যা ইচ্ছে করে ছোঁয়া হয় না (ভুল-পজিটিভ এড়ানো):
+   «?» (১৩৬ বার) আসল প্রশ্নবোধক; «[প্রশ্ন]/[উত্তর]» ও «(১)(২)…» (৬০৮ বার)
+   উৎসের নিজস্ব টীকা-চিহ্ন; «–»/«-» যৌগিক শব্দের স্বাভাবিক যতি; «॥» বৈদিক
+   দ্বৈত-দাঁড়ি। আর «হোম», «প্রকাশক», «সূচি», «পরবর্তী» শব্দগুলো এখানে সাইটের
+   নেভিগেশন-ঝুট নয়, অনুবাদকের গদ্যের অংশ (হোম-কৰ্ম্ম, বেদার্থপ্রকাশক, পরবর্তী
+   কণ্ডিকা) — তাই সেগুলো কাটা হয় না।
 
 ব্যবহার:  python3 tools/clean_yajurveda.py [--dry]
 আইডেমপোটেন্ট: দুবার চালালে দ্বিতীয়বার কোনো পরিবর্তন হয় না।
@@ -45,9 +57,13 @@ DBG = DATA / "_debug"
 
 DEVA = re.compile("[\u0904-\u0939\u093D\u0950\u0958-\u0961\u0972-\u097F]")
 BN_DIGITS = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
+EN2BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
 
-# উৎসের লেসন-শিরোনাম অনুযায়ী ৪০ অধ্যায়ের ক্রম-নাম ও ভাগ
-# (পূর্বার্ধ ১–২০, উত্তরার্ধ ২১–৪০ — প্রোব-রিপোর্টে দেখা সূচি থেকে)
+# অসমীয়া রা/ওয়া → বাংলা র/ব (উৎসের পাঠে ধারাবাহিকভাবে ভুল অক্ষর বসে আছে)
+ORTHO = str.maketrans({"\u09F0": "র", "\u09F1": "ব"})
+
+# উৎসের লেসন-সূচি অনুযায়ী ৪০ অধ্যায়ের ক্রম-নাম ও ভাগ
+# (পূর্বার্ধ ১–২০, উত্তরার্ধ ২১–৪০)
 ORDINALS = [
     "প্রথম", "দ্বিতীয়", "তৃতীয়", "চতুর্থ", "পঞ্চম", "ষষ্ঠ", "সপ্তম", "অষ্টম",
     "নবম", "দশম", "একাদশ", "দ্বাদশ", "ত্রয়োদশ", "চতুর্দশ", "পঞ্চদশ", "ষোড়শ",
@@ -59,8 +75,12 @@ ORDINALS = [
 ]
 
 
+def bn_digits(n):
+    return str(n).translate(EN2BN)
+
+
 def toi(x):
-    """'১২' / '12' / 12 → 12; না পারলে None."""
+    """'১২' / '12' / 12 → 12; লেবেল (যেমন «অনুক্রমণিকা») হলে None."""
     s = str(x).strip().translate(BN_DIGITS)
     m = re.match(r"([0-9]+)", s)
     return int(m.group(1)) if m else None
@@ -70,27 +90,34 @@ def norm(s):
     return re.sub(r"\s+", "", str(s or ""))
 
 
-EN2BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
+def fix_ortho(text):
+    """অসমীয়া ৰ/ৱ → বাংলা র/ব। এক-অক্ষর বিনিময়, তাই দৈর্ঘ্য বদলায় না।"""
+    if not text:
+        return text, 0
+    fixed = str(text).translate(ORTHO)
+    return fixed, sum(1 for a, b in zip(str(text), fixed) if a != b)
 
 
-def bn_digits(n):
-    return str(n).translate(EN2BN)
+def is_heading(text):
+    """অধ্যায়-শিরোনামের ছোট লাইন (মন্ত্র নয়)।"""
+    t = str(text or "").strip()
+    return len(norm(t)) < 200 and "অধ্যায়" in t and not t.endswith(("।", "?", "!", "॥"))
 
 
-def split_preface(verses):
-    """প্রথম নম্বর-রিস্টার্টের আগের খণ্ডগুলো = অনুক্রমণিকা/ভূমিকা।
+def split_front_matter(verses):
+    """অধ্যায়ের শুরুতে থাকা ভূমিকা/অনুক্রমণিকা খণ্ড আলাদা করা।
 
-    শর্ত: রিস্টার্ট-বিন্দু ১..৪-এর ভেতরে হতে হবে এবং সেই খণ্ডগুলোতে যথেষ্ট
-    গদ্য থাকতে হবে — নইলে এটি ভূমিকা নয়, সংখ্যা-বিভ্রাট; তখন কিছু বদলানো হয় না।
-
-    আইডেমপোটেন্সি: শুরুতে আগে-চিহ্নিত খণ্ড থাকলে সেগুলো বাদ দিয়ে হিসাব হয়,
-    তাই দ্বিতীয় রানে লেবেল-বদলে যাওয়া সংখ্যা-ধারাকে রিস্টার্ট ধরে নেয় না।
+    দুটি উৎস থেকে চেনা হয়:
+      - আগেই চিহ্নিত খণ্ড (preface/srcN ঘর — পুরোনো রান থেকে)
+      - প্রথম নম্বর-রিস্টার্টের আগের খণ্ডগুলো (ফেচারের ভুল নম্বর ধরার লক্ষণ)
+    শর্ত: রিস্টার্ট-বিন্দু ১..৪-এর ভেতরে হতে হবে এবং সেই খণ্ডগুলোতে যথেষ্ট গদ্য
+    থাকতে হবে — নইলে এটি ভূমিকা নয়, তখন কিছু সরানো হয় না।
     """
-    skip = 0
-    while skip < len(verses) and verses[skip].get("preface"):
-        skip += 1
-    if skip:
-        return 0
+    head = 0
+    while head < len(verses) and verses[head].get("preface"):
+        head += 1
+    if head:
+        return head
     ns = [toi(v.get("n")) for v in verses]
     r = None
     for i in range(1, len(ns)):
@@ -110,10 +137,10 @@ def chapter_title(cid, old):
         return old, "সীমার বাইরে"
     word = ORDINALS[cid - 1]
     half = "পূর্বার্ধ" if cid <= 20 else "উত্তরার্ধ"
-    # পুরোনো শিরোনামের টুকরো দিয়ে যাচাই। উৎসের বানান কাটা থাকায় ফলা-চিহ্নে
-    # পার্থক্য থাকতে পারে («ষটত্র» বনাম «ষট্ত্রিংশ»), তাই হসন্ত (্) বাদ দিয়ে তুলনা।
-    # আর কোনো অধ্যায়ে ক্রম-নামের টুকরোই না থাকলে (যেমন ২১: কেবল «সংহিতা»)
-    # সূচিতে তার অবস্থানই যথেষ্ট প্রমাণ — তখন বদল করা হয়, তবে নথিভুক্ত থাকে।
+
+    # উৎসের বানান কাটা থাকায় ফলা-চিহ্নে পার্থক্য থাকতে পারে («ষটত্র» বনাম
+    # «ষট্ত্রিংশ»), তাই হসন্ত (্) বাদ দিয়ে তুলনা। ক্রম-নামের টুকরোই না থাকলে
+    # (যেমন চ্যাপ্টার ২১: কেবল «সংহিতা») সূচিতে তার অবস্থানই যথেষ্ট প্রমাণ।
     def key(s):
         return re.sub("[\u09CD]", "", norm(s))
 
@@ -126,9 +153,8 @@ def chapter_title(cid, old):
                   for f in named for c in cands)
     if named and not matched:
         return old, f"মিলেনি ({'/'.join(named[-2:])} ≠ {'/'.join(c[:8] for c in cands)})"
-    if not named:
-        return f"{word} অধ্যায় · {half}", "সাধারণ টুকরো — সূচিতে অবস্থান থেকে নির্ধারিত"
-    return f"{word} অধ্যায় · {half}", ""
+    note = "" if named else "সাধারণ টুকরো — সূচিতে অবস্থান থেকে নির্ধারিত"
+    return f"{word} অধ্যায় · {half}", note
 
 
 def clean(dry=False):
@@ -139,9 +165,11 @@ def clean(dry=False):
         print(f"ডেটা নেই: {idxp} — আগে CI ফেচ চালাতে হবে")
         return 1
     idx = json.loads(idxp.read_text(encoding="utf-8"))
+
     moved = []
-    n_preface = n_sk = n_title = n_dup = 0
-    n_mantra = n_mantrabn = n_chfile = 0
+    st = dict(preface=0, heading=0, sk=0, ortho=0, title=0, renum=0, dup=0)
+    chars_before = chars_after = 0
+    n_mantra = n_mantrabn = 0
 
     for c in idx.get("chapters", []):
         fp = d / f'ch{c["id"]}.json'
@@ -149,87 +177,122 @@ def clean(dry=False):
             log.append(f'চ্যাপ্টার {c["id"]}: ফাইল নেই')
             continue
         blob = json.loads(fp.read_text(encoding="utf-8"))
-        verses = blob.get("verses", [])
+        raw = blob.get("verses", [])
+        # আগে থেকে সংরক্ষিত ভূমিকা/শিরোনাম-পাঠও মোট অক্ষরে ধরতে হবে, নইলে
+        # দ্বিতীয় রানে সেটি হারিয়ে গেলেও নিরাপত্তা-যাচাই ধরতে পারবে না।
+        old_pre = str(blob.get("preface") or "").strip()
+        old_head = str(blob.get("heading") or "").strip()
+        chars_before += (sum(len(norm(v.get("bn"))) + len(norm(v.get("sk"))) for v in raw)
+                         + len(norm(old_pre)) + len(norm(old_head)))
 
-        # ১) ভুল ঘরে থাকা বাংলা পাঠ ফেরানো (দেবনাগরীবিহীন sk সবসময়ই ভুল)
-        for v in verses:
+        # (ক) ভুল ঘরে থাকা পাঠ ফেরানো — দেবনাগরীবিহীন sk সবসময়ই ভুল ঘর
+        for v in raw:
             sk = str(v.get("sk") or "").strip()
             if sk and not DEVA.search(sk):
                 bn = str(v.get("bn") or "").strip()
                 merged = sk if (len(bn) < 100 and norm(bn) in norm(sk)) else (
                     sk if not bn else sk + "\n" + bn)
                 moved.append({"chapter": c["id"], "n": v.get("n"),
-                              "sk_chars": len(sk), "bn_chars": len(bn), "text": sk})
-                v["bn"] = merged
-                v["sk"] = ""
-                n_sk += 1
+                              "sk_chars": len(sk), "bn_chars": len(bn)})
+                v["bn"], v["sk"] = merged, ""
+                st["sk"] += 1
 
-        # ২) ভূমিকা/অনুক্রমণিকা খণ্ড আলাদা করা (আসল মন্ত্র-নম্বর অটুট রেখে)
-        r = split_preface(verses)
-        if r:
-            for k, v in enumerate(verses[:r]):
+        # (খ) ভূমিকা/অনুক্রমণিকা ও অধ্যায়-শিরোনামের লাইন আলাদা করা
+        k = split_front_matter(raw)
+        front, mantras = list(raw[:k]), list(raw[k:])
+        headings = [v for v in front if is_heading(v.get("bn"))]
+        preface = [v for v in front if not is_heading(v.get("bn"))]
+        # মন্ত্র-তালিকার ভেতরেও শিরোনাম-লাইন থাকলে সেটি আলাদা (মন্ত্র নয়)
+        extra_head = [v for v in mantras if is_heading(v.get("bn"))]
+        if extra_head:
+            mantras = [v for v in mantras if not is_heading(v.get("bn"))]
+            headings += extra_head
+        st["heading"] += len(headings) + (1 if old_head and not headings else 0)
+        st["preface"] += len(preface) + (1 if old_pre and not preface else 0)
+
+        # (গ) বানান স্বাভাবিক করা (সব খণ্ডে — ভূমিকা ও মন্ত্র দুটোতেই)
+        for v in front + mantras:
+            v["bn"], n1 = fix_ortho(v.get("bn"))
+            v["sk"], n2 = fix_ortho(v.get("sk"))
+            st["ortho"] += n1 + n2
+
+        # (ঘ) মন্ত্র-নম্বর পড়ার ক্রমে ১..N — উৎসের চিহ্ন srcN-এ অটুট
+        for i, v in enumerate(mantras, start=1):
+            if "srcN" not in v and v.get("n") is not None:
                 v["srcN"] = v.get("n")
-                v["preface"] = True
-                v["n"] = "অনুক্রমণিকা" if k == 0 else f"অনুক্রমণিকা-{bn_digits(k + 1)}"
-                if not str(v.get("bnNote") or "").strip():
-                    v["bnNote"] = "অনুক্রমণিকার বঙ্গানুবাদ"
-            n_preface += r
-            log.append(f'চ্যাপ্টার {c["id"]}: প্রথম {r}টি খণ্ড অনুক্রমণিকা হিসেবে চিহ্নিত')
+            if v.get("n") != i:
+                v["n"] = i
+                st["renum"] += 1
+            v.pop("preface", None)
+            if not str(v.get("bn") or "").strip():
+                log.append(f'চ্যাপ্টার {c["id"]} খণ্ড {i}: বাংলা পাঠ ফাঁকা!')
 
-        # ৩) মন্ত্র-ধারায় ভেতরের ডুপ্লিকেট নম্বর থাকলে শুধু নথিভুক্ত করা
-        seq = [toi(v.get("n")) for v in verses[r:] if toi(v.get("n")) is not None]
-        dups = sorted({x for x in seq if seq.count(x) > 1})
+        # উৎসের পুরোনো চিহ্নে ডুপ্লিকেট থাকলে শুধু নথিভুক্ত করা (পাঠ অটুট)
+        olds = [toi(v.get("srcN")) for v in mantras]
+        olds = [x for x in olds if x is not None]
+        dups = sorted({x for x in olds if olds.count(x) > 1})
         if dups:
-            n_dup += 1
-            log.append(f'চ্যাপ্টার {c["id"]}: মন্ত্র-ধারায় ডুপ্লিকেট নম্বর {dups[:6]} '
-                       f'(পাঠ অটুট, নম্বর বদলানো হয়নি)')
+            st["dup"] += 1
+            log.append(f'চ্যাপ্টার {c["id"]}: উৎসের চিহ্নে ডুপ্লিকেট {dups[:6]} '
+                       f'(প্রদর্শন-নম্বর এখন ক্রমিক)')
 
-        # ৪) গণনা ও নম্বর-পরিসর: অনুক্রমণিকা-খণ্ড বাদ দিয়ে আসল মন্ত্র ধরা হয়
-        #    (খণ্ডগুলো পাঠে থেকেই যায়, শুধু «মন্ত্র» সংখ্যায় গোনা হয় না)
-        mantras = [v for v in verses if not v.get("preface")]
-        nums = [toi(v.get("n")) for v in mantras]
-        nums = [x for x in nums if x is not None]
-        c["count"] = len(mantras)
-        c["withBn"] = sum(1 for v in mantras if str(v.get("bn") or "").strip())
-        if nums:
-            c["from"], c["to"] = min(nums), max(nums)
-        n_mantra += len(mantras)
-        n_mantrabn += c["withBn"]
+        # (ঙ) ভূমিকা ও শিরোনাম চ্যাপ্টার-ঘরে (পাঠ হারায় না, রিডারে আলাদা ব্লকে দেখায়)
+        new_pre = [str(v.get("bn") or "").strip() for v in preface if str(v.get("bn") or "").strip()]
+        new_head = [str(v.get("bn") or "").strip() for v in headings if str(v.get("bn") or "").strip()]
+        # আইডেমপোটেন্সি: এই রানে নতুন ভূমিকা না মিললে আগে সংরক্ষিতটিই থাকবে।
+        # (আগে ফাঁকা টেক্সট দিয়ে পুরোনো ভূমিকা মুছে যেত — পাঠ হারাত।)
+        pre_txt = "\n\n".join(([old_pre] if old_pre else []) + new_pre)
+        head_txt = "\n".join(([old_head] if old_head else []) + new_head)
 
-        # ৫) শিরোনাম ঠিক করা
+        # (চ) শিরোনাম ঠিক করা
         new, why = chapter_title(int(c["id"]), c.get("bn"))
         if new != c.get("bn"):
             c["bn"] = new
-            n_title += 1
+            st["title"] += 1
         elif why:
             log.append(f'চ্যাপ্টার {c["id"]}: শিরোনাম বদলানো হয়নি — {why}')
 
-        # ৬) চ্যাপ্টার-ফাইলের নিজস্ব ঘরগুলো index-এর সাথে মেলানো।
-        #    রিডার অধ্যায়-শিরোনাম ও সংখ্যা ch{n}.json থেকেই পড়ে
-        #    (grantho.js: titleEl.textContent = chapter.bn) — তাই এগুলো না
-        #    মেলানো পর্যন্ত পাতায় পুরোনো কাটা-শিরোনাম ও ভুল সংখ্যা দেখায়।
-        for k, v in (("bn", c["bn"]), ("count", c["count"]),
-                     ("withBn", c.get("withBn")), ("from", c.get("from")), ("to", c.get("to"))):
-            if v is not None and blob.get(k) != v:
-                if k == "bn":
-                    n_chfile += 1
-                blob[k] = v
+        # (ছ) গণনা ও পরিসর — এখন প্রতিটি মন্ত্র ১..N, তাই পরিসর পরিষ্কার
+        c["count"] = len(mantras)
+        c["withBn"] = sum(1 for v in mantras if str(v.get("bn") or "").strip())
+        c["from"], c["to"] = (1, len(mantras)) if mantras else (0, 0)
+        # ভূমিকা-খণ্ড আগেই আলাদা ঘরে সরে গেলে `preface` তালিকা ফাঁকা থাকে — তাই
+        # সংরক্ষিত টেক্সট থেকেই গোনা হয় (নইলে দ্বিতীয় রানে গণনা শূন্য হয়ে যেত)।
+        c["prefaceCount"] = len([x for x in pre_txt.split("\n\n") if x.strip()]) if pre_txt else 0
+        n_mantra += len(mantras)
+        n_mantrabn += c["withBn"]
+
+        # (জ) চ্যাপ্টার-ফাইল: রিডার এখান থেকেই শিরোনাম/সংখ্যা পড়ে
+        blob["bn"] = c["bn"]
+        blob["count"] = c["count"]
+        blob["withBn"] = c["withBn"]
+        blob["from"], blob["to"] = c["from"], c["to"]
+        blob["verses"] = mantras
+        if pre_txt:
+            blob["preface"] = pre_txt
+        else:
+            blob.pop("preface", None)
+        if head_txt:
+            blob["heading"] = head_txt
+        else:
+            blob.pop("heading", None)
+        blob.pop("prefaceCount", None)
+
+        chars_after += (sum(len(norm(v.get("bn"))) + len(norm(v.get("sk"))) for v in mantras)
+                        + len(norm(pre_txt)) + len(norm(head_txt)))
 
         if not dry:
             fp.write_text(json.dumps(blob, ensure_ascii=False, indent=1), encoding="utf-8")
 
-    # ৬) index-এর মিথ্যা দাবি ঠিক করা + মন্ত্র-গণনা (অনুক্রমণিকা বাদে)
+    # (ঝ) index হালনাগাদ + ভুল দাবি সংশোধন
     idx["total"] = n_mantra
     idx["withBn"] = n_mantrabn
-    # কৃতিত্ব পাতার উৎস-লাইনে একবারই থাকে (build_pages-এর src) — এখানে কেবল
-    # সেই ব্যাখ্যা যা পাঠককে সংখ্যার হিসাব বুঝতে সাহায্য করে।
-    note = ("প্রতি অধ্যায়ে মন্ত্রের আগে উৎসের অনুক্রমণিকা-অনুবাদও যুক্ত আছে, "
+    note = ("মন্ত্র-নম্বর পড়ার ক্রমে বসানো (উৎসের পাঠে মন্ত্র-নম্বরের চিহ্ন ছিল না)। "
+            "প্রতি অধ্যায়ের শুরুতে উৎসের অনুক্রমণিকা-অনুবাদ আলাদা ব্লকে দেওয়া আছে, "
             "যা মন্ত্র-গণনার বাইরে।")
     if idx.get("note") != note:
-        log.append(f'note বদলালো: {idx.get("note")!r} → {note!r}')
+        log.append("index.note হালনাগাদ হলো")
         idx["note"] = note
-    if idx.get("bnSrc") and "সংস্কৃত" in str(idx.get("bnSrc")):
-        idx["bnSrc"] = "বাংলা অনুবাদ — ebanglalibrary.com"
     if not dry:
         idxp.write_text(json.dumps(idx, ensure_ascii=False, indent=1), encoding="utf-8")
         if moved:
@@ -237,14 +300,21 @@ def clean(dry=False):
             (DBG / "yajurveda_sk_moved.json").write_text(
                 json.dumps(moved, ensure_ascii=False, indent=1), encoding="utf-8")
 
-    print(f'মন্ত্র: {n_mantra} (বাংলাসহ {n_mantrabn}) · অনুক্রমণিকা-খণ্ড: {n_preface} · '
-          f'sk থেকে ফেরানো: {n_sk} · শিরোনাম ঠিক: {n_title} · '
-          f'চ্যাপ্টার-ফাইল সিঙ্ক: {n_chfile} · ডুপ্লিকেট-নম্বর অধ্যায়: {n_dup}'
-          + (" · [dry-run, কিছু লেখা হয়নি]" if dry else ""))
-    for line in log[:40]:
+    # (ঞ) নিরাপত্তা-যাচাই: এক অক্ষরও হারানো যাবে না
+    if chars_after != chars_before:
+        print(f"⛔ থেমে গেছে: পাঠের অক্ষর বদলে গেছে — আগে {chars_before}, পরে {chars_after} "
+              f"(পার্থক্য {chars_after - chars_before})")
+        return 1
+
+    print(f'মন্ত্র: {n_mantra} (বাংলাসহ {n_mantrabn}) · ভূমিকাযুক্ত অধ্যায়: {st["preface"]} · '
+          f'শিরোনাম-লাইন: {st["heading"]} · নম্বর ঠিক: {st["renum"]} · বানান বদল: {st["ortho"]} · '
+          f'sk থেকে ফেরানো: {st["sk"]} · শিরোনাম ঠিক: {st["title"]} · '
+          f'উৎস-ডুপ্লিকেট অধ্যায়: {st["dup"]} · অক্ষর অটুট: {chars_after}'
+          + (" · [dry-run]" if dry else ""))
+    for line in log[:30]:
         print("  " + line)
-    if len(log) > 40:
-        print(f"  … আরও {len(log) - 40} লাইন")
+    if len(log) > 30:
+        print(f"  … আরও {len(log) - 30} লাইন")
     return 0
 
 

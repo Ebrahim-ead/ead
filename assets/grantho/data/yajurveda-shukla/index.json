@@ -9,17 +9,19 @@
    "id": 1,
    "bn": "প্রথম অধ্যায় · পূর্বার্ধ",
    "count": 29,
-   "from": 2,
-   "to": 31,
-   "withBn": 29
+   "from": 1,
+   "to": 29,
+   "withBn": 29,
+   "prefaceCount": 3
   },
   {
    "id": 2,
    "bn": "দ্বিতীয় অধ্যায় · পূর্বার্ধ",
    "count": 31,
-   "from": 2,
-   "to": 34,
-   "withBn": 31
+   "from": 1,
+   "to": 31,
+   "withBn": 31,
+   "prefaceCount": 1
   },
   {
    "id": 3,
@@ -27,7 +29,8 @@
    "count": 63,
    "from": 1,
    "to": 63,
-   "withBn": 63
+   "withBn": 63,
+   "prefaceCount": 2
   },
   {
    "id": 4,
@@ -35,15 +38,17 @@
    "count": 36,
    "from": 1,
    "to": 36,
-   "withBn": 36
+   "withBn": 36,
+   "prefaceCount": 1
   },
   {
    "id": 5,
    "bn": "পঞ্চম অধ্যায় · পূর্বার্ধ",
    "count": 42,
    "from": 1,
-   "to": 43,
-   "withBn": 42
+   "to": 42,
+   "withBn": 42,
+   "prefaceCount": 1
   },
   {
    "id": 6,
@@ -51,23 +56,26 @@
    "count": 37,
    "from": 1,
    "to": 37,
-   "withBn": 37
+   "withBn": 37,
+   "prefaceCount": 1
   },
   {
    "id": 7,
    "bn": "সপ্তম অধ্যায় · পূর্বার্ধ",
    "count": 37,
-   "from": 2,
-   "to": 48,
-   "withBn": 37
+   "from": 1,
+   "to": 37,
+   "withBn": 37,
+   "prefaceCount": 1
   },
   {
    "id": 8,
    "bn": "অষ্টম অধ্যায় · পূর্বার্ধ",
    "count": 52,
    "from": 1,
-   "to": 63,
-   "withBn": 52
+   "to": 52,
+   "withBn": 52,
+   "prefaceCount": 1
   },
   {
    "id": 9,
@@ -75,7 +83,8 @@
    "count": 40,
    "from": 1,
    "to": 40,
-   "withBn": 40
+   "withBn": 40,
+   "prefaceCount": 1
   },
   {
    "id": 10,
@@ -83,127 +92,143 @@
    "count": 34,
    "from": 1,
    "to": 34,
-   "withBn": 34
+   "withBn": 34,
+   "prefaceCount": 1
   },
   {
    "id": 11,
    "bn": "একাদশ অধ্যায় · পূর্বার্ধ",
    "count": 55,
    "from": 1,
-   "to": 83,
-   "withBn": 55
+   "to": 55,
+   "withBn": 55,
+   "prefaceCount": 1
   },
   {
    "id": 12,
    "bn": "দ্বাদশ অধ্যায় · পূর্বার্ধ",
    "count": 111,
    "from": 1,
-   "to": 117,
-   "withBn": 111
+   "to": 111,
+   "withBn": 111,
+   "prefaceCount": 2
   },
   {
    "id": 13,
    "bn": "ত্রয়োদশ অধ্যায় · পূর্বার্ধ",
    "count": 50,
-   "from": 2,
-   "to": 58,
-   "withBn": 50
+   "from": 1,
+   "to": 50,
+   "withBn": 50,
+   "prefaceCount": 1
   },
   {
    "id": 14,
    "bn": "চতুর্দশ অধ্যায় · পূর্বার্ধ",
    "count": 28,
    "from": 1,
-   "to": 31,
-   "withBn": 28
+   "to": 28,
+   "withBn": 28,
+   "prefaceCount": 1
   },
   {
    "id": 15,
    "bn": "পঞ্চদশ অধ্যায় · পূর্বার্ধ",
    "count": 59,
    "from": 1,
-   "to": 64,
-   "withBn": 59
+   "to": 59,
+   "withBn": 59,
+   "prefaceCount": 2
   },
   {
    "id": 16,
    "bn": "ষোড়শ অধ্যায় · পূর্বার্ধ",
    "count": 59,
    "from": 1,
-   "to": 66,
-   "withBn": 59
+   "to": 59,
+   "withBn": 59,
+   "prefaceCount": 1
   },
   {
    "id": 17,
    "bn": "সপ্তদশ অধ্যায় · পূর্বার্ধ",
    "count": 91,
    "from": 1,
-   "to": 99,
-   "withBn": 91
+   "to": 91,
+   "withBn": 91,
+   "prefaceCount": 1
   },
   {
    "id": 18,
    "bn": "অষ্টাদশ অধ্যায় · পূর্বার্ধ",
    "count": 61,
    "from": 1,
-   "to": 77,
-   "withBn": 61
+   "to": 61,
+   "withBn": 61,
+   "prefaceCount": 1
   },
   {
    "id": 19,
    "bn": "ঊনবিংশ অধ্যায় · পূর্বার্ধ",
    "count": 85,
    "from": 1,
-   "to": 95,
-   "withBn": 85
+   "to": 85,
+   "withBn": 85,
+   "prefaceCount": 2
   },
   {
    "id": 20,
    "bn": "বিংশ অধ্যায় · পূর্বার্ধ",
    "count": 75,
    "from": 1,
-   "to": 90,
-   "withBn": 75
+   "to": 75,
+   "withBn": 75,
+   "prefaceCount": 2
   },
   {
    "id": 21,
    "bn": "একবিংশ অধ্যায় · উত্তরার্ধ",
    "count": 57,
    "from": 1,
-   "to": 60,
-   "withBn": 57
+   "to": 57,
+   "withBn": 57,
+   "prefaceCount": 1
   },
   {
    "id": 22,
    "bn": "দ্বাবিংশ অধ্যায় · উত্তরার্ধ",
    "count": 27,
    "from": 1,
-   "to": 34,
-   "withBn": 27
+   "to": 27,
+   "withBn": 27,
+   "prefaceCount": 1
   },
   {
    "id": 23,
    "bn": "ত্রয়োবিংশ অধ্যায় · উত্তরার্ধ",
    "count": 62,
    "from": 1,
-   "to": 80,
-   "withBn": 62
+   "to": 62,
+   "withBn": 62,
+   "prefaceCount": 1
   },
   {
    "id": 24,
    "bn": "চতুর্বিশ অধ্যায় · উত্তরার্ধ",
    "count": 39,
    "from": 1,
-   "to": 40,
-   "withBn": 39
+   "to": 39,
+   "withBn": 39,
+   "prefaceCount": 2
   },
   {
    "id": 25,
    "bn": "পঞ্চবিংশ অধ্যায় · উত্তরার্ধ",
    "count": 44,
    "from": 1,
-   "to": 47,
-   "withBn": 44
+   "to": 44,
+   "withBn": 44,
+   "prefaceCount": 1
   },
   {
    "id": 26,
@@ -211,47 +236,53 @@
    "count": 26,
    "from": 1,
    "to": 26,
-   "withBn": 26
+   "withBn": 26,
+   "prefaceCount": 1
   },
   {
    "id": 27,
    "bn": "সপ্তবিংশ অধ্যায় · উত্তরার্ধ",
    "count": 40,
    "from": 1,
-   "to": 45,
-   "withBn": 40
+   "to": 40,
+   "withBn": 40,
+   "prefaceCount": 1
   },
   {
    "id": 28,
    "bn": "অষ্টাবিংশ অধ্যায় · উত্তরার্ধ",
    "count": 40,
-   "from": 2,
-   "to": 46,
-   "withBn": 40
+   "from": 1,
+   "to": 40,
+   "withBn": 40,
+   "prefaceCount": 1
   },
   {
    "id": 29,
    "bn": "ঊনত্রিংশ অধ্যায় · উত্তরার্ধ",
    "count": 57,
    "from": 1,
-   "to": 60,
-   "withBn": 57
+   "to": 57,
+   "withBn": 57,
+   "prefaceCount": 1
   },
   {
    "id": 30,
    "bn": "ত্রিংশ অধ্যায় · উত্তরার্ধ",
    "count": 20,
    "from": 1,
-   "to": 22,
-   "withBn": 20
+   "to": 20,
+   "withBn": 20,
+   "prefaceCount": 1
   },
   {
    "id": 31,
    "bn": "একত্রিংশ অধ্যায় · উত্তরার্ধ",
    "count": 18,
-   "from": 2,
-   "to": 22,
-   "withBn": 18
+   "from": 1,
+   "to": 18,
+   "withBn": 18,
+   "prefaceCount": 1
   },
   {
    "id": 32,
@@ -259,23 +290,26 @@
    "count": 16,
    "from": 1,
    "to": 16,
-   "withBn": 16
+   "withBn": 16,
+   "prefaceCount": 1
   },
   {
    "id": 33,
    "bn": "ত্রয়স্ত্রিংশ অধ্যায় · উত্তরার্ধ",
    "count": 90,
-   "from": 2,
-   "to": 98,
-   "withBn": 90
+   "from": 1,
+   "to": 90,
+   "withBn": 90,
+   "prefaceCount": 2
   },
   {
    "id": 34,
    "bn": "চতুস্ত্রিংশ অধ্যায় · উত্তরার্ধ",
    "count": 57,
-   "from": 2,
-   "to": 58,
-   "withBn": 57
+   "from": 1,
+   "to": 57,
+   "withBn": 57,
+   "prefaceCount": 1
   },
   {
    "id": 35,
@@ -283,15 +317,17 @@
    "count": 22,
    "from": 1,
    "to": 22,
-   "withBn": 22
+   "withBn": 22,
+   "prefaceCount": 1
   },
   {
    "id": 36,
    "bn": "ষট্ত্রিংশ অধ্যায় · উত্তরার্ধ",
    "count": 23,
-   "from": 2,
-   "to": 24,
-   "withBn": 23
+   "from": 1,
+   "to": 23,
+   "withBn": 23,
+   "prefaceCount": 1
   },
   {
    "id": 37,
@@ -299,7 +335,8 @@
    "count": 21,
    "from": 1,
    "to": 21,
-   "withBn": 21
+   "withBn": 21,
+   "prefaceCount": 1
   },
   {
    "id": 38,
@@ -307,15 +344,17 @@
    "count": 28,
    "from": 1,
    "to": 28,
-   "withBn": 28
+   "withBn": 28,
+   "prefaceCount": 1
   },
   {
    "id": 39,
    "bn": "ঊনচত্বারিংশ অধ্যায় · উত্তরার্ধ",
    "count": 12,
-   "from": 2,
-   "to": 13,
-   "withBn": 12
+   "from": 1,
+   "to": 12,
+   "withBn": 12,
+   "prefaceCount": 1
   },
   {
    "id": 40,
@@ -323,10 +362,11 @@
    "count": 17,
    "from": 1,
    "to": 17,
-   "withBn": 17
+   "withBn": 17,
+   "prefaceCount": 2
   }
  ],
  "verseWord": "মন্ত্র",
  "bnSrc": "বাংলা অনুবাদ — ebanglalibrary.com",
- "note": "প্রতি অধ্যায়ে মন্ত্রের আগে উৎসের অনুক্রমণিকা-অনুবাদও যুক্ত আছে, যা মন্ত্র-গণনার বাইরে।"
+ "note": "মন্ত্র-নম্বর পড়ার ক্রমে বসানো (উৎসের পাঠে মন্ত্র-নম্বরের চিহ্ন ছিল না)। প্রতি অধ্যায়ের শুরুতে উৎসের অনুক্রমণিকা-অনুবাদ আলাদা ব্লকে দেওয়া আছে, যা মন্ত্র-গণনার বাইরে।"
 }

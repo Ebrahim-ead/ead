@@ -293,6 +293,12 @@ def make_page(slug, idx, meta):
                lambda m: m.group(1) + f'{meta["word"]}ে খুঁজুন' + m.group(2), h, count=1)
     if withsk == 0:
         h = re.sub(r'\s*<button[^>]*id="g-sk-btn".*?</button>', '', h, count=1, flags=re.S)
+    # সব খণ্ডেই বাংলা অনুবাদ থাকলে «কেবল যেগুলোর অনুবাদ আছে» ছাঁকনিটি অকেজো —
+    # অথচ বোতামটি দেখলে মনে হয় কিছু পাঠ বাদ পড়ছে। তাই তখন মার্কআপই বাদ দেওয়া হয়
+    # (grantho.js-ও রানটাইমে একই কাজ করে, যাতে পুরোনো পাতাতেও ঠিক থাকে)।
+    if withbn and withbn >= total:
+        h = re.sub(r'\s*<label[^>]*>\s*<input[^>]*id="g-only-bn"[^>]*>[^<]*</label>',
+                   '', h, count=1, flags=re.S)
 
     src = meta["src"]
     # সংস্কৃত পাঠের প্রাপ্যতা — আগে হার্ডকোডেড দাবি ছিল যা ডেটার সাথে মিলত না
