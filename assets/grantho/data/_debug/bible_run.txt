@@ -1,134 +1,143 @@
-রান: 42175368322 · 06/11 06:35:20 UTC · sha 54a7ffa
- 1. আদিপুস্তক (Genesis): অধ্যায় 50/50 · পদ 1513
- 2. যাত্রাপুস্তক (Exodus): অধ্যায় 39/40 · পদ 1195 · ⚠ বাদ [13]
- 3. লেবীয় পুস্তক (Leviticus): অধ্যায় 27/27 · পদ 848
- 4. গণনা পুস্তক (Numbers): অধ্যায় 35/36 · পদ 1177 · ⚠ বাদ [8]
- 5. দ্বিতীয় বিবরণ (Deuteronomy): অধ্যায় 34/34 · পদ 950
- 6. যোশুয়া (Joshua): অধ্যায় 24/24 · পদ 652
- 7. বিচারকচরিত (Judges): অধ্যায় 21/21 · পদ 611
+রান: 42185192679 · 06/11 08:30:13 UTC · sha dd544a2
+ 1. আদিপুস্তক (Genesis): অধ্যায় 50/50 · পদ 1532
+ 2. যাত্রাপুস্তক (Exodus): অধ্যায় 39/40 · পদ 1203 · ⚠ বাদ [13]
+ 3. লেবীয় পুস্তক (Leviticus): অধ্যায় 27/27 · পদ 859
+ 4. গণনা পুস্তক (Numbers): অধ্যায় 35/36 · পদ 1190 · ⚠ বাদ [8]
+ 5. দ্বিতীয় বিবরণ (Deuteronomy): অধ্যায় 34/34 · পদ 959
+ 6. যোশুয়া (Joshua): অধ্যায় 24/24 · পদ 658
+ 7. বিচারকচরিত (Judges): অধ্যায় 21/21 · পদ 618
  8. রুথ (Ruth): অধ্যায় 4/4 · পদ 85
- 9. সামুয়েল ১ (1 Samuel): অধ্যায় 31/31 · পদ 803
-10. সামুয়েল ২ (2 Samuel): অধ্যায় 24/24 · পদ 688
-11. রাজাবলি ১ (1 Kings): অধ্যায় 22/22 · পদ 785
-12. রাজাবলি ২ (2 Kings): অধ্যায় 25/25 · পদ 714
-13. বংশাবলি ১ (1 Chronicles): অধ্যায় 29/29 · পদ 885
+ 9. সামুয়েল ১ (1 Samuel): অধ্যায় 31/31 · পদ 811
+10. সামুয়েল ২ (2 Samuel): অধ্যায় 24/24 · পদ 695
+11. রাজাবলি ১ (1 Kings): অধ্যায় 22/22 · পদ 816
+12. রাজাবলি ২ (2 Kings): অধ্যায় 25/25 · পদ 719
+13. বংশাবলি ১ (1 Chronicles): অধ্যায় 29/29 · পদ 942
 14. বংশাবলি ২ (2 Chronicles): অধ্যায় 0/36 · পদ 0 · ⚠ বাদ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
-15. এজরা (Ezra): অধ্যায় 10/10 · পদ 269
+15. এজরা (Ezra): অধ্যায় 10/10 · পদ 280
 16. নেহেমিয়া (Nehemiah): অধ্যায় 0/13 · পদ 0 · ⚠ বাদ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-17. এস্থার (Esther): অধ্যায় 10/10 · পদ 157
-18. যোব (Job): অধ্যায় 42/42 · পদ 1063
-19. সামসঙ্গীত (Psalms): অধ্যায় 15/50 · পদ 164 · ⚠ বাদ [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
-20. প্রবচন (Proverbs): অধ্যায় 31/31 · পদ 907
-21. উপদেশক (Ecclesiastes): অধ্যায় 12/12 · পদ 218
+17. এস্থার (Esther): অধ্যায় 10/10 · পদ 167
+18. যোব (Job): অধ্যায় 42/42 · পদ 1070
+19. সামসঙ্গীত (Psalms): অধ্যায় 15/50 · পদ 167 · ⚠ বাদ [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+20. প্রবচন (Proverbs): অধ্যায় 31/31 · পদ 915
+21. উপদেশক (Ecclesiastes): অধ্যায় 12/12 · পদ 222
 22. পরম গীত (Song of Solomon): অধ্যায় 8/8 · পদ 117
-23. ইসাইয়া (Isaiah): অধ্যায় 50/50 · পদ 1004
+23. ইসাইয়া (Isaiah): অধ্যায় 50/50 · পদ 1019
 24. যেরেমিয়া (Jeremiah): অধ্যায় 0/50 · পদ 0 · ⚠ বাদ [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
-25. বিলাপ-গাথা (Lamentations): অধ্যায় 5/5 · পদ 153
-26. এজেকিয়েল (Ezekiel): অধ্যায় 48/48 · পদ 1252
-27. দানিয়েল (Daniel): অধ্যায় 12/12 · পদ 355
-28. হোসেয়া (Hosea): অধ্যায় 14/14 · পদ 196
+25. বিলাপ-গাথা (Lamentations): অধ্যায় 5/5 · পদ 154
+26. এজেকিয়েল (Ezekiel): অধ্যায় 48/48 · পদ 1273
+27. দানিয়েল (Daniel): অধ্যায় 12/12 · পদ 357
+28. হোসেয়া (Hosea): অধ্যায় 14/14 · পদ 197
 29. যোয়েল (Joel): অধ্যায় 1/3 · পদ 1 · ⚠ বাদ [2, 3]
-30. আমোস (Amos): অধ্যায় 9/9 · পদ 143
+30. আমোস (Amos): অধ্যায় 9/9 · পদ 146
 31. ৩১. ওবাদিয়া (Obadiah) 1 Topic (): অধ্যায় 1/1 · পদ 21
 32. যোনা (Jonah): অধ্যায় 4/4 · পদ 48
 33. মিখা (Micah): অধ্যায় 7/7 · পদ 105
 34. নাহুম (Nahum): অধ্যায় 3/3 · পদ 47
 35. হাবাকুক (Habakkuk): অধ্যায় 3/3 · পদ 56
 36. জেফানিয়া (Zephaniah): অধ্যায় 3/3 · পদ 53
-37. হগয় (Haggai): অধ্যায় 2/2 · পদ 34
-38. জাখারিয়া (Zechariah): অধ্যায় 13/14 · পদ 199 · ⚠ বাদ [13]
+37. হগয় (Haggai): অধ্যায় 2/2 · পদ 38
+38. জাখারিয়া (Zechariah): অধ্যায় 13/14 · পদ 202 · ⚠ বাদ [13]
 39. মালাখি (Malachi): অধ্যায় 4/4 · পদ 55
-40. মথি (Matthew): অধ্যায় 28/28 · পদ 1069
-41. মার্ক (Mark): অধ্যায় 16/16 · পদ 672
-42. লুক (Luke): অধ্যায় 24/24 · পদ 1141
-43. যোহন (John): অধ্যায় 21/21 · পদ 876
-44. শিষ্যচরিত (Acts): অধ্যায় 28/28 · পদ 990
-45. রোমীয় (Acts): অধ্যায় 16/16 · পদ 428
-46. করিন্থীয় ১ (1 Corinthians): অধ্যায় 16/16 · পদ 434
-47. করিন্থীয় ২ (2 Corinthians): অধ্যায় 13/13 · পদ 255
-48. গালাতীয় (Galatians): অধ্যায় 0/6 · পদ 0 · ⚠ বাদ [1, 2, 3, 4, 5, 6]
-49. এফেসীয় (Ephesians): অধ্যায় 6/6 · পদ 153
-50. ফিলিপ্পীয় (Philippians): অধ্যায় 4/4 · পদ 104
+40. মথি (Matthew): অধ্যায় 28/28 · পদ 1071
+41. মার্ক (Mark): অধ্যায় 16/16 · পদ 678
+42. লুক (Luke): অধ্যায় 24/24 · পদ 1151
+43. যোহন (John): অধ্যায় 21/21 · পদ 880
+44. শিষ্যচরিত (Acts): অধ্যায় 28/28 · পদ 1032
+⏱ বাজেট 45.0 মিনিট শেষ — এখানে থামি; পরের রানে বাকি পুস্তকগুলো রিজিউম হবে।
 === বাংলা বাইবেল — ফল ===
-পুস্তক: 50 (এই রানে নতুন 50 · আগে থেকে ছিল 0) · মোট পদ: 23645 · বাংলাসহ: 23645
-অধ্যায় বিল্ডি: 844 · নামেনি এমন অধ্যায়: 40
+পুস্তক: 44 (এই রানে নতুন 44 · আগে থেকে ছিল 0) · মোট পদ: 23983 · বাংলাসহ: 23645
+অধ্যায় বিল্ডি: 789 · নামেনি এমন অধ্যায়: 40
 উৎসে ফাঁকা পদ (নম্বর আছে, পাঠ উৎসেই নেই): 0
 
 ⚠ 40টি অধ্যায় নামেনি — আবার চালালে (রিজিউম) বাকিগুলো নামবে।
-  … 25 পাতা · এখন: The New American Bible - IntraText অধ্যায় 25 (39সে)
-  … 50 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (72সে)
-  … 75 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (105সে)
-  … 100 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (140সে)
-  … 125 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (174সে)
-  … 150 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (208সে)
-  … 175 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (244সে)
-  … 200 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (277সে)
-  … 225 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (310সে)
-  … 250 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (344সে)
-  … 275 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (376সে)
-  … 300 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (408সে)
-  … 325 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (442সে)
-  … 350 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (476সে)
-  … 375 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (510সে)
-  … 400 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (544সে)
-  … 425 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (579সে)
-  … 450 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (612সে)
-  … 475 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (654সে)
-  … 500 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (688সে)
-  … 525 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (721সে)
-  … 550 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (753সে)
-  … 575 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (786সে)
-  … 600 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (821সে)
-  … 625 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (854সে)
-  … 650 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (888সে)
-  … 675 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (924সে)
-  … 700 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (958সে)
-  … 725 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (992সে)
-  … 750 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1030সে)
-  … 775 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1064সে)
-  … 800 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1098সে)
-  … 825 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1131সে)
-  … 850 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1164সে)
-  … 875 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1197সে)
-  … 900 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1229সে)
-  … 925 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1264সে)
-  … 950 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1298সে)
-  … 975 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1331সে)
-  … 1000 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1363সে)
-  … 1025 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1396সে)
-  … 1050 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1430সে)
-  … 1075 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1465সে)
-  … 1100 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1498সে)
-  … 1125 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1533সে)
-  … 1150 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1566সে)
-  … 1175 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1603সে)
-  … 1200 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1638সে)
-  … 1225 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1671সে)
-  … 1250 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1706সে)
-  … 1275 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1739সে)
-  … 1300 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1771সে)
-  … 1325 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1804সে)
-  … 1350 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1836সে)
-  … 1375 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1870সে)
-  … 1400 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1903সে)
-  … 1425 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1937সে)
-  … 1450 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (1970সে)
-  … 1475 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2004সে)
-  … 1500 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2038সে)
-  … 1525 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2072সে)
-  … 1550 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2109সে)
-  … 1575 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2143সে)
-  … 1600 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2180সে)
-  … 1625 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2214সে)
-  … 1650 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2247সে)
-  … 1675 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2280সে)
-  … 1700 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2314সে)
-  … 1725 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2346সে)
-  … 1750 পাতা · এখন: The New American Bible - IntraText অধ্যায় None (2380সে)
+  … 25 পাতা · এখন: Genesis অধ্যায় 25 (33সে)
+  … 50 পাতা · এখন: Genesis অধ্যায় None (62সে)
+  … 75 পাতা · এখন: Genesis অধ্যায় None (90সে)
+  … 100 পাতা · এখন: Genesis অধ্যায় None (119সে)
+  … 125 পাতা · এখন: Genesis অধ্যায় None (147সে)
+  … 150 পাতা · এখন: Genesis অধ্যায় None (175সে)
+  … 175 পাতা · এখন: Genesis অধ্যায় None (203সে)
+  … 200 পাতা · এখন: Genesis অধ্যায় None (232সে)
+  … 225 পাতা · এখন: Genesis অধ্যায় None (260সে)
+  … 250 পাতা · এখন: Genesis অধ্যায় None (288সে)
+  … 275 পাতা · এখন: Genesis অধ্যায় None (317সে)
+  … 300 পাতা · এখন: Genesis অধ্যায় None (346সে)
+  … 325 পাতা · এখন: Genesis অধ্যায় None (374সে)
+  … 350 পাতা · এখন: Genesis অধ্যায় None (402সে)
+  … 375 পাতা · এখন: Genesis অধ্যায় None (430সে)
+  … 400 পাতা · এখন: Genesis অধ্যায় None (459সে)
+  … 425 পাতা · এখন: Genesis অধ্যায় None (488সে)
+  … 450 পাতা · এখন: Genesis অধ্যায় None (517সে)
+  … 475 পাতা · এখন: Genesis অধ্যায় None (546সে)
+  … 500 পাতা · এখন: Genesis অধ্যায় None (575সে)
+  … 525 পাতা · এখন: Genesis অধ্যায় None (603সে)
+  … 550 পাতা · এখন: Genesis অধ্যায় None (632সে)
+  … 575 পাতা · এখন: Genesis অধ্যায় None (660সে)
+  … 600 পাতা · এখন: Genesis অধ্যায় None (688সে)
+  … 625 পাতা · এখন: Genesis অধ্যায় None (716সে)
+  … 650 পাতা · এখন: Genesis অধ্যায় None (744সে)
+  … 675 পাতা · এখন: Genesis অধ্যায় None (773সে)
+  … 700 পাতা · এখন: Genesis অধ্যায় None (801সে)
+  … 725 পাতা · এখন: Genesis অধ্যায় None (828সে)
+  … 750 পাতা · এখন: Genesis অধ্যায় None (857সে)
+  … 775 পাতা · এখন: Genesis অধ্যায় None (885সে)
+  … 800 পাতা · এখন: Genesis অধ্যায় None (912সে)
+  … 825 পাতা · এখন: Genesis অধ্যায় None (941সে)
+  … 850 পাতা · এখন: Genesis অধ্যায় None (970সে)
+  … 875 পাতা · এখন: Genesis অধ্যায় None (999সে)
+  … 900 পাতা · এখন: Genesis অধ্যায় None (1028সে)
+  … 925 পাতা · এখন: Genesis অধ্যায় None (1056সে)
+  … 950 পাতা · এখন: Genesis অধ্যায় None (1084সে)
+  … 975 পাতা · এখন: Genesis অধ্যায় None (1114সে)
+  … 1000 পাতা · এখন: Genesis অধ্যায় None (1142সে)
+  … 1025 পাতা · এখন: Genesis অধ্যায় None (1170সে)
+  … 1050 পাতা · এখন: Genesis অধ্যায় None (1200সে)
+  … 1075 পাতা · এখন: Genesis অধ্যায় None (1229সে)
+  … 1100 পাতা · এখন: Genesis অধ্যায় None (1259সে)
+  … 1125 পাতা · এখন: Genesis অধ্যায় None (1287সে)
+  … 1150 পাতা · এখন: Genesis অধ্যায় None (1315সে)
+  … 1175 পাতা · এখন: Genesis অধ্যায় None (1343সে)
+  … 1200 পাতা · এখন: Genesis অধ্যায় None (1371সে)
+  … 1225 পাতা · এখন: Genesis অধ্যায় None (1399সে)
+  … 1250 পাতা · এখন: Genesis অধ্যায় None (1427সে)
+  … 1275 পাতা · এখন: Genesis অধ্যায় None (1456সে)
+  … 1300 পাতা · এখন: Genesis অধ্যায় None (1484সে)
+  … 1325 পাতা · এখন: Genesis অধ্যায় None (1512সে)
+  … 1350 পাতা · এখন: Genesis অধ্যায় None (1540সে)
+  … 1375 পাতা · এখন: Genesis অধ্যায় None (1567সে)
+  … 1400 পাতা · এখন: Genesis অধ্যায় None (1595সে)
+  … 1425 পাতা · এখন: Genesis অধ্যায় None (1624সে)
+  … 1450 পাতা · এখন: Genesis অধ্যায় None (1651সে)
+  … 1475 পাতা · এখন: Genesis অধ্যায় None (1680সে)
+  … 1500 পাতা · এখন: Genesis অধ্যায় None (1709সে)
+  … 1525 পাতা · এখন: Genesis অধ্যায় None (1738সে)
+  … 1550 পাতা · এখন: Genesis অধ্যায় None (1767সে)
+  … 1575 পাতা · এখন: Genesis অধ্যায় None (1795সে)
+  … 1600 পাতা · এখন: Genesis অধ্যায় None (1823সে)
+  … 1625 পাতা · এখন: Genesis অধ্যায় None (1851সে)
+  … 1650 পাতা · এখন: Genesis অধ্যায় None (1879সে)
+  … 1675 পাতা · এখন: Genesis অধ্যায় None (1907সে)
+  … 1700 পাতা · এখন: Genesis অধ্যায় None (1937সে)
+  … 1725 পাতা · এখন: Genesis অধ্যায় None (1966সে)
+  … 1750 পাতা · এখন: Genesis অধ্যায় None (1995সে)
+  … 1775 পাতা · এখন: Genesis অধ্যায় None (2023সে)
+  … 1800 পাতা · এখন: Genesis অধ্যায় None (2051সে)
+  … 1825 পাতা · এখন: Genesis অধ্যায় None (2079সে)
+  … 1850 পাতা · এখন: Genesis অধ্যায় None (2107সে)
+  … 1875 পাতা · এখন: Genesis অধ্যায় None (2134সে)
+  … 1900 পাতা · এখন: Genesis অধ্যায় None (2163সে)
+  … 1925 পাতা · এখন: Genesis অধ্যায় None (2192সে)
+  … 1950 পাতা · এখন: Genesis অধ্যায় None (2220সে)
+  … 1975 পাতা · এখন: Genesis অধ্যায় None (2249সে)
+  … 2000 পাতা · এখন: Genesis অধ্যায় None (2277সে)
+  … 2025 পাতা · এখন: Genesis অধ্যায় None (2305সে)
+  … 2050 পাতা · এখন: Genesis অধ্যায় None (2334সে)
+  … 2075 পাতা · এখন: Genesis অধ্যায় None (2362সে)
+  … 2100 পাতা · এখন: Genesis অধ্যায় None (2389সে)
 ⏱ বাজেট 40 মিনিট শেষ — থামছি; পরের রানে চলবে।
 === ইংরেজি (NAB) ফেচ ===
-পাতা: 1766 · পুস্তক-ফাইল: 0
-  · বাদ (বাংলা সূচিতে নেই): The New American Bible - IntraText — অধ্যায় 33
+পাতা: 2109 · পুস্তক-ফাইল: 1
+  ✓  1. আদিপুস্তক ← Genesis: অধ্যায় 33
 === শেষ ===
 
 মণ্ডল 1: 2088 মন্ত্র → 191 সূক্ত · 3427 শ্লোক
@@ -149,11 +158,15 @@ yajurveda-shukla: 1791/1791 · 40
 উপনিষদ মোট: 0
 হিন্দু-হাব: 12247 / 0
   গ্রিড আপডেট: christian.html
-bible: 23645/23645 · 46 পুস্তক · 844 অধ্যায়
-বেসলাইন: পুস্তক 46 · পদ 23645 · এখন নয় (যথেষ্ট পাঠ নামেনি)
+bible: 23645/23983 · 46 পুস্তক · 844 অধ্যায়
+বেসলাইন: পুস্তক 46 · পদ 23983 · এখন নয় (যথেষ্ট পাঠ নামেনি)
 ── git status:
  M assets/grantho/data/_debug/bible_books.json
  M assets/grantho/data/_debug/bible_discover.txt
+ M assets/grantho/data/_debug/bible_en_join.txt
+ M assets/grantho/data/_debug/bible_en_mismatch.txt
+ M assets/grantho/data/_debug/bible_en_progress.json
+ M assets/grantho/data/_debug/bible_en_report.txt
  M assets/grantho/data/_debug/bible_probe_log.txt
  M assets/grantho/data/_debug/bible_progress.json
  M assets/grantho/data/_debug/bible_report.txt
@@ -168,15 +181,11 @@ bible: 23645/23645 · 46 পুস্তক · 844 অধ্যায়
  M assets/grantho/data/bible/ch14.json
  M assets/grantho/data/bible/ch15.json
  M assets/grantho/data/bible/ch16.json
- M assets/grantho/data/bible/ch17.json
- M assets/grantho/data/bible/ch18.json
- M assets/grantho/data/bible/ch19.json
- M assets/grantho/data/bible/ch2.json
 ── ডাটা ফোল্ডার:
-total 11200
-drwxr-xr-x 3 runner runner   4096 Nov  6 07:04 .
-drwxr-xr-x 7 runner runner   4096 Nov  6 06:35 ..
--rw-r--r-- 1 runner runner 682653 Nov  6 06:36 ch1.json
--rw-r--r-- 1 runner runner 359491 Nov  6 06:43 ch10.json
--rw-r--r-- 1 runner runner 414755 Nov  6 06:44 ch11.json
-── শেষ: 06/11 07:44:51 UTC
+total 11244
+drwxr-xr-x 3 runner runner   4096 Nov  6 08:30 .
+drwxr-xr-x 7 runner runner   4096 Nov  6 08:30 ..
+-rw-r--r-- 1 runner runner 684958 Nov  6 08:31 ch1.json
+-rw-r--r-- 1 runner runner 360330 Nov  6 08:35 ch10.json
+-rw-r--r-- 1 runner runner 418471 Nov  6 08:35 ch11.json
+── শেষ: 06/11 09:55:21 UTC
