@@ -28,6 +28,8 @@
 from __future__ import annotations
 
 import argparse
+import collections
+import html as html_mod
 import json
 import os
 import re
@@ -50,12 +52,26 @@ RAW = os.path.join(DATA, "_debug", "mishkat", "rawfill")
 
 BN = "০১২৩৪৫৬৭৮৯"
 HADITH_NO_RE = re.compile(r"হাদীস\s*নং")
+# «হাদীস নং:২» / «হাদীস নং ২» / «হাদিস নম্বর: 2» — বাংলা ও ইংরেজি অঙ্ক দুটোই
+NO_LABEL_RE = re.compile(r"হাদ[ীি]স\s*(?:নং|নম্বর|নম্বার)\s*[:：]?\s*([০-৯0-9]+)")
+PROBE_DIR = os.path.join(DATA, "_debug", "mishkat", "probe")
+FAILED_DIR = os.path.join(DATA, "_debug", "mishkat", "failed")
 ZERO_W = re.compile(r"[\u200b-\u200f\u202a-\u202e\u2060\ufeff]")
 TITLE_RE = re.compile(r"মিশকাতুল\s*মাসাব")        # «মিশকাতুল মাসাবীহ» (ZWNJ-সহও)
 
 
 def norm(s: str) -> str:
     return ZERO_W.sub("", s)
+
+
+def bn_digits(n: int) -> str:
+    """৫৮৮ → '৫৮৮' (বাংলা অঙ্কে)।"""
+    return "".join(BN[int(c)] for c in str(n))
+
+
+def page_numbers(html_src: str) -> list[int]:
+    """পাতায় লেখা সব «হাদীস নং …» নম্বর (বাংলা/ইংরেজি অঙ্ক)।"""
+    return [bn2num(m.group(1)) for m in NO_LABEL_RE.finditer(norm(html_src))]
 
 
 # ------------------------------------------------------------------ helpers
@@ -193,7 +209,65 @@ def deref(rows: dict, v, depth: int = 8):
     return v
 
 
-def find_hadith_items(payload: str) -> list[dict]:
+def _obj_before(payload: str, idx: int) -> dict | None:
+    """idx-এর আগের '{' থেকে পূর্ণ JSON অবজেক্ট পড়া (ভেতরের থেকে বাইরের দিকে)।"""
+    start = payload.rfind("{", 0, idx)
+    for _ in range(8):
+        if start < 0:
+            return None
+        try:
+            obj, _ = JSON_VAL.raw_decode(payload, start)
+        except Exception:                            # noqa: BLE001
+            start = payload.rfind("{", 0, start)
+            continue
+        if isinstance(obj, dict) and "hadith_number" in obj:
+            return obj
+        start = payload.rfind("{", 0, start)
+    return None
+
+
+def _walk_dicts(obj, out: list, depth: int = 0) -> None:
+    """JSON-এর ভেতরে থাকা সব অবজেক্ট বের করা (হাদিস-অবজেক্ট যেখানেই থাকুক)।"""
+    if depth > 14:
+        return
+    if isinstance(obj, dict):
+        out.append(obj)
+        for v in obj.values():
+            _walk_dicts(v, out, depth + 1)
+    elif isinstance(obj, list):
+        for v in obj[:400]:
+            _walk_dicts(v, out, depth + 1)
+
+
+def find_hadith_items(payload: str, rows: dict | None = None) -> list[dict]:
+    """হাদিস-অবজেক্ট খোঁজে — গঠন যাই হোক।
+
+    আগে শুধু `"hadiths": [ … ]` নেস্টেড অ্যারে দেখা হতো। একক-হাদিস পাতায়
+    (`/hadith/<id>`) গঠন আলাদা হওয়ায় কিছুই মিলত না — ফলে ১,৩৫১টি পাতাই বাদ
+    পড়েছিল। এখন তিন পথে খোঁজা হয়:
+      ১. rows-এর পার্স করা JSON-এ `hadith_number`-ওয়ালা অবজেক্ট
+      ২. `"hadiths": [` নেস্টেড অ্যারে (পুরোনো পথ)
+      ৩. কাঁচা পেলোডে `"hadith_number"`-এর আশপাশের অবজেক্ট
+    """
+    out: list[dict] = []
+    seen: set = set()
+
+    def add(o) -> None:
+        if not isinstance(o, dict) or "hadith_number" not in o:
+            return
+        key = (str(o.get("hadith_number")), str(o.get("description"))[:24],
+               str(o.get("description_ar"))[:24])
+        if key in seen:
+            return
+        seen.add(key)
+        out.append(o)
+
+    if rows:
+        found: list = []
+        for v in rows.values():
+            _walk_dicts(v, found)
+        for o in found:
+            add(o)
     for m in re.finditer(r'"hadiths":\s*\[', payload):
         pos = payload.rfind("[", 0, m.start())
         for _ in range(8):
@@ -205,12 +279,15 @@ def find_hadith_items(payload: str) -> list[dict]:
                 pos = payload.rfind("[", 0, pos)
                 continue
             if isinstance(arr, list):
-                out = [x for item in arr if isinstance(item, dict)
-                       for x in (item.get("hadiths") or []) if isinstance(x, dict)]
-                if out:
-                    return out
+                for item in arr:
+                    if isinstance(item, dict):
+                        for x in (item.get("hadiths") or []):
+                            add(x)
+                        add(item)
             pos = payload.rfind("[", 0, pos)
-    return []
+    for m in re.finditer(r'"hadith_number"\s*:', payload):
+        add(_obj_before(payload, m.start()))
+    return out
 
 
 GRADE_CLASS = (
@@ -231,28 +308,113 @@ def grade_class(g: str) -> str:
 LEAD_NUM_RE = re.compile(r"^\s*[০-৯0-9]+\s*[।.)]\s*")
 
 
-def parse_hadith_page(html: str, n: int) -> dict | None:
-    """এক পাতার একক হাদিস → রিডার-ফরম্যাট; যাচাই ব্যর্থ হলে None।"""
-    # শিরোনাম-যাচাই ইচ্ছে করেই নরম (নিচে নম্বরেই কড়া যাচাই হয়)
-    payload = flight_payload(html)
-    rows = flight_rows(payload)
-    items = find_hadith_items(payload)
-    item = None
-    for h in items:
-        num = h.get("hadith_number")
-        if num is None or num == "":
-            continue
-        if bn2num(num) == n:
-            item = h
+# --------------------------------------------- রেন্ডার-করা HTML থেকে পাঠ (ফলব্যাক)
+SCRIPT_RE = re.compile(r"(?is)<(script|style|noscript|template|svg)[^>]*>.*?</\1>")
+BLOCK_RE = re.compile(r"(?i)</?(?:p|div|br|li|h[1-6]|section|article|tr|td|blockquote|pre|figure|figcaption|header|footer)[^>]*>")
+TAG_RE = re.compile(r"(?s)<[^>]+>")
+AR_RE = re.compile(r"[\u0600-\u06ff\u0750-\u077f\ufb50-\ufdff]")
+STOP_MARKERS = (
+    "পূর্ববর্তী", "পরবর্তী", "আরবী দেখুন", "হাদীসের ব্যাখ্যা", "মুসলিম বাংলা",
+    "কপিরাইট", "সব হাদীস", "হোমপেজ", "অনুসন্ধান", "শেয়ার করুন", "মন্তব্য",
+    "সূচিপত্র", "পরবর্তী পৃষ্ঠা", "পূর্ববর্তী পৃষ্ঠা",
+)
+
+
+CODE_RE = re.compile(r"(?s)self\.__next_f\.push\(.*?\)\s*(?=<|$)")
+CODE_HINTS = ("self.__next_f", "__NEXT_", "function(", "=>", "undefined",
+              '\\"', '{"', "window.", "document.")
+CODE_PUNCT = set('{}[]\\":;|<>=$')
+
+
+def looks_like_code(ln: str) -> bool:
+    """JS/JSON-এর টুকরো কি না — হাদিসের পাঠ বলে ভুল করে ঢুকিয়ে দেওয়া চলবে না।"""
+    if any(h in ln for h in CODE_HINTS):
+        return True
+    letters = [c for c in ln if not c.isspace()]
+    if not letters:
+        return False
+    punct = sum(1 for c in letters if c in CODE_PUNCT)
+    return punct / len(letters) > 0.08
+
+
+def html_text(html_src: str) -> str:
+    """রেন্ডার-করা পাতার দৃশ্যমান টেক্সট, লাইনে লাইনে (সার্ভার-সাইড রেন্ডার হওয়ায়
+    হাদিসের পাঠ HTML-এই থাকে — RSC না মিললে এখান থেকে তোলা যায়)।"""
+    t = SCRIPT_RE.sub("\n", html_src)
+    t = CODE_RE.sub("\n", t)          # <script>-এর বাইরে থাকা RSC-পুশও বাদ
+    t = BLOCK_RE.sub("\n", t)
+    t = TAG_RE.sub(" ", t)
+    t = html_mod.unescape(norm(t))
+    t = t.replace("\u00a0", " ")
+    lines = [re.sub(r"[ \t]+", " ", ln).strip() for ln in t.split("\n")]
+    return "\n".join(ln for ln in lines if ln)
+
+
+def is_arabic(ln: str) -> bool:
+    letters = [c for c in ln if not c.isspace()]
+    if len(letters) < 8:
+        return False
+    return sum(1 for c in letters if AR_RE.match(c)) / len(letters) > 0.5
+
+
+def parse_from_html(html_src: str, n: int) -> tuple[dict | None, str]:
+    """রেন্ডার-করা টেক্সট থেকে একক হাদিস তোলা (শেষ উপায়)।"""
+    lines = html_text(html_src).split("\n")
+    lead = bn_digits(n)
+    li = next((i for i, ln in enumerate(lines)
+               if any(bn2num(m.group(1)) == n for m in NO_LABEL_RE.finditer(ln))), None)
+    if li is None:
+        return None, "html:লেবেল-নেই"
+    sec = ""
+    for ln in lines[max(0, li - 10):li + 10]:
+        m = re.match(r"^অধ্যায়[ঃ:]\s*(.+)$", ln.strip())
+        if m:
+            sec = clean(m.group(1))
             break
-    plain = norm(html)
-    if item is None:
-        # শিরোনামের «হাদীস নং: n» দিয়ে যাচাই (কিছু পাতায় hadith_number খালি)
-        if not re.search(r"হাদীস\s*নং\s*[:：]?\s*%d(?!\d)" % n, plain):
-            return None
-        if len(items) != 1:
-            return None
-        item = items[0]
+    start_i = None
+    for i in range(li, min(len(lines), li + 30)):     # «৫৮৮। …» দিয়ে শুরু হলে নিশ্চিত
+        ln = lines[i].strip()
+        if ln.startswith(lead + "।") or ln.startswith(lead + "."):
+            start_i = i
+            break
+    if start_i is None:
+        for i in range(li, min(len(lines), li + 30)):
+            ln = lines[i].strip()
+            if (len(ln) > 150 and not is_arabic(ln) and not looks_like_code(ln)
+                and not any(mk in ln for mk in STOP_MARKERS)):
+                start_i = i
+                break
+    if start_i is None:
+        return None, "html:পাঠ-শুরু-মেলেনি"
+    bn_lines, i = [], start_i
+    while i < len(lines) and sum(map(len, bn_lines)) < 30000:
+        ln = lines[i].strip()
+        if is_arabic(ln) or looks_like_code(ln) or any(mk in ln for mk in STOP_MARKERS):
+            break
+        if ln:
+            bn_lines.append(ln)
+        i += 1
+    ar_lines = []
+    while i < len(lines) and sum(map(len, ar_lines)) < 30000:
+        ln = lines[i].strip()
+        if not is_arabic(ln):
+            break
+        # «كتاب الإيمان» / «الفصل الاول» শিরোনাম — মূল পাঠ নয়
+        if not (len(ln) < 60 and re.match(r"^(كتاب|الفصل|باب)", ln)):
+            ar_lines.append(ln)
+        i += 1
+    bn_txt = LEAD_NUM_RE.sub("", clean("\n".join(bn_lines)))
+    ar_txt = clean("\n".join(ar_lines))
+    if len(bn_txt) < 40 and len(ar_txt) < 40:
+        return None, "html:পাঠ-খালি"
+    v = {"i": n, "b": bn_txt, "a": ar_txt, "n": ""}
+    if sec:
+        v["s"] = sec
+    return v, "html"
+
+
+# ------------------------------------------------------------------ parse
+def item_to_verse(rows: dict, item: dict, n: int) -> dict | None:
     bn = clean(deref(rows, item.get("description")))
     ar = clean(deref(rows, item.get("description_ar")))
     if not (bn or ar):
@@ -265,16 +427,82 @@ def parse_hadith_page(html: str, n: int) -> dict | None:
     sec = clean((item.get("titles") or {}).get("title"))
     if sec:
         v["s"] = sec
-    tah = clean(item.get("tahqeeq_explanation"))
+    tah = clean(deref(rows, item.get("tahqeeq_explanation")))
     if tah:
         v["tah"] = tah
     return v
 
 
-def probe(sample=None) -> str:
-    """কয়েকটি পাতা নামিয়ে পার্সার কেন চিনছে/চিনছে না — বিস্তারিত রিপোর্ট।
+def parse_hadith_page_ex(html_src: str, n: int) -> tuple[dict | None, str]:
+    """এক পাতার একক হাদিস → (রিডার-ফরম্যাট, কীভাবে পাওয়া গেল)।
 
-    Actions-এ চালিয়ে _debug/mishkat/fill_probe.txt পড়া যায়।
+    যাচাই কড়া: পাতার «হাদীস নং» লেবেলে n মিলতেই হবে, নয়তো বাদ —
+    অনুমান-পাঠ নয়। ফল না মিললে দ্বিতীয় উপাদানে কারণ ফেরে (রিপোর্টের জন্য)।
+    """
+    nums = page_numbers(html_src)
+    payload = flight_payload(html_src)
+    rows = flight_rows(payload)
+    items = find_hadith_items(payload, rows)
+    if n not in nums:
+        # লেবেল না মিললে পাতাটাই অন্য হাদিসের (বা নামেনি) — RSC-তে মিললেও নয়
+        if not any(bn2num(h.get("hadith_number")) == n for h in items):
+            return None, "ব্যর্থ:নম্বর-মেলেনি(লেবেল %s)" % (nums[:3] or "নেই")
+    exact = [h for h in items if bn2num(h.get("hadith_number")) == n]
+    if exact:
+        v = item_to_verse(rows, exact[0], n)
+        if v:
+            return v, "payload:নম্বর-মিল"
+    if len(items) == 1 and n in nums:
+        v = item_to_verse(rows, items[0], n)
+        if v:
+            return v, "payload:একক"
+    if n in nums:
+        return parse_from_html(html_src, n)
+    return None, "ব্যর্থ:হাদিস-অবজেক্ট-নেই(items=%d)" % len(items)
+
+
+def parse_hadith_page(html_src: str, n: int) -> dict | None:
+    return parse_hadith_page_ex(html_src, n)[0]
+
+
+def _keysets(obj, census: collections.Counter, depth: int = 0) -> None:
+    """JSON-গঠনের আদমশুমারি — হাদিস-অবজেক্টের ফিল্ড-নাম আসলে কী, তা দেখায়।"""
+    if depth > 12:
+        return
+    if isinstance(obj, dict):
+        census[tuple(sorted(obj.keys()))] += 1
+        for v in obj.values():
+            _keysets(v, census, depth + 1)
+    elif isinstance(obj, list):
+        for v in obj[:200]:
+            _keysets(v, census, depth + 1)
+
+
+def _long_strings(rows: dict, out: list, depth: int = 0) -> None:
+    """দীর্ঘ টেক্সট কোন পাথে (JSON-path) বসে আছে — বাংলা/আরবি পাঠের ঠিকানা।"""
+    for key, val in rows.items():
+        stack = [(f"${key}", val, 0)]
+        while stack:
+            path, v, d = stack.pop()
+            if d > 10:
+                continue
+            if isinstance(v, dict):
+                for k2, v2 in v.items():
+                    stack.append((f"{path}.{k2}", v2, d + 1))
+            elif isinstance(v, list):
+                for i2, v2 in enumerate(v[:60]):
+                    stack.append((f"{path}[{i2}]", v2, d + 1))
+            elif isinstance(v, str) and len(v) > 200:
+                ar = sum(1 for c in v[:400] if AR_RE.match(c))
+                out.append((path, len(v), "ar" if ar > 40 else "bn", v[:50]))
+
+
+def probe(sample=None) -> str:
+    """কয়েকটি পাতা নামিয়ে পার্সার কী দেখছে — বিস্তারিত রিপোর্ট + কাঁচা নমুনা।
+
+    রিপোর্ট: `_debug/mishkat/fill_probe.txt` (commit-comment-এও ওঠে)
+    কাঁচা নমুনা: `_debug/mishkat/probe/<n>.html` ও `<n>.flight.txt` — ব্র্যাঞ্চ থেকে
+    পড়া যায়, তাই পাতার আসল গঠন দেখে পার্সার ঠিক করা সম্ভব।
     """
     gaps = missing_numbers()
     picks = list(sample or [])
@@ -283,40 +511,81 @@ def probe(sample=None) -> str:
             for n in range(a, min(b, a + 1) + 1):
                 if n not in picks:
                     picks.append(n)
-        if len(picks) >= 6:
+        if len(picks) >= 3:
             break
-    picks = picks[:6]
-    lines = [f"probe: {len(picks)} পাতা · {time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime())}"]
+    picks = picks[:3]
+    os.makedirs(PROBE_DIR, exist_ok=True)
+    lines = [f"probe: {len(picks)} পাতা · "
+             f"{time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime())}"]
     for n in picks:
         url = f"{BASE}/hadith/{PAGE0 + n}"
         try:
-            html = get(url, sleep=0.3)
+            html_src = get(url, sleep=0.4)
         except Exception as e:                       # noqa: BLE001
             lines.append(f"\n[{n}] ✗ নামানো যায়নি: {e}")
             continue
-        payload = flight_payload(html)
-        items = find_hadith_items(payload)
+        payload = flight_payload(html_src)
         rows = flight_rows(payload)
-        nums = [str(h.get("hadith_number")) for h in items[:6]]
-        lines.append(f"\n[{n}] url={url}")
-        lines.append(f"  html {len(html)}B · flight {len(payload)}B · rows {len(rows)}")
-        has_num_label = bool(HADITH_NO_RE.search(norm(html)))
-        lines.append("  শিরোনাম-মিল: %s · «হাদীস নং» আছে: %s"
-                     % (bool(TITLE_RE.search(norm(html))), has_num_label))
-        lines.append(f"  hadiths-অ্যারে: {len(items)} · hadith_number: {nums}")
-        m = re.search(r'"hadith_number"\s*:\s*[^,}]+', payload)
-        lines.append(f"  নমুনা: {m.group(0)[:60] if m else '(নেই)'}")
-        for key in ("description", "description_ar", "type", "titles", "tahqeeq_explanation"):
-            m2 = re.search(r'"%s"\s*:\s*.{0,50}' % key, payload)
-            lines.append(f"  {key}: {(m2.group(0)[:60] if m2 else '(নেই)')}")
-        v = parse_hadith_page(html, n)
-        lines.append(f"  parse → {'✓ বাংলা ' + str(len(v['b'])) + 'B' if v else '✗ None'}")
+        items = find_hadith_items(payload, rows)
+        lines.append(f"\n[{n}] {url}")
+        lines.append(f"  html {len(html_src)}B · flight {len(payload)}B · "
+                     f"rows {len(rows)} · items {len(items)}")
+        m = re.search(r"(?is)<title>(.*?)</title>", html_src)
+        lines.append(f"  <title>: {clean(m.group(1))[:90] if m else '(নেই)'}")
+        lines.append(f"  পাতার নম্বর-লেবেল: {page_numbers(html_src)[:6]}")
+        lines.append("  items-এর hadith_number: %s"
+                     % [str(i.get('hadith_number'))[:12] for i in items[:6]])
+        census: collections.Counter = collections.Counter()
+        for v in rows.values():
+            _keysets(v, census)
+        interesting = [k for k in census
+                       if any(w in " ".join(k).lower() for w in
+                              ("hadith", "description", "number", "title", "type"))]
+        lines.append(f"  ফিল্ড-সেট (সংশ্লিষ্ট {len(interesting)}):")
+        for k in sorted(interesting, key=lambda k: -census[k])[:8]:
+            lines.append(f"    ×{census[k]} {list(k)[:12]}")
+        longs: list = []
+        _long_strings(rows, longs)
+        lines.append(f"  দীর্ঘ টেক্সটের পাথ ({len(longs)}টি, প্রথম ৮):")
+        for path, ln, kind, head in longs[:8]:
+            lines.append(f"    {kind} {ln:>6}B {path[:60]} · {head[:36]!r}")
+        v, how = parse_hadith_page_ex(html_src, n)
+        if v:
+            lines.append(f"  parse ✓ [{how}] বাংলা {len(v['b'])}B · আরবি {len(v['a'])}B"
+                         + (f" · g={v.get('g', '')[:24]}" if v.get("g") else "")
+                         + (f" · s={v.get('s', '')[:24]}" if v.get("s") else ""))
+            lines.append(f"    b[:70]: {v['b'][:70]!r}")
+        else:
+            lines.append(f"  parse ✗ [{how}]")
+        # কাঁচা নমুনা (প্রতিটি ৭০০ KB-এর বেশি নয়) — ব্র্যাঞ্চ থেকে পড়া যাবে
+        open(os.path.join(PROBE_DIR, f"{n}.html"), "w",
+             encoding="utf-8").write(html_src[:400_000])
+        open(os.path.join(PROBE_DIR, f"{n}.flight.txt"), "w",
+             encoding="utf-8").write(payload[:300_000])
     report = "\n".join(lines)
-    os.makedirs(CACHE, exist_ok=True)
-    open(os.path.join(os.path.dirname(CACHE), "fill_probe.txt"), "w",
+    os.makedirs(os.path.dirname(PROBE_DIR), exist_ok=True)
+    open(os.path.join(os.path.dirname(PROBE_DIR), "fill_probe.txt"), "w",
          encoding="utf-8").write(report + "\n")
     print(report, flush=True)
     return report
+
+
+def _write_stats(todo_n: int, ok: int, bad: int, hows: collections.Counter,
+                 fails: dict) -> None:
+    """ফলের সারসংক্ষেপ `_debug/mishkat/fill_stats.txt`-এ (কমেন্টেও ওঠে)।"""
+    os.makedirs(os.path.dirname(CACHE), exist_ok=True)
+    lines = [f"fill: চেষ্টা {todo_n} · সফল {ok} · ব্যর্থ {bad} · "
+             f"{time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime())}",
+             "কীভাবে পাওয়া গেল / কেন ব্যর্থ:"]
+    for how, c in hows.most_common():
+        lines.append(f"  {c:>5} × {how}")
+    for reason, nums in sorted(fails.items(), key=lambda kv: -len(kv[1])):
+        head = ", ".join(str(x) for x in nums[:12])
+        lines.append(f"  উদাহরণ [{reason}] ({len(nums)}টি): {head}")
+    txt = "\n".join(lines)
+    open(os.path.join(os.path.dirname(CACHE), "fill_stats.txt"), "w",
+         encoding="utf-8").write(txt + "\n")
+    print(txt, flush=True)
 
 
 def fill(limit: int = 0, sleep: float = 0.8) -> None:
@@ -331,23 +600,39 @@ def fill(limit: int = 0, sleep: float = 0.8) -> None:
         todo = todo[:limit]
     print(f"নামাতে হবে {len(todo)} হাদিস-পাতা (ক্যাশে আছে {len(os.listdir(CACHE))})", flush=True)
     ok = bad = 0
+    hows: collections.Counter = collections.Counter()
+    fails: dict[str, list[int]] = {}
+    os.makedirs(FAILED_DIR, exist_ok=True)
     for i, (ch, n) in enumerate(todo, 1):
         url = f"{BASE}/hadith/{PAGE0 + n}"
+        how = "ব্যর্থ:নেটওয়ার্ক"
+        v = None
         try:
-            v = parse_hadith_page(get(url, sleep=sleep), n)
+            v, how = parse_hadith_page_ex(get(url, sleep=sleep), n)
         except Exception as e:                       # noqa: BLE001
-            v = None
+            how = f"ব্যর্থ:এক্সেপশন({type(e).__name__})"
             print(f"  ✗ {n} ({ch}) {e}", flush=True)
+        hows[how] += 1
         if not v:
             bad += 1
-            print(f"  ⚠ {n} ({ch}) যাচাইয়ে ব্যর্থ — বাদ", flush=True)
-            continue
-        json.dump(v, open(cache_path(n), "w", encoding="utf-8"),
-                  ensure_ascii=False, separators=(",", ":"))
-        ok += 1
+            fails.setdefault(how, []).append(n)
+            # প্রথম কয়েকটি ব্যর্থ পাতার কাঁচা HTML রেখে দিই — পরে দেখে ঠিক করা যায়
+            if len(os.listdir(FAILED_DIR)) < 2:
+                try:
+                    open(os.path.join(FAILED_DIR, f"{n}.html"), "w",
+                         encoding="utf-8").write(get(url, sleep=0.2)[:400_000])
+                except Exception:                    # noqa: BLE001
+                    pass
+            print(f"  ⚠ {n} ({ch}) {how} — বাদ", flush=True)
+        else:
+            json.dump(v, open(cache_path(n), "w", encoding="utf-8"),
+                      ensure_ascii=False, separators=(",", ":"))
+            ok += 1
         if i % 25 == 0 or i < 4:
-            print(f"  ✓ {i}/{len(todo)} · শেষ {n} · বাংলা {len(v['b'])} অক্ষর", flush=True)
+            print(f"  ✓ {i}/{len(todo)} · শেষ {n} · সফল {ok} · ব্যর্থ {bad}", flush=True)
+            _write_stats(len(todo), ok, bad, hows, fails)     # মাঝপথে থেমে গেলেও রিপোর্ট থাকে
     print(f"শেষ: নামানো {ok} · ব্যর্থ {bad}", flush=True)
+    _write_stats(len(todo), ok, bad, hows, fails)
 
 
 # ------------------------------------------------------------------ build

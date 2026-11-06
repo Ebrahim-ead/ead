@@ -80,17 +80,22 @@ jobs:
           git config user.name  "mishkat-bot"
           git config user.email "bot@users.noreply.github.com"
 
-      # আগের রানের ফল (ক্যাশ করা পাতা + আগের ডেটা) ফিরিয়ে আনি — না থাকলে সমস্যা নেই
-      - name: আগের ফল আনা (bot/mishkat-data)
+      # আগের রানের ক্যাশ ফিরিয়ে আনি — কিন্তু ডেটা নয়: ডেটার সত্য main-ই।
+      # আগে পুরো assets/hadith/data ফেরানো হতো, ফলে bot-ব্র্যাঞ্চের পুরোনো
+      # (ক্রম-না-ঠিক) ডেটা main-এর সংশোধিত ডেটা ঢেকে দিত।
+      - name: আগের ক্যাশ আনা (bot/mishkat-data)
         run: |
           set +e
+          DBG=assets/hadith/data/_debug/mishkat
           git fetch origin "${BOT_BRANCH}" --depth=1
           if git rev-parse --verify -q "FETCH_HEAD^{commit}" >/dev/null; then
-            git checkout FETCH_HEAD -- assets/hadith/data 2>/dev/null && echo "✓ আগের ডেটা ফেরত"
+            git checkout FETCH_HEAD -- "$DBG/filled" 2>/dev/null && echo "✓ ক্যাশ ফেরত"
+            git checkout FETCH_HEAD -- "$DBG/probe" 2>/dev/null || true
+            git reset -q || true
+            echo "ক্যাশ করা পাতা: $(ls "$DBG/filled" 2>/dev/null | wc -l)"
           else
             echo "কোনো পুরোনো ব্র্যাঞ্চ নেই — শূন্য থেকে শুরু"
           fi
-          echo "ক্যাশ করা পাতা: $(ls assets/hadith/data/_debug/mishkat/filled 2>/dev/null | wc -l)"
 
       - name: ০) পরিকল্পনা
         if: always()
@@ -101,7 +106,7 @@ jobs:
         run: |
           ARGS="--probe"
           if [ -n "$PROBE_SAMPLE" ]; then echo "নমুনা: $PROBE_SAMPLE"; fi
-          python3 -u tools/fill_mishkat.py $ARGS 2>&1 | tail -80
+          python3 -u tools/fill_mishkat.py $ARGS 2>&1 | tail -200
 
       - name: ১) ফাঁকা হাদিস নামানো
         if: env.MODE == 'all' || env.MODE == 'fill'
@@ -120,6 +125,21 @@ jobs:
         if: always()
         run: python3 -u tools/fill_mishkat.py --verify | tee /tmp/verify.txt
 
+      - name: ৪) রিপোর্ট ফাইল
+        if: always()
+        run: |
+          DBG=assets/hadith/data/_debug/mishkat
+          mkdir -p "$DBG"
+          {
+            echo "mode=$MODE · limit=$LIMIT · sleep=$SLEEP · head=$(git rev-parse --short HEAD) · run=${GITHUB_RUN_ID}"
+            echo "ক্যাশ করা পাতা: $(ls "$DBG/filled" 2>/dev/null | wc -l)"
+            echo "--- verify"
+            tail -20 /tmp/verify.txt 2>/dev/null || true
+            echo "--- fill.log (শেষ ৪০ লাইন)"
+            tail -40 /tmp/fill.log 2>/dev/null || true
+          } > "$DBG/fill_run.txt"
+          cat "$DBG/fill_run.txt"
+
       - name: ফল আপলোড (artifact)
         if: always()
         uses: actions/upload-artifact@v4
@@ -128,69 +148,81 @@ jobs:
           path: |
             /tmp/fill.log
             /tmp/verify.txt
+            /tmp/push.log
             assets/hadith/data/mishkat/
             assets/hadith/data/index.json
+            assets/hadith/data/_debug/mishkat/fill_probe.txt
+            assets/hadith/data/_debug/mishkat/fill_stats.txt
           retention-days: 14
           if-no-files-found: warn
 
+      # ফল bot-ব্র্যাঞ্চে যায়। আগে main-এর গাছ থেকে push করা হতো, তাই non-fast-forward
+      # ঠেকাতো আর rebase-এর পরে HEAD bot-টিপে দাঁড়িয়ে «Everything up-to-date» বলে
+      # ধাপটি «সফল» দেখাত — অথচ ব্র্যাঞ্চ বদলাত না। এখন সরাসরি bot-টিপের ওপর বসে
+      # নতুন ফল কপি করে commit ⇒ সবসময় fast-forward।
+      - name: ফল push (bot ব্র্যাঞ্চ)
+        if: always()
+        run: |
+          DBG=assets/hadith/data/_debug/mishkat
+          rm -rf "$DBG/rawfill" "$DBG/raw"        # কাঁচা HTML ঝুড়ি বড় — কমিটে নয়
+          OUT=/tmp/out
+          rm -rf "$OUT"; mkdir -p "$OUT"
+          cp -r assets/hadith/data/mishkat "$OUT/mishkat" 2>/dev/null || true
+          cp assets/hadith/data/index.json "$OUT/index.json" 2>/dev/null || true
+          cp -r "$DBG" "$OUT/dbg" 2>/dev/null || true
+          {
+            echo "== bot-ব্র্যাঞ্চের টিপে বসা"
+            git fetch origin "$BOT_BRANCH" --depth=1 && echo "fetch ✓" || echo "fetch ✗"
+            if git rev-parse --verify -q FETCH_HEAD >/dev/null; then
+              git checkout -f -B botwork FETCH_HEAD && echo "checkout bot ✓ $(git rev-parse --short HEAD)"
+            else
+              git checkout -f -B botwork && echo "checkout main ✓ (ব্র্যাঞ্চ ছিল না)"
+            fi
+            mkdir -p assets/hadith/data/_debug
+            [ -d "$OUT/mishkat" ] && cp -r "$OUT/mishkat" assets/hadith/data/
+            [ -f "$OUT/index.json" ] && cp "$OUT/index.json" assets/hadith/data/
+            [ -d "$OUT/dbg" ] && cp -r "$OUT/dbg" assets/hadith/data/_debug/mishkat
+            git add -f assets/hadith/data
+            echo "== পরিবর্তন"
+            git status --porcelain | head -15
+            git diff --cached --stat | tail -4
+            if git diff --cached --quiet; then
+              echo "কোনো পরিবর্তন নেই — push লাফ"
+            else
+              git commit -q -m "মিশকাত: ফাঁকা হাদিস পূরণ + নম্বর-ক্রম ($(date -u +%d/%m %H:%M) UTC)"
+              git push origin "HEAD:refs/heads/${BOT_BRANCH}" && echo "✓ ${BOT_BRANCH}-এ গেছে $(git rev-parse --short HEAD)"
+            fi
+          } 2>&1 | tee /tmp/push.log
+
       # লগ/artifact ডাউনলোড সব জায়গায় হয় না — তাই ফলটা commit-comment-এও রাখি
-      # (GitHub API দিয়েই পড়া যায়, আলাদা কিছু লাগে না)।
+      # (GitHub API দিয়েই পড়া যায়)। push-এর পরে, যাতে push.log-ও ঢোকে।
       - name: ফল কমেন্টে (commit-comment)
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          DBG=assets/hadith/data/_debug/mishkat
           CMT=/tmp/report.md
           {
             echo "### মিশকাত fill — রিপোর্ট"
             echo ""
-            echo "- মোড: \`$MODE\` · limit=\`$LIMIT\` · sleep=\`$SLEEP\`"
-            echo "- ব্র্যাঞ্চ: \`${BOT_BRANCH}\` · কমিট: \`${GITHUB_SHA:0:7}\`"
+            echo "- মোড: \`$MODE\` · limit=\`$LIMIT\` · sleep=\`$SLEEP\` · run=${GITHUB_RUN_ID}"
+            echo "- ট্রিগার কমিট: \`${GITHUB_SHA:0:7}\` · ফল ব্র্যাঞ্চ: \`${BOT_BRANCH}\`"
             echo ""
-            for f in assets/hadith/data/_debug/mishkat/fill_probe.txt \
-                     assets/hadith/data/_debug/mishkat/build.txt \
-                     assets/hadith/data/_debug/mishkat/fill_run.txt; do
+            for f in "$DBG/fill_stats.txt" "$DBG/fill_probe.txt" "$DBG/build.txt" "$DBG/fill_run.txt"; do
               [ -f "$f" ] || continue
               echo '```'
               echo "## $(basename "$f")"
-              head -c 12000 "$f"
+              head -c 11000 "$f"
               echo '```'
             done
             echo '```'
             echo "## verify"
-            head -c 4000 /tmp/verify.txt 2>/dev/null || true
+            head -c 3000 /tmp/verify.txt 2>/dev/null || true
+            echo ""
+            echo "## push"
+            head -c 3000 /tmp/push.log 2>/dev/null || true
             echo '```'
           } > "$CMT"
           gh api -X POST "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/comments" \
             -F body=@"$CMT" --jq '.id' && echo "✓ কমেন্টে গেছে" || echo "⚠ কমেন্ট হলো না"
-
-      - name: ফল রিপোর্ট + push
-        if: always()
-        run: |
-          mkdir -p assets/hadith/data/_debug/mishkat
-          {
-            echo "mode=$MODE · limit=$LIMIT · sleep=$SLEEP · head=$(git rev-parse --short HEAD)"
-            echo "ক্যাশ করা পাতা: $(ls assets/hadith/data/_debug/mishkat/filled 2>/dev/null | wc -l)"
-            tail -20 /tmp/verify.txt 2>/dev/null || true
-          } > assets/hadith/data/_debug/mishkat/fill_run.txt
-
-          # কাঁচা HTML কমিটে যাবে না — parsed/filled JSON-ই যথেষ্ট
-          rm -rf assets/hadith/data/_debug/mishkat/rawfill
-          rm -rf assets/hadith/data/_debug/mishkat/raw
-          git add -f assets/hadith/data/mishkat || true
-          git add -f assets/hadith/data/index.json || true
-          git add -f assets/hadith/data/_debug/mishkat/filled || true
-          git add -f assets/hadith/data/_debug/mishkat/fill_probe.txt || true
-          git add -f assets/hadith/data/_debug/mishkat/build.txt || true
-          git add -f assets/hadith/data/_debug/mishkat/fill_run.txt || true
-
-          if git diff --cached --quiet; then
-            echo "কোনো পরিবর্তন নেই"
-            exit 0
-          fi
-          git commit -m "মিশকাত: ফাঁকা হাদিস পূরণ + নম্বর-ক্রম ($(date -u +%d/%m %H:%M) UTC)"
-          git push origin "HEAD:refs/heads/${BOT_BRANCH}" && echo "✓ ${BOT_BRANCH}-এ গেছে" || {
-            echo "সরাসরি push হলো না — rebase করে আবার চেষ্টা"
-            git pull --rebase origin "${BOT_BRANCH}" || true
-            git push origin "HEAD:refs/heads/${BOT_BRANCH}"
-          }
