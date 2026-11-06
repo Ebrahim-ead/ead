@@ -36,7 +36,7 @@ RAW = EN / "raw"
 DBG = OUT.parent / "_debug"   # fetch_bible.py-এর সাথে একই ফোল্ডার
 MANIFEST = DBG / "bible_books.json"          # fetch_bible.py-র discover-এর লেখা
 EN_SRC = "The New American Bible — vatican.va"
-PV_EN = 3                                    # ইংরেজি পার্সারের সংস্করণ
+PV_EN = 4                                    # ইংরেজি পার্সারের সংস্করণ
 
 BASE = "https://www.vatican.va/archive/ENG0839/"
 ALPHA = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -64,6 +64,10 @@ NAB_ID = {}
 for _i, _n in enumerate(NAB_ORDER, 1):
     NAB_ID[_n.lower()] = _i
     if _n == "Song of Songs":
+        # NAB-পাতার ব্রেডক্রাম্বে নামটি «Song of Songs»-ই, তবে তালিকার
+        # কিছু সংস্করণে «Song of Solomon» — দুটোই এক পুস্তক (গীতসংহিতা ২২)।
+        # আগে এই alias না থাকায় ইংরেজি অংশে সামসঙ্গীতের ৮টি অধ্যায়ই
+        # «বাংলা সূচিতে নেই» ভেবে বাদ পড়ছিল।
         NAB_ID["song of solomon"] = _i
     if _n == "Acts of the Apostles":
         NAB_ID["acts"] = _i
@@ -126,36 +130,69 @@ def page_identity(lines):
     return None, ch
 
 
-def parse_en_verses(lines):
-    """পদ-তালিকা: নম্বর-লাইন + পরের পাঠ। টীকা-অংশ কাটা হয় «নম্বর কমলে»।
+def _en_parts(lines):
+    """পাতার লাইন → [(পদ-নম্বর, পাঠ)] — IntraText-এর আসল গঠন অনুযায়ী।
 
-    IntraText-এ পদ-নম্বর আলাদা লাইনে; যাদের টীকা আছে তাদের পাঠের শুরুতে
-    «[n]» চিহ্ন; শেষে টীকা-তালিকা, যার নম্বরগুলো আবার ছোট থেকে শুরু —
-    «নম্বর ≥ প্রত্যাশিত» নিয়মে তাই টীকা আপনা থেকেই বাদ পড়ে।
+    উৎস-পাতার (যেমন রোমীয় ২) গঠন: প্রতিটি পদ শুরু হয় **একা একটি সংখ্যা-লাইন**ে
+    («1», «2» …), তারপর পাঠ — যার ভেতরে টীকা-নম্বর «[2]» আকারে লিংক হয়ে বসে
+    («…you pass judgment. [2] For by the standard…»)। শেষে আবার «[1]» দিয়ে
+    টীকা-তালিকা — পুনরাবৃত্ত পদ-নম্বরেই থামতে হয়।
+
+    আগের পার্সার পাঠের ভেতরের «[2]» টীকা-চিহ্ন তুলত না (FOOT_MARK কেবল
+    লাইনের শুরুতে লাগত), তাই ইংরেজি পাঠে টীকা-নম্বর জমে থাকত — লাইভে সেই
+    দূষণই দেখা গিয়েছিল।
+
+    তবে সব পাতা সমান নয় (পুরোনো রি-ফেচে রোমীয় ২-এর ৬টি পদই জমেছিল): কখনো
+    «1 2 Paul…»-এর মতো **এক-লাইন** রূপও আসে। তাই দুই রূপই মেলানো হয় —
+    ওই সংখ্যাগুলো §মধ্যে-পাঠ্য টীকা বা পদ-নম্বর, দুটোই হতে পারে; খাঁটি
+    নম্বর-লাইনই একমাত্র ভরসা।
     """
-    verses, expect = [], 1
+    pure = []            # [(num, [lines])]
     for raw in lines:
-        ln = FOOT_MARK.sub("", raw.strip())
+        ln = FOOT_MARK.sub("", raw.strip())          # লাইন-শুরুর [n] কাটা
         if not ln or NAV_SKIP.match(ln):
             continue
         m = NUM_LINE.match(ln)
         if m:
-            num = int(m.group(1))
-            if num < expect:          # টীকা-অংশ শুরু
-                break
-            if num > expect:          # মাঝের পদ উৎসে নেই — অনুমান করি না
-                for miss in range(expect, num):
-                    verses.append({"vn": miss, "en": "", "srcEmpty": True})
-            verses.append({"vn": num, "en": ""})
-            expect = num + 1
+            pure.append([int(m.group(1)), []])
             continue
-        if verses and not verses[-1]["en"]:
-            verses[-1]["en"] = ln
-        elif verses:
-            verses[-1]["en"] += " " + ln
+        # পাঠের ভেতরের টীকা-লিংক [n] — শুধু সংখ্যা, তাই বাদ
+        ln = re.sub(r"\[\d{1,3}\]", " ", ln)
+        li = re.match(r"^(\d{1,3})\s+(\S.*)$", ln)   # ইনলাইন রূপের বাকিটা
+        if li and not pure:                          # পাতা-শুরুই «1 2 Paul…» রূপে
+            pure.append([int(li.group(1)), [li.group(2)]])
+            continue
+        if not pure:
+            continue                                 # নম্বরের আগের অংশ = পরিচয়/ভূমিকা
+        if li:
+            ln = li.group(2)
+        ln = re.sub(r"\s{2,}", " ", ln).strip()
+        if ln:
+            pure[-1][1].append(ln)
+    return [(n, " ".join(t).strip()) for n, t in pure if n]
+
+
+def parse_en_verses(lines):
+    """পদ-তালিকা — নম্বর-ক্রম ধরে; বাদ পড়া পদ ফাঁকা (অনুমান নয়)।
+
+    টীকা-তালিকা শুরু হয় পদ-নম্বর আবার ১-এ ফেরার পর (বা পিছিয়ে গেলে) —
+    সেখানেই থামা হয়। এর আগে কোনো ছোট নম্বর এলে সেটিও টীকা (আন্তঃপাঠ্য
+    ক্রস-রেফারেন্স), বাদ।
+    """
+    verses, expect = [], 1
+    for num, en in _en_parts(lines):
+        if num < expect:              # চিহ্ন/টীকা-নম্বর — পাঠ নয়
+            if num == 1 and verses:   # টীকা-তালিকা শুরু
+                break
+            continue
+        if num > expect:              # মাঝের পদ উৎসে নেই — অনুমান করি না
+            for miss in range(expect, num):
+                verses.append({"vn": miss, "en": "", "srcEmpty": True})
+        verses.append({"vn": num, "en": en})
+        expect = num + 1
     for v in verses:
         if not v["en"].strip():
-            v["srcEmpty"] = True     # নম্বর ছাপা, পাঠ উৎসেই নেই
+            v["srcEmpty"] = True      # নম্বর ছাপা, পাঠ উৎসেই নেই
     return [v for v in verses if v["en"] or v.get("srcEmpty")]
 
 
@@ -253,11 +290,23 @@ def save_raw(name, chapters, report):
     if not book:
         report.append(f"  · বাদ (বাংলা সূচিতে নেই): {name} — অধ্যায় {len(chapters)}")
         return 0
+    # পুরোনো ফাইলের অধ্যায় হারানো চলবে না: ছোট বাজেটে বইটি মাঝপথে থামলে কেবল
+    # এই রানের অধ্যায় দিয়ে ফাইল লিখলে আগের নামানো অধ্যায়গুলো (সামসঙ্গীতের ৬১টি)
+    # চিরতরে মুছে যেত। তাই আগের অধ্যায় + নতুনের ওভাররাইড।
+    prev = {}
+    fp = RAW / f"raw{book['i']}.json"
+    if fp.exists():
+        try:
+            prev = json.loads(fp.read_text(encoding="utf-8")).get("chapters", {})
+        except Exception:  # noqa: BLE001
+            prev = {}
+    allch = {**prev, **{str(k): v for k, v in chapters.items()}}
     obj = {"book": book["i"], "bn": book["bn"], "enName": name, "pvEn": PV_EN,
-           "chapters": {str(k): v for k, v in sorted(chapters.items())}}
+           "chapters": {k: allch[k] for k in sorted(allch, key=int)}}
     (RAW / f"raw{book['i']}.json").write_text(
         json.dumps(obj, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    report.append(f"  ✓ {book['i']:>2}. {book['bn']} ← {name}: অধ্যায় {len(chapters)}")
+    report.append(f"  ✓ {book['i']:>2}. {book['bn']} ← {name}: অধ্যায় {len(chapters)}"
+                  + (f" (আগের {len(prev)} ধরে মোট {len(allch)})" if len(allch) > len(chapters) else ""))
     return 1
 
 
