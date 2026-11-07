@@ -1,0 +1,214 @@
+{
+ "slug": "atharvaveda",
+ "bn": "অথর্ববেদ সংহিতা",
+ "en": "Atharvaveda",
+ "total": 6079,
+ "withBn": 0,
+ "verseWord": "মন্ত্র",
+ "chapters": [
+  {
+   "id": 1,
+   "bn": "কাণ্ড ১",
+   "count": 153,
+   "from": 1,
+   "to": 153,
+   "withBn": 0,
+   "suktaCount": 35,
+   "noText": 0
+  },
+  {
+   "id": 2,
+   "bn": "কাণ্ড ২",
+   "count": 204,
+   "from": 1,
+   "to": 204,
+   "withBn": 0,
+   "suktaCount": 36,
+   "noText": 0
+  },
+  {
+   "id": 3,
+   "bn": "কাণ্ড ৩",
+   "count": 230,
+   "from": 1,
+   "to": 230,
+   "withBn": 0,
+   "suktaCount": 31,
+   "noText": 0
+  },
+  {
+   "id": 4,
+   "bn": "কাণ্ড ৪",
+   "count": 331,
+   "from": 1,
+   "to": 331,
+   "withBn": 0,
+   "suktaCount": 40,
+   "noText": 0
+  },
+  {
+   "id": 5,
+   "bn": "কাণ্ড ৫",
+   "count": 376,
+   "from": 1,
+   "to": 376,
+   "withBn": 0,
+   "suktaCount": 31,
+   "noText": 0
+  },
+  {
+   "id": 6,
+   "bn": "কাণ্ড ৬",
+   "count": 452,
+   "from": 1,
+   "to": 452,
+   "withBn": 0,
+   "suktaCount": 142,
+   "noText": 0
+  },
+  {
+   "id": 7,
+   "bn": "কাণ্ড ৭",
+   "count": 286,
+   "from": 1,
+   "to": 286,
+   "withBn": 0,
+   "suktaCount": 118,
+   "noText": 0
+  },
+  {
+   "id": 8,
+   "bn": "কাণ্ড ৮",
+   "count": 247,
+   "from": 1,
+   "to": 247,
+   "withBn": 0,
+   "suktaCount": 10,
+   "noText": 0
+  },
+  {
+   "id": 9,
+   "bn": "কাণ্ড ৯",
+   "count": 258,
+   "from": 1,
+   "to": 258,
+   "withBn": 0,
+   "suktaCount": 10,
+   "noText": 0
+  },
+  {
+   "id": 10,
+   "bn": "কাণ্ড ১০",
+   "count": 350,
+   "from": 1,
+   "to": 350,
+   "withBn": 0,
+   "suktaCount": 10,
+   "noText": 0
+  },
+  {
+   "id": 11,
+   "bn": "কাণ্ড ১১",
+   "count": 419,
+   "from": 1,
+   "to": 419,
+   "withBn": 0,
+   "suktaCount": 10,
+   "noText": 0
+  },
+  {
+   "id": 12,
+   "bn": "কাণ্ড ১২",
+   "count": 304,
+   "from": 1,
+   "to": 304,
+   "withBn": 0,
+   "suktaCount": 5,
+   "noText": 0
+  },
+  {
+   "id": 13,
+   "bn": "কাণ্ড ১৩",
+   "count": 188,
+   "from": 1,
+   "to": 188,
+   "withBn": 0,
+   "suktaCount": 9,
+   "noText": 0
+  },
+  {
+   "id": 14,
+   "bn": "কাণ্ড ১৪",
+   "count": 139,
+   "from": 1,
+   "to": 139,
+   "withBn": 0,
+   "suktaCount": 2,
+   "noText": 0
+  },
+  {
+   "id": 15,
+   "bn": "কাণ্ড ১৫",
+   "count": 229,
+   "from": 1,
+   "to": 229,
+   "withBn": 0,
+   "suktaCount": 18,
+   "noText": 0
+  },
+  {
+   "id": 16,
+   "bn": "কাণ্ড ১৬",
+   "count": 175,
+   "from": 1,
+   "to": 175,
+   "withBn": 0,
+   "suktaCount": 9,
+   "noText": 0
+  },
+  {
+   "id": 17,
+   "bn": "কাণ্ড ১৭",
+   "count": 30,
+   "from": 1,
+   "to": 30,
+   "withBn": 0,
+   "suktaCount": 1,
+   "noText": 0
+  },
+  {
+   "id": 18,
+   "bn": "কাণ্ড ১৮",
+   "count": 283,
+   "from": 1,
+   "to": 283,
+   "withBn": 0,
+   "suktaCount": 4,
+   "noText": 0
+  },
+  {
+   "id": 19,
+   "bn": "কাণ্ড ১৯",
+   "count": 452,
+   "from": 1,
+   "to": 452,
+   "withBn": 0,
+   "suktaCount": 72,
+   "noText": 0
+  },
+  {
+   "id": 20,
+   "bn": "কাণ্ড ২০",
+   "count": 973,
+   "from": 1,
+   "to": 973,
+   "withBn": 0,
+   "suktaCount": 141,
+   "noText": 2
+  }
+ ],
+ "bnSrc": "সংস্কৃত মূল পাঠ (বৈদিক স্বরচিহ্নসহ) — Vedic Heritage Portal, সুত্রে DharmicData সংগ্রহ (ODbL)।",
+ "suktaTotal": 734,
+ "note": "শৌনক সংহিতা — ২০টি কাণ্ড, সূক্ত ও মন্ত্র-সংখ্যাসহ সংস্কৃত মূল পাঠ। বাংলা অনুবাদ এখনো যোগ হয়নি: ebanglalibrary.com-এ কেবল কাণ্ড ১–৬ পাওয়া যায়, তাই বাকি কাণ্ডের বাংলা কোথাও পাওয়া যায় না — অনুমান করে অনুবাদ বসানো হয় না। ২টি সূক্তের পাঠ উৎসেই অনুপস্থিত।",
+ "noTextSuktas": 2
+}
