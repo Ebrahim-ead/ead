@@ -77,6 +77,14 @@ def build_sitemap(base: str) -> str:
     rows = []
     for p in pages():
         rel = p.relative_to(ROOT).as_posix()
+        # noindex পাতা (রিডাইরেক্ট/অস্থায়ী) sitemap-এ রাখা উচিত নয় —
+        # সার্চ-ইঞ্জিন সেগুলো ক্রল করে অকারণে।
+        try:
+            head = p.read_text(encoding="utf-8")[:4000]
+        except OSError:
+            head = ""
+        if 'content="noindex' in head or "content='noindex" in head:
+            continue
         pr, ch = PRIORITY.get(rel, ("0.7" if "/" not in rel else "0.6", "monthly"))
         rows.append(f"  <url><loc>{url_of(p, base)}</loc><lastmod>{today}</lastmod>"
                     f"<changefreq>{ch}</changefreq><priority>{pr}</priority></url>")
