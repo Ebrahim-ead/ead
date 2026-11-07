@@ -7,8 +7,8 @@ name: Fetch (অথর্ববেদ — বাংলা অনুবাদ)
 #     থেকে আনা হয়েছে — tools/build_atharvaveda.py, ডেটা repo-তেই আছে।
 #
 # এই ওয়ার্কফ্লো কী করে:
-#   · ebanglalibrary.com-এ অথর্ববেদের বাংলা অনুবাদ কেবল কাণ্ড ১–৬ পর্যন্ত
-#     আছে (বই-পাতায় «1 of 3»; ৭–২০ লেসন-পাতায় নেই — সাইটেরই মন্তব্যে
+#   · ebanglalibrary.com-এ অথর্ববেদের বাংলা অনুবাদ কাণ্ড ১–৭ পর্যন্ত
+#     আছে (৫০টি লেসন; ৮–২০ লেসন-পাতায় নেই — সাইটেরই মন্তব্যে
 #     অ্যাডমিন লিখেছেন «চুরি গেছে»)। তাই বাংলা যেটুকু পাওয়া যায় সেটুকু
 #     নামিয়ে সংস্কৃত মন্ত্রের সঙ্গে জোড়া লাগানো হয় (--only-unsaved)।
 #   · উৎসে ভবিষ্যতে বাকি কাণ্ড যোগ হলে পরের রানে স্বয়ংক্রিয়ভাবে সেগুলোও আসবে।
@@ -48,7 +48,8 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    # ৫০ লেসন × (~২০ সেকেন্ড নেটওয়ার্ক + পার্স) — ৩ ঘণ্টায় শেষ নাও হতে পারে
+    timeout-minutes: 350
     env:
       PYTHONUNBUFFERED: '1'
       SLUG: atharvaveda
@@ -140,8 +141,13 @@ jobs:
       - name: ১) বাংলা নামানো
         run: |
           : > "$DBG/atharvaveda_bn_fetch.txt"
+          # --out আলাদা কেন (গুরুত্বপূর্ণ): ডিফল্টে fetch_ebl লিখত
+          # assets/grantho/data/atharvaveda/ch<N>.json-এ — অর্থাৎ সংস্কৃত মূল
+          # পাঠের উপরেই বাংলা চেপে যেত। তাই বাংলা আলাদা ফোল্ডারে (
+          # _bn/atharvaveda/), পরে tools/merge_atharvaveda_bn.py জোড়া লাগায়।
           python3 -u tools/fetch_ebl.py \
             --slug "$SLUG" --title "অথর্ববেদ সংহিতা" --word মন্ত্র \
+            --out "assets/grantho/data/atharvaveda/_bn" \
             --group-by-num --url "$BOOK_URL" --only-unsaved \
             >> "$DBG/atharvaveda_bn_fetch.txt" 2>&1 \
             || echo "⚠ ফেচার অশূন্য কোডে শেষ হলো (বিস্তারিত ফাইলে)" >> "$DBG/atharvaveda_bn_fetch.txt"
@@ -152,6 +158,7 @@ jobs:
       # কিছুই বসে না (অনুমান নয়)। বাংলা না পাওয়া মন্ত্রে `bn` ফাঁকাই থাকে।
       - name: ২) বাংলা জোড়া
         run: |
+          # ফল _bn_merged/-এ — মূল সংস্কৃত ডেটা অটুট; বিল্ডার ওখান থেকেই পড়ে
           python3 -u tools/merge_atharvaveda_bn.py 2>&1 | tee -a "$DBG/atharvaveda_bn_fetch.txt" || true
 
       # ── ৩) যাচাই ───────────────────────────────────────────────
@@ -165,6 +172,10 @@ jobs:
           if not idxp.exists():
               print('⛔ index.json নেই'); sys.exit(1)
           idx = json.loads(idxp.read_text(encoding='utf-8'))
+          mp = d / '_bn_merged' / 'index.json'
+          if mp.exists():
+              mi = json.loads(mp.read_text(encoding='utf-8'))
+              print(f'বাংলা জোড়া: {mi.get("withBn")}/{mi.get("total")} মন্ত্র')
           tot = bn = 0
           for c in idx.get('chapters', []):
               fp = d / f'ch{c["id"]}.json'
