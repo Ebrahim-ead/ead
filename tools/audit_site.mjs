@@ -20,7 +20,10 @@ const ROOTDIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 import { JSDOM, VirtualConsole } from 'jsdom';
 const arg = process.argv.slice(2);
 const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isDirectory()
-  ? (e.name === 'assets' || e.name.startsWith('.') ? [] : walk(path.join(d, e.name)))
+  // assets/ বাদ (নিজস্ব HTML নয়), আর node_modules বাদ — নইলে npm-ইনস্টল করা
+  // প্যাকেজের ভেতরের পাতা স্ক্যান হয়ে ভুয়া «ত্রুটি» ওঠে
+  ? (e.name === 'assets' || e.name === 'node_modules' || e.name.startsWith('.')
+      ? [] : walk(path.join(d, e.name)))
   : (e.name.endsWith('.html') ? [path.join(d, e.name)] : []));
 const files = arg.length ? arg : walk(ROOTDIR).map((p) => path.relative(ROOTDIR, p));
 let issues=0;
