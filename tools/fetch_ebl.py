@@ -1027,18 +1027,6 @@ def _source_slug(url):
     return u.split("/")[-1] if u else ""
 
 
-def title_of(url):
-    """পাতার <title> — slug কাটা-ছাঁটা হলে শিরোনাম থেকেই সংখ্যা পাওয়া যায়।"""
-    try:
-        h = get(url, tries=2, timeout=30) or ""
-    except Exception:
-        return ""
-    m = re.search(r"<title[^>]*>(.*?)</title>", h, re.S | re.I)
-    if not m:
-        return ""
-    return htmllib.unescape(re.sub(r"\s+", " ", m.group(1))).strip()
-
-
 def _existing(out_dir):
     """আগের index.json-এ যা আছে — নতুন ফল এর চেয়ে ছোট হলে তা নয়।"""
     p = os.path.join(out_dir, "index.json")
@@ -1506,21 +1494,10 @@ def main_run(args):
 
     if args.group_by_num:
         # শিরোনাম-সংখ্যা ধরে ভাগ: (অধ্যায়, উপক্রম) অনুসারে সাজিয়ে এক ফাইলে জমা
-        #
-        # কেন পাতা-শিরোনাম আগে চেষ্টা করি: WP slug ৫০ অক্ষরে কেটে ফেলে, আর
-        # কেটে যাওয়া slug-এ সংখ্যা («০৭।০৪») হারিয়ে যেতে পারে। তাই URL-এর
-        # শেষ-অংশে সংখ্যা না পেলে <title> থেকে নিই — নইলে চুপচাপ ০টি পাতা
-        # পাওয়া যায় আর কিছুই নামে না (অথর্ববেদের প্রথম রানে ঠিক এটাই হয়েছিল)।
         pairs = []
         for u in (u for _, u in items):
             t = urllib.parse.unquote(u.rstrip("/").split("/")[-1])
             nums = re.findall(r"([০-৯]{1,3})\s*[।.]\s*([০-৯]{1,3})", t)
-            if not nums:
-                m = re.match(r"^\s*([০-৯]{1,3})\s*[।.]\s*([০-৯]{1,3})", title_of(u))
-                if m:
-                    nums = [m.groups()]
-                    print(f"   (slug-এ সংখ্যা নেই, <title> থেকে: "
-                          f"{nums[0][0]}.{nums[0][1]})", flush=True)
             if nums:
                 a, b = to_int(nums[0][0]), to_int(nums[0][1])
                 pairs.append((a, b, u))

@@ -20,7 +20,7 @@ OUT = ROOT / "grantho/hindu"
 # ব্যবহারকারীর সিদ্ধান্ত (২০২৬-১১-০৫): «শুধুমাত্র ভগবত গীতা আর চারটা বেদের
 # ভিতর শুধুমাত্র ঋগ্বেদ রাখো; বাকি সবগুলো বাদ দাও।» তাই ডেটা/কার্ড কেবল
 # এই দুটিরই তৈরি হয় — অন্য কোনো index.json পড়া হয় না।
-ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "atharvaveda", "bible")
+ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "bible")
 
 BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
 BN_MAP = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
@@ -55,17 +55,6 @@ BOOKS = {
         word="মন্ত্র", chword="অধ্যায়",
         src="সংস্কৃত মূল ও বাংলা অনুবাদ — ebanglalibrary.com (অনুবাদ: পরিতোষ ঠাকুর)।",
         excerpt="গানের বেদ — পরিতোষ ঠাকুরের বাংলা অনুবাদসহ ২৬ অধ্যায়ের মন্ত্র।",
-    ),
-    "atharvaveda": dict(
-        kind="veda", title=("অথর্ববেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
-        kicker="হিন্দু · বেদ · অথর্ববেদ", crumb="অথর্ববেদ সংহিতা",
-        intro=("অথর্ববেদ সংহিতা — ২০টি কাণ্ডের সম্পূর্ণ সংস্কৃত মূল পাঠ, "
-               "বৈদিক স্বরচিহ্ন ও সূক্তের ঋষি-দেবতা-ছন্দসহ।"),
-        word="মন্ত্র", chword="কাণ্ড",
-        src=("সংস্কৃত মূল পাঠ (শৌনক সংহিতা, ২০ কাণ্ড) — Vedic Heritage Portal "
-             "(vedicheritage.gov.in), সুত্রে DharmicData সংগ্রহ (ODC ODbL)। "
-             "বাংলা অনুবাদ যোগ হচ্ছে — ebanglalibrary.com-এ কাণ্ড ১–৭ পাওয়া যায়, ৮–২০ এখনো নেই।"),
-        excerpt="দৈনন্দিন জীবনের মন্ত্র — দিলীপ মুখোপাধ্যায় সম্পাদিত সংস্করণে মূল ও বঙ্গানুবাদসহ।",
     ),
     "garuda": dict(
         kind="purana", title=("গরুড় পুরাণ", ""), hub="purana.html", hubname="পুরাণ",
@@ -358,10 +347,6 @@ def make_page(slug, idx, meta):
                lambda m: m.group(1) + f'{meta["word"]}ে খুঁজুন' + m.group(2), h, count=1)
     if withsk == 0:
         h = re.sub(r'\s*<button[^>]*id="g-sk-btn".*?</button>', '', h, count=1, flags=re.S)
-    if not withbn:
-        # বাংলা পাঠই নেই (অথর্ববেদ — এখন শুধু সংস্কৃত): «বাংলা» বোতাম দেখালে
-        # পাঠক ভাববেন বাংলা লুকিয়ে আছে। ভাষা-টগলের অ্যাংকর-টাও তাই বাদ।
-        h = re.sub(r'\s*<button[^>]*id="g-bn-btn".*?</button>', '', h, count=1, flags=re.S)
     # সব খণ্ডেই বাংলা অনুবাদ থাকলে «কেবল যেগুলোর অনুবাদ আছে» ছাঁকনিটি অকেজো —
     # অথচ বোতামটি দেখলে মনে হয় কিছু পাঠ বাদ পড়ছে। তাই তখন মার্কআপই বাদ দেওয়া হয়
     # (grantho.js-ও রানটাইমে একই কাজ করে, যাতে পুরোনো পাতাতেও ঠিক থাকে)।
@@ -442,12 +427,7 @@ def make_page(slug, idx, meta):
                f'<div class="g-src"><b>পাঠ সম্পর্কে।</b> {src}</div>', h, count=1, flags=re.S)
 
     label = f"{main} {sub}".strip()
-    if withbn:
-        fulldesc = f'{label}-র {commas(withbn)}টি {meta["word"]} বাংলা অনুবাদসহ — ebanglalibrary.com।'
-    else:
-        # বাংলা অনুবাদ এখনো নেই — শেয়ার/সার্চে মিথ্যা দাবি করা চলবে না
-        fulldesc = (f'{label}-র {commas(total)}টি {meta["word"]} — সম্পূর্ণ সংস্কৃত মূল পাঠ '
-                    f'(বৈদিক স্বরচিহ্নসহ), {commas(nch)}টি {meta["chword"]}।')
+    fulldesc = f'{label}-র {commas(withbn)}টি {meta["word"]} বাংলা অনুবাদসহ — ebanglalibrary.com।'
     # সতর্কতা: দশার-অভাবে হঠাৎ বড় পতন (যেমন ৯২২২ → ২১ শ্লোক) সাইটে বসিয়ে দেব না।
     env = os.environ.get("GRANTHO_ALLOW_SHRINK", "").strip().lower() in ("1", "true", "yes")
     if not env and (outdir / f"{slug}.html").exists():
@@ -456,21 +436,14 @@ def make_page(slug, idx, meta):
                       old_html)
         if m:
             prev = int(m.group(1).replace(",", "").translate(BN_MAP))
-            # whenWithBn বাদ: বাংলা-নয় এমন গ্রন্থে (অথর্ববেদ — শুধু সংস্কৃত) প্রথম সংখ্যাটি
-            # «মোট» হয়, withBn নয় — নইলে প্রতি বিল্ডে মিথ্যা «পতন» ধরা পড়ে
-            if not withbn:
-                prev = 0
             if prev and withbn < prev * 0.85:
                 raise Shrink(f"{slug}: পুরনো পাতায় {prev}, নতুন ডেটায় {withbn} — "
                              f"হঠাৎ বড় পতন")
 
-    if withbn:
-        _ttl = f'{label} — {commas(withbn)} {meta["word"]}, বাংলা অনুবাদসহ | Ebrahim Ead'
-    else:
-        _ttl = f'{label} — {commas(total)} {meta["word"]}, সংস্কৃত মূল পাঠ | Ebrahim Ead'
-    h = re.sub(r'<title>[^<]*</title>', f'<title>{_ttl}</title>', h, count=1)
+    h = re.sub(r'<title>[^<]*</title>', f'<title>{label} — {commas(withbn)} {meta["word"]}, বাংলা অনুবাদসহ | Ebrahim Ead</title>', h, count=1)
     for pat, val in ((r'(<meta name="description" content=")[^"]*(")', fulldesc),
-                     (r'(<meta property="og:title" content=")[^"]*(")', _ttl),
+                     (r'(<meta property="og:title" content=")[^"]*(")',
+                      f'{label} — {commas(withbn)} {meta["word"]}, বাংলা অনুবাদসহ | Ebrahim Ead'),
                      (r'(<meta property="og:description" content=")[^"]*(")', fulldesc),
                      (r'(<meta name="twitter:title" content=")[^"]*(")',
                       f'{label} — {commas(withbn)} {meta["word"]}'),
@@ -594,10 +567,8 @@ def main():
             r, m = byslug[slug]
             k, t = labels[slug]
             # «বাংলা অনুবাদসহ» বাদ: কার্ড ছোট রাখার চাহিদা — সংখ্যাটাই যথেষ্ট
-            # বাংলা-নয় গ্রন্থে (অথর্ববেদ) withbn = ০ — «০ মন্ত্র» নয়, মোট মন্ত্র দেখাও
-            n_word = r["withbn"] if r["withbn"] else r["total"]
             grid += card(f"{slug}.html", k, t,
-                         f'{commas(n_word)} {m["word"]} · {commas(r["nch"])} {m["chword"]}',
+                         f'{commas(r["withbn"])} {m["word"]} · {commas(r["nch"])} {m["chword"]}',
                          m["excerpt"])
         elif slug in ACTIVE and slug in ("yajurveda-shukla", "yajurveda-krishna"):
             k, t = labels[slug]
@@ -683,12 +654,6 @@ def main():
         if yv:
             hp_cards += card("hindu/yajurveda-shukla.html", "হিন্দু · বেদ", "শুক্ল যজুর্বেদ সংহিতা",
                              f'{commas(yv["withbn"])} মন্ত্র · {commas(yv["nch"])} অধ্যায়')
-        av = next((r for sl, r, _ in vedas if sl == "atharvaveda"), None)
-        if av:
-            # অথর্ববেদে বাংলা এখনো নেই — «০ মন্ত্র» নয়, মোট মন্ত্রই দেখাই
-            n_av = av["withbn"] if av["withbn"] else av["total"]
-            hp_cards += card("hindu/atharvaveda.html", "হিন্দু · বেদ", "অথর্ববেদ সংহিতা",
-                             f'{commas(n_av)} মন্ত্র · {commas(av["nch"])} কাণ্ড')
         if hp_cards:
             replace_grid("hindu.html", hp_cards, sub="")
         print("হিন্দু-হাব:", sum(r["withbn"] for _, r, _ in vedas), "/",
