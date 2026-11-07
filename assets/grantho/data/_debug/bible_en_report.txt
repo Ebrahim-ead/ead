@@ -1,26 +1,4 @@
 === ইংরেজি (NAB) ফেচ ===
-পাতা: 2202 · পুস্তক-ফাইল: 23
-  ✓ 40. মথি ← Matthew: অধ্যায় 22 (আগের 28 ধরে মোট 28)
-  ✓ 41. মার্ক ← Mark: অধ্যায় 16
-  ✓ 42. লুক ← Luke: অধ্যায় 24
-  ✓ 43. যোহন ← John: অধ্যায় 21
-  ✓ 44. শিষ্যচরিত ← Acts: অধ্যায় 28
-  ✓ 45. রোমীয় ← Romans: অধ্যায় 16
-  ✓ 46. করিন্থীয় ১ ← 1 Corinthians: অধ্যায় 16
-  ✓ 47. করিন্থীয় ২ ← 2 Corinthians: অধ্যায় 13
-  ✓ 48. Galatians ← Galatians: অধ্যায় 6
-  ✓ 49. এফেসীয় ← Ephesians: অধ্যায় 6
-  ✓ 50. ফিলিপ্পীয় ← Philippians: অধ্যায় 4
-  ✓ 51. Colossians ← Colossians: অধ্যায় 4
-  ✓ 52. 1 Thessalonians ← 1 Thessalonians: অধ্যায় 5
-  ✓ 53. 2 Thessalonians ← 2 Thessalonians: অধ্যায় 3
-  ✓ 54. 1 Timothy ← 1 Timothy: অধ্যায় 6
-  ✓ 55. 2 Timothy ← 2 Timothy: অধ্যায় 4
-  ✓ 56. Titus ← Titus: অধ্যায় 3
-  ✓ 58. Hebrews ← Hebrews: অধ্যায় 13
-  ✓ 59. James ← James: অধ্যায় 5
-  ✓ 60. 1 Peter ← 1 Peter: অধ্যায় 5
-  ✓ 61. 2 Peter ← 2 Peter: অধ্যায় 3
-  ✓ 62. 1 John ← 1 John: অধ্যায় 5
-  ✓ 66. Revelation ← Revelation: অধ্যায় 22
+পাতা: 2231 · পুস্তক-ফাইল: 0
+
 === শেষ ===
