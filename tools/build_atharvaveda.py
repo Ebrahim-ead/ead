@@ -20,7 +20,7 @@
     assets/grantho/data/atharvaveda/index.json   {slug, bn, en, total, withBn, chapters, …}
     assets/grantho/data/atharvaveda/ch<N>.json   {id, bn, count, verses:[{n, sk, bn, hd, …}], …}
 
-বাংলা অনুবাদ: ebanglalibrary.com-এ কেবল কাণ্ড ১–৬ আছে (৭–২০ লেসন-পাতায় নেই —
+বাংলা অনুবাদ: ebanglalibrary.com-এ কাণ্ড ১–৭ আছে (৮–২০ লেসন-পাতায় নেই —
 সাইটেরই মন্তব্যে অ্যাডমিন «চুরি গেছে» লিখেছেন)। তাই এখানে বাংলা বসানো হয় না;
 `bn` ফাঁকা রাখা হয় — অনুমান করে কিছু লেখা হয় না। পরে বাংলা এলে
 tools/merge_atharvaveda_bn.py দিয়ে জোড়া যাবে।
@@ -170,13 +170,39 @@ def parse_kanda(path, k):
 
 
 # ---------------------------------------------------------------- লেখা
+def merged_available():
+    """tools/merge_atharvaveda_bn.py-র ফল আছে কি না (বাংলা জোড়া লাগানো ডেটা)।"""
+    return os.path.exists(os.path.join(OUT, "_bn_merged", "index.json"))
+
+
 def build(fetch=False):
+    # বাংলা জোড়া লাগানো ফল থাকলে সেটাই ব্যবহার করি — এতে সাইটে বাংলা দেখায়,
+    # আর সংস্কৃত মূল (আলাদা ফোল্ডার) অটুট থাকে। না থাকলে কাঁচা উৎস থেকে।
+    if merged_available() and not fetch:
+        import shutil
+        src = os.path.join(OUT, "_bn_merged")
+        n = 0
+        for name in os.listdir(src):
+            if name.endswith(".json"):
+                shutil.copy2(os.path.join(src, name), os.path.join(OUT, name))
+                n += 1
+        print(f"✓ বাংলা জোড়া লাগানো ডেটা ব্যবহার হলো ({n} ফাইল)")
+        return 0
+
     if fetch:
         have = fetch_source()
     else:
         have = [k for k in range(1, 21)
                 if os.path.exists(os.path.join(CACHE, f"k{k}.json"))]
     if len(have) < 20:
+        # ক্যাশ (assets/grantho/data/_src/) না থাকলে — যেমন CI-তে, যেখানে কেবল
+        # তৈরি ডেটা repo-তে আছে — কিছুই ভাঙি না। build_pages.py বিদ্যমান ডেটা
+        # দিয়েই পাতা বানায়, তাই এখানে থামাই নিরাপদ।
+        if (OUT / "index.json").exists() if isinstance(OUT, __import__("pathlib").Path) else \
+           os.path.exists(os.path.join(OUT, "index.json")):
+            print(f"   (উৎস-ক্যাশ নেই — repo-তে থাকা {len(have) or 'আগের'} ডেটাই "
+                  f"ব্যবহার হবে, নতুন করে লেখা হচ্ছে না)")
+            return 0
         print(f"⛔ কেবল {len(have)}/২০ কাণ্ড পাওয়া গেল — অসম্পূর্ণ ডেটা "
               f"লেখা হবে না (সাইটে ভাঙা গ্রন্থ বসানো চলবে না)।")
         return 1
@@ -234,8 +260,8 @@ def build(fetch=False):
         chapters=chapters, bnSrc=BN_SRC,
         suktaTotal=sum(c["suktaCount"] for c in chapters),
         note=("শৌনক সংহিতা — ২০টি কাণ্ড, সূক্ত ও মন্ত্র-সংখ্যাসহ সংস্কৃত মূল পাঠ। "
-              "বাংলা অনুবাদ এখনো যোগ হয়নি: ebanglalibrary.com-এ কেবল কাণ্ড ১–৬ "
-              "পাওয়া যায়, তাই বাকি কাণ্ডের বাংলা কোথাও পাওয়া যায় না — "
+              "বাংলা অনুবাদ ধাপে ধাপে যোগ হচ্ছে: ebanglalibrary.com-এ কাণ্ড ১–৭ "
+              "পাওয়া যায়, কাণ্ড ৮–২০ এখনো কোথাও বাংলায় নেই — "
               "অনুমান করে অনুবাদ বসানো হয় না।"
               + (f" {bn(total_no_text)}টি সূক্তের পাঠ উৎসেই অনুপস্থিত।"
                  if total_no_text else "")),

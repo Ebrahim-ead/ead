@@ -3,84 +3,146 @@
 """অথর্ববেদ: ebanglalibrary-র বাংলা অনুবাদ সংস্কৃত মন্ত্রের সঙ্গে জোড়া লাগানো।
 
 কেন আলাদা স্ক্রিপ্ট: সংস্কৃত মূল (২০ কাণ্ড, Vedic Heritage Portal) আর বাংলা
-(ebanglalibrary — কেবল কাণ্ড ১–৬) দুই ভিন্ন উৎস, ভিন্ন কাঠামোয়। সংস্কৃত ডেটা
-সর্বদা সম্পূর্ণ থাকে; বাংলা যেটুকু পাওয়া যায় সেটুকু জোড়া হয়, বাকি মন্ত্রে
-`bn` ফাঁকা থাকে — অনুমান করে কিছু বসানো হয় না।
+(ebanglalibrary — এই মুহূর্তে কাণ্ড ১–৭, ৫০টি অনুবাক) দুই ভিন্ন উৎস, ভিন্ন
+কাঠামোয়। সংস্কৃত ডেটা সর্বদা অটুট থাকে; বাংলা যেটুকু পাওয়া যায় সেটুকু জোড়া
+হয়, বাকি মন্ত্রে `bn` ফাঁকা থাকে — অনুমান করে কিছু বসানো হয় না।
 
-ইনপুট (ঐচ্ছিক, না থাকলে কিছুই হয় না):
-    assets/grantho/data/atharvaveda/_bn/<k>/<s>.json   {sukta, verses:[{n,bn}]}
+মিলানোর নিয়ম (গুরুত্বপূর্ণ):
+    ebanglalibrary-র একক «অনুবাক» আর শৌনক সংহিতার «সূক্ত» এক জিনিস নয় —
+    সংস্কৃত সংস্করণে সূক্ত-সংখ্যা ভিন্ন (যেমন কাণ্ড ১: ৩৫ সূক্ত, বাংলায় ৬ অনুবাক)।
+    তাই সূক্ত-নম্বর ধরে মেলানো ভুল হতো; মেলানো হয় ক্রমিক অবস্থানে —
+    অনুবাক-পাঠের মন্ত্রগুলো একের পর এক কাণ্ডের মন্ত্র-ক্রমে বসে। উৎসে
+    মন্ত্রের মোট সংখ্যা সমান হলে এটাই সঠিক জোড়া।
+
+ইনপুট (না থাকলে কিছুই হয় না):
+    assets/grantho/data/atharvaveda/_bn/atharvaveda/ch<k>.json
+        {id, bn, verses:[{n, bn, sk, …}]}   ← fetch_ebl.py --group-by-num
+
+আউটপুট (আলাদা, যাতে বারবার চালালেও মূল ডেটা নষ্ট না হয়):
+    assets/grantho/data/atharvaveda/_bn_merged/index.json
+    assets/grantho/data/atharvaveda/_bn_merged/ch<k>.json
 
 চালানো:
-    python3 tools/merge_atharvaveda_bn.py              # জোড়া লাগাও
-    python3 tools/merge_atharvaveda_bn.py --report      # কতটা হয়েছে দেখাও
+    python3 tools/merge_atharvaveda_bn.py           # জোড়া লাগাও
+    python3 tools/merge_atharvaveda_bn.py --install # মূল ডেটায় বসাও (বিল্ডের পর)
 """
 import argparse
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 OUT = os.path.join(REPO, "assets", "grantho", "data", "atharvaveda")
-BNIN = os.path.join(OUT, "_bn")
+SRC = os.path.join(OUT, "_bn", "atharvaveda")
+DST = os.path.join(OUT, "_bn_merged")
+
+DEV = re.compile(r"[\u0900-\u097F]")
+BN_SRC = "বাংলা অনুবাদ — ebanglalibrary.com (অথর্ববেদ সংহিতা, দিলীপ মুখোপাধ্যায় সম্পাদনা)"
+
+
+def load(p):
+    with open(p, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save(p, obj):
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    with open(p, "w", encoding="utf-8") as f:
+        json.dump(obj, f, ensure_ascii=False, separators=(",", ":"))
+
+
+def clean_bn(txt):
+    """বাংলা পাঠ পরিষ্কার — শুধু ভাষা বাংলা কি না দেখে রাখা/বাদ দেওয়া।"""
+    t = re.sub(r"\s+", " ", str(txt or "")).strip()
+    if not t or len(t) < 3:
+        return ""
+    # ইংরেজি/IAST মূল মিশে থাকলে বাদ (সাইটের নিয়ম: বিদেশি পাঠ নয়)
+    latin = len(re.findall(r"[A-Za-z]", t))
+    if latin > max(6, len(t) // 4):
+        return ""
+    return t
 
 
 def main():
-    if not os.path.isdir(BNIN):
-        print("বাংলা-ফোল্ডার নেই:", os.path.relpath(BNIN, REPO))
-        print("  (কিছু জোড়া লাগানোর দরকার নেই — সংস্কৃত পাঠ অটুট আছে)")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--install", action="store_true",
+                    help="জোড়া লাগানো ফল মূল ডেটায় বসাও")
+    a = ap.parse_args()
+
+    if not os.path.isdir(SRC):
+        print("বাংলা-ফোল্ডার নেই:", os.path.relpath(SRC, REPO))
+        print("  (সংস্কৃত পাঠ অটুট আছে — জোড়া লাগানোর কিছু নেই)")
         return 0
 
-    idxp = os.path.join(OUT, "index.json")
-    with open(idxp, encoding="utf-8") as f:
-        idx = json.load(f)
-    grand_bn = 0
-    for ch in idx.get("chapters", []):
-        k = ch["id"]
-        d = os.path.join(BNIN, str(k))
-        if not os.path.isdir(d):
-            continue
+    src_idx_p = os.path.join(SRC, "index.json")
+    src_idx = load(src_idx_p) if os.path.exists(src_idx_p) else {}
+    src_chs = {c["id"]: c for c in (src_idx.get("chapters") or [])}
+
+    merged, grand_bn, grand_tot = [], 0, 0
+    for k in range(1, 21):
         fp = os.path.join(OUT, f"ch{k}.json")
-        with open(fp, encoding="utf-8") as f:
-            cj = json.load(f)
-        # সূক্ত → মন্ত্র-অবস্থান
-        pos = {}
-        for sk in cj.get("suktas", []):
-            for n in range(sk["from"], sk["to"] + 1):
-                pos[n] = sk["s"]
-        by_n = {v["n"]: v for v in cj["verses"]}
+        if not os.path.exists(fp):
+            print(f"⛔ কাণ্ড {k}: মূল ফাইল নেই — থামানো হলো")
+            return 1
+        cj = load(fp)
+        bn_fp = os.path.join(SRC, f"ch{k}.json")
         added = 0
-        for name in sorted(os.listdir(d)):
-            if not name.endswith(".json"):
-                continue
-            with open(os.path.join(d, name), encoding="utf-8") as f:
-                bj = json.load(f)
-            s = int(bj.get("sukta") or 0)
-            hits = [n for n, sn in pos.items() if sn == s]
-            for i, bv in enumerate(bj.get("verses") or []):
-                if i >= len(hits):
-                    break
-                v = by_n.get(hits[i])
-                txt = (bv.get("bn") or "").strip()
-                if v and txt and not v.get("bn"):
-                    v["bn"] = txt
-                    added += 1
+        if os.path.exists(bn_fp) and cj["verses"]:
+            bj = load(bn_fp)
+            bn_vs = [v for v in (bj.get("verses") or []) if clean_bn(v.get("bn"))]
+            if bn_vs:
+                # সূক্ত-নম্বর নয় — ক্রমিক অবস্থান (উপরে ব্যাখ্যা)
+                for i, bv in enumerate(bn_vs):
+                    if i >= len(cj["verses"]):
+                        break
+                    v = cj["verses"][i]
+                    if not (v.get("bn") or "").strip():
+                        v["bn"] = clean_bn(bv["bn"])
+                        v["bnSrc"] = BN_SRC
+                        added += 1
+        with_bn = sum(1 for v in cj["verses"] if (v.get("bn") or "").strip())
         if added:
-            cj["withBn"] = sum(1 for v in cj["verses"] if (v.get("bn") or "").strip())
-            ch["withBn"] = cj["withBn"]
-            cj["note"] = "বাংলা অনুবাদ ebanglalibrary.com থেকে যেখানে পাওয়া গেছে সেখানে যোগ করা হয়েছে।"
-            with open(fp, "w", encoding="utf-8") as f:
-                json.dump(cj, f, ensure_ascii=False)
-            grand_bn += added
-            print(f"  কাণ্ড {k}: +{added} মন্ত্রে বাংলা")
-    idx["withBn"] = sum(c.get("withBn") or 0 for c in idx["chapters"])
-    with open(idxp, "w", encoding="utf-8") as f:
-        json.dump(idx, f, ensure_ascii=False, indent=1)
-    print(f"✓ বাংলাসহ মোট: {idx['withBn']}/{idx['total']} মন্ত্র")
+            cj["withBn"] = with_bn
+            if with_bn < len(cj["verses"]):
+                cj["note"] = ("বাংলা অনুবাদ ebanglalibrary.com থেকে যেখানে পাওয়া গেছে "
+                              "সেখানে যোগ করা হয়েছে; বাকি মন্ত্রে সংস্কৃত মূল পাঠ।")
+        ch = {"id": k, "bn": cj.get("bn"), "count": len(cj["verses"]),
+              "from": 1, "to": len(cj["verses"]), "withBn": with_bn,
+              "suktaCount": cj.get("suktaCount")}
+        merged.append(ch)
+        grand_bn += with_bn
+        grand_tot += len(cj["verses"])
+        if added:
+            print(f"  কাণ্ড {k}: +{added} মন্ত্রে বাংলা ({with_bn}/{len(cj['verses'])})")
+        save(os.path.join(DST, f"ch{k}.json"), cj)
+
+    old = {}
+    old_p = os.path.join(OUT, "index.json")
+    if os.path.exists(old_p):
+        old = load(old_p)
+    idx = dict(old)
+    idx.update({"slug": "atharvaveda", "total": grand_tot, "withBn": grand_bn,
+                "chapters": merged, "bnSrc": BN_SRC if grand_bn else old.get("bnSrc")})
+    if grand_bn:
+        idx["note"] = (f"{grand_bn:,}".translate(str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯"))
+                       + f"/{grand_tot:,}".translate(str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯"))
+                       + " মন্ত্রে বাংলা অনুবাদ (ebanglalibrary.com)। "
+                       "বাকি মন্ত্রে সংস্কৃত মূল পাঠ — অনুমান করে কিছু বসানো হয় না।")
+    save(os.path.join(DST, "index.json"), idx)
+    print(f"\n✓ জোড়া লাগানো: {grand_bn}/{grand_tot} মন্ত্রে বাংলা → {os.path.relpath(DST, REPO)}")
+
+    if a.install:
+        import shutil
+        for name in os.listdir(DST):
+            shutil.copy2(os.path.join(DST, name), os.path.join(OUT, name))
+        print("✓ মূল ডেটায় বসানো হয়েছে")
+    else:
+        print("   (মূল ডেটায় বসাতে: --install)")
     return 0
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--report", action="store_true")
+    ap2 = argparse.ArgumentParser(add_help=False)
     sys.exit(main())

@@ -64,7 +64,7 @@ BOOKS = {
         word="মন্ত্র", chword="কাণ্ড",
         src=("সংস্কৃত মূল পাঠ (শৌনক সংহিতা, ২০ কাণ্ড) — Vedic Heritage Portal "
              "(vedicheritage.gov.in), সুত্রে DharmicData সংগ্রহ (ODC ODbL)। "
-             "বাংলা অনুবাদ এখনো যোগ হয়নি — ebanglalibrary.com-এ কেবল কাণ্ড ১–৬ পাওয়া যায়।"),
+             "বাংলা অনুবাদ যোগ হচ্ছে — ebanglalibrary.com-এ কাণ্ড ১–৭ পাওয়া যায়, ৮–২০ এখনো নেই।"),
         excerpt="দৈনন্দিন জীবনের মন্ত্র — দিলীপ মুখোপাধ্যায় সম্পাদিত সংস্করণে মূল ও বঙ্গানুবাদসহ।",
     ),
     "garuda": dict(
@@ -347,7 +347,9 @@ def make_page(slug, idx, meta):
 
     # সার্চ-বাক্স: টেমপ্লেটের লেবেল অন্য গ্রন্থে ভুল হতো, আর সংস্কৃত না থাকলে "(সংস্কৃত)" বিভ্রান্তিকর
     ph = f'{meta["word"]}ে খুঁজুন'
-    if withsk and withsk == total:
+    if not withbn and withsk:
+        ph += " (সংস্কৃত)"
+    elif withsk and withsk == total:
         ph += " (সংস্কৃত বা বাংলা)"
     elif withsk == 0:
         ph += " (বাংলা)"
@@ -356,6 +358,10 @@ def make_page(slug, idx, meta):
                lambda m: m.group(1) + f'{meta["word"]}ে খুঁজুন' + m.group(2), h, count=1)
     if withsk == 0:
         h = re.sub(r'\s*<button[^>]*id="g-sk-btn".*?</button>', '', h, count=1, flags=re.S)
+    if not withbn:
+        # বাংলা পাঠই নেই (অথর্ববেদ — এখন শুধু সংস্কৃত): «বাংলা» বোতাম দেখালে
+        # পাঠক ভাববেন বাংলা লুকিয়ে আছে। ভাষা-টগলের অ্যাংকর-টাও তাই বাদ।
+        h = re.sub(r'\s*<button[^>]*id="g-bn-btn".*?</button>', '', h, count=1, flags=re.S)
     # সব খণ্ডেই বাংলা অনুবাদ থাকলে «কেবল যেগুলোর অনুবাদ আছে» ছাঁকনিটি অকেজো —
     # অথচ বোতামটি দেখলে মনে হয় কিছু পাঠ বাদ পড়ছে। তাই তখন মার্কআপই বাদ দেওয়া হয়
     # (grantho.js-ও রানটাইমে একই কাজ করে, যাতে পুরোনো পাতাতেও ঠিক থাকে)।
