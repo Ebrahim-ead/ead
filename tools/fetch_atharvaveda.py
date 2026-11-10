@@ -226,40 +226,66 @@ def split_translations(chunks):
 
 
 # ---------------- তালিকা ----------------
-def lesson_index():
-    """সব অনুবাক-পাতার (কাণ্ড, ক্রম, url, শিরোনাম) তালিকা — সব পৃষ্ঠা ঘুরে।"""
-    seen, rows = {}, []
-    # ১) পেজিনেশনের সব পাতা ধরি
-    pages = [BOOK]
+LINK_RE = re.compile(r'href="(https://www\.ebanglalibrary\.com/(?:lessons|topics)/'
+                     r'[^"#?]+)"[^>]*>\s*([^<]{1,90}?)\s*<')
+
+
+def _page_rows(h):
+    """এক পাতা HTML → [(kanda, anuvaka, url, title)] — «০১।১ …» ধাঁচের লিংক।"""
+    out = []
+    for mm in LINK_RE.finditer(h or ""):
+        u = htmllib.unescape(mm.group(1))
+        t = re.sub(r"\s+", " ", htmllib.unescape(mm.group(2))).strip()
+        km = re.match(r"^([০-৯]{1,2})\s*।\s*([০-৯]{1,2})", t)
+        if not km:
+            continue                       # ভূমিকা/বই-পাতা ইত্যাদি বাদ
+        kanda, anuv = to_int(km.group(1)), to_int(km.group(2))
+        if 1 <= kanda <= 20:
+            out.append((kanda, anuv, u, t))
+    return out
+
+
+def lesson_index(limit=0):
+    """সব অনুবাক-পাতার (কাণ্ড, অনুবাক, url, শিরোনাম) তালিকা।
+
+    উৎসে তালিকা পৃষ্ঠায় ভাগ করা (?ld-courseinfo-lesson-page=N)। পৃষ্ঠা-সংখ্যা
+    কেবল «of N» লেখায় ধরা যায় না, তাই দুই পথে: (১) «of N», (২) নইলে খালি
+    পাতা/নতুন লিংক না পাওয়া পর্যন্ত ঘুরি (সর্বোচ্চ ১৫ পাতা)। যাতে এক প্যাটার্ন
+    বদলালেও পুরো ২০ কাণ্ড পাওয়া যায় — ব্যবহারকারীর শর্ত: অসম্পূর্ণ নয়।
+    """
     first = get(BOOK)
-    total = 1
-    m = re.search(r"of\s+(\d+)", first or "")
-    if m:
-        total = min(int(m.group(1)), 12)
-    pages += [f"{BOOK}?ld-courseinfo-lesson-page={i}" for i in range(2, total + 1)]
-    if first:
-        pages[0] = BOOK
-    for pg in pages:
-        h = first if pg == BOOK else get(pg)
-        if not h:
-            continue
-        for mm in re.finditer(
-                r'href="(https://www\.ebanglalibrary\.com/lessons/[^"#?]+)"[^>]*>\s*([^<]{1,90}?)\s*<',
-                h):
-            u = htmllib.unescape(mm.group(1))
-            t = htmllib.unescape(mm.group(2)).strip()
-            t = re.sub(r"\s+", " ", t)
-            if u in seen:
+    seen_url, rows = set(), []
+
+    def take(h):
+        n = 0
+        for kanda, anuv, u, t in _page_rows(h):
+            if u in seen_url:
                 continue
-            km = re.match(r"^([০-৯]{1,2})\s*।\s*([০-৯]{1,2})", t)
-            if not km:
-                continue                       # ভূমিকা ইত্যাদি বাদ
-            kanda, anuv = to_int(km.group(1)), to_int(km.group(2))
-            if not (1 <= kanda <= 20):
-                continue
-            seen[u] = True
+            seen_url.add(u)
             rows.append({"kanda": kanda, "anuvaka": anuv, "url": u, "title": t})
+            n += 1
+        return n
+
+    take(first)
+    m = re.search(r"(?:of|/|শেষ)\s*<?[^0-9]{0,6}(\d{1,3})", first or "")
+    total = min(int(m.group(1)), 15) if m else 0
+    # ২ থেকে ঘুরি — প্যাটার্ন মিললে total পর্যন্ত, না মিললে যতক্ষণ নতুন লিংক মেলে
+    page, empty = 2, 0
+    while page <= max(total, 15):
+        h = get(f"{BOOK}?ld-courseinfo-lesson-page={page}")
+        got = take(h) if h else 0
+        if got == 0:
+            empty += 1
+            if empty >= 2 and (not total or page > total):
+                break
+        else:
+            empty = 0
+        if total and page >= total:
+            break
+        page += 1
         time.sleep(1.2)
+        if limit and len(rows) >= limit:
+            break
     rows.sort(key=lambda r: (r["kanda"], r["anuvaka"]))
     return rows
 
