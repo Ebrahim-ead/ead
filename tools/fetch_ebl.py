@@ -1078,6 +1078,12 @@ def write_chapter(out_dir, idx, title, verses, url):
     if dropped:
         print(f"   ⚠ বিদেশি পাঠ মেশানো {dropped}টি মন্ত্র বাদ দেওয়া হলো", flush=True)
     verses = kept
+    # ⚠ নম্বর পার্সারেই বসে, তারপর উপরের ছাঁকনিতে কিছু মন্ত্র বাদ পড়ে ⇒ ক্রমে
+    #   ফাঁক থেকে যেত (ch1-এ ১ হারিয়ে ২…১১)। তাই ছাঁকনির *পরে* আবার ১…n।
+    for i, v in enumerate(verses, 1):
+        v = dict(v)
+        v["n"] = i
+        verses[i - 1] = v
     vs = []
     for v in verses:
         d = {"n": v["n"], "sk": v["sk"], "bn": v["bn"], "spk": "", "bnSrc": SRC}

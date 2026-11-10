@@ -173,7 +173,10 @@ jobs:
           ix = json.loads(idx.read_text(encoding='utf-8'))
           chs = ix.get('chapters', [])
           tot = bad = empty = 0
-          deva = __import__('re').compile(r'[\u0900-\u097F]')
+          # ⚠ দাঁড়ি «।» U+0964 আর «॥» U+0965 মূলত দেবনাগরীর ব্লকে পড়ে,
+          #   কিন্তু বাংলা পাতে সেগুলোই সবচেয়ে বেশি ব্যবহৃত হয় — ফলে প্রতি
+          #   অধ্যায়ই «দেবনাগরী মিশ্রণ» দেখাত। আসল অক্ষর কেবল গোনা হোক।
+          deva = __import__('re').compile(r'[\u0900-\u0963\u0966-\u097F]')
           for c in chs:
               fp = d / f'ch{c["id"]}.json'
               if not fp.exists():
