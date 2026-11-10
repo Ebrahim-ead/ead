@@ -159,7 +159,14 @@ ORD = "(" + "|".join(ORD_SLUG) + ")"
 # তাই: লাইনে «সূক্ত/সূক্তি» + আগে ক্রম-বাচক শব্দ থাকলেই শিরোনাম — কোলন
 # ঐচ্ছিক, শুরুতে গ্রন্থ-অগ্রভাগ থাকলেও চলে।
 # বাদ: «মন্ত্রঃ» দিয়ে শুরু (সংস্কৃত পাঠ), আর ২২০+ অক্ষরের লাইন (পাঠ, শিরোনাম নয়)।
-SUKTA_HEAD = re.compile(r"^(?!মন্ত্রঃ)(?=.{0,220}$)(?=.*" + ORD + r"\s*সূক্ত[ি]?).*$")
+_SUKTA_ORDS = ("প্রথম", "দ্বিতীয়", "তৃতীয়", "চতুর্থ", "পঞ্চম", "ষষ্ঠ", "সপ্তম",
+               "অষ্টম", "নবম", "দশম", "একাদশ", "দ্বাদশ", "ত্রয়োদশ", "চতুর্দশ",
+               "পঞ্চদশ", "ষোড়শ", "সপ্তদশ", "অষ্টাদশ", "ঊনবিংশ", "বিংশ",
+               "একবিংশ", "দ্বাবিংশ", "ত্রয়োবিংশ", "চতুর্বিংশ", "পঞ্চবিংশ",
+               "ষড়বিংশ", "সপ্তবিংশ", "অষ্টাবিংশ", "ঊনত্রিংশ", "ত্রিংশ")
+SUKTA_HEAD = re.compile(
+    r"^(?!মন্ত্রঃ)(?=.{0,220}$)(?=.*(?:" + "|".join(_SUKTA_ORDS) +
+    r")\s*সূক্ত[ি]?).*$")
 
 # অনুবাদ-লেবেল — সংস্কৃতের পরেই আসে। অথর্ববেদের সংস্কৃতও বাংলা লিপিতে ছাপা,
 # তাই লিপি নয় — এই লেবেলই একমাত্র নির্ভরযোগ্য চিহ্ন।
@@ -275,7 +282,8 @@ ORD_WORDS = (
     "ত্রিংশ", "একত্রিংশ", "দ্বাত্রিংশ",
 )
 MANTRA_WORD = re.compile(
-    r"\**\s*(" + "|".join(ORD_WORDS) + r")\s*\**\s*মন্ত্র\s*[:ঃ]?\s*\**", re.U)
+    r"\s*\**\s*(" + "|".join(ORD_WORDS) +
+    r")\s*\**\s*মন্ত্র\s*(?:[:ঃ]|(?=\s))\s*\**", re.U)
 
 
 BN_START = re.compile(r"বঙ্গানুবাদ\s*[-–—:ঃ]?\s*", re.U)
@@ -338,11 +346,18 @@ def parse_page(lines):
 
     নীতি:
       · সূক্ত-শিরোনাম পেলে নতুন সূক্ত শুরু।
-      · আলোচনা/টীকা পেলে সূক্ত বন্ধ — কিন্তু *পার্সিং থামে না*: একই অনুবাকে
-        আলোচনার পরে পরের সূক্ত থাকতে পারে (কাণ্ড ৫-এ আগে এখানেই সব হারাত)।
+      · আলোচনা/টীকা পেলে কেবল *এর ভেতরের লেখা* বাদ যায় — সূক্ত খোলা থাকে।
+        কারণ অনেক অনুবাকে প্রতিটি মন্ত্রের পরেই আলোচনা আসে (কাণ্ড ১):
+            প্রথম মন্ত্রঃ …সংস্কৃত… / বঙ্গানুবাদ –অনুবাদ / মন্ত্ৰাৰ্থ আলোচনা
+            চতুর্থ মন্ত্রঃ …সংস্কৃত… / বঙ্গানুবাদ –অনুবাদ / মন্ত্ৰাৰ্থ আলোচনা
+        আগে এখানেই সূক্ত বন্ধ হয়ে যেত, তাই প্রতি সূক্তে মাত্র ১টি মন্ত্র বাঁচত।
+      · «চতুর্থ মন্ত্রঃ» ধাঁচের লেবেল পেলে মন্ত্রের সীমানা চিহ্নিত করি (`marks`),
+        আর তার পরে আসা সংস্কৃত আবার বাদ দিই (`seen_bn` আবার False)।
       · «বঙ্গানুবাদ» লেবেলের আগের লাইন সংস্কৃত — বাদ।
     """
-    suktas, cur, buf, seen_bn, skip, started = [], None, [], False, False, False
+    suktas, cur, buf, marks = [], None, [], []
+    seen_bn, skip = False, False
+
     for raw in lines:
         ln = strip_md(raw)
         if not ln:
@@ -351,29 +366,35 @@ def parse_page(lines):
         # ১) সূক্ত-শিরোনাম — আলোচনার পরে হলেও নতুন সূক্ত শুরু করে
         if is_sukta_head(ln):
             if cur is not None and buf and seen_bn:
-                _push(suktas, cur, buf)
-            cur, buf, seen_bn, skip, started = {"title": ln}, [], False, False, False
+                _push(suktas, cur, buf, marks)
+            cur, buf, marks, seen_bn, skip = {"title": ln}, [], [], False, False
             continue
 
-        # ২) আলোচনা/টীকা — চলমান সূক্ত বন্ধ করে «বাদ» মোডে যাই
-        if skip:
-            continue
-        if cur is not None and is_aloc(ln):
-            if buf and seen_bn:
-                _push(suktas, cur, buf)
-            cur, buf, seen_bn, skip = None, [], False, True
-            continue
         if cur is None:
             continue                          # অনুবাক-শিরোনাম/ভূমিকা
 
-        # ৩) অনুবাদ-লেবেল (নিজে, বা লাইনের মাঝে)
+        # ২) মন্ত্রের লেবেল («প্রথম মন্ত্রঃ», «চতুর্থ মন্ত্র :») — সূক্ত চালু রাখে
+        if MANTRA_WORD.match(ln) and len(ln) < 400:
+            marks.append(len(buf))
+            skip, seen_bn = False, False      # এর পরে আসা সংস্কৃত বাদ যাবে
+            continue
+
+        if skip:
+            continue                          # আলোচনা/টীকার ভেতরের পাঠ
+
+        # ৩) আলোচনা/টীকা — কেবল বাদ মোড, সূক্ত বন্ধ নয়
+        if is_aloc(ln):
+            skip = True
+            continue
+
+        # ৪) অনুবাদ-লেবেল (নিজে, বা লাইনের মাঝে)
         if BN_LABEL.match(ln):
-            seen_bn = started = True
+            seen_bn = True
             buf.append(BN_LABEL.sub("", ln).lstrip(" –—‐-:").strip())
             continue
         m = BN_LABEL.search(ln)
         if m:
-            seen_bn = started = True
+            seen_bn = True
             buf.append(ln[m.end():].lstrip(" –—‐-:").strip())
             continue
         if not seen_bn:
@@ -381,7 +402,7 @@ def parse_page(lines):
         buf.append(ln)
 
     if cur is not None and buf and seen_bn:
-        _push(suktas, cur, buf)
+        _push(suktas, cur, buf, marks)
 
     # কিছু পাতা লেবেল ছাড়াই সরাসরি অনুবাদ রাখে (কাণ্ড ৫-এর মতো)। লেবেল-পথে
     # সূক্ত-শিরোনামের অর্ধেকেরও কম পেলে বিকল্প পথে আবার, বেশি যা মেলে তা নিই।
@@ -424,8 +445,23 @@ def sweep_page(lines):
     return suktas
 
 
-def _push(out, cur, buf):
-    vs = split_mantras(" ".join(buf))
+def _push(out, cur, buf, marks=None):
+    """buf → মন্ত্র। marks থাকলে ওই সীমা ধরে গোষ্ঠীভুক্ত করি, তারপর নম্বর ১…n।"""
+    if marks:
+        cuts = [i for i in marks if 0 <= i <= len(buf)]
+        if cuts and cuts[0] != 0:
+            cuts = [0] + cuts
+        if len(cuts) > 1:
+            vs = []
+            for j, a in enumerate(cuts):
+                b = cuts[j + 1] if j + 1 < len(cuts) else len(buf)
+                vs.extend(split_mantras(" ".join(buf[a:b])))
+        else:
+            vs = split_mantras(" ".join(buf))
+    else:
+        vs = split_mantras(" ".join(buf))
+    for i, v in enumerate(vs, 1):
+        v["vn"] = i
     if vs:
         cur["verses"] = vs
         cur["name"] = sukta_name(cur.get("title", ""))
