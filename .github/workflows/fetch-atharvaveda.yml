@@ -1,0 +1,105 @@
+name: Fetch (অথর্ববেদ · শুধু বাংলা)
+
+# ebanglalibrary.com থেকে «অথর্ববেদ সংহিতা» (দিলীপ মুখোপাধ্যায়) নামায় —
+# ২০ কাণ্ড · ~১১২ অনুবাক-পাতা। ব্যবহারকারীর সিদ্ধান্ত: সম্পূর্ণ ২০ কাণ্ড না
+# পেলে গ্রন্থ যোগ হবে না, আর পাঠ হবে কেবল বাংলা অনুবাদ (সংস্কৃত মূলপাঠ নয়)।
+#
+# চালানোর নিয়ম:
+#   · এই ফাইল বা ফেচার বদলালে main-এ merge হলেই একবার চলে
+#   · অথবা হাতে Actions → Run workflow
+# পুনরায় চালালে পুরোটা আবার নামে (পাতা ~১১০টি, ~১০ মিনিট)।
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'কোন ব্র্যাঞ্চে ফল লেখা হবে'
+        required: false
+        default: 'main'
+        type: string
+      dry_run:
+        description: 'শুধু নামাই, কমিট নয় (পরীক্ষা)'
+        required: false
+        default: false
+        type: boolean
+  # ⚠ push-ট্রিগার ইচ্ছাকৃতভাবে নেই: ওয়ার্কফ্লো নিজেই main-এ push করে, তাই
+  #   merge-এও চললে শেষ push-ই আবার আগুন ধরাত → অন্তহীন লুপ। চালাতে হবে
+  #   Actions → Run workflow (অথবা workflow_call)।
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-atharvaveda
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      PYTHONUNBUFFERED: '1'
+      TARGET_BRANCH: ${{ inputs.branch || 'main' }}
+      DRY_RUN: ${{ inputs.dry_run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.branch || 'main' }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: git
+        run: |
+          git config user.name  "grantho-bot"
+          git config user.email "bot@users.noreply.github.com"
+
+      - name: নামাও (২০ কাণ্ড)
+        run: |
+          python3 -u tools/fetch_atharvaveda.py || echo "ফেচ আংশিক ব্যর্থ — যা পাওয়া গেছে তাই রাখা হলো"
+
+      - name: ফল লিখে রাখি (লগ দেখা যায় না বলে)
+        if: always()
+        run: |
+          mkdir -p assets/grantho/data/_debug
+          python3 -u - <<'PY'
+          import io, json, pathlib
+          out = io.StringIO()
+          rep = pathlib.Path("assets/grantho/data/atharvaveda/_fetch_report.txt")
+          out.write("== fetch report ==\n")
+          out.write(rep.read_text(encoding="utf-8") if rep.exists() else "(none)")
+          idx = pathlib.Path("assets/grantho/data/atharvaveda/index.json")
+          out.write("\n== index ==\n")
+          if idx.exists():
+              d = json.loads(idx.read_text(encoding="utf-8"))
+              out.write(f"{d['bn']} · {d['total']} মন্ত্র · {len(d['chapters'])} কাণ্ড"
+                        f" · {d.get('suktaTotal')} সূক্ত\n")
+              for c in d["chapters"]:
+                  out.write(f"  কাণ্ড {c['id']}: {c.get('suktaCount')} সূক্ত · {c['count']} মন্ত্র\n")
+          else:
+              out.write("(index.json নেই — শর্ত পূরণ হয়নি)\n")
+          txt = out.getvalue()
+          pathlib.Path("assets/grantho/data/_debug/atharva_fetch.txt").write_text(
+              txt, encoding="utf-8")
+          print(txt)
+          PY
+
+      - name: পাতা বানাও (বেদ-হাব + গ্রন্থ-পাতা)
+        run: python3 tools/build_pages.py || echo "বিল্ড ব্যর্থ"
+
+      - name: ফলাফলের সারসংক্ষেপ
+        if: always()
+        run: |
+          f=assets/grantho/data/_debug/atharva_fetch.txt
+          { echo '### অথর্ববেদ ফেচ'; echo '```'; cat "$f" 2>/dev/null || echo '(প্রতিবেদন নেই)';
+            echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: কমিট ও প্রকাশ
+        if: always() && inputs.dry_run != true
+        run: |
+          git add -A
+          if git diff --cached --quiet; then echo "কিছু বদলায়নি"; exit 0; fi
+          git commit -m "অথর্ববেদ: ebanglalibrary থেকে শুধু বাংলা পাঠ (স্বয়ংক্রিয়)"
+          git push origin "HEAD:${TARGET_BRANCH}"

@@ -109,6 +109,9 @@ def main(apply=False):
             print(f"   · মণ্ডল {m}: সূক্ত-পরিচয় মন্ত্রেই পাওয়া গেল → "
                   f"{len(bounds)} সূক্ত (অনুমান লাগেনি)")
         suktas, shl_total = [], 0
+        # পুরনো সূক্তের অতিরিক্ত ক্ষেত্র (যেমন `deity` — সূক্তের দেবতা) যেন
+        # হারিয়ে না যায়: একই id-র পুরনো এন্ট্রি থেকে বাকি সব কী ধরে রাখি।
+        old_by_id = {s.get("id"): s for s in (obj.get("suktas") or [])}
         for k, (a, b) in enumerate(bounds, 1):
             cuts, shl = {}, 0
             for n in order:
@@ -120,9 +123,11 @@ def main(apply=False):
                     shl += len(parts)
                 else:
                     shl += 1
-            suktas.append({"id": k, "from": a, "to": b,
-                           "mantra": sum(1 for n in order if a <= n <= b),
-                           "shloka": shl, "cuts": cuts})
+            ent = dict(old_by_id.get(k) or {})
+            ent.update({"id": k, "from": a, "to": b,
+                        "mantra": sum(1 for n in order if a <= n <= b),
+                        "shloka": shl, "cuts": cuts})
+            suktas.append(ent)
             shl_total += shl
             g_split += len(cuts)
         obj["suktas"] = suktas
