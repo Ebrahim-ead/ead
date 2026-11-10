@@ -212,3 +212,67 @@
     }).observe(nav, { attributes: true, attributeFilter: ["class"] });
   }
 })();
+
+/* ============================================================
+   মোবাইল-মেনু (☰) — এক জায়গায়, সব পাতার জন্য।
+   আগে এই কোডটি প্রতি পাতায় আলাদা করে inline বসানো ছিল; quran.html ও
+   hadith.html-এ কপি করতে ভুলে গিয়েছিল, ফলে ওই দুই পাতায় ☰ চাপলে
+   কিছুই হত না। এখন এখানে একবার থাকলে সব পাতায় কাজ করবে।
+   defer-এ চলে, তাই DOM তৈরি হওয়ার পর চলে; data-base-নির্ভর লোডারও
+   তখনই শুরু হয়, ফলে ক্রম নিয়ে আর চিন্তা নেই।
+   ============================================================ */
+(function () {
+  "use strict";
+  var burger = document.querySelector(".burger");
+  var nav = document.querySelector(".nav");
+  if (!burger || !nav) return;
+  /* pagers-এর নিজের খোলা-বন্ধ আচরণ থাকলে (কিছু পাতায় ☰ আলাদা কাজে
+     বসানো), সেটিকে আর দ্বিগুণ বাঁধা দিই না। */
+  if (burger.dataset && burger.dataset.menuBound === "1") return;
+
+  var body = document.body;
+  var backdrop = document.querySelector(".nav-backdrop");
+  var navLinks = Array.prototype.slice.call(nav.querySelectorAll("a[href]"));
+  var headerButtons = Array.prototype.slice.call(document.querySelectorAll(".header-actions button"));
+  var menuFocusables = navLinks.concat(headerButtons);
+
+  function setMenuOpen(open, restoreFocus) {
+    nav.classList.toggle("open", open);
+    if (backdrop) backdrop.classList.toggle("on", open);
+    if (body) body.classList.toggle("menu-open", open);
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    burger.setAttribute("aria-label", open ? "মেনু বন্ধ করুন" : "মেনু খুলুন");
+    burger.title = open ? "মেনু বন্ধ করুন" : "মেনু খুলুন";
+    burger.textContent = open ? "\u00d7" : "\u2630";
+    if (open && navLinks[0]) window.requestAnimationFrame(function () { navLinks[0].focus(); });
+    else if (!open && restoreFocus) burger.focus();
+  }
+
+  burger.addEventListener("click", function () {
+    setMenuOpen(!nav.classList.contains("open"), false);
+  });
+  nav.addEventListener("click", function (e) {
+    var link = e.target.closest ? e.target.closest("a") : null;
+    if (link) setMenuOpen(false, false);
+  });
+  if (backdrop) backdrop.addEventListener("click", function () { setMenuOpen(false, true); });
+  document.addEventListener("keydown", function (e) {
+    if (!nav.classList.contains("open")) return;
+    if (e.key === "Escape") { e.preventDefault(); setMenuOpen(false, true); return; }
+    if (e.key === "Tab" && menuFocusables.length) {
+      var first = menuFocusables[0], last = menuFocusables[menuFocusables.length - 1];
+      var activeEl = document.activeElement;
+      if (e.shiftKey && (activeEl === first || menuFocusables.indexOf(activeEl) < 0)) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && (activeEl === last || menuFocusables.indexOf(activeEl) < 0)) {
+        e.preventDefault(); first.focus();
+      }
+    }
+  });
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 1080 && nav.classList.contains("open")) setMenuOpen(false, false);
+  });
+  if (burger.dataset) burger.dataset.menuBound = "1";
+  /* আগের inline কোড থাকলে সেটি বুঝবে মেনু ইতিমধ্যে বাঁধা হয়েছে */
+  window.__eadMenuBound = true;
+})();

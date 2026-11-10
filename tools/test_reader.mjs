@@ -85,9 +85,15 @@ async function testPage(file) {
 
   const doc = window.document;
   const idx = fs.existsSync(idxPath) ? JSON.parse(fs.readFileSync(idxPath, 'utf8')) : null;
-  /* দুই স্তর (পুস্তক → অধ্যায় → পদ): বাইবেলের ডেটাতেই চেনা যায় */
-  const twoLevel = !!idx && idx.chapters.some((c) => c.testament === 'old' || c.testament === 'new')
-    && idx.chapters.some((c) => (+c.suktaCount || 0) > 0);
+  /* দুই স্তর (পুস্তক/মণ্ডল → অধ্যায়/সূক্ত → পদ): বাইবেলের ডেটাতেই চেনা যায়
+     (testament), আর বেদের ক্ষেত্রে প্রতিটি মণ্ডলে grid.count থাকলে। */
+  const twoLevel = !!idx && (
+    (idx.chapters.some((c) => c.testament === 'old' || c.testament === 'new')
+      && idx.chapters.some((c) => (+c.suktaCount || 0) > 0)) ||
+    (idx.chapters.length > 1
+      && idx.chapters.every((c) => c.grid && (+c.grid.count || 0) > 0)
+      && !idx.chapters.some((c) => c.testament))
+  );
   /* দুই স্তর: গ্রুপযুক্ত গ্রন্থে (বাইবেল) বাঁ পাশে পুস্তক, বইয়ে ক্লিকে আগে
      অধ্যায়-গ্রিড, তারপর অধ্যায়ের পদ। একক-স্তরে আগের মতোই খণ্ড-তালিকা। */
   const list = doc.getElementById(twoLevel ? 'g-book-list' : 'g-chapter-list');
@@ -95,7 +101,8 @@ async function testPage(file) {
   if (idx && nbtn !== idx.chapters.length) {
     errs.push(`অধ্যায়-বাটন ${nbtn} ≠ ডেটার ${idx.chapters.length}`);
   }
-  if (twoLevel) {
+  const hasTestament = !!idx && idx.chapters.some((c) => c.testament === 'old' || c.testament === 'new');
+  if (twoLevel && hasTestament) {
     // পুরাতন/নতুন নিয়ম-ভাগ: সংখ্যা ডেটার সাথে মিলতে হবে, আর ছাঁকনিতে দেখা যাবে
     const tb = doc.getElementById('g-testament');
     const nOld = idx.chapters.filter((c) => (c.testament || (c.id <= 39 ? 'old' : 'new')) === 'old').length;
@@ -151,8 +158,13 @@ async function testPage(file) {
     const tEl = doc.getElementById('g-ch-title');
     chTitle = tEl ? tEl.textContent.trim() : '';
     const chFile = JSON.parse(fs.readFileSync(path.join(dataDir, `ch${idx.chapters[0].id}.json`), 'utf8'));
+    /* দুই স্তরে যাচাই কেবল নির্বাচিত অধ্যায়/সূক্তের পাঠ — মূল ডেটাতেই
+       সূক্তের from/to রেঞ্জ থাকলে সেটাই সত্য (বাইবেলে চ-field, ঋগ্বেদে রেঞ্জ)। */
+    const su = (chFile.suktas || []).filter((x) => +x.id === 1)[0];
     const vs = twoLevel
-      ? chFile.verses.filter((v) => v.ch === 1)
+      ? (su && su.from && su.to
+          ? chFile.verses.filter((v) => v.n >= su.from && v.n <= su.to)
+          : chFile.verses.filter((v) => v.ch === 1))
       : chFile.verses;
     if (rendered < 1) errs.push('একটিও খণ্ড রেন্ডার হয়নি');
     if (twoLevel && rendered !== vs.length) {
@@ -330,16 +342,18 @@ async function testPage(file) {
     if (!/\.g-side\.folded \.g-side-body\{display:none\}/.test(css)) {
       errs.push('তালিকা ভাঁজ করার নিয়ম নেই');
     }
-    // প্রতিটি পুস্তকের নামের পাশে ইংরেজি নাম (ডেটার `en`)
-    const tags = [...doc.querySelectorAll('#g-book-list .g-bk-en')].map((e) => e.textContent.trim());
-    if (tags.length !== idx.chapters.length) {
-      errs.push(`ইংরেজি নাম ${tags.length}টি, পুস্তক ${idx.chapters.length}টি — সবগুলোর নাম থাকা দরকার`);
-    }
+    // প্রতিটি পুস্তকের নামের পাশে ইংরেজি নাম (ডেটার `en`) — ডেটায় en থাকলে তবেই
     const want = idx.chapters.map((c) => (c.en || '').trim()).filter(Boolean);
-    const missing = want.filter((w) => !tags.includes(w));
-    if (missing.length) errs.push(`ইংরেজি নাম বাদ পড়েছে: ${missing.slice(0, 4).join(', ')}`);
-    if (doc.querySelector('.g-bk-en')?.getAttribute('dir') !== 'ltr') {
-      errs.push('ইংরেজি নাম LTR-এ নেই (বাংলা মাঝে বসে বিকৃত দেখাবে)');
+    if (want.length) {
+      const tags = [...doc.querySelectorAll('#g-book-list .g-bk-en')].map((e) => e.textContent.trim());
+      if (tags.length !== idx.chapters.length) {
+        errs.push(`ইংরেজি নাম ${tags.length}টি, পুস্তক ${idx.chapters.length}টি — সবগুলোর নাম থাকা দরকার`);
+      }
+      const missing = want.filter((w) => !tags.includes(w));
+      if (missing.length) errs.push(`ইংরেজি নাম বাদ পড়েছে: ${missing.slice(0, 4).join(', ')}`);
+      if (doc.querySelector('.g-bk-en')?.getAttribute('dir') !== 'ltr') {
+        errs.push('ইংরেজি নাম LTR-এ নেই (বাংলা মাঝে বসে বিকৃত দেখাবে)');
+      }
     }
     // তালিকা-হেডার ডেটার chword («পুস্তক») দেখাবে, হার্ডকোডেড «অধ্যায়» নয়
     const st = doc.getElementById('g-side-title');
