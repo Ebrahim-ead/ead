@@ -204,8 +204,9 @@ def clean_av(sanskrit, is_last):
     return re.sub(r'\s{2,}', ' ', sanskrit).strip()
 
 
+# ⚠ ২০২৬-১১-১০: ব্যবহারকারীর সিদ্ধান্ত — সামবেদ সাইটে রাখা হচ্ছে না।
+#   তাই Samaveda এখান থেকেও বাদ (এই টুল চালালে আগে সামবেদ-ডেটা ফিরে আসত)।
 VED = [('RigVeda', 'rigveda', 'ঋগ্বেদ', 'Rigveda', 'মণ্ডল', 10),
-       ('Samaveda', 'samaveda', 'সামবেদ', 'Samaveda', 'ভাগ', 1),
        ('Atharvaveda', 'atharvaveda', 'অথর্ববেদ', 'Atharvaveda', 'কাণ্ড', 20)]
 
 
