@@ -31,6 +31,7 @@ import pathlib
 import re
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -70,19 +71,53 @@ def to_int(s):
 
 
 # ---------------- নেটওয়ার্ক ----------------
+_CACHE = {}
+
+
+def safe_url(u):
+    """URL-এ বাংলা থাকলে percent-encode করি (http.client ASCII চায়)।
+
+    fetch_ebl.py-এর প্রমাণিত ধাঁচ — নইলে বাংলা-স্লাগের URL-এ অনুরোধ
+    ব্যর্থ হয়ে শূন্য ফল আসে।
+    """
+    if not u:
+        return u
+    parts = urllib.parse.urlsplit(u)
+    return urllib.parse.urlunsplit((
+        parts.scheme or "https", parts.netloc,
+        urllib.parse.quote(parts.path, safe="/%"),
+        urllib.parse.quote_plus(parts.query, safe="=&%") if parts.query else "",
+        ""))
+
+
 def get(url, tries=4, timeout=60):
+    """পাতা নামাই। ব্যর্থ হলে None (খালি স্ট্রিং নয়) — যাতে ব্যর্থ আর
+    «পাতায় কিছু নেই» আলাদা করা যায় এবং রিপোর্টে সত্যি কারণ ওঠে।"""
+    url = safe_url(url)
+    if url in _CACHE:
+        return _CACHE[url]
     last = None
     for t in range(tries):
         try:
             req = urllib.request.Request(url, headers={
-                "User-Agent": UA, "Accept-Language": "bn,en;q=0.8"})
+                "User-Agent": UA, "Accept-Language": "bn,en;q=0.8",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"})
             with urllib.request.urlopen(req, timeout=timeout) as r:
-                return r.read().decode("utf-8", "replace")
+                data = r.read().decode("utf-8", "replace")
+                _CACHE[url] = data
+                return data
+        except urllib.error.HTTPError as e:
+            print(f"   ! HTTP {e.code} — {url[-60:]}", flush=True)
+            if e.code == 404:
+                return None
+            last = e
         except Exception as e:                      # noqa: BLE001
             last = e
-            time.sleep(2.5 * (t + 1))
-    print(f"   ! {type(last).__name__}: {url[:80]}", flush=True)
-    return ""
+            print(f"   ! {type(e).__name__}: {str(e)[:70]} — {url[-50:]}",
+                  flush=True)
+        time.sleep(min(30, 3 * (t + 1)))
+    print(f"   ✗ শেষ চেষ্টাও ব্যর্থ ({type(last).__name__}) — {url[:90]}", flush=True)
+    return None
 
 
 # ---------------- পাঠ-নিষ্কাশন ----------------
@@ -243,8 +278,13 @@ def split_translations(chunks):
 
 
 # ---------------- তালিকা ----------------
+# পাঠ্য-লিংক: LearnDash-এ <a>-এর ভেতরে <span class="ld-item-title"> থাকে —
+# তাই [^<] ধরে শিরোনাম নিলে কিছুই মেলে না (প্রথম রানে ঠিক এটাই হয়েছিল:
+# «কাণ্ড পাওয়া গেল: []») । এখন <a>…</a>-এর ভেতরকার সব ট্যাগ বাদ দিয়ে
+# শিরোনাম নিই, আর ভেতরে div/img থাকলেও থামি না।
 LINK_RE = re.compile(r'href="(https://www\.ebanglalibrary\.com/(?:lessons|topics)/'
-                     r'[^"#?]+)"[^>]*>\s*([^<]{0,90}?)</a>')
+                     r'[^"#?]+)"[^>]*>(.{0,400}?)</a>', re.S)
+TAG_RE = re.compile(r"<[^>]+>")
 # লেসন-URL-এর স্লাগেই ক্রম থাকে: «…/lessons/০১।১-প্রথম-কাণ্ড-প্রথম-অনুবাক/»
 SLUG_NUM = re.compile(r"/lessons/([০-৯]{1,2})\s*।\s*([০-৯]{1,2})")
 # শিরোনামের সংখ্যা (স্লাগ নষ্ট হলেও ফলব্যাক)
@@ -264,7 +304,7 @@ def _page_rows(h):
         u = htmllib.unescape(mm.group(1))
         if u in seen:
             continue
-        t = re.sub(r"\s+", " ", htmllib.unescape(mm.group(2))).strip()
+        t = re.sub(r"\s+", " ", htmllib.unescape(TAG_RE.sub(" ", mm.group(2)))).strip()
         if STOP_TITLE.search(t):
             continue
         num = SLUG_NUM.search(urllib.parse.unquote(u)) or TITLE_NUM.match(t)
@@ -329,6 +369,10 @@ def lesson_index(limit=0):
         per[r["kanda"]] = per.get(r["kanda"], 0) + 1
     print("কাণ্ড-কভারেজ: " + " · ".join(f"{k}:{v}" for k, v in sorted(per.items())),
           flush=True)
+    if not rows:
+        print("::error::একটিও লেসন-লিংক পাওয়া গেল না — বই-পাতার HTML-গঠন "
+              "বদলেছে, নাকি সাইট নেটওয়ার্ক থেকে আটকে দিয়েছে (উপরের "
+              "লগের ! চিহ্নগুলো দেখুন)।", flush=True)
     return rows
 
 
