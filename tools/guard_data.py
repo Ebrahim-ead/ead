@@ -23,7 +23,7 @@ BASE_FILE = DATA / "_baseline.json"
 TOL = 0.85          # ১৫%-এর বেশি কমলেই সন্দেহ
 
 # সাইটে কেবল এই দুটি গ্রন্থ থাকবে (ব্যবহারকারীর সিদ্ধান্ত, ২০২৬-১১-০৫)।
-ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "bible")
+ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "atharvaveda", "bible")
 KEEP_PAGES = {"gita.html", "rigveda.html", "veda.html", "yajurveda-shukla.html",
               "bible.html"}
 

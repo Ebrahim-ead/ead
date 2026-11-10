@@ -20,7 +20,7 @@ OUT = ROOT / "grantho/hindu"
 # ব্যবহারকারীর সিদ্ধান্ত (২০২৬-১১-০৫): «শুধুমাত্র ভগবত গীতা আর চারটা বেদের
 # ভিতর শুধুমাত্র ঋগ্বেদ রাখো; বাকি সবগুলো বাদ দাও।» তাই ডেটা/কার্ড কেবল
 # এই দুটিরই তৈরি হয় — অন্য কোনো index.json পড়া হয় না।
-ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "bible")
+ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "atharvaveda", "bible")
 
 BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
 BN_MAP = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
@@ -89,6 +89,14 @@ BOOKS["bible"] = dict(
          "বসানো হয় না — সেগুলো রিপোর্টে নথিভুক্ত থাকে।"),
     excerpt="সৃষ্টি থেকে নতুন নিয়ম পর্যন্ত — পুস্তক, অধ্যায় ও পদ-নম্বরসহ সম্পূর্ণ বাংলা পাঠ।")
 
+BOOKS["atharvaveda"] = dict(
+    kind="veda", title=("অথর্ববেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
+    kicker="হিন্দু · বেদ · অথর্ববেদ", crumb="অথর্ববেদ সংহিতা",
+    intro="অথর্ববেদের বাংলা অনুবাদ — দিলীপ মুখোপাধ্যায় সম্পাদিত (ebanglalibrary.com)।",
+    word="মন্ত্র", chword="কাণ্ড",
+    src="বাংলা অনুবাদ — ebanglalibrary.com (অথর্ববেদ সংহিতা, সম্পাদনা: দিলীপ মুখোপাধ্যায়)। সংস্কৃত মূলপাঠ এই সংস্করণে দেওয়া হচ্ছে না — শুধু বাংলা অনুবাদ।",
+    excerpt="চিকিৎসা, শান্তি ও দার্শনিক মন্ত্রের চতুর্থ বেদ — দিলীপ মুখোপাধ্যায় সম্পাদিত বাংলা অনুবাদে ২০ কাণ্ড।",
+)
 BOOKS["yajurveda-shukla"] = dict(
     kind="veda", title=("শুক্ল যজুর্বেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
     kicker="হিন্দু · বেদ · শুক্ল যজুর্বেদ", crumb="শুক্ল যজুর্বেদ সংহিতা",
@@ -357,12 +365,19 @@ def make_page(slug, idx, meta):
     # রিডারের নতুন গঠন (পুস্তক → অধ্যায় → পদ): টেমপ্লেটে ব্লকগুলো হাতে বসানো
     # থাকে, কিন্তু গ্রুপ-তথ্য (testament/অধ্যায়-সংখ্যা/ইংরেজি-কভারেজ) ডেটা
     # থেকে এখানেই বসানো হয় — পুরোনো টেমপ্লেটেও কার্যকর।
-    # প্যানেলের শিরোনাম ডেটার chword থেকেই («পুস্তক») — হার্ডকোডেড «অধ্যায়» ভুল ছিল
+    # প্যানেলের শিরোনাম ডেটার chword থেকেই («পুস্তক») — হার্ডকোডেড «অধ্যায়» ভুল ছিল।
+    # ⚠ টেমপ্লেট ভাগাভাগি: ঋগ্বেদ/যজুর্বেদ/বাইবেল একই `g-side-title` প্যাটার্ন
+    #   ব্যবহার করে, তাই এক পাতার বিল্ড অন্য পাতার শিরোনাম বদলে দিত («মণ্ডল»
+    #   ঢুকে যেত যজুর্বেদের পাতায়)। এখন সব গ্রন্থে নিজের chword-ই বসানো হয়।
+    _cw = meta.get("chword") or "অধ্যায়"
+    h = re.sub(r'(<b id="g-side-title">)[^<]*(</b>)',
+               lambda m: m.group(1) + _cw + m.group(2), h, count=1)
     if meta.get("kind") == "bible":
-        h = h.replace('<b id="g-side-title">অধ্যায়</b>',
-                      f'<b id="g-side-title">{meta.get("chword") or "পুস্তক"}</b>')
         # প্যানেলের id — ভাঁজ-নিয়ন্ত্রণ ও স্ক্রলযোগ্য বডি এর ওপরেই দাঁড়িয়ে
         h = h.replace('<aside class="g-side">', '<aside class="g-side" id="g-side">', 1)
+    # একবার আপগ্রেড হয়ে গেলে আর লিখি না — নইলে দ্বিতীয় রানে পুরনো
+    # প্যাটার্ন («g-chapter-list"></div>») মিলত না আর g-testament/g-en-note
+    # হারিয়ে যেত (একই বাগ দুই রানে দুই রকম ক্ষতি করত)।
     if meta.get("kind") == "bible" and 'id="g-book-list"' not in h:
         # পুরোনো টেমপ্লেটে কেবল খণ্ড-তালিকা ছিল — নতুন স্তরগুলোর কনটেইনার বসাই,
         # সাথে মোবাইলে ভাঁজ-বোতাম ও গুটিয়ে রাখা যায় এমন বডি।
@@ -383,20 +398,28 @@ def make_page(slug, idx, meta):
             # হেড-div না থাকলে তালিকার গোড়ায় বসাই
             h = h.replace('<div id="g-book-list">', _HEAD + '<div id="g-book-list">', 1)
 
-        h = h.replace('<div id="g-chapter-list"></div>',
+        # পুরনো গঠন হলেই কেবল (idempotent) — একবার আপগ্রেড হলে আর ছোঁব না
+        if 'id="g-side-body"' not in h and '<div id="g-chapter-list"></div>' in h:
+            h = h.replace('<div id="g-chapter-list"></div>',
                       '<div class="g-side-now" id="g-side-now" aria-live="polite"></div>'
                       '<div class="g-side-body" id="g-side-body">'
                       '<div id="g-testament" class="g-tset" role="group" '
                       'aria-label="নিয়ম" hidden></div>'
                       '<div id="g-book-list"></div>'
                       '<div id="g-chapter-list" hidden></div>'
-                      '</div>', 1)
-        h = h.replace('<div id="g-bn-note"',
-                      '<div id="g-crumb2" class="g-crumb2" hidden></div>'
-                      '<div id="g-chapter-grid" class="g-chgrid" role="group" '
-                      'aria-label="অধ্যায়"></div>'
-                      '<div id="g-en-note" class="g-en-note" hidden></div>'
-                      '<div id="g-bn-note"', 1)
+                          '</div>', 1)
+    # `g-testament` (পুরাতন/নতুন নিয়ম ছাঁকনি) ও `g-en-note` — grantho.js ও
+    # test_reader দুটোই এই id ধরে কাজ করে। টেমপ্লেট বদলালে এরা যেন কখনো
+    # না হারায়, তাই আলাদা করে (idempotent) নিশ্চিত করি।
+    if meta.get("kind") == "bible":
+        if 'id="g-testament"' not in h and 'id="g-book-list"' in h:
+            h = h.replace('<div id="g-book-list">',
+                          '<div id="g-testament" class="g-tset" role="group" '
+                          'aria-label="নিয়ম" hidden></div><div id="g-book-list">', 1)
+        if 'id="g-en-note"' not in h and '<div id="g-bn-note"' in h:
+            h = h.replace('<div id="g-bn-note"',
+                          '<div id="g-en-note" class="g-en-note" hidden></div>'
+                          '<div id="g-bn-note"', 1)
 
     src = meta["src"]
     # সংস্কৃত পাঠের প্রাপ্যতা — আগে হার্ডকোডেড দাবি ছিল যা ডেটার সাথে মিলত না।
@@ -654,6 +677,10 @@ def main():
         if yv:
             hp_cards += card("hindu/yajurveda-shukla.html", "হিন্দু · বেদ", "শুক্ল যজুর্বেদ সংহিতা",
                              f'{commas(yv["withbn"])} মন্ত্র · {commas(yv["nch"])} অধ্যায়')
+        av = next((r for sl, r, _ in vedas if sl == "atharvaveda"), None)
+        if av:
+            hp_cards += card("hindu/atharvaveda.html", "হিন্দু · বেদ", "অথর্ববেদ সংহিতা",
+                             f'{commas(av["withbn"])} মন্ত্র · {commas(av["nch"])} কাণ্ড')
         if hp_cards:
             replace_grid("hindu.html", hp_cards, sub="")
         print("হিন্দু-হাব:", sum(r["withbn"] for _, r, _ in vedas), "/",
