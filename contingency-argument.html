@@ -370,49 +370,6 @@
 
     if (up) up.onclick = function () { window.scrollTo({ top: 0, behavior: rm ? "auto" : "smooth" }); };
 
-    var burger = document.querySelector(".burger"), nav = document.querySelector(".nav");
-    if (burger && nav) {
-      var backdrop = document.querySelector(".nav-backdrop");
-      var navLinks = Array.prototype.slice.call(nav.querySelectorAll("a[href]"));
-      var headerButtons = Array.prototype.slice.call(document.querySelectorAll(".header-actions button"));
-      var menuFocusables = navLinks.concat(headerButtons);
-      function setMenuOpen(open, restoreFocus) {
-        nav.classList.toggle("open", open);
-        if (backdrop) backdrop.classList.toggle("on", open);
-        burger.setAttribute("aria-expanded", open ? "true" : "false");
-        burger.setAttribute("aria-label", open ? "মেনু বন্ধ করুন" : "মেনু খুলুন");
-        burger.title = open ? "মেনু বন্ধ করুন" : "মেনু খুলুন";
-        burger.textContent = open ? "×" : "☰";
-        body.classList.toggle("menu-open", open);
-        if (open && navLinks[0]) window.requestAnimationFrame(function () { navLinks[0].focus(); });
-        else if (!open && restoreFocus) burger.focus();
-      }
-      burger.addEventListener("click", function () {
-        setMenuOpen(!nav.classList.contains("open"), false);
-      });
-      nav.addEventListener("click", function (e) {
-        var link = e.target.closest ? e.target.closest("a") : null;
-        if (link) setMenuOpen(false, false);
-      });
-      if (backdrop) backdrop.addEventListener("click", function () { setMenuOpen(false, true); });
-      document.addEventListener("keydown", function (e) {
-        if (!nav.classList.contains("open")) return;
-        if (e.key === "Escape") { e.preventDefault(); setMenuOpen(false, true); return; }
-        if (e.key === "Tab" && menuFocusables.length) {
-          var first = menuFocusables[0], last = menuFocusables[menuFocusables.length - 1];
-          var active = document.activeElement;
-          if (e.shiftKey && (active === first || menuFocusables.indexOf(active) < 0)) {
-            e.preventDefault(); last.focus();
-          } else if (!e.shiftKey && (active === last || menuFocusables.indexOf(active) < 0)) {
-            e.preventDefault(); first.focus();
-          }
-        }
-      });
-      window.addEventListener("resize", function () {
-        if (window.innerWidth > 1080 && nav.classList.contains("open")) setMenuOpen(false, false);
-      });
-    }
-
     /* ---- dark / light theme switch (saved locally in this browser) ---- */
     var themeToggle = document.querySelector("[data-theme-toggle]");
     if (themeToggle) {

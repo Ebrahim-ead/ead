@@ -44,7 +44,7 @@
   var prevBtn  = document.getElementById("g-prev");
   var nextBtn  = document.getElementById("g-next");
   /* grouped = গ্রন্থে পুস্তক>অধ্যায়>পদ স্তর আছে কি না (বাইবেল) */
-  var grouped = false, bookId = 0, testFilter = "all";
+  var grouped = false, bookId = 0, testFilter = "all", gridMissing = false;
   var bnNoteEl = document.getElementById("g-bn-note");
   /* গীতা/পুরাণে «শ্লোক», বেদ-উপনিষদে «মন্ত্র», বাইবেলে «পদ» — index.json-এর
      verseWord থেকে। একইভাবে গ্রুপ-শব্দ (ঋগ্বেদে «সূক্ত», বাইবেলে «অধ্যায়») ও
@@ -275,9 +275,17 @@
       var have = hasChapter(bk, i);
       /* ফাঁকা ঘরগুলোও দেখাই (কিন্তু আলাদা রঙে) — তালিকা থেকে সংখ্যা হারালে
          পাঠক ভাবতেন অধ্যায়টাই নেই; এখন স্পষ্ট বোঝা যায় «পাঠ নেই»। */
-      return '<button class="g-cg' + (on ? " on" : "") + (have ? "" : " off") +
+      /* সূক্তের দেবতা: index.json-এ মণ্ডল-ভিত্তিক deityHar নামে রাখা —
+         গ্রিড আঁকার সময় ওই মণ্ডলের ch ডেটা লোড করা হয়ে গেছে এমন নয়। */
+      var su = null;
+      var djs = bk.deityHar || {};
+      if (djs[String(i)]) su = { deity: djs[String(i)] };
+      var dj = su && su.deity ? su.deity : "";
+      var tip = have ? (dj ? GW + " " + bn(i) + " · " + dj : "") : "উৎসে পাওয়া যায়নি";
+      return '<button class="g-cg' + (on ? " on" : "") + (have ? "" : " off") + (dj ? " has-dj" : "") +
         '" type="button" data-c="' + i + '"' + (on ? ' aria-current="true"' : "") +
-        (have ? "" : ' aria-label="' + bn(i) + ' — পাঠ নেই" title="উৎসে পাওয়া যায়নি"') + ">" +
+        (have ? "" : ' aria-label="' + bn(i) + ' — পাঠ নেই" title="উৎসে পাওয়া যায়নি"') +
+        (have && tip ? ' title="' + esc(tip) + '" aria-label="' + esc(tip) + '"' : "") + ">" +
         "<span>" + prefix + bn(i) + "</span></button>";
     }).join("");
     gridEl.querySelectorAll("[data-c]").forEach(function (b) {
@@ -307,9 +315,16 @@
           titleEl.appendChild(enSpan);
         }
       }
-      var gm = (chapter.suktas || []).filter(function (x) { return x.id === chapterId; })[0] || null;
-      /* উৎসে না-থাকা অধ্যায়ে «০ পদ» লেখা বিভ্রান্তিকর — সত্য কথাটাই লিখি */
-      if (metaEl) metaEl.textContent = gm ? bn(gm.verse || 0) + " " + VW : "উৎসে পাওয়া যায়নি";
+      var gm = (chapter.suktas || []).filter(function (x) { return +x.id === +chapterId; })[0] || null;
+      /* উৎসে না-থাকা অধ্যায়ে «০ পদ» লেখা বিভ্রান্তিকর — সত্য কথাটাই লিখি।
+         সংখ্যাটি ডেটায় ভিন্ন নামে থাকতে পারে: verse (বাইবেল) /
+         mantra (ঋগ্বেদ) — নইলে গোনা শূন্য দেখিয়ে ভুল বলত। */
+      var gmN = gm ? (+gm.verse || +gm.mantra || (gm.to - gm.from + 1)) : 0;
+      if (gm && gm.shloka) gmN += "";
+      if (metaEl) metaEl.textContent = gm
+        ? bn(gmN) + " " + VW + (gm.shloka ? " · " + bn(gm.shloka) + " শ্লোক" : "") +
+          (gm.deity ? " · দেবতা: " + gm.deity : "")
+        : "উৎসে পাওয়া যায়নি";
     } else {
       if (titleEl) {
         titleEl.textContent = bk.bn;
@@ -548,6 +563,9 @@
     }
 
     var all = chapter.verses;
+    /* গ্রুপযুক্ত গ্রন্থে (বাইবেল/বেদ) গ্রিড-নির্বাচিত অংশের বাইরে থাকা পাঠ
+       চালিকা হিসেবে দেখানো হবে — তাই ছাঁকনির আগে আলাদা করে রাখি। */
+    var allRaw = all.slice();
     if (state.onlyBn) all = all.filter(function (v) { return v.bn; });
 
     /* বাংলা অনুবাদের কভারেজ — প্রতি মন্ত্রে পুনরাবৃত্তি না করে একবার */
@@ -585,12 +603,34 @@
           " — অনুমান করে কিছু বসানো হয় না। পাশের অধ্যায় থেকে পড়া চালিয়ে যেতে পারেন।</p>");
       }
       if (pick) {
-        all = all.filter(function (v) { return v.n >= pick.from && v.n <= pick.to; });
+        /* সূক্তের রেঞ্জ + যেগুলো রেঞ্জের বাইরে পড়ে আছে।
+           ঋগ্বেদে মণ্ডল-চালিকা (মণ্ডলের শেষে, শেষ সূক্তের পরে) নাম্বারে
+           to-এর পরেই বসানো — সেগুলো হারালে পাঠ হারায়। তাই retention। */
+        var inR = all.filter(function (v) { return v.n >= pick.from && v.n <= pick.to; });
+        /* চালিকা: মণ্ডলের/chapter-এর শেষ সূক্তের রেঞ্জের বাইরে থাকা মন্ত্র।
+           শেষ সূক্ত খোলা থাকলে তবেই দেখাই — নইলে প্রতিটি সূক্তেই পুরো
+           মণ্ডলের অতিরিক্ত পাঠ জুড়ে যেত (আগের ভুল ছিল এটাই)। */
+        var bk2 = bkOf();
+        var lastSukta = chapter.suktas[chapter.suktas.length - 1];
+        var extraR = (lastSukta && pick.id === lastSukta.id)
+          ? allRaw.filter(function (v) { return v.n > pick.to; })
+          : [];
         parts.push('<h3 class="g-sukta-h g-chap-h" id="sukta' + pick.id + '">' +
           '<span class="g-sukta-n">' + GW + " " + bn(pick.id) + '</span>' +
           '<span class="g-sukta-m">' + VW + " " +
-          bn(pick.vfrom || 1) + "–" + bn(pick.vto || pick.verse) + "</span></h3>");
-        all.forEach(function (v) { parts.push(verseHTML(v)); });
+          bn(pick.vfrom || pick.from) + "–" + bn(pick.vto || pick.to) +
+          (pick.shloka ? " · " + bn(pick.shloka) + " শ্লোক" : "") + "</span></h3>");
+        inR.forEach(function (v) { parts.push(verseHTML(v)); });
+        if (!inR.length) {
+          parts.push('<p class="g-empty g-miss"><b>' + GW + " " + bn(pick.id) +
+            "</b> এই সূক্তের পাঠ উৎসে পাওয়া যায়নি — অনুমান করে কিছু বসানো হয় না।</p>");
+        }
+        if (extraR.length) {
+          parts.push('<details class="g-front g-paralipo"><summary>এই মণ্ডলের শেষে থাকা ' +
+            bn(extraR.length) + 'টি মন্ত্র (সূক্তের চালিকা) — পাঠ অটুট রাখতে দেখানো হচ্ছে' +
+            '<span class="g-front-tag">সূক্ত-গণনার বাইরে</span></summary>' +
+            extraR.map(verseHTML).join("") + "</details>");
+        }
       }
     }
     if (!parts.length && hasS) {
@@ -627,7 +667,7 @@
     if (titleEl && !grouped) titleEl.textContent = chapter.bn;
     if (metaEl && !grouped) {
       var mm = bn(chapter.count) + " " + VW;
-      if (hasS) mm += " · " + bn(chapter.suktaCount || 0) + " " + GW;
+      if (hasS && !grouped) mm += " · " + bn(chapter.suktaCount || 0) + " " + GW;
       if (chapter.preface || chapter.heading) mm += " · অনুক্রমণিকা সহ";
       var enCount = Object.keys(enMap(chapterEn)).length;
       if (enCount) {
@@ -680,6 +720,11 @@
     /* ফাইলের নাম: গ্রুপযুক্ত গ্রন্থে ফাইল = পুস্তক (ch<book>.json), গ্রুপ = অধ্যায়।
        একক-স্তরে ফাইলই অধ্যায় — আগের আচরণ অটুট। */
     var fileId = grouped ? bookId : id;
+    /* গ্রুপ-ভিত্তিক ক্রম: পুস্তক/মণ্ডল = ফাইল, অধ্যায়/সূক্ত = lokat নম্বর।
+       শেষ সূক্ত না থাকলে (নতুন গ্রন্থে) সূক্ত-ফিল্টার নিষ্ক্রিয়। */
+    var grpMeta = grouped ? bookById(bookId) : null;
+    var grpMax = grpMeta && grpMeta.grid ? (+grpMeta.grid.count || 0) : 0;
+    if (grouped && grpMax && id > grpMax) { gridMissing = true; } else { gridMissing = false; }
     Promise.all([
       loadJSON(BASE + "ch" + fileId + ".json"),
       loadJSON(BASE + "en/ch" + fileId + ".json").catch(function () { return null; })
@@ -826,8 +871,14 @@
       if (lab) lab.hidden = true;
     }
     /* গ্রুপযুক্ত গ্রন্থ চেনা: পুস্তকে testament/সূক্ত-গণনা আছে (বাইবেল) */
-    grouped = d.chapters.some(function (c) { return c.testament === "old" || c.testament === "new"; }) &&
-              d.chapters.some(function (c) { return (+c.suktaCount || 0) > 0; });
+    /* গ্রুপযুক্ত গ্রন্থ: (ক) বাইবেল — testament + suktaCount, (২) বেদ —
+       প্রতিটি মণ্ডলে grid.count থাকলে সূক্ত-গ্রিড দেখানো হবে। দুটোই
+       index.chapters-এর আকারেই চেনা যায়, তাই নতুন গ্রন্থ যোগ করলেও কাজ করবে. */
+    grouped = (d.chapters.some(function (c) { return c.testament === "old" || c.testament === "new"; }) &&
+               d.chapters.some(function (c) { return (+c.suktaCount || 0) > 0; })) ||
+              (d.chapters.length > 1 &&
+               d.chapters.every(function (c) { return c.grid && (+c.grid.count || 0) > 0; }) &&
+               !d.chapters.some(function (c) { return c.testament; }));
     buildLangBox();
     bind();
     bindFold();
