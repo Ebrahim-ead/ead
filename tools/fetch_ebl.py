@@ -1834,6 +1834,11 @@ def main_run(args):
             print("\n".join(rep))
         return
 
+    # ⚠ সামবেদ: সূচির ক্রমিক নম্বর (১…৪৮) «অধ্যায়» নয় — লেসনের শিরোনামে
+    #   «০১।০২» মানে অধ্যায় ১, খণ্ড ২। আগে `id` বসত ক্রমিক নম্বর ⇒ ৩৭টি
+    #   «অধ্যায়» দেখাত, অথচ সবই ১–৪ অধ্যায়ের খণ্ড = ছদ্ম-সম্পূর্ণতা।
+    CH_HDR = re.compile(r"^\s*(?:সামবেদ\s*)?([০-৯]{1,2})\s*।\s*([০-৯]{1,2})")
+    by_chapter = {}          # অধ্যায় → [(খণ্ড, পাঠ, url)]
     for idx, u in items:
         print(f"[{idx}] {urllib.parse.unquote(u)[-60:]}")
         txt = fetch_paged(u)
@@ -1847,14 +1852,46 @@ def main_run(args):
             title = args.title if norm(tail_t) in norm(args.title) else f"{args.title} — {tail_t}"
         else:
             title = tail_t or f"অধ্যায় {idx}"
-        print(f"   ✓ {len(vs)} {args.word}")
-        # ⚠ পাঠের নম্বর সব সময় ১…n — উৎসের «(২৪৩)» রিগ্বেদ-সংখ্যা `seg`-এ থাকে।
-        #   পার্সার নিজেই ১…n দেয়, তবু n_override থাকলে সেটি এখানে ঠিক করে দিই।
+        # পাঠের নম্বর সব সময় ১…n — উৎসের «(২৪৩)» রিগ্বেদ-সংখ্যা `seg`-এ থাকে
         if args.slug == "samaveda":
             for i, v in enumerate(vs, 1):
                 v["n"] = i
+        _ch = _kh = None
+        if args.slug == "samaveda":
+            _m = CH_HDR.match(tail_t)
+            if not _m:
+                _m = CH_HDR.search(next((ln for ln in txt.splitlines()
+                                         if "সামবেদ" in ln and "।" in ln), ""))
+            if _m:
+                _ch, _kh = to_int(_m.group(1)), to_int(_m.group(2))
+            else:
+                # «০১ম অধ্যায় …» / «০৩য় অধ্যায় …»
+                _o = re.search(r"([০-৯]{1,2})\s*(?:ম|য়|য)\s*[\s\-–—]*অধ্যায়", tail_t)
+                if _o:
+                    _ch, _kh = to_int(_o.group(1)), 0
+        if _ch:
+            by_chapter.setdefault(_ch, []).append((_kh or 0, vs, u))
+            print(f"   ✓ {len(vs)} {args.word} → অধ্যায় {_ch}, খণ্ড {_kh}")
+            time.sleep(0.4)
+            continue
+        print(f"   ✓ {len(vs)} {args.word}")
         chapters.append(write_chapter(out_dir, idx, title, vs, u))
         time.sleep(0.4)
+
+    # অধ্যায়ভিত্তিক জোড়া: খণ্ড-ক্রমে সাজিয়ে নম্বর একটানা ১…n
+    for _ch in sorted(by_chapter):
+        parts = sorted(by_chapter[_ch], key=lambda x: x[0])
+        allv = []
+        for _kh, vs, _u in parts:
+            for v in vs:
+                for part in split_oversized(v):
+                    allv.append(dict(part))
+        for i, v in enumerate(allv, 1):
+            v["n"] = i
+        nm = f"অধ্যায় {_ch}"
+        chapters.append(write_chapter(out_dir, _ch, f"{args.title or 'সামবেদ'} — {nm}",
+                                      allv, parts[0][2]))
+        print(f"   ✓ {nm}: {len(parts)} খণ্ড · {len(allv)} মন্ত্র", flush=True)
 
     if args.slug and chapters:
         idx = write_index_guarded(out_dir, args.slug, args.title or args.slug,
