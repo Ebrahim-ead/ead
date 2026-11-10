@@ -270,6 +270,10 @@ jobs:
           fi
           # ⚠ লগ /tmp-এ লিখি: নিচে reset --hard করলে রেপোর ভেতরের ফাইল ফিরে যেত।
           LOG=/tmp/samaveda_push.txt
+          # ⚠ বিল্ড শেষে কিছু ফাইল আবার বদলায় (নতুন পাতা/ইনডেক্স) ⇒ কমিটের
+          #   *পরে* dirty tree থেকে যায়; তখন git rebase বলে «You have unstaged
+          #   changes» আর প্রতিটি push-চেষ্টাই ব্যর্থ হয়। তাই আগে আরেকবার
+          #   স্টেজ+কমিট (amend) করে গাছ পরিষ্কার করি।
           : > "$LOG"
           git add assets/grantho/data "$DBG" grantho 2>/dev/null || true
           { echo "=== কমিটের আগে ==="; git status --porcelain | head -40
@@ -280,6 +284,12 @@ jobs:
             exit 0
           fi
           git commit -m "সামবেদ: নামানো পাঠ ($(date -u '+%d/%m %H:%M') UTC)" || exit 1
+          # শেষ মুহূর্তের বদল (থাকলে) একই কমিটে ঢুকিয়ে গাছ পরিষ্কার করি
+          git add -A 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit --amend --no-edit >> "$LOG" 2>&1 || true
+          fi
+          git status --porcelain | head -20 >> "$LOG" 2>&1
           # ⚠ Actions-এর লগ বাইরে থেকে পড়া যায় না (signature-মেয়াদ) — তাই
           #   প্রতিটি চেষ্টার ফল নিজের ফাইলে লিখি, তবেই সমস্যা ধরা যাবে।
           ok=0
