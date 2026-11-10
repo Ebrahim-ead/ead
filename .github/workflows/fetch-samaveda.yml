@@ -260,6 +260,22 @@ jobs:
           print(f'অধ্যায় {len(chs)} (১–{max(chs)}), মন্ত্র {tot}')
           if miss:
               print(f'⚠ অনুপস্থিত অধ্যায়: {miss}')
+          # ⚠ সংখ্যা-পতন-রক্ষা: উৎস একদিন আংশিক দিলে (বা ব্লক করলে) ছোট ডেটা
+          #   যেন পুরোনো ভালো ডেটার জায়গা না নেয়। ধরা পড়লে *কিছুই* প্রকাশ হয় না।
+          prev = 0
+          try:
+              import subprocess
+              out = subprocess.run(
+                  ['git', 'show', f'origin/main:assets/grantho/data/{os.environ["SLUG"]}/index.json'],
+                  capture_output=True, text=True, timeout=30).stdout
+              if out:
+                  prev = json.loads(out).get('withBn', 0)
+          except Exception:
+              prev = 0
+          if prev and tot < prev * 0.9:
+              print(f'⛔ মন্ত্র কমে গেছে: {prev} → {tot} (৯০%-এর নিচে) — প্রকাশ হচ্ছে না')
+              raise SystemExit(1)
+          print(f'আগের রান: {prev} মন্ত্র')
           # সূচি যদি ২৬-এর কম হয় ⇒ অসম্পূর্ণ; তবু «যা সম্ভব» নিয়মে প্রকাশ করি
           # *কিন্তু* পাতা নিজেই স্পষ্ট করবে কোথায় শেষ (নিচে সীমা-ঘোষণা যোগ হয়)।
           print('প্রকাশ-সিদ্ধান্ত: ' + ('হ্যাঁ' if ok else 'না'))
