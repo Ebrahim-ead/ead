@@ -242,7 +242,15 @@ def parse_verses(txt, bn_meaning=False):
       গ. পুরাণ: সংস্কৃত প্যারা → বাংলা প্যারা (লেবেলহীন)
       ঘ. ঋগ্বেদ: সংখ্যাযুক্ত বাংলা অনুচ্ছেদ
     """
-    if re.search(r"বঙ্গানুবাদ\s*[–—\-]|অনুবাদঃ", txt):
+    # ⚠ সামবেদে সংস্কৃত মূলও *বাংলা লিপিতে* ছাপা — তাই দেবনাগরী-গোনায়
+    #   «সংস্কৃত নেই» মনে হয় আর bn_meaning ভুল করে True হয়ে যায়; তখন
+    #   «মন্ত্রঃ/অর্থঃ» লেবেল-পথ বন্ধ হয়ে লেবেলই পাঠে ঢুকে পড়ে।
+    #   লেবেলের উপস্থিতি থাকলে আগেই সিদ্ধান্ত নিই।
+    has_labels = bool(re.search(r"(^|\n)\s*মন্ত্র\s*[:ঃ]", txt) and
+                      re.search(r"(^|\n)\s*অর্থ\s*[:ঃ]", txt))
+    if has_labels:
+        bn_meaning = False
+    elif re.search(r"বঙ্গানুবাদ\s*[–—\-]|অনুবাদঃ", txt):
         bn_meaning = True              # অথর্ববেদ/ঋগ্বেদ ধাঁচ: অনুবাদই পাঠ
     if not bn_meaning:
         dev = len(re.findall(r"[\u0900-\u0963\u0966-\u097F]", txt))
@@ -252,7 +260,7 @@ def parse_verses(txt, bn_meaning=False):
         numbered_bn = len([x for x in txt.splitlines()
                            if _NUM_SEG_FULL.match(x.strip())
                            and re.search(r"[অ-হ]", x)])
-        if dev < 200 and (multiline > 30 or numbered_bn >= 3):
+        if dev < 200 and (multiline > 30 or numbered_bn >= 3) and not has_labels:
             bn_meaning = True          # সংস্কৃত মূল নেই ⇒ বাংলা-লিপিতেই পাঠ
     txt = txt.replace("।।", "॥").replace("||", "॥").replace("\u09f7", "॥")
     txt = re.sub(r"([॥৷]\s*[০-৯०-९]{1,3}\s*[॥৷])\s*(?=\S)", r"\1\n", txt)
@@ -415,7 +423,7 @@ def parse_verses(txt, bn_meaning=False):
             if m:
                 flush_pending(pend, False, bn_meaning)
                 pend = []
-                rest = re.sub(r"^\(\s*[০-৯]{1,3}\s*\)\s*", "", ln[m.end():]).strip()
+                rest = re.sub(r"^[\s\-–—]*\(\s*[০-৯0-9]{1,3}\s*\)[\s\-–—]*", "", ln[m.end():]).strip()
                 add_verse([rest])
                 continue
             a = ARTH.match(ln)
@@ -425,7 +433,7 @@ def parse_verses(txt, bn_meaning=False):
                 if cur is None or cur["bn"]:
                     add_verse([])
                 cur["part"] = "bn"
-                r = re.sub(r"^\(\s*[০-৯]{1,3}\s*\)\s*", "", ln[a.end():]).strip()
+                r = re.sub(r"^[\s\-–—]*\(\s*[০-৯0-9]{1,3}\s*\)[\s\-–—]*", "", ln[a.end():]).strip()
                 if r:
                     cur["bn"].append(r)
                 continue
