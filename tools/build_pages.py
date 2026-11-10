@@ -412,6 +412,9 @@ def make_page(slug, idx, meta):
     # test_reader দুটোই এই id ধরে কাজ করে। টেমপ্লেট বদলালে এরা যেন কখনো
     # না হারায়, তাই আলাদা করে (idempotent) নিশ্চিত করি।
     if meta.get("kind") == "bible":
+        # ⚠ idempotent: আগের রানে বসানো হয়ে থাকলে আর বসাই না। মূল বাগ ছিল
+        #   এখানে idempotent না হওয়া — প্রতি বিল্ডে আরেকটা g-testament
+        #   জমে PAGE ভরে যেত (নিয়ম-ছাঁকনি কয়বার দেখা যেত)।
         if 'id="g-testament"' not in h and 'id="g-book-list"' in h:
             h = h.replace('<div id="g-book-list">',
                           '<div id="g-testament" class="g-tset" role="group" '
