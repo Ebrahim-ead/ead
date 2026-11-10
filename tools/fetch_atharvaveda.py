@@ -249,6 +249,13 @@ def split_mantras(text):
                 out = [{"bn": head, "vn": 0}] + rest
                 pos = apos
 
+    # ৪) নম্বর-ভাগ ব্যর্থ ⇒ শব্দ-লেবেল ধরে ভাগ («চতুর্থ মন্ত্রঃ», «প্রথম মন্ত্র :»)
+    #    কাণ্ড ১-এ মন্ত্রের শুরু সংখ্যায় নয়, শব্দে — আর অনুবাদের শেষে নম্বরই নেই।
+    if MANTRA_WORD.search(text):
+        by_word = _split_by_word(text)
+        if len(by_word) > len(out):      # বেশি মন্ত্র পেলেই সেটি নিই
+            out, pos = by_word, len(text)
+
     for i, v in enumerate(out, 1):
         v["vn"] = i
     tail = text[pos:].strip(" ।॥৷")
@@ -257,6 +264,54 @@ def split_mantras(text):
             out[-1]["bn"] = (out[-1]["bn"] + " " + tail).strip()
         else:
             out.append({"bn": tail, "vn": len(out) + 1})
+    return out
+
+
+ORD_WORDS = (
+    "প্রথম", "দ্বিতীয়", "তৃতীয়", "চতুর্থ", "পঞ্চম", "ষষ্ঠ", "সপ্তম", "অষ্টম",
+    "নবম", "দশম", "একাদশ", "দ্বাদশ", "ত্রয়োদশ", "চতুর্দশ", "পঞ্চদশ", "ষোড়শ",
+    "সপ্তদশ", "অষ্টাদশ", "ঊনবিংশ", "বিংশ", "একবিংশ", "দ্বাবিংশ", "ত্রয়োবিংশ",
+    "চতুর্বিংশ", "পঞ্চবিংশ", "ষড়বিংশ", "সপ্তবিংশ", "অষ্টাবিংশ", "ঊনত্রিংশ",
+    "ত্রিংশ", "একত্রিংশ", "দ্বাত্রিংশ",
+)
+MANTRA_WORD = re.compile(
+    r"\**\s*(" + "|".join(ORD_WORDS) + r")\s*\**\s*মন্ত্র\s*[:ঃ]?\s*\**", re.U)
+
+
+BN_START = re.compile(r"বঙ্গানুবাদ\s*[-–—:ঃ]?\s*", re.U)
+
+
+def _after_bn_label(seg):
+    """অংশে «বঙ্গানুবাদ» লেবেল থাকলে তার পরের অনুবাদটুকুই ফেরত দিই।"""
+    ms = list(BN_START.finditer(seg))
+    if not ms:
+        return ""
+    tail = seg[ms[-1].end():].strip(" ।॥৷*-–—")
+    return tail if len(tail) >= 8 else ""
+
+
+def _split_by_word(text):
+    """«প্রথম মন্ত্রঃ …» শিরোনাম ধরে ভাগ — কেবল নম্বরহীন পাঠের জন্য।
+
+    ⚠ অনুবাদ-পাঠে এলে ভুল হবে; তাই শুধু সংখ্যা-ভাগ ব্যর্থ হলে ডাকা হয়।
+    """
+    ms = list(MANTRA_WORD.finditer(text))
+    if len(ms) < 2:
+        return []
+    out = []
+    for i, m in enumerate(ms):
+        end = ms[i + 1].start() if i + 1 < len(ms) else len(text)
+        seg = text[m.end():end].strip(" ।॥৷*-–—")
+        bn = _after_bn_label(seg)        # «বঙ্গানুবাদ» থাকলে কেবল অনুবাদ
+        if bn:
+            seg = bn
+        else:
+            # লেবেল নেই ⇒ সেগমেন্টের শেষ «বঙ্গানুবাদ» খুঁজি, তারপরের টুকুই অনুবাদ
+            bn2 = _after_bn_label(text[max(m.start(), 0):end])
+            if bn2:
+                seg = bn2
+        if len(seg) >= 8:
+            out.append({"bn": seg, "vn": i + 1})
     return out
 
 
