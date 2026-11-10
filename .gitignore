@@ -1,2 +1,5 @@
 __pycache__/
 node_modules/
+
+# বাদ-দেওয়া গ্রন্থের অনাথ ডেটা — সাইটে লাগে না, Jekyll বিল্ডও ভাঙে
+_atharva_lessons.json
