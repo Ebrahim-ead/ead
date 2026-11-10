@@ -20,7 +20,7 @@ OUT = ROOT / "grantho/hindu"
 # ব্যবহারকারীর সিদ্ধান্ত (২০২৬-১১-০৫): «শুধুমাত্র ভগবত গীতা আর চারটা বেদের
 # ভিতর শুধুমাত্র ঋগ্বেদ রাখো; বাকি সবগুলো বাদ দাও।» তাই ডেটা/কার্ড কেবল
 # এই দুটিরই তৈরি হয় — অন্য কোনো index.json পড়া হয় না।
-ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "atharvaveda", "bible")
+ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "bible")
 
 BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
 BN_MAP = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
@@ -51,10 +51,10 @@ BOOKS = {
     "samaveda": dict(
         kind="veda", title=("সামবেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
         kicker="হিন্দু · বেদ · সামবেদ", crumb="সামবেদ সংহিতা",
-        intro="সামবেদের বাংলা অনুবাদসহ পাঠ — পরিতোষ ঠাকুরের অনুবাদ (ebanglalibrary.com)।",
+        intro="সামবেদের বাংলা অনুবাদসহ পাঠ — প্রতিটি মন্ত্রের নিজস্ব অনুবাদ, পরিতোষ ঠাকুরের (ebanglalibrary.com)।",
         word="মন্ত্র", chword="অধ্যায়",
-        src="সংস্কৃত মূল ও বাংলা অনুবাদ — ebanglalibrary.com (অনুবাদ: পরিতোষ ঠাকুর)।",
-        excerpt="গানের বেদ — পরিতোষ ঠাকুরের বাংলা অনুবাদসহ ২৬ অধ্যায়ের মন্ত্র।",
+        src="বাংলা অনুবাদ — ebanglalibrary.com (সামবেদ সংহিতা, অনুবাদ: পরিতোষ ঠাকুর, হরফ প্রকাশনী)। সংস্কৃত মূলপাঠ এই সংস্করণে দেওয়া হচ্ছে না — শুধু বাংলা অনুবাদ।",
+        excerpt="গানের বেদ — আগ্নেয় ও ঐন্দ্র কাণ্ডের মন্ত্র, পরিতোষ ঠাকুরের বাংলা অনুবাদে।",
     ),
     "garuda": dict(
         kind="purana", title=("গরুড় পুরাণ", ""), hub="purana.html", hubname="পুরাণ",
@@ -89,14 +89,6 @@ BOOKS["bible"] = dict(
          "বসানো হয় না — সেগুলো রিপোর্টে নথিভুক্ত থাকে।"),
     excerpt="সৃষ্টি থেকে নতুন নিয়ম পর্যন্ত — পুস্তক, অধ্যায় ও পদ-নম্বরসহ সম্পূর্ণ বাংলা পাঠ।")
 
-BOOKS["atharvaveda"] = dict(
-    kind="veda", title=("অথর্ববেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
-    kicker="হিন্দু · বেদ · অথর্ববেদ", crumb="অথর্ববেদ সংহিতা",
-    intro="অথর্ববেদের বাংলা অনুবাদ — দিলীপ মুখোপাধ্যায় সম্পাদিত (ebanglalibrary.com)।",
-    word="মন্ত্র", chword="কাণ্ড",
-    src="বাংলা অনুবাদ — ebanglalibrary.com (অথর্ববেদ সংহিতা, সম্পাদনা: দিলীপ মুখোপাধ্যায়)। সংস্কৃত মূলপাঠ এই সংস্করণে দেওয়া হচ্ছে না — শুধু বাংলা অনুবাদ।",
-    excerpt="চিকিৎসা, শান্তি ও দার্শনিক মন্ত্রের চতুর্থ বেদ — দিলীপ মুখোপাধ্যায় সম্পাদিত বাংলা অনুবাদে ২০ কাণ্ড।",
-)
 BOOKS["yajurveda-shukla"] = dict(
     kind="veda", title=("শুক্ল যজুর্বেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
     kicker="হিন্দু · বেদ · শুক্ল যজুর্বেদ", crumb="শুক্ল যজুর্বেদ সংহিতা",
@@ -569,11 +561,11 @@ def main():
     # ---- বেদ
     vedas = []
     for slug in [x for x in ("rigveda", "samaveda", "yajurveda-shukla",
-                             "yajurveda-krishna", "atharvaveda") if x in ACTIVE]:
+                             "yajurveda-krishna") if x in ACTIVE]:
         meta = BOOKS.get(slug)
         idx = load(slug)
         if not meta or not idx:
-            if slug in ("rigveda", "samaveda", "atharvaveda"):
+            if slug in ("rigveda", "samaveda"):
                 pass
             continue
         r = make_page(slug, idx, meta)
@@ -582,12 +574,11 @@ def main():
         print(f"{slug}: {r['withbn']}/{r['total']} · {r['nch']}")
 
     grid = ""
-    order = ["rigveda", "samaveda", "yajurveda-shukla", "yajurveda-krishna", "atharvaveda"]
+    order = ["rigveda", "samaveda", "yajurveda-shukla", "yajurveda-krishna"]
     byslug = {s: (r, m) for s, r, m in vedas}
     labels = {"rigveda": ("বেদ · ঋগ্বেদ", "ঋগ্বেদ"), "samaveda": ("বেদ · সামবেদ", "সামবেদ"),
               "yajurveda-shukla": ("বেদ · শুক্ল যজুর্বেদ", "শুক্ল যজুর্বেদ"),
-              "yajurveda-krishna": ("বেদ · কৃষ্ণ যজুর্বেদ", "কৃষ্ণ যজুর্বেদ"),
-              "atharvaveda": ("বেদ · অথর্ববেদ", "অথর্ববেদ")}
+              "yajurveda-krishna": ("বেদ · কৃষ্ণ যজুর্বেদ", "কৃষ্ণ যজুর্বেদ")}
     for slug in order:
         if slug in byslug:
             r, m = byslug[slug]
@@ -680,10 +671,10 @@ def main():
         if yv:
             hp_cards += card("hindu/yajurveda-shukla.html", "হিন্দু · বেদ", "শুক্ল যজুর্বেদ সংহিতা",
                              f'{commas(yv["withbn"])} মন্ত্র · {commas(yv["nch"])} অধ্যায়')
-        av = next((r for sl, r, _ in vedas if sl == "atharvaveda"), None)
-        if av:
-            hp_cards += card("hindu/atharvaveda.html", "হিন্দু · বেদ", "অথর্ববেদ সংহিতা",
-                             f'{commas(av["withbn"])} মন্ত্র · {commas(av["nch"])} কাণ্ড')
+        sv = next((r for sl, r, _ in vedas if sl == "samaveda"), None)
+        if sv:
+            hp_cards += card("hindu/samaveda.html", "হিন্দু · বেদ", "সামবেদ সংহিতা",
+                             f'{commas(sv["withbn"])} মন্ত্র · {commas(sv["nch"])} অধ্যায়')
         if hp_cards:
             replace_grid("hindu.html", hp_cards, sub="")
         print("হিন্দু-হাব:", sum(r["withbn"] for _, r, _ in vedas), "/",

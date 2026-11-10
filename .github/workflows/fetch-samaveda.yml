@@ -1,0 +1,237 @@
+name: Fetch (সামবেদ)
+
+# ব্যবহারকারীর অনুরোধ: অথর্ববেদ বাদ দিয়ে তার জায়গায় সামবেদ যোগ করা।
+#
+# উৎস: ebanglalibrary.com — «সামবেদ সংহিতা (অনুবাদ : পরিতোষ ঠাকুর)»।
+# সাইটের গঠন (যাচাই করা):
+#     সামবেদ ০১।০১ (প্রথম অধ্যায় । প্রথম খণ্ড : আগ্নেয় কাণ্ডঃ অগ্নিস্তুতি)
+#     মন্ত্রঃ- (০১) অগ্ন আ যাহি বীতয়ে …  ॥ ১ ॥
+#     অর্থঃ-  (০১) হে অগ্নি, আনন্দের জন্য এস …
+# অর্থাৎ প্রতিটি মন্ত্রের *নিজস্ব* বাংলা অনুবাদ আছে — অথর্ববেদে যা ছিল না।
+#
+# স্যান্ডবক্স থেকে উৎস-সাইটে যাওয়া যায় না, তাই নামানোর কাজ এখানে (CI)।
+# Actions-এর লগ বাইরে থেকে পড়া যায় না — তাই প্রতিটি ধাপের ফল ফাইলে লেখা হয়
+# এবং সঙ্গে সঙ্গে main-এ প্রকাশ করা হয়।
+
+on:
+  workflow_dispatch:
+    inputs:
+      max:
+        description: 'সর্বোচ্চ কত অধ্যায় (০ = সব)'
+        default: '0'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fetch-samaveda.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: fetch-samaveda
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      PYTHONUNBUFFERED: '1'
+      MAXV: ${{ inputs.max || '0' }}
+      SLUG: samaveda
+      BOOK_TITLE: সামবেদ সংহিতা
+      DBG: assets/grantho/data/_debug
+      # বই: «সামবেদ-সংহিতা-অনুবাদ-পরি»
+      BOOK_URL: https://www.ebanglalibrary.com/books/%e0%a6%b8%e0%a6%be%e0%a6%ae%e0%a6%ac%e0%a7%87%e0%a6%a6-%e0%a6%b8%e0%a6%82%e0%a6%b9%e0%a6%bf%e0%a6%a4%e0%a6%be-%e0%a6%85%e0%a6%a8%e0%a7%81%e0%a6%ac%e0%a6%be%e0%a6%a6-%e0%a6%aa%e0%a6%b0%e0%a6%bf/
+      # প্রথম লেসন (০১।০১) — সূচি না মিললে একে ঘিরে অনুমান-পথ
+      LESSON_URL: https://www.ebanglalibrary.com/lessons/%E0%A7%A6%E0%A7%A7%E0%A6%AE-%E0%A6%85%E0%A6%A7%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%AF%E0%A6%BC-%E0%A6%86%E0%A6%97%E0%A7%8D%E0%A6%A8%E0%A7%87%E0%A6%AF%E0%A6%BC-%E0%A6%95%E0%A6%BE%E0%A6%A3%E0%A7%8D/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: ঠিক করা (git)
+        run: |
+          git config user.name  "grantho-bot"
+          git config user.email "bot@users.noreply.github.com"
+          mkdir -p "$DBG"
+          echo "রান: $GITHUB_RUN_ID · $(date -u '+%d/%m %H:%M:%S') UTC · sha ${GITHUB_SHA:0:7}" > "$DBG/samaveda_run.txt"
+
+      # ── ০) উৎস-প্রোব ───────────────────────────────────────────
+      # লেসনের পাঠ আসছে (লগইন-দেয়ালে আটকাচ্ছে কি না), «মন্ত্রঃ/অর্থঃ» জোড়া
+      # কতগুলো, আর সূচি থেকে কতগুলো লেসন-সংযোগ মেলে — সবই ফাইলে।
+      - name: ০) উৎস-প্রোব
+        run: |
+          python3 -u - 2>&1 <<'PY' | tee "$DBG/samaveda_probe.txt"
+          import os, re, sys
+          sys.path.insert(0, 'tools')
+          import fetch_ebl as F
+
+          book, lesson = os.environ['BOOK_URL'], os.environ['LESSON_URL']
+          wall = re.compile(r'Accessing this book requires a login', re.I)
+
+          print('--- বই-পাতা')
+          h = F.get(book)
+          print('   পাওয়া:', bool(h), '| লগইন-দেয়াল:', bool(h and wall.search(h)))
+          if h:
+              ls = F.book_lessons(book)
+              print('   সূচিতে লেসন/টপিক:', len(ls))
+              for u in ls[:5]:
+                  import urllib.parse
+                  print('     ', urllib.parse.unquote(u)[-52:])
+
+          print('--- প্রথম লেসন')
+          h2 = F.get(lesson)
+          print('   পাওয়া:', bool(h2), '| লগইন-দেয়াল:', bool(h2 and wall.search(h2)))
+          if h2:
+              txt = F.page_text(h2)
+              lines = [l.strip() for l in txt.split('\n') if l.strip()]
+              m = sum(1 for l in lines if l.startswith('মন্ত্রঃ') or l.startswith('মন্ত্র:'))
+              a = sum(1 for l in lines if l.startswith('অর্থঃ') or l.startswith('অর্থ:'))
+              print('   «মন্ত্রঃ» লাইন:', m, '| «অর্থঃ» লাইন:', a)
+              for l in lines[:4]:
+                  print('     ', l[:80])
+              # বাংলা অক্ষর আছে কি
+              bn = len(re.findall(r'[\u0980-\u09FF]', txt))
+              print('   বাংলা অক্ষর:', bn)
+          print('=== প্রোব শেষ ===')
+          PY
+
+      - name: ০.৫) প্রোব-ফল প্রকাশ
+        run: |
+          git add "$DBG" || true
+          if git diff --cached --quiet; then
+            echo 'প্রোব-ফলে নতুন কিছু নেই'
+            exit 0
+          fi
+          git commit -m "সামবেদ: উৎস-প্রোব ফল ($(date -u '+%d/%m %H:%M') UTC)" || exit 1
+          git fetch origin main --depth=1 || true
+          git rebase origin/main || git rebase --abort || true
+          if ! git push origin HEAD:main; then
+            echo '⚠ প্রোব-ফল push ব্যর্থ (চালিয়ে যাচ্ছি)'
+          fi
+
+      # ── ১) নামানো ──────────────────────────────────────────────
+      - name: ১) নামাও (সব অধ্যায়)
+        if: always()
+        run: |
+          set -o pipefail
+          count() {
+            python3 -c "import json,sys,pathlib; p=pathlib.Path('assets/grantho/data/$SLUG/index.json'); print(json.loads(p.read_text(encoding='utf-8'))['withBn'] if p.exists() else 0)"
+          }
+          run_fetch() {
+            local label="$1"; shift
+            echo "" >> "$DBG/samaveda_fetch.txt"
+            echo "=== $label" >> "$DBG/samaveda_fetch.txt"
+            local n
+            n=$(python3 -u tools/fetch_ebl.py --slug "$SLUG" --title "$BOOK_TITLE" \
+                  --word মন্ত্র --out assets/grantho/data "$@" 2>&1 \
+                  | tee -a "$DBG/samaveda_fetch.txt" | grep -oE 'বাংলা [0-9]+' | tail -1 | grep -oE '[0-9]+')
+            echo "${n:-0}"
+          }
+
+          : > "$DBG/samaveda_fetch.txt"
+          N=$(run_fetch "বই-পাতার সূচি" --book --url "$BOOK_URL")
+          echo "মন্ত্র: $N"
+          if [ "$N" = "0" ]; then
+            N=$(run_fetch "সাইটম্যাপ থেকে বই" --book-auto --match "সামবেদ")
+            echo "মন্ত্র: $N"
+          fi
+          if [ "$N" = "0" ]; then
+            N=$(run_fetch "একক লেসন" --url "$LESSON_URL")
+            echo "মন্ত্র: $N"
+          fi
+          echo "চূড়ান্ত: $N মন্ত্র"
+          echo "" >> "$DBG/samaveda_fetch.txt"
+          echo "চূড়ান্ত: $N মন্ত্র" >> "$DBG/samaveda_fetch.txt"
+          # নামানো ব্যর্থ হলেও ফেচার অশূন্য কোডে শেষ হতে পারে — তবু থামাই না,
+          # পরের ধাপ রিপোর্ট লিখে জানিয়ে দেবে।
+
+      # ── ১.৫) যাচাই ─────────────────────────────────────────────
+      # মন্ত্র-নম্বর ১..N ক্রমে, বাংলা পাঠ আছে, সংস্কৃত মূলপাঠ গায়ে লাগেনি।
+      - name: ১.৫) যাচাই
+        if: always()
+        run: |
+          python3 -u - 2>&1 <<'PY' | tee "$DBG/samaveda_check.txt"
+          import json, os, pathlib
+          d = pathlib.Path('assets/grantho/data') / os.environ['SLUG']
+          idx = d / 'index.json'
+          if not idx.exists():
+              print('⛔ index.json নেই — নামানো সম্পূর্ণ হয়নি')
+              raise SystemExit(0)
+          ix = json.loads(idx.read_text(encoding='utf-8'))
+          chs = ix.get('chapters', [])
+          tot = bad = empty = 0
+          deva = __import__('re').compile(r'[\u0900-\u097F]')
+          for c in chs:
+              fp = d / f'ch{c["id"]}.json'
+              if not fp.exists():
+                  print(f'  ⛔ অধ্যায় {c["id"]}: ফাইল নেই'); continue
+              j = json.loads(fp.read_text(encoding='utf-8'))
+              vs = j.get('verses', [])
+              tot += len(vs)
+              ns = [v.get('n') for v in vs]
+              if ns != list(range(1, len(ns) + 1)):
+                  bad += 1
+                  print(f'  ⚠ অধ্যায় {c["id"]}: নম্বর ১..{len(ns)} ক্রমে নয় (পাওয়া {ns[:8]}…)')
+              sk = deva.findall(' '.join(v.get('bn', '') for v in vs))
+              if sk:
+                  empty += 1
+                  print(f'  ⚠ অধ্যায় {c["id"]}: বাংলা পাঠে দেবনাগরী {len(sk)} অক্ষর')
+          print(f'মোট: {len(chs)} অধ্যায় · {tot} মন্ত্র · নম্বর-ভুল {bad} · দেবনাগরী-মিশ্রণ {empty}')
+          print('রায়: ' + ('✓ পাস' if tot and not bad and not empty else '⚠ দেখুন'))
+          PY
+
+      # ── ২) পাতা বানাও ──────────────────────────────────────────
+      - name: ২) পাতা বানাও (বেদ-হাব + গ্রন্থ-পাতা)
+        if: always()
+        run: |
+          python3 -u tools/build_pages.py 2>&1 | tee "$DBG/samaveda_build.txt" | tail -15
+
+      # ── ৩) সারসংক্ষেপ ──────────────────────────────────────────
+      - name: ৩) ফলাফলের সারসংক্ষেপ
+        if: always()
+        run: |
+          python3 -u - 2>&1 <<'PY' | tee "$DBG/samaveda_report.txt"
+          import json, os, pathlib
+          d = pathlib.Path('assets/grantho/data') / os.environ['SLUG']
+          p = d / 'index.json'
+          lines = ['== সামবেদ রিপোর্ট ==']
+          if p.exists():
+              ix = json.loads(p.read_text(encoding='utf-8'))
+              lines.append(f'অধ্যায়: {len(ix.get("chapters", []))}')
+              lines.append(f'মন্ত্র: {ix.get("withBn", 0)} / {ix.get("total", 0)}')
+          else:
+              lines.append('index.json নেই — কিছুই নামানো যায়নি')
+          page = pathlib.Path('grantho/hindu/samaveda.html')
+          lines.append(f'পাতা তৈরি: {"হ্যাঁ" if page.exists() else "না"}')
+          print('\n'.join(lines))
+          PY
+
+      # ── ৪) কমিট ও প্রকাশ ───────────────────────────────────────
+      - name: ৪) কমিট ও প্রকাশ
+        if: always()
+        run: |
+          git add assets/grantho/data "$DBG" grantho 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo 'নতুন কিছু নেই'
+            exit 0
+          fi
+          git commit -m "সামবেদ: নামানো পাঠ ($(date -u '+%d/%m %H:%M') UTC)" || exit 1
+          git fetch origin main --depth=1 || true
+          git rebase origin/main || git rebase --abort || true
+          ok=0
+          for i in 1 2 3; do
+            if git push origin HEAD:main; then ok=1; break; fi
+            echo "push ব্যর্থ — আবার ($i/৩)"
+            git pull --rebase origin main || true
+            sleep 4
+          done
+          [ "$ok" = "1" ] || { echo '::error::push ব্যর্থ'; exit 1; }
+          echo 'প্রকাশিত ✓'
