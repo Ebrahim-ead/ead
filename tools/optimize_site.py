@@ -29,7 +29,10 @@ ASSETS = ROOT / "assets"
 DATA_URI = re.compile(r"data:image/([a-z+]+);base64,([A-Za-z0-9+/=]+)")
 STYLE_BLOCK = re.compile(r"<style(?:\s[^>]*)?>([\s\S]*?)</style>")
 IMG_TAG = re.compile(r"<img\b[^>]*>", re.I)
-SITE_CSS_MARK = "/* --- optimized site rules"
+# ⚠ মার্কার হিসেবে CSS-মন্তব্য ব্যবহার করা যায় না: মিনিফায়ার মন্তব্য ছাঁটে,
+#   ফলে চিহ্ন হারিয়ে step_mobile প্রতিবারই পুরো MOBILE_CSS আবার যোগ করত
+#   (site-extra.css ফুলে উঠত, নিয়ম-পুনরাবৃত্তি)। ২০২৬-১১-১০।
+SITE_CSS_MARK = ".aura{animation:none!important}"
 
 MOBILE_CSS = r"""
 /* --- optimized site rules: mobile & touch --------------------------------
@@ -295,6 +298,49 @@ def _step_mobile_old(dry: bool) -> None:
 # --------------------------------------------------------------------------- #
 # 5. font-display
 # --------------------------------------------------------------------------- #
+def step_pdf(dry: bool) -> None:
+    """বইয়ের PDF: ফোনে iframe-এ রেন্ডার হয় না ⇒ ফলব্যাক-প্যানেল নিশ্চিত।
+
+    ⚠ ব্যবহারকারীর রিপোর্ট (২০২৬-১১-১০): «ফোনে বইয়ের PDF দেখা যায় না»।
+    iOS Safari iframe-এ শুধু ১ম পৃষ্ঠা দেখায়, Android-এ প্রায়ই ফাঁকা।
+    তাই প্রতিটি বই-পাতায় data-book-viewer + data-book-fallback থাকতেই হবে
+    (assets/book-pdf.js সিদ্ধান্ত নেয়; tools/test_pdf.mjs যাচাই করে)।
+    """
+    books = [("book-comparative-religion.html", "files/comparative-religions-color.pdf",
+              "bookViewer", "তুলনামূলক ধর্মতত্ত্ব", "৯ MB", "তুলনামূলক_ধর্মতত্ত্ব_বই.pdf"),
+             ("book-islam-response.html", "files/islam-opponents-response.pdf",
+              "islamResponseViewer", "ইসলামের প্রতি আপত্তির জবাব", "১৪.৭ MB",
+              "islam-opponents-response.pdf"),
+             ("book-islam-science.html", "files/islam-science-selection.pdf",
+              "scienceViewer", "ইসলাম ও বিজ্ঞান", "২.৫ MB", "islam-science-selection.pdf")]
+    missing = 0
+    for fn, pdf, vid, title, size, dl in books:
+        f = ROOT / fn
+        if not f.exists():
+            continue
+        s = read(f)
+        if 'data-book-viewer' in s and 'data-book-fallback' in s:
+            continue
+        missing += 1
+        if 'data-book-viewer' not in s:
+            s = re.sub(r'<div class="book-viewer"((?:(?!>).)*?)id="' + re.escape(vid) + '"',
+                       lambda m: ('<div class="book-viewer" data-book-viewer '
+                                  f'data-book-src="{pdf}"{m.group(1)}id="{vid}"'), s, count=1)
+        if 'data-book-fallback' not in s:
+            fb = (f'<div class="book-pdf-fallback" data-book-fallback hidden>'
+                  f'<h3>📱 ফোনে পড়তে: PDF সরাসরি খুলুন</h3><p>ফোনের ব্রাউজারে ভেতরে PDF '
+                  f'দেখানোয় সীমাবদ্ধতা আছে — নিচের বোতামে PDF আপনার ফোনের নিজের রিডারে '
+                  f'খুলবে।</p><div class="pdf-fb-actions"><a class="btn fill" data-book-open '
+                  f'href="{pdf}" rel="noopener" target="_blank"><span class="tx"><b>PDF খুলুন</b>'
+                  f'<small>{title} · {size}</small></span></a><a class="btn ghost" download="{dl}" '
+                  f'href="{pdf}"><span class="tx"><b>ডাউনলোড</b><small>অফলাইনে পড়ুন</small>'
+                  f'</span></a></div></div>')
+            s = re.sub(r'(<div class="book-viewer"[^>]*>\s*<iframe[^>]*>\s*</iframe>\s*</div>)',
+                       lambda m: m.group(1) + '\n' + fb, s, count=1)
+        write(f, s, dry)
+    print(f"  PDF-ফলব্যাক: {'✓ সব ঠিক' if not missing else f'{missing}টি পাতা ঠিক করা হলো'}")
+
+
 def step_fonts(dry: bool) -> None:
     """ফন্ট: display=swap নিশ্চিত + Google-Fonts CSS **নন-ব্লকিং**।
 
@@ -427,8 +473,8 @@ def step_imgattrs(dry: bool) -> None:
 
 
 STEPS = {"css": step_css, "img": step_img, "bg": step_bg, "imgsize": step_imgsize, "imgattrs": step_imgattrs,
-         "mobile": step_mobile, "fonts": step_fonts}
-ORDER = ["css", "img", "bg", "imgsize", "imgattrs", "mobile", "fonts"]
+         "mobile": step_mobile, "fonts": step_fonts, "pdf": step_pdf}
+ORDER = ["css", "img", "bg", "imgsize", "imgattrs", "mobile", "fonts", "pdf"]
 
 
 # --------------------------------------------------------------------------- #

@@ -16,6 +16,8 @@ on:
       - 'tools/test_reader.mjs'
       - 'tools/check_perf.mjs'
       - 'tools/check_mobile.mjs'
+      - 'tools/test_pdf.mjs'
+      - 'assets/book-pdf.js'
       - 'assets/*.css'
       - 'assets/*.js'
       - 'assets/grantho/**'
@@ -77,6 +79,13 @@ jobs:
         run: |
           node tools/check_mobile.mjs 2>&1 | tee /tmp/mobile.txt
 
+      # ফোনে বইয়ের PDF দেখা যায় না — iframe-এ PDF রেন্ডার হয় না বলে।
+      # যাচাই: মোবাইল-UA-তে iframe ফাঁকা ও ফলব্যাক দৃশ্যমান,
+      # ডেস্কটপ-UA-তে iframe-এ সঠিক PDF বসে।
+      - name: PDF-যাচাই (ফোন/ডেস্কটপ)
+        run: |
+          node tools/test_pdf.mjs 2>&1 | tee /tmp/pdf.txt
+
       # ব্যর্থ হলে কারণ জানা দরকার — Actions-এর লগ বাইরে থেকে পড়া যায় না,
       # তাই আউটপুট রিপোতেই প্রকাশ (নিশ্চিত করা আছে যে এতে লুপ হবে না)।
       - name: ব্যর্থ হলে ডায়াগনস্টিক প্রকাশ
@@ -100,6 +109,9 @@ jobs:
             echo ""
             echo "--- মোবাইল-যাচাই আউটপুট ---"
             cat /tmp/mobile.txt 2>/dev/null || echo '(মোবাইল-চেক চলেইনি)'
+            echo ""
+            echo "--- PDF-যাচাই আউটপুট ---"
+            cat /tmp/pdf.txt 2>/dev/null || echo '(PDF-চেক চলেইনি)'
           } > ci-diagnostics/site-tests.txt
           git config user.name  "grantho-bot"
           git config user.email "bot@users.noreply.github.com"
