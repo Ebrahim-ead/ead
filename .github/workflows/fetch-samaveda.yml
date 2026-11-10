@@ -28,6 +28,9 @@ on:
       # হয়েও পুরোনো ডেটাই পড়ে থাকে (দুইবার ঠেকেছি)।
       - 'tools/fetch_ebl.py'
       - 'tools/build_pages.py'
+      # ⚠ guard_data.py-এর ACTIVE তালিকাই ঠিক করে কোন গ্রন্থ «অনুমোদিত» —
+      #   সেখানে ঘাটতি থাকলে সামবেদ নিজেই মুছে যেত (PR #144)। এটাও ট্রিগার।
+      - 'tools/guard_data.py'
 
 permissions:
   contents: write
