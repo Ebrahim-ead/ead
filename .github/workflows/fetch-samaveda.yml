@@ -24,6 +24,10 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/fetch-samaveda.yml'
+      # পার্সার/বিল্ডার বদলালে নিজে থেকে আবার নামাও — নইলে ফিক্স merge
+      # হয়েও পুরোনো ডেটাই পড়ে থাকে (দুইবার ঠেকেছি)।
+      - 'tools/fetch_ebl.py'
+      - 'tools/build_pages.py'
 
 permissions:
   contents: write
