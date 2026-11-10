@@ -296,15 +296,32 @@ def _step_mobile_old(dry: bool) -> None:
 # 5. font-display
 # --------------------------------------------------------------------------- #
 def step_fonts(dry: bool) -> None:
+    """ফন্ট: display=swap নিশ্চিত + Google-Fonts CSS **নন-ব্লকিং**।
+
+    কেন নন-ব্লকিং: Google-Fonts CSS আলাদা ডোমেইনে, তাই <link rel=stylesheet>
+    থাকলে প্রথম রেন্ডার তার জন্য অপেক্ষা করে (মোবাইলে ১০০–৩০০ms খরচ)।
+    preload + onload প্যাটার্নে রেন্ডার আটকায় না; JS বন্ধ থাকলে <noscript>
+    ফলব্যাক শীট দেয় — ফলে ফন্ট সব অবস্থাতেই আসে।
+    """
     n = 0
+    nonblock = 0
     for p in pages():
         s = read(p)
         s2 = s if "Hind+Siliguri:wght@" in s and "display=swap" in s and "&display=swap0" not in s else re.sub(r"family=Hind\+Siliguri:wght@([0-9;]+?)(?:0)?(?:&display=swap)?(?=[&\"'])",
                     lambda m: "family=Hind+Siliguri:wght@" + m.group(1) + "&display=swap", s)
+        # ব্লকিং ফন্ট-শীট → preload + onload (idempotent: preload থাকলে ছোঁয় না)
+        PAT = re.compile(r'<link href="(https://fonts\.googleapis\.com/css2[^"]+)" rel="stylesheet">')
+        def rep(m):
+            u = m.group(1)
+            return (f'<link rel="preload" as="style" href="{u}" '
+                    f"onload=\"this.onload=null;this.rel='stylesheet'\">"
+                    f'<noscript><link rel="stylesheet" href="{u}"></noscript>')
+        s2, k = PAT.subn(rep, s2)
+        nonblock += k
         if s2 != s:
             write(p, s2, dry)
             n += 1
-    print(f"  display=swap added on {n} pages")
+    print(f"  display=swap on {n} pages · non-blocking font CSS on {nonblock}")
 
 
 def _rule_key(css: str) -> str:

@@ -24,7 +24,7 @@
 <script>(function(){try{var t=localStorage.getItem("ebrahim-ead-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap"></noscript>
 <link rel="stylesheet" href="assets/site.css">
 <link rel="stylesheet" href="assets/site-extra.css">
 
@@ -82,7 +82,7 @@
   <span class="g-kicker"><i class="dot"></i> ধর্মীয় গ্রন্থ</span>
   <h1 style="margin-top:16px">ধর্মীয় <span>গ্রন্থ</span></h1>
   <p>বিশ্বের প্রধান ধর্মগুলোর মূল গ্রন্থ — মূল পাঠ, বাংলা অনুবাদ ও প্রয়োজনীয় পটভূমিসহ। ইসলাম ও খ্রিস্টান অংশে সম্পূর্ণ পাঠ এখনই পড়া যায়; হিন্দু অংশে গীতা ও বেদ, বৌদ্ধ অংশ ধাপে ধাপে যোগ হচ্ছে। <span class="g-hint">যেকোনো ধর্মে ঢুকতে কার্ডে চাপ দিন — বা উপরের মেনুতে «ধর্মীয় গ্রন্থ»-এর পাশের তির থেকে সরাসরি বেছে নিন।</span></p>
-  <div class="g-grid"><article class="article-card rv cmp-card"><a class="article-card-link" href="grantho/islam.html"><span class="cmp-body"><h2 class="cmp-title">ইসলাম</h2><span class="cmp-meta">কুরআন · হাদিস — সম্পূর্ণ বাংলা অনুবাদে</span></span><span class="cmp-go" aria-hidden="true">→</span></a></article><article class="article-card rv cmp-card"><a class="article-card-link" href="grantho/hindu.html"><span class="cmp-body"><h2 class="cmp-title">হিন্দু</h2><span class="cmp-meta">গীতা · ঋগ্বেদ · শুক্ল যজুর্বেদ</span></span><span class="cmp-go" aria-hidden="true">→</span></a></article><article class="article-card rv cmp-card"><a class="article-card-link" href="grantho/christian.html"><span class="cmp-body"><h2 class="cmp-title">খ্রিস্টান</h2><span class="cmp-meta">বাইবেল — ৪৬ পুস্তক · ৮৪৪ অধ্যায়</span></span><span class="cmp-go" aria-hidden="true">→</span></a></article><article class="article-card rv cmp-card is-soon"><a class="article-card-link" href="#" aria-disabled="true" tabindex="-1"><span class="cmp-body"><h2 class="cmp-title">বৌদ্ধ</h2><span class="cmp-meta">ত্রিপিটক — ধাপে ধাপে যোগ হচ্ছে</span></span><span class="cmp-go" aria-hidden="true">→</span></a></article></div>
+  <div class="g-grid"><article class="article-card rv cmp-card"><a class="article-card-link" href="grantho/islam.html"><span class="cmp-body"><h2 class="cmp-title">ইসলাম</h2><span class="cmp-meta">কুরআন · হাদিস — সম্পূর্ণ বাংলা অনুবাদে</span></span><span class="cmp-go" aria-hidden="true">→</span></span></article><article class="article-card rv cmp-card"><a class="article-card-link" href="grantho/hindu.html"><span class="cmp-body"><h2 class="cmp-title">হিন্দু</h2><span class="cmp-meta">গীতা · ঋগ্বেদ · শুক্ল যজুর্বেদ</span></span><span class="cmp-go" aria-hidden="true">→</span></span></article><article class="article-card rv cmp-card"><a class="article-card-link" href="grantho/christian.html"><span class="cmp-body"><h2 class="cmp-title">খ্রিস্টান</h2><span class="cmp-meta">বাইবেল — ৪৬ পুস্তক · ৮৪৪ অধ্যায়</span></span><span class="cmp-go" aria-hidden="true">→</span></span></article><article class="article-card rv cmp-card is-soon"><a class="article-card-link" href="#" aria-disabled="true" tabindex="-1"><span class="cmp-body"><h2 class="cmp-title">বৌদ্ধ</h2><span class="cmp-meta">ত্রিপিটক — ধাপে ধাপে যোগ হচ্ছে</span></span><span class="cmp-go" aria-hidden="true">→</span></a></article></div>
   <div class="g-note"><b>এই সেকশন বাড়ছে।</b> ইসলাম ও খ্রিস্টান অংশে মূল পাঠ এখনই পড়া যায়; হিন্দু ও বৌদ্ধ অংশে কোন গ্রন্থ আগে দেখতে চান — জানালে সেই অনুযায়ী সাজানো হবে।</div>
 </div></section>
 </main>
@@ -91,7 +91,7 @@
   <div class="fgrid">
     <div>
       <a class="footer-brand" href="index.html" aria-label="Ebrahim Ead">
-        <img class="logo-avatar" src="assets/img/b612b62bb3.jpg" alt="" aria-hidden="true" width="39" height="39" decoding="async" loading="lazy">
+        <img class="logo-avatar" src="assets/img/b612b62bb3.jpg" alt="" aria-hidden="true" width="320" height="320" decoding="async" loading="lazy">
         <span class="logo-copy"><b>Ebrahim Ead</b><small>নাস্তিকতা · তুলনামূলক ধর্মতত্ত্ব</small></span>
       </a>
       <div class="footer-contact"><a href="tel:+8801783543026" aria-label="ফোন করুন 01783543026"><svg class="i"><use href="#phone"/></svg><span>01783543026</span></a>
