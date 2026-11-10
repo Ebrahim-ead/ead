@@ -396,7 +396,8 @@
     bookId = id;
     scope = "book"; chapter = null; chapterEn = null; chapterId = 0;
     paintToken++;
-    if (bodyEl) bodyEl.innerHTML = '<p class="g-empty g-pick">উপরের তালিকা থেকে একটি অধ্যায় বেছে নিন — পদগুলো নিচে দেখা যাবে।</p>';
+    if (bodyEl) bodyEl.innerHTML = '<p class="g-empty g-pick">উপরের তালিকা থেকে একটি ' +
+      (GW || "অধ্যায়") + ' বেছে নিন — ' + (VW || "পদ") + 'গুলো নিচে দেখা যাবে।</p>';
     syncHead();
     if (bnNoteEl) bnNoteEl.hidden = true;
     if (langBox) langBox.hidden = true;
