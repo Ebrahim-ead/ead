@@ -122,9 +122,10 @@
 <noscript><p class="book-nojs"><a href="files/comparative-religions-color.pdf" rel="noopener" target="_blank">রঙিন PDF নতুন ট্যাবে খুলুন</a></p></noscript>
 </div>
 </div>
-<div class="book-viewer" hidden="" id="bookViewer">
+<div class="book-viewer" data-book-viewer data-book-src="files/comparative-religions-color.pdf" hidden="" id="bookViewer">
 <iframe id="bookPdf" loading="lazy" src="about:blank" title="তুলনামূলক ধর্মতত্ত্ব বইয়ের PDF প্রিভিউ"></iframe>
 </div>
+<div class="book-pdf-fallback" data-book-fallback hidden><h3>📱 ফোনে পড়তে: PDF সরাসরি খুলুন</h3><p>ফোনের ব্রাউজারে ভেতরে PDF দেখানোয় সীমাবদ্ধতা আছে (কিছু ব্রাউজার শুধু প্রথম পৃষ্ঠা দেখায়, কিছুতে ফাঁকা থাকে)। নিচের বোতামে PDF আপনার ফোনের নিজের রিডারে খুলবে — সব পৃষ্ঠা, জুম ও স্ক্রল সহ।</p><div class="pdf-fb-actions"><a class="btn fill" data-book-open href="files/comparative-religions-color.pdf" rel="noopener" target="_blank"><span class="tx"><b>PDF খুলুন</b><small>তুলনামূলক ধর্মতত্ত্ব · ৯ MB</small></span></a><a class="btn ghost" download="তুলনামূলক_ধর্মতত্ত্ব_বই.pdf" href="files/comparative-religions-color.pdf"><span class="tx"><b>ডাউনলোড</b><small>অফলাইনে পড়ুন</small></span></a></div><p class="pdf-fb-note">ডেস্কটপে ভেতরেই পড়া যায় — এটি কেবল ফোনের জন্য।</p></div>
 <div class="book-reader-foot"><span>PDF প্রিভিউ না দেখালে ডাউনলোড করে আপনার PDF reader-এ খুলুন।</span>
 <a download="তুলনামূলক_ধর্মতত্ত্ব_বই.pdf" href="files/comparative-religions-color.pdf" id="downloadCurrent">বর্তমান PDF ডাউনলোড ↓</a>
 </div>
@@ -398,6 +399,16 @@
   var placeholder = document.getElementById("bookPlaceholder");
   var colorPath = "files/comparative-religions-color.pdf";
   function loadBook(scroll) {
+    // ফোনে iframe-এ PDF রেন্ডার হয় না (assets/book-pdf.js) — ফলব্যাকই সঠিক পথ
+    if (window.__bookPdf && !window.__bookPdf.inlineOk) {
+      if (viewer) viewer.hidden = true;
+      if (placeholder) placeholder.hidden = true;
+      var fb = document.querySelector(".book-pdf-fallback");
+      if (fb) fb.hidden = false;
+      if (scroll) { var t0 = document.getElementById("read-online");
+        if (t0) t0.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      return;
+    }
     if (frame) frame.src = colorPath;
     if (viewer) viewer.hidden = false;
     if (placeholder) placeholder.hidden = true;
@@ -419,6 +430,15 @@
   var placeholder = document.getElementById("islamResponsePlaceholder");
   var pdfPath = "files/islam-opponents-response.pdf";
   function loadIslamBook() {
+    if (window.__bookPdf && !window.__bookPdf.inlineOk) {
+      if (viewer) viewer.hidden = true;
+      if (placeholder) placeholder.hidden = true;
+      var fb = document.querySelector(".book-pdf-fallback");
+      if (fb) fb.hidden = false;
+      var t1 = document.getElementById("islam-response-reader");
+      if (t1) t1.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
     if (frame) frame.src = pdfPath;
     if (viewer) viewer.hidden = false;
     if (placeholder) placeholder.hidden = true;
@@ -475,6 +495,7 @@
 })();
 
 </script>
+<script src="assets/book-pdf.js" defer></script>
 <script src="assets/nav-motion.js" defer></script>
 <script src="assets/site-motion.js" defer></script>
 </body>

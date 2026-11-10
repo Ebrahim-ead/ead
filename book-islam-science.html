@@ -79,7 +79,8 @@
 <a class="book-cover" href="files/islam-science-selection.pdf" rel="noopener" target="_blank"><img alt="ইসলাম ও বিজ্ঞান বইয়ের প্রচ্ছদ" decoding="async" src="assets/img/f13c4e3e09.webp"/ width="864" height="1296" style="height:auto" loading="lazy"><span>PDF খুলুন <b>↗</b></span></a>
 <div class="book-info"><span class="book-kicker">নির্বাচিত সংকলন · ইসলাম ও বিজ্ঞান</span><h2>ইসলাম ও <em>বিজ্ঞান</em></h2><p class="book-lead">ছয়টি গ্রন্থের গুরুত্বপূর্ণ আলোচনার নির্বাচিত সংকলন।</p><div class="book-stats"><div><b>৫৯৬</b><span>পৃষ্ঠা</span></div><div><b>৫২১</b><span>নির্বাচিত অধ্যায়</span></div><div><b>১২</b><span>বিষয়পর্ব</span></div><div><b>৬ × ৯</b><span>ইঞ্চি</span></div></div><div class="book-actions"><a class="btn fill" data-load-science="" href="#islam-science-reader"><span class="tx"><b>অনলাইনে পড়ুন</b><small>এই পাতায় PDF খুলবে</small></span></a><a class="btn ghost" download="islam-science-selection.pdf" href="files/islam-science-selection.pdf"><span class="tx"><b>PDF ডাউনলোড</b><small>অফলাইনে পড়ুন</small></span></a></div></div>
 </article></div></section>
-<section class="book-reader-section" id="islam-science-reader" style="padding-top:12px"><div class="wrap"><div class="book-reader rv"><div class="book-reader-head"><div><h2>ব্রাউজারে ইসলাম ও বিজ্ঞান পড়ুন</h2><p>পূর্বরূপ না দেখালে PDF নতুন ট্যাবে খুলুন বা ডাউনলোড করুন।</p></div><a class="book-open-link" href="files/islam-science-selection.pdf" rel="noopener" target="_blank">নতুন ট্যাবে খুলুন ↗</a></div><div class="book-placeholder" id="sciencePlaceholder"><div class="book-placeholder-icon">PDF</div><div><h3>পড়ার জন্য প্রিভিউ চালু করুন</h3><button class="btn fill" data-load-science="" type="button">PDF প্রিভিউ চালু করুন</button></div></div><div class="book-viewer" hidden="" id="scienceViewer"><iframe id="sciencePdf" loading="lazy" src="about:blank" title="ইসলাম ও বিজ্ঞান PDF প্রিভিউ"></iframe></div><div class="book-reader-foot"><a download="islam-science-selection.pdf" href="files/islam-science-selection.pdf">PDF ডাউনলোড ↓</a></div></div></div></section>
+<section class="book-reader-section" id="islam-science-reader" style="padding-top:12px"><div class="wrap"><div class="book-reader rv"><div class="book-reader-head"><div><h2>ব্রাউজারে ইসলাম ও বিজ্ঞান পড়ুন</h2><p>পূর্বরূপ না দেখালে PDF নতুন ট্যাবে খুলুন বা ডাউনলোড করুন।</p></div><a class="book-open-link" href="files/islam-science-selection.pdf" rel="noopener" target="_blank">নতুন ট্যাবে খুলুন ↗</a></div><div class="book-placeholder" id="sciencePlaceholder"><div class="book-placeholder-icon">PDF</div><div><h3>পড়ার জন্য প্রিভিউ চালু করুন</h3><button class="btn fill" data-load-science="" type="button">PDF প্রিভিউ চালু করুন</button></div></div><div class="book-viewer" data-book-viewer data-book-src="files/islam-science-selection.pdf" hidden="" id="scienceViewer"><iframe id="sciencePdf" loading="lazy" src="about:blank" title="ইসলাম ও বিজ্ঞান PDF প্রিভিউ"></iframe></div>
+<div class="book-pdf-fallback" data-book-fallback hidden><h3>📱 ফোনে পড়তে: PDF সরাসরি খুলুন</h3><p>ফোনের ব্রাউজারে ভেতরে PDF দেখানোয় সীমাবদ্ধতা আছে (কিছু ব্রাউজার শুধু প্রথম পৃষ্ঠা দেখায়, কিছুতে ফাঁকা থাকে)। নিচের বোতামে PDF আপনার ফোনের নিজের রিডারে খুলবে — সব পৃষ্ঠা, জুম ও স্ক্রল সহ।</p><div class="pdf-fb-actions"><a class="btn fill" data-book-open href="files/islam-science-selection.pdf" rel="noopener" target="_blank"><span class="tx"><b>PDF খুলুন</b><small>ইসলাম ও বিজ্ঞান · ২.৫ MB</small></span></a><a class="btn ghost" download="islam-science-selection.pdf" href="files/islam-science-selection.pdf"><span class="tx"><b>ডাউনলোড</b><small>অফলাইনে পড়ুন</small></span></a></div><p class="pdf-fb-note">ডেস্কটপে ভেতরেই পড়া যায় — এটি কেবল ফোনের জন্য।</p></div><div class="book-reader-foot"><a download="islam-science-selection.pdf" href="files/islam-science-selection.pdf">PDF ডাউনলোড ↓</a></div></div></div></section>
 </div><section style="padding-top:0"><div class="wrap"><a class="btn ghost" href="books.html">← সব বই দেখুন</a></div></section></main>
 <footer><div class="wrap">
   <div class="fgrid">
@@ -372,6 +373,14 @@
 (function () {
   document.querySelectorAll('[data-load-science]').forEach(function (button) {
     button.addEventListener('click', function () {
+      if (window.__bookPdf && !window.__bookPdf.inlineOk) {
+        document.getElementById('scienceViewer').hidden = true;
+        document.getElementById('sciencePlaceholder').hidden = true;
+        var fb = document.querySelector('.book-pdf-fallback');
+        if (fb) fb.hidden = false;
+        document.getElementById('islam-science-reader').scrollIntoView({behavior:'smooth',block:'start'});
+        return;
+      }
       document.getElementById('sciencePdf').src = 'files/islam-science-selection.pdf';
       document.getElementById('scienceViewer').hidden = false;
       document.getElementById('sciencePlaceholder').hidden = true;
@@ -414,6 +423,7 @@
 })();
 
 </script>
+<script src="assets/book-pdf.js" defer></script>
 <script src="assets/nav-motion.js" defer></script>
 <script src="assets/site-motion.js" defer></script>
 </body>
