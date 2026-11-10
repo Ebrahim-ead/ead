@@ -20,7 +20,9 @@ OUT = ROOT / "grantho/hindu"
 # ব্যবহারকারীর সিদ্ধান্ত (২০২৬-১১-০৫): «শুধুমাত্র ভগবত গীতা আর চারটা বেদের
 # ভিতর শুধুমাত্র ঋগ্বেদ রাখো; বাকি সবগুলো বাদ দাও।» তাই ডেটা/কার্ড কেবল
 # এই দুটিরই তৈরি হয় — অন্য কোনো index.json পড়া হয় না।
-ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "bible")
+# ⚠ ২০২৬-১১-১০: ব্যবহারকারী বলেছেন «সামবেদ বাদ দিয়ে দাও, এটা রাখবো না»।
+#   তাই samaveda ACTIVE থেকে বাদ — ডেটা, পাতা, কার্ড কোথাও আর তৈরি/পড়া হয় না।
+ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "bible")
 
 BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
 BN_MAP = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
@@ -47,14 +49,6 @@ BOOKS = {
         word="মন্ত্র", chword="মণ্ডল",
         src="বাংলা অনুবাদ ebanglalibrary.com থেকে (অনুবাদ: রমেশচন্দ্র দত্ত)।",
         excerpt="দেবতাদের স্তবসমূহ — রমেশচন্দ্র দত্তের বাংলা অনুবাদে ১০ মণ্ডলের ১০,৪৫৬ মন্ত্র।",
-    ),
-    "samaveda": dict(
-        kind="veda", title=("সামবেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
-        kicker="হিন্দু · বেদ · সামবেদ", crumb="সামবেদ সংহিতা",
-        intro="সামবেদের বাংলা অনুবাদসহ পাঠ — প্রতিটি মন্ত্রের নিজস্ব অনুবাদ, পরিতোষ ঠাকুরের (ebanglalibrary.com)।",
-        word="মন্ত্র", chword="অধ্যায়",
-        src="বাংলা অনুবাদ — ebanglalibrary.com (সামবেদ সংহিতা, অনুবাদ: পরিতোষ ঠাকুর, হরফ প্রকাশনী)। সংস্কৃত মূলপাঠ এই সংস্করণে দেওয়া হচ্ছে না — শুধু বাংলা অনুবাদ।",
-        excerpt="গানের বেদ — আগ্নেয় ও ঐন্দ্র কাণ্ডের মন্ত্র, পরিতোষ ঠাকুরের বাংলা অনুবাদে।",
     ),
     "garuda": dict(
         kind="purana", title=("গরুড় পুরাণ", ""), hub="purana.html", hubname="পুরাণ",
@@ -132,11 +126,11 @@ UPA = {
 #   টেনে নিয়ে সেগুলো বসানো হয়। ফলে build_pages.py দিয়ে rebuild করলেও
 #   ফুটার-সংক্ষেপ, og:image ও canonical হারে না (আগে ফিরে যেত)।
 def _pick_template():
-    for cand in ("samaveda.html", "rigveda.html", "gita.html"):
+    for cand in ("rigveda.html", "yajurveda-shukla.html", "gita.html"):
         p = OUT / cand
         if p.exists():
             return p.read_text(encoding="utf-8")
-    raise SystemExit("টেমপ্লেট-পাতা পাওয়া গেল না (samaveda/rigveda/gita)")
+    raise SystemExit("টেমপ্লেট-পাতা পাওয়া গেল না (rigveda/yajurveda-shukla/gita)")
 
 
 TEMPLATE = _pick_template()
@@ -435,28 +429,6 @@ def make_page(slug, idx, meta):
         # বিশুদ্ধ বানান রক্ষা: meta["word"]-এর পরে সরাসরি «র» নয়, মিলিয়ে।
         src = re.sub(re.escape(meta["word"]) + r"র বাংলা পাঠ",
                      meta["word"] + "ের বাংলা পাঠ", src)
-    # ⚠ ব্যবহারকারীর শর্ত: অ-সম্পূর্ণ পাঠ হলে *কোথায় শেষ* তা পাতা নিজেই বলবে।
-    #   সামবেদের উৎস-বইয়ের ২৬ অধ্যায় / ~১,৮৭৫ মন্ত্রের সবগুলো উৎস-সাইটের
-    #   সূচিতে নেই — তাই যা পাওয়া গেছে কেবল তা-ই ছাপা হয়, ফাঁকা অধ্যায় বানানো
-    #   হয় না। সংখ্যা বা ছদ্ম-সম্পূর্ণতা নয়, স্পষ্ট ঘোষণা।
-    if slug == "samaveda" and nch:
-        full_ch, full_v = 26, 1875
-        ids = sorted(int(c["id"]) for c in idx["chapters"])
-        lo, hi = (ids[0], ids[-1]) if ids else (0, 0)
-        miss = [i for i in range(1, hi + 1) if i not in ids]
-        where = f"অধ্যায় {lo}" if lo == hi else f"অধ্যায় {lo}–{hi}"
-        gap = ""
-        if miss:
-            if len(miss) <= 6:
-                gap = f"; {', '.join(str(i) for i in miss)} নেই"
-            else:
-                gap = f"; মাঝে {len(miss)}টি অধ্যায় নেই"
-        pct = max(1, 100 * withbn // full_v)
-        src += (f" ⚠ <b>পাঠ অসম্পূর্ণ।</b> উৎস-বইটির {full_ch} অধ্যায়ের মধ্যে এখানে"
-                f" {where} পর্যন্ত — {nch} অধ্যায়, {commas(withbn)} মন্ত্র"
-                f" (আনুমানিক {commas(full_v)}-এর ≈{pct}%){gap}। উৎস-সাইটে যেগুলো"
-                " এখনো প্রকাশিত হয়নি, সেগুলো আন্দাজে পূরণ করা হয় না; প্রকাশ পেলে"
-                " নিজে থেকেই যোগ হবে।")
     if idx.get("note"):   # ডেটার টীকা সবার শেষে (আগে দুবার যোগ হতো)
         src += " " + idx["note"]
     if en_n:
@@ -582,13 +554,11 @@ def main():
         refresh_rigveda_layout()
     # ---- বেদ
     vedas = []
-    for slug in [x for x in ("rigveda", "samaveda", "yajurveda-shukla",
+    for slug in [x for x in ("rigveda", "yajurveda-shukla",
                              "yajurveda-krishna") if x in ACTIVE]:
         meta = BOOKS.get(slug)
         idx = load(slug)
         if not meta or not idx:
-            if slug in ("rigveda", "samaveda"):
-                pass
             continue
         r = make_page(slug, idx, meta)
         made.append(r)
@@ -596,9 +566,9 @@ def main():
         print(f"{slug}: {r['withbn']}/{r['total']} · {r['nch']}")
 
     grid = ""
-    order = ["rigveda", "samaveda", "yajurveda-shukla", "yajurveda-krishna"]
+    order = ["rigveda", "yajurveda-shukla", "yajurveda-krishna"]
     byslug = {s: (r, m) for s, r, m in vedas}
-    labels = {"rigveda": ("বেদ · ঋগ্বেদ", "ঋগ্বেদ"), "samaveda": ("বেদ · সামবেদ", "সামবেদ"),
+    labels = {"rigveda": ("বেদ · ঋগ্বেদ", "ঋগ্বেদ"),
               "yajurveda-shukla": ("বেদ · শুক্ল যজুর্বেদ", "শুক্ল যজুর্বেদ"),
               "yajurveda-krishna": ("বেদ · কৃষ্ণ যজুর্বেদ", "কৃষ্ণ যজুর্বেদ")}
     for slug in order:
@@ -693,10 +663,6 @@ def main():
         if yv:
             hp_cards += card("hindu/yajurveda-shukla.html", "হিন্দু · বেদ", "শুক্ল যজুর্বেদ সংহিতা",
                              f'{commas(yv["withbn"])} মন্ত্র · {commas(yv["nch"])} অধ্যায়')
-        sv = next((r for sl, r, _ in vedas if sl == "samaveda"), None)
-        if sv:
-            hp_cards += card("hindu/samaveda.html", "হিন্দু · বেদ", "সামবেদ সংহিতা",
-                             f'{commas(sv["withbn"])} মন্ত্র · {commas(sv["nch"])} অধ্যায়')
         if hp_cards:
             replace_grid("hindu.html", hp_cards, sub="")
         print("হিন্দু-হাব:", sum(r["withbn"] for _, r, _ in vedas), "/",

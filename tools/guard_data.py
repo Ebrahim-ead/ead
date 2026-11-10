@@ -22,13 +22,17 @@ DATA = ROOT / "assets/grantho/data"
 BASE_FILE = DATA / "_baseline.json"
 TOL = 0.85          # ১৫%-এর বেশি কমলেই সন্দেহ
 
-# সাইটে কেবল এই দুটি গ্রন্থ থাকবে (ব্যবহারকারীর সিদ্ধান্ত, ২০২৬-১১-০৫)।
+# সাইটে কেবল এই গ্রন্থগুলো থাকবে (ব্যবহারকারীর সিদ্ধান্ত, ২০২৬-১১-০৫)।
 # ⚠ এখানে সমন্বয় থাকতেই হবে build_pages.py-এর ACTIVE-এর সঙ্গে। আগে এই
 #   তালিকায় «atharvaveda» রয়ে গিয়েছিল আর «samaveda» ছিল না — ফলে
 #   প্রতিবার সামবেদকে «অননুমোদিত গ্রন্থ» ভেবে মুছে ফেলা হতো
 #   (চার অধ্যায় · ৪৩৩ মন্ত্র + পাতা হারিয়ে গিয়েছিল)।
-ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "bible")
-KEEP_PAGES = {"gita.html", "rigveda.html", "samaveda.html", "veda.html",
+#
+# ⚠ ২০২৬-১১-১০: ব্যবহারকারী বলেছেন «সামবেদ বাদ দিয়ে দাও, এটা রাখবো না»।
+#   তাই samaveda এখান থেকেও বাদ — এই তালিকা থেকেই ডেটা ও পাতা মুছে যায়,
+#   কাজেই এখানে না সরালে পরের রানেই সামবেদ ফিরে আসত।
+ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "bible")
+KEEP_PAGES = {"gita.html", "rigveda.html", "veda.html",
               "yajurveda-shukla.html", "bible.html"}
 
 
