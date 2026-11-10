@@ -64,8 +64,10 @@ jobs:
           git config user.email "bot@users.noreply.github.com"
 
       - name: নামাও (২০ কাণ্ড)
-        run: |
-          python3 -u tools/fetch_atharvaveda.py || echo "ফেচ আংশিক ব্যর্থ — যা পাওয়া গেছে তাই রাখা হলো"
+        # ⚠ ত্রুটি গোপন করা চলবে না: আগে `|| echo` ছিল, ফলে নেটওয়ার্ক-ব্যর্থতাও
+        # «success» দেখাত আর ১৮ সেকেন্ডে শেষ হয়ে চোখে পড়ত না। এখন আসল
+        # ব্যর্থতা রানকে লাল করে, আর partial (কিছু কাণ্ড পাওয়া গেল) আলাদা।
+        run: python3 -u tools/fetch_atharvaveda.py
 
       - name: ফল লিখে রাখি (লগ দেখা যায় না বলে)
         if: always()
