@@ -22,9 +22,16 @@ on:
         required: false
         default: false
         type: boolean
-  # ⚠ push-ট্রিগার ইচ্ছাকৃতভাবে নেই: ওয়ার্কফ্লো নিজেই main-এ push করে, তাই
-  #   merge-এও চললে শেষ push-ই আবার আগুন ধরাত → অন্তহীন লুপ। চালাতে হবে
-  #   Actions → Run workflow (অথবা workflow_call)।
+  # push-ট্রিগার **কেবল এই দুই ফাইলের** পরিবর্তনে — ওয়ার্কফ্লো বা ফেচার
+  # নিজে বদলালে একবার চলবে। ওয়ার্কফ্লো নিজে যে কমিট push করে তাতে এই দুই
+  # ফাইল থাকে না (ফল শুধু assets/grantho/data/…), তাই লুপ হয় না।
+  # ⚠ ফেচার বদলানো মানেই নতুন রান: কাজ শেষ হলে এই ট্রিগার আর দরকার নেই,
+  #   তখন সরিয়ে দেওয়া ভালো — নইলে প্রতিটি ফেচার-কমিটে পুরো ডাউনলোড চলবে।
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fetch-atharvaveda.yml'
+      - 'tools/fetch_atharvaveda.py'
 
 permissions:
   contents: write
