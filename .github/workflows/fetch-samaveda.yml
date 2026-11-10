@@ -268,28 +268,51 @@ jobs:
             git push origin HEAD:main || echo '⚠ রিপোর্ট push ব্যর্থ'
             exit 0
           fi
+          # ⚠ লগ /tmp-এ লিখি: নিচে reset --hard করলে রেপোর ভেতরের ফাইল ফিরে যেত।
+          LOG=/tmp/samaveda_push.txt
+          : > "$LOG"
           git add assets/grantho/data "$DBG" grantho 2>/dev/null || true
+          { echo "=== কমিটের আগে ==="; git status --porcelain | head -40
+            echo "--- স্টেজে:"; git diff --cached --stat | tail -5; } >> "$LOG" 2>&1
           if git diff --cached --quiet; then
             echo 'নতুন কিছু নেই'
+            cp "$LOG" "$DBG/samaveda_push.txt" || true
             exit 0
           fi
           git commit -m "সামবেদ: নামানো পাঠ ($(date -u '+%d/%m %H:%M') UTC)" || exit 1
-          # ⚠ main-এ একই সময়ে GitHub Pages-এর deploy আর night-fetch লিখছে —
-          #   একবার ঠেকে গেলে পুরো রানের নামানো পাঠ হারিয়ে যেত (কয়েকবার তাই
-          #   হয়েছে)। তাই দীর্ঘ, ক্রমবর্ধমান-বিরতির চেষ্টা।
+          # ⚠ Actions-এর লগ বাইরে থেকে পড়া যায় না (signature-মেয়াদ) — তাই
+          #   প্রতিটি চেষ্টার ফল নিজের ফাইলে লিখি, তবেই সমস্যা ধরা যাবে।
           ok=0
+          {
+            echo "=== push-চেষ্টা $(date -u '+%H:%M:%S') ==="
+            echo "কমিট: $(git log --oneline -1)"
+          } >> "$LOG"
           for i in 1 2 3 4 5 6; do
-            git fetch origin main || true
+            git fetch origin main >> "$LOG" 2>&1 || true
+            echo "origin/main: $(git rev-parse --short origin/main) · চেষ্টা $i" >> "$LOG"
             # আমাদের commit-ই সবচেয়ে নতুন রাখি: main-এর কোনো বদল এলে তার পরে বসাই
-            if ! git rebase origin/main; then
-              git rebase --abort || true
-              git reset --hard origin/main || true
-              echo '::warning::rebase ব্যর্থ — পাঠ এই রানে প্রকাশ হবে না'
-              break
+            if ! git rebase origin/main >> "$LOG" 2>&1; then
+              echo "rebase ব্যর্থ (চেষ্টা $i)" >> "$LOG"
+              git rebase --abort >> "$LOG" 2>&1 || true
+              sleep $((i * 8)); continue
             fi
-            if git push origin HEAD:main; then ok=1; break; fi
-            echo "push ব্যর্থ — আবার ($i/৬)"
+            if git push origin HEAD:main >> "$LOG" 2>&1; then
+              ok=1; echo "push সফল (চেষ্টা $i)" >> "$LOG"; break
+            fi
+            echo "push ব্যর্থ (চেষ্টা $i)" >> "$LOG"
             sleep $((i * 8))
           done
-          [ "$ok" = "1" ] || { echo '::error::push ব্যর্থ (একাধিক চেষ্টার পরেও)'; exit 1; }
+          if [ "$ok" != "1" ]; then
+            # push না হলেও ডায়াগনস্টিকটা রক্ষা করি — নইলে কী ভেঙেছে জানা যায় না
+            echo "=== সমস্ত চেষ্টা ব্যর্থ ===" >> "$LOG"
+            git fetch origin main >> "$LOG" 2>&1 || true
+            git reset --hard origin/main >> "$LOG" 2>&1 || true
+            cp "$LOG" "$DBG/samaveda_push.txt" || true
+            git add "$DBG" || true
+            git commit -m "সামবেদ: push-ব্যর্থতার ডায়াগনস্টিক ($(date -u '+%d/%m %H:%M') UTC)" >> "$LOG" 2>&1 || true
+            git push origin HEAD:main >> "$LOG" 2>&1 || echo '⚠ ডায়াগনস্টিকও push হয়নি'
+            echo '::error::push ব্যর্থ (একাধিক চেষ্টার পরেও)'
+            exit 1
+          fi
+          cp "$LOG" "$DBG/samaveda_push.txt" || true
           echo 'প্রকাশিত ✓'
