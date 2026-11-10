@@ -124,23 +124,21 @@ def fix_button_type(p: pathlib.Path, s: str) -> tuple[str, str | None]:
 
 
 def fix_nodead(p: pathlib.Path, s: str) -> tuple[str, str | None]:
-    """`is-soon` কার্ডের `href="#"` → ক্লিক-নিষ্ক্রিয় <span> (পাতা লাফায় না)।"""
-    n = 0
+    """«শীঘ্রই» কার্ডের লিংক পরীক্ষা — এখানে কিছু *বদলানো হয় না*।
 
-    def sub(m: re.Match) -> str:
-        nonlocal n
-        block = m.group(0)
-        if 'href="#"' not in block:
-            return block
-        n += 1
-        return re.sub(r'<a\b([^>]*?)href="#"([^>]*?)>([\s\S]*?)</a>',
-                      r'<span class="is-soon-static"\1\2>\3</span>', block, count=1)
-
-    s2 = re.sub(r'<article[^>]*is-soon[\s\S]{0,600}?</article>', sub, s)
-    s2 = re.sub(r'<a class="article-card-link" href="#" aria-disabled="true" tabindex="-1">',
-                '<span class="article-card-link" aria-disabled="true">', s2)
-    s2 = s2.replace("</a></article>", "</span></article>") if s2 != s else s2
-    return (s2, f"{n}টি অচল কার্ডের মৃত লিংক সরানো") if s2 != s else (s, None)
+    ⚠ ২০২৬-১১-১০: আগে এই ধাপ `<a href="#">`-কে `<span>`-এ বদলাত। কিন্তু
+      সাইটের নিয়ম (tools/test_reader.mjs) বলে is-soon কার্ডে href="#" *থাকতেই*
+      হবে — tabindex="-1" + aria-disabled="true" মিলেই ক্লিক নিষ্ক্রিয়।
+      বদলানোর ফলে কার্ডের নকশা ভাঙত (ডাবল class) আর reader-টেস্ট ✗ হতো।
+      তাই এখন কেবল রিপোর্ট: href="#" না থাকলে জানায়।
+    """
+    bad = []
+    for m in re.finditer(r'<article[^>]*is-soon[\s\S]{0,600}?</article>', s):
+        if 'href="#"' not in m.group(0):
+            bad.append(m.group(0)[:60])
+    if bad:
+        return s, f"{len(bad)}টি is-soon কার্ডে href="#" নেই"
+    return s, None
 
 
 FONT_OK = 'family=Hind+Siliguri:wght@400;500;600;700&display=swap'

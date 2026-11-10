@@ -15,6 +15,7 @@ on:
       - 'tools/audit_site.mjs'
       - 'tools/test_reader.mjs'
       - 'tools/check_perf.mjs'
+      - 'tools/check_mobile.mjs'
       - 'assets/*.css'
       - 'assets/*.js'
       - 'assets/grantho/**'
@@ -70,6 +71,12 @@ jobs:
         run: |
           node tools/check_perf.mjs 2>&1 | tee /tmp/perf.txt
 
+      # ফোনে যা ভাঙে: viewport/lang/শিরোনাম, tap-target, ছবির মাপ (লেআউট লাফ),
+      # iOS-জুম, টেবিল-overflow, blocking স্ক্রিপ্ট। নতুন চেক — বাগ ঢোকার আগেই ধরা।
+      - name: মোবাইল-যাচাই
+        run: |
+          node tools/check_mobile.mjs 2>&1 | tee /tmp/mobile.txt
+
       # ব্যর্থ হলে কারণ জানা দরকার — Actions-এর লগ বাইরে থেকে পড়া যায় না,
       # তাই আউটপুট রিপোতেই প্রকাশ (নিশ্চিত করা আছে যে এতে লুপ হবে না)।
       - name: ব্যর্থ হলে ডায়াগনস্টিক প্রকাশ
@@ -90,6 +97,9 @@ jobs:
             echo ""
             echo "--- পারফরম্যান্স-নিয়ম আউটপুট ---"
             cat /tmp/perf.txt 2>/dev/null || echo '(পারফরম্যান্স-চেক চলেইনি)'
+            echo ""
+            echo "--- মোবাইল-যাচাই আউটপুট ---"
+            cat /tmp/mobile.txt 2>/dev/null || echo '(মোবাইল-চেক চলেইনি)'
           } > ci-diagnostics/site-tests.txt
           git config user.name  "grantho-bot"
           git config user.email "bot@users.noreply.github.com"
