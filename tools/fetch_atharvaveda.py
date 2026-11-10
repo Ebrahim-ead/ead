@@ -389,8 +389,17 @@ def write(out, index_rows):
         print(f"✓ কাণ্ড {bnnum(kanda)}: {len(suktas)} সূক্ত · {len(verses)} মন্ত্র",
               flush=True)
 
-    (OUT / "_fetch_report.txt").write_text(
-        "কাণ্ড: %s\nব্যর্থ: %s\n" % (ok_kanda, fail), encoding="utf-8")
+    rep = ["কাণ্ড পাওয়া গেল: %s" % ok_kanda, "ব্যর্থ পাতা: %s" % (fail or "—")]
+    # কোন কাণ্ড একটিও পাওয়া গেল না — সেটাই সিদ্ধান্তের কারণ
+    missing_rows = [k for k in range(1, 21) if k not in by_kanda]
+    if missing_rows:
+        rep.append("উৎসে লেসনই নেই (৪০৪): কাণ্ড %s" % missing_rows)
+        rep.append("কারণ: ebanglalibrary-এ «অথর্ববেদ সংহিতা» বইটির সূচিতে ও "
+                   "প্রতিটি লেসন-পাতার সাইডবারে কেবল কাণ্ড ১–৭-এর লেসন আছে "
+                   "(সর্বোচ্চ ০৭।০৪)। কাণ্ড ৮–২০-এর কোনো লেসন-পাতা নেই — "
+                   "সরাসরি চাইলে ৪০৪। পাঠকেরাও মন্তব্যে একই কথা লিখেছেন "
+                   "(«বাকি কান্ড কোথায়?»)।")
+    (OUT / "_fetch_report.txt").write_text("\n".join(rep) + "\n", encoding="utf-8")
 
     # ---- শর্ত: ২০ কাণ্ড সম্পূর্ণ + মন্ত্র-সংখ্যা যুক্তিসঙ্গত না হলে ইনডেক্স নয় ----
     total = sum(c["count"] for c in chapters)
