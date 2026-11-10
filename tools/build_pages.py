@@ -441,17 +441,22 @@ def make_page(slug, idx, meta):
     #   হয় না। সংখ্যা বা ছদ্ম-সম্পূর্ণতা নয়, স্পষ্ট ঘোষণা।
     if slug == "samaveda" and nch:
         full_ch, full_v = 26, 1875
-        ids = sorted(c["id"] for c in idx["chapters"])
-        miss = [i for i in range(1, max(ids) + 1) if i not in ids]
-        seg = f" অধ্যায় {min(ids)}–{max(ids)}"
+        ids = sorted(int(c["id"]) for c in idx["chapters"])
+        lo, hi = (ids[0], ids[-1]) if ids else (0, 0)
+        miss = [i for i in range(1, hi + 1) if i not in ids]
+        where = f"অধ্যায় {lo}" if lo == hi else f"অধ্যায় {lo}–{hi}"
+        gap = ""
         if miss:
-            seg += " (মাঝে " + ", ".join(str(i) for i in miss) + " অধ্যায় উৎসে পাওয়া যায়নি)"
+            if len(miss) <= 6:
+                gap = f"; {', '.join(str(i) for i in miss)} নেই"
+            else:
+                gap = f"; মাঝে {len(miss)}টি অধ্যায় নেই"
+        pct = max(1, 100 * withbn // full_v)
         src += (f" ⚠ <b>পাঠ অসম্পূর্ণ।</b> উৎস-বইটির {full_ch} অধ্যায়ের মধ্যে এখানে"
-                f"{seg} পর্যন্ত আছে — মোট {nch} অধ্যায়, {commas(withbn)} মন্ত্র"
-                f" (আনুমানিক {commas(full_v)}-এর ≈{max(1, 100 * withbn // full_v)}%)।"
-                " উৎস-সাইটে বাকি অধ্যায়গুলো এখনো প্রকাশিত হয়নি বা সূচিতে নেই;"
-                " সেগুলো হাতে লেখা বা আন্দাজে পূরণ করা হয় না। উৎসে প্রকাশ পেলে"
-                " এখানে নিজে থেকেই যোগ হবে।")
+                f" {where} পর্যন্ত — {nch} অধ্যায়, {commas(withbn)} মন্ত্র"
+                f" (আনুমানিক {commas(full_v)}-এর ≈{pct}%){gap}। উৎস-সাইটে যেগুলো"
+                " এখনো প্রকাশিত হয়নি, সেগুলো আন্দাজে পূরণ করা হয় না; প্রকাশ পেলে"
+                " নিজে থেকেই যোগ হবে।")
     if idx.get("note"):   # ডেটার টীকা সবার শেষে (আগে দুবার যোগ হতো)
         src += " " + idx["note"]
     if en_n:

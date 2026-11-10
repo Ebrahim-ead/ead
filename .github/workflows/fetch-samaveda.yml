@@ -274,14 +274,22 @@ jobs:
             exit 0
           fi
           git commit -m "সামবেদ: নামানো পাঠ ($(date -u '+%d/%m %H:%M') UTC)" || exit 1
-          git fetch origin main --depth=1 || true
-          git rebase origin/main || git rebase --abort || true
+          # ⚠ main-এ একই সময়ে GitHub Pages-এর deploy আর night-fetch লিখছে —
+          #   একবার ঠেকে গেলে পুরো রানের নামানো পাঠ হারিয়ে যেত (কয়েকবার তাই
+          #   হয়েছে)। তাই দীর্ঘ, ক্রমবর্ধমান-বিরতির চেষ্টা।
           ok=0
-          for i in 1 2 3; do
+          for i in 1 2 3 4 5 6; do
+            git fetch origin main || true
+            # আমাদের commit-ই সবচেয়ে নতুন রাখি: main-এর কোনো বদল এলে তার পরে বসাই
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              git reset --hard origin/main || true
+              echo '::warning::rebase ব্যর্থ — পাঠ এই রানে প্রকাশ হবে না'
+              break
+            fi
             if git push origin HEAD:main; then ok=1; break; fi
-            echo "push ব্যর্থ — আবার ($i/৩)"
-            git pull --rebase origin main || true
-            sleep 4
+            echo "push ব্যর্থ — আবার ($i/৬)"
+            sleep $((i * 8))
           done
-          [ "$ok" = "1" ] || { echo '::error::push ব্যর্থ'; exit 1; }
+          [ "$ok" = "1" ] || { echo '::error::push ব্যর্থ (একাধিক চেষ্টার পরেও)'; exit 1; }
           echo 'প্রকাশিত ✓'
