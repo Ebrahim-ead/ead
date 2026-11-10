@@ -182,7 +182,8 @@ _NUM_SEG = re.compile(r"^[০-৯0-9]{1,3}\s*[।\.]\s*\S")
 _NUM_SEG_FULL = re.compile(r"^([০-৯0-9]{1,3})\s*[।\.]\s*(\S.*)$")
 _FOOTNOTE = re.compile(r"^\(\s*[০-৯0-9]{1,3}\s*\)")
 _DIVIDER = re.compile(r"[—–\-\s]{3,}")
-LBL = re.compile(r"^(অন্বয়|সরলার্থ|বঙ্গানুবাদ|অনুবাদ|মন্তব্য|ভাষ্য|টীকা|সূক্তস্য\s*বিনিয়োগ|ব্যাখ্যা)\s*[:ঃ।\-–—]*\s*")
+LBL = re.compile(r"^(অন্বয়|সরলার্থ|বঙ্গানুবাদ|অনুবাদ|মন্তব্য|ভাষ্য|টীকা|"
+                   r"সূক্তস্য\s*বিনিয়োগ|ব্যাখ্যা)\s*[:ঃ।\-–—]*\s*")
 # পাদটীকা-শিরোনাম: «মন্ত্রের দেবতা», «মন্ত্রের ছন্দ», «মন্ত্রের ঋষি», «স্বর :» ইত্যাদি
 # সামবেদের পাতা-শিরোনাম — «সামবেদ ০১।০১ (প্রথম অধ্যায় । প্রথম খণ্ড : …)»,
 # «প্রথম খণ্ড : মন্ত্র সংখ্যা ১০ ॥», «আগ্নেয় কাণ্ডঃ অগ্নিস্তুতি» ইত্যাদি।
@@ -196,11 +197,16 @@ _HEAD_TEXT = re.compile(
     r"|[^।॥]{0,30}কাণ্ড\s*[:ঃ]\s*[^।॥]{0,30}$"
     r"|পুর্বার্চিক|উত্তরার্চিক)")
 _META_LINE = re.compile(r"^(?:মন্ত্রের?\s*(?:দেবতা|ছন্দ|ঋষি|স্বর|সংখ্যা)|স্বর\s*[:ঃ]|"
-                        r"দেবতা\s*[:ঃ]|ঋষি\s*[:ঃ]|ছন্দ\s*[:ঃ])")
+                        r"দেবতা\s*[:ঃ]|ঋষি\s*[:ঃ]|ছন্দ\s*[:ঃ]|"
+                        # «দেবতা অগ্নি ॥ ছন্দ গায়ত্রী ॥» — কোলন ছাড়া ধাঁচ
+                        # (এটাই ভুয়া মন্ত্র বানিয়ে সব নম্বর এক ধাপ সরিয়ে দিত)
+                        r"দেবতা\s+|ছন্দ\s+|ঋষি\s*[:ঃ]?\s*[০-৯0-9])")
 # «মন্ত্র :» / «মন্ত্রঃ-» / «মন্ত্র-» — কিন্তু «মন্ত্রের দেবতা», «মন্ত্রসংখ্যা» নয়।
 # কোলন/হাইফেন/ফাঁকা কোনোটাই না থাকলে সেটা শিরোনাম-লাইন, মন্ত্রের পাঠ নয়।
 MTRA = re.compile(r"^মন্ত্র\s*(?:[:ঃ]\s*[\-–—]*|[\-–—]|\s)\s*")
-ARTH = re.compile(r"^অর্থ\s*[:ঃ]\s*[\-–—]*\s*|^অর্থ\s*[\-–—]\s*")
+# «অর্থঃ-» (অধ্যায় ১–২) এবং «অনুবাদঃ» (অধ্যায় ৩+) — দুটোই অনুবাদ-লেবেল;
+# তৃতীয় দফায় মন্ত্র-অনুবাদ একসাথে এক প্যারায়, নম্বর ধরে ভাগ করতে হয়।
+ARTH = re.compile(r"^(?:অর্থ|অনুবাদ)\s*[:ঃ]\s*[\-–—]*\s*|^(?:অর্থ|অনুবাদ)\s*[\-–—]\s*")
 BN_VERB = re.compile(r"হয়|করে|থেকে|জন্য|এবং|উচিত|বললেন|গেল|মধ্যে|দ্বারা|"
                      r"তিনি|তাঁর|ব্যক্তি|হইয়া|করি|নহে|হবে|ছিল|আছে|নাই")
 
@@ -233,6 +239,139 @@ def is_heading(ln):
     return len(ln) < 20 and not re.search(r"[।॥,]", ln)
 
 
+_NUM_INLINE = re.compile(r"[(]\s*([০-৯0-9]{1,4})\s*[)]")
+
+def _merge_to(segs, n):
+    """বাক্য-খণ্ড n-এর বেশি হলে কাছাকাছি দৈর্ঘ্যে মিলিয়ে ঠিক n টুকরো করি।
+
+    অনুবাদ-পরায় মন্ত্র-সংখ্যা না থাকলে ভরসা একমাত্র দাঁড়ি; কিন্তু এক
+    মন্ত্রে দুই-তিন বাক্য থাকতে পারে। তাই সমান-ভাগে মিলিয়ে নিই — উৎসের
+    পাঠ অক্ষত থাকে, কেবল মন্ত্রের সীমানা অনুমান করা হয়।
+    """
+    if n <= 0:
+        return segs
+    total = sum(len(x) for x in segs)
+    out, acc, cur = [], 0, []
+    for x in segs:
+        acc += len(x)
+        cur.append(x)
+        if len(out) < n - 1 and acc >= total * (len(out) + 1) / n:
+            out.append(" ".join(cur))
+            cur = []
+    if cur:
+        out.append(" ".join(cur))
+    while len(out) > n:              # শেষের দুটো জুড়ে দিই
+        out[-2] = out[-2] + " " + out[-1]
+        out.pop()
+    return out
+# উৎসের নিজের মন্ত্র-সংখ্যা (২৪৩) — এখানে সেটিই ক্রমের ভিত্তি
+def _samaveda_numbered(txt):
+    """«মন্ত্রঃ (২৪৩) … (২৪৪) …» + «অনুবাদঃ (২৪৩) …» গঠনের পাতা।
+
+    উৎস-নম্বর (২৪৩) হলো রিগ্বেদ-সংখ্যা, ক্রম নয় — তাই পড়ার নম্বর
+    প্রতি সুক্তে ১…n বসানো হয়, আর উৎস-নম্বর `seg` হিসেবে রাখা হয়।
+    অনুবাদ-পরায় সংখ্যা না-থাকলে বাংলা ক্রিয়াপদ দেখে নতুন মন্ত্র ধরা হয়,
+    নইলে দুই মন্ত্রের অনুবাদ জোড়া লেগে যায়।
+    """
+    def _lines(raw):
+        out = []
+        for ln in raw.split("\n"):
+            ln = re.sub(r"\s+", " ", ln).strip()
+            if ln:
+                out.append(ln)
+        return out
+
+    lines = _lines(txt)
+    sk_raw, bn_raw = [], []
+    part = None
+    for ln in lines:
+        if re.match(r"^মন্ত্র\s*[:ঃ]", ln):
+            part = "sk"
+            ln = re.sub(r"^মন্ত্র\s*[:ঃ]\s*[\-–—]*\s*", "", ln)
+        elif re.match(r"^(?:অনুবাদ|অর্থ)\s*[:ঃ]", ln):
+            part = "bn"
+            ln = re.sub(r"^(?:অনুবাদ|অর্থ)\s*[:ঃ]\s*[\-–—]*\s*", "", ln)
+        elif _HEAD_TEXT.match(ln) or _META_LINE.match(ln):
+            continue
+        elif part is None:
+            continue
+        if not ln:
+            continue
+        if ln.startswith("#"):
+            continue
+        (sk_raw if part == "sk" else bn_raw).append(ln)
+
+    sk_txt = " ".join(sk_raw)
+    bn_txt = " ".join(bn_raw)
+    if not sk_txt:
+        return None
+
+    # ---- সংস্কৃত: (নম্বর) ধরে ভাগ; দাঁড়ি-সংখ্যাই চূড়ান্ত (॥১॥ … ॥১০॥) ----
+    idx = [(m.start(), m.group(1)) for m in _NUM_INLINE.finditer(sk_txt)]
+    if not idx:
+        return None
+    sk_parts = []
+    for i, (pos, num) in enumerate(idx):
+        end = idx[i + 1][0] if i + 1 < len(idx) else len(sk_txt)
+        body = sk_txt[pos:end].strip()
+        body = re.sub(r"^[(]\s*[০-৯0-9]{1,4}\s*[)]\s*", "", body).strip()
+        body = re.sub(r"\s*[।॥]\s*[০-৯0-9]{1,3}\s*$", "", body).strip()
+        # উৎসের শেষ «॥৩॥» = রিগ্বেদ-ক্রম; আমাদের নিজের ১…n আছে ⇒ বাদ
+        body = re.sub(r"\s*[|]?\s*[।॥]?\s*[০-৯0-9]{1,3}\s*[।॥]\s*$", "", body).strip()
+        body = re.sub(r"\s*[|।॥]+\s*$", "", body).strip()
+        if len(body) < 6 or body.lower().startswith("bookmark"):
+            continue
+        sk_parts.append({"src": num, "sk": body})
+
+    # ---- অনুবাদ: (নম্বর) থাকলে তা দিয়েই; না থাকলে ক্রিয়াপদ-বিরতি ধরে ----
+    bidx = [(m.start(), m.group(1)) for m in _NUM_INLINE.finditer(bn_txt)]
+    bn_parts = []
+    if len(bidx) >= max(3, len(sk_parts) // 2):
+        for i, (pos, num) in enumerate(bidx):
+            end = bidx[i + 1][0] if i + 1 < len(bidx) else len(bn_txt)
+            body = bn_txt[pos:end].strip()
+            body = re.sub(r"^[(]\s*[০-৯0-9]{1,4}\s*[)]\s*", "", body).strip()
+            body = re.sub(r"\s*Bookmark\s*$", "", body, flags=re.I)
+            body = re.sub(r"\s*[|।॥]+\s*$", "", body).strip()
+            if len(body) < 6:
+                continue
+            bn_parts.append({"src": num, "bn": body})
+    else:
+        # সংখ্যা নেই: «।।» দিয়ে বাক্য-ভাগ করেই মন্ত্র-সংখ্যার সঙ্গে মিলাই
+        segs = [x.strip() for x in re.split(r"(?<=[।॥])\s*(?=[^।॥])", bn_txt) if x.strip()]
+        if len(segs) > len(sk_parts):
+            segs = _merge_to(segs, len(sk_parts))
+        for i, body in enumerate(segs):
+            body = re.sub(r"\s*Bookmark\s*$", "", body, flags=re.I)
+            body = re.sub(r"\s*[|।॥]+\s*$", "", body).strip()
+            if len(body) >= 6:
+                bn_parts.append({"src": None, "bn": body})
+
+    by_src = {}
+    for b in bn_parts:
+        if b["src"]:
+            by_src.setdefault(b["src"], []).append(b["bn"])
+
+    res = []
+    for i, v in enumerate(sk_parts):
+        b = by_src.get(v["src"])
+        if b is None and len(bn_parts) == len(sk_parts):
+            b = [bn_parts[i]["bn"]]          # ক্রমে মিলে যায়
+        res.append({
+            "src": to_int(v["src"]),
+            "n": i + 1,                 # প্রতি সূক্তে ১…n (উৎসের ২৪৩ নয়)
+            "seg": to_int(v["src"]),
+            "sk": [v["sk"]] if v["sk"] else [],
+            "anv": [],
+            "bn": [" ".join(b)] if b else [],
+            "bnNote": "",
+        })
+    # ⚠ অন্য পথগুলো list ফেরায় আর write_chapter/main স্ট্রিং আশা করে —
+    #   এখানেও list-ই দিই, নইলে নিচের বিল্ড-ধাপে সব মন্ত্র ফাঁকা হয়ে যায়।
+    return res
+
+
+
 def parse_verses(txt, bn_meaning=False):
     """পাতার পাঠ → [{'n','sk','anv','bn','bnNote'}]।
 
@@ -262,6 +401,13 @@ def parse_verses(txt, bn_meaning=False):
                            and re.search(r"[অ-হ]", x)])
         if dev < 200 and (multiline > 30 or numbered_bn >= 3) and not has_labels:
             bn_meaning = True          # সংস্কৃত মূল নেই ⇒ বাংলা-লিপিতেই পাঠ
+    # ⚠ নিচের পরিবর্তনগুলো «।।১।।»-এর পরে লাইন ভাঙে — তখন «মন্ত্রঃ» প্যারায়
+    #   আর একাধিক (num) থাকে না। তাই সিদ্ধান্ত আসল পাঠ থেকেই নিই।
+    _raw_txt = txt
+    _mm = re.search(r"(^|\n)[ \t]*মন্ত্র\s*[:ঃ]([^\n]*)", _raw_txt)
+    _sama_numbered = bool(
+        _mm and len(_NUM_INLINE.findall(_mm.group(2))) >= 2
+        and re.search(r"(^|\n)\s*(?:অনুবাদ|অর্থ)\s*[:ঃ]", _raw_txt))
     txt = txt.replace("।।", "॥").replace("||", "॥").replace("\u09f7", "॥")
     txt = re.sub(r"([॥৷]\s*[০-৯०-९]{1,3}\s*[॥৷])\s*(?=\S)", r"\1\n", txt)
     if "অন্বয়" not in txt and "সরলার্থ" not in txt:
@@ -353,6 +499,19 @@ def parse_verses(txt, bn_meaning=False):
         elif verse_label and cur is None:
             add_verse([])
 
+    # ---- গঠন: «মন্ত্রঃ (২৪৩) …॥১॥ (২৪৪) …॥২॥» / «অনুবাদঃ (২৪৩) … (২৪৪) …» ----
+    # সামবেদের অধ্যায় ৩ থেকে ২৪ পর্যন্ত 페이지গুলো এই ধাঁচে: এক প্যারায়
+    # পুরো সুক্ত (নম্বর-তালিকায় প্রতি মন্ত্র), তারপর এক প্যারায় পুরো অনুবাদ।
+    # লেবেল-পথ একই লাইনে একাধিক মন্ত্র দেখে বিভ্রান্ত হয় — তাই আগেই ভাগ করি।
+    #   • উৎস-নম্বর (২৪৩) ⟵ মন্ত্রের চিহ্ন, কিন্তু ক্রম-সূচক নয় ⇒ পড়ার নম্বর ১…n
+    #   • অনুবাদে সংখ্যা না-থাকলে আগের মন্ত্রেই জোড়া লাগে (বাংলা ক্রিয়াপদ দেখে রাখি)
+    # ⚠ অধ্যায় ১–২-এও «মন্ত্রঃ- (০১)» আছে, কিন্তু এক লাইনে *একটাই* নম্বর।
+    #   তাই শর্ত: একই «মন্ত্রঃ» প্যারায় অন্তত দুইটা (num) একসাথে থাকতে হবে।
+    if _sama_numbered:
+        _mv = _samaveda_numbered(_raw_txt)
+        if _mv:
+            return _mv
+
     if labelled:
         started = False
         pend = []
@@ -374,6 +533,8 @@ def parse_verses(txt, bn_meaning=False):
                     cur["note"].append(ln)
                     started = True
                 continue
+            if ln.startswith("#") or _META_LINE.match(ln) or _HEAD_TEXT.match(ln):
+                continue                      # মার্কডাউন-শিরোনাম/পাদটীকা-ব্লক
             _lbl = LBL.match(ln)
             if not started and not _lbl and (
                     is_heading(ln) or ln.startswith("[") or "সম্পাদনা" in ln
@@ -635,17 +796,59 @@ def sitemap_urls(sitemaps, keyword, want=("topics", "lessons", "books")):
     return urls
 
 
-def book_lessons(book_url):
-    """বই-পাতার সূচি থেকে লেসন/টপিক-সংযোগ (ক্রম অপরিবর্তিত)।"""
+def book_lessons(book_url, max_pages=60):
+    """বই-পাতার সূচি থেকে লেসন/টপিক-সংযোগ (ক্রম অপরিবর্তিত)।
+
+    ⚠ বই-পাতার সূচি পৃষ্ঠায়িত: প্রথম পাতায় কেবল ~৪৮টি লেসন (অধ্যায় ১–৪)
+      থাকে, বাকিগুলো «?ld-book-page=2» ইত্যাদিতে। আগে শুধু প্রথম পাতা পড়া
+      হতো, তাই অধ্যায় ৫–২৪ কখনো সূচিতেই আসত না — অথচ সেগুলো সাইটে আছে।
+    """
+    out, seen, seen_p = [], set(), set()
+
+    def _grab(h):
+        for m in re.finditer(r'href="(https://www\.ebanglalibrary\.com/'
+                             r'(?:lessons|topics)/[^"#?]+)"', h):
+            u = htmllib.unescape(m.group(1))
+            if u not in seen and u.rstrip("/") != book_url.rstrip("/"):
+                seen.add(u)
+                out.append(u)
+        if len(out) % 48 == 0 and out:
+            print(f"   সূচি: {len(out)} লেসন সংগ্রহ (পৃষ্ঠা {len(seen_p)})", flush=True)
+
     h = get(book_url)
     if not h:
         return []
-    out, seen = [], set()
-    for m in re.finditer(r'href="(https://www\.ebanglalibrary\.com/(?:lessons|topics)/[^"#?]+)"', h):
-        u = htmllib.unescape(m.group(1))
-        if u not in seen and u.rstrip("/") != book_url.rstrip("/"):
-            seen.add(u)
-            out.append(u)
+    _grab(h)
+
+    # পেজিনেশন: «ld-book-page=2» … যতক্ষণ নতুন লেসন মিলছে
+    pages, guard = [], 0
+    for m in re.finditer(r'href="([^"]*ld-book-page=\d+[^"]*)"', h, re.I):
+        pages.append(htmllib.unescape(m.group(1)))
+    nxt = next_page_link(h)
+    if nxt and "ld-book-page" in nxt:
+        pages.append(nxt)
+    # পাশাপাশি সরাসরি ?ld-book-page=2… তৈরি করি (লিংক সব সময় না-ও থাকতে পারে)
+    base = book_url.split("?")[0]
+    for i in range(2, 41):
+        pages.append(f"{base}?ld-book-page={i}")
+    # ⚠ «Next Page» টপিক/লেসন-পৃষ্ঠারও হতে পারে — বই-পৃষ্ঠাই কেবল নিই
+    pages = [p for p in pages
+             if "ld-book-page" in p or not re.search(r"ld-(?:topic|lesson)-page", p)]
+    for u in pages:
+        if guard >= max_pages:
+            break
+        if u in seen_p:
+            continue
+        seen_p.add(u)
+        guard += 1
+        before = len(out)
+        hp = get(u)
+        if not hp:
+            break
+        _grab(hp)
+        if len(out) == before:      # নতুন কিছু নেই ⇒ পৃষ্ঠা শেষ
+            break
+        time.sleep(0.3)
     return out
 
 
@@ -817,8 +1020,19 @@ _LAT3 = re.compile(r"[A-Za-z][A-Za-z'’\-]{2,}")
 _BNCH = re.compile(r"[\u0980-\u09FF]")
 
 
+def _flat_text(x):
+    """list/str → এক স্ট্রিং (পাঠ যেভাবেই রাখা থাকুক)।"""
+    if isinstance(x, (list, tuple)):
+        return " ".join(str(y) for y in x).strip()
+    return str(x or "").strip()
+
+
 def foreign_reasons(text):
     """বাংলার সঙ্গে বিদেশি পাঠ মিশে থাকলে কারণের তালিকা (খালি = পরিষ্কার)।"""
+    # ⚠ পার্সার এখন কোনো কোনো পথে bn/sk-কে list রাখে (প্রতি লাইন আলাদা),
+    #   আবার কোনো পথে str — দুটোই নিরাপদে সামলাতে হবে।
+    if isinstance(text, (list, tuple)):
+        text = " ".join(str(x) for x in text)
     if not text:
         return ["বাংলা নেই"]
     out = []
@@ -843,12 +1057,24 @@ def foreign_reasons(text):
 def write_chapter(out_dir, idx, title, verses, url):
     # ব্যবহারকারীর সিদ্ধান্ত (২০২৬-১১-০৫): মন্ত্রের বাংলার পাশে Griffith-এর
     # ইংরেজি, দেবনাগরী মূল বা IAST থাকলে সেই মন্ত্রটা রাখা হয় না।
-    kept, dropped = [], 0
+    kept, dropped, no_bn = [], 0, 0
     for v in verses:
         if foreign_reasons(v.get("bn") or ""):
             dropped += 1
             continue
+        # ব্যবহারকারীর শর্ত: পাঠ **শুধু বাংলায়** — অনুবাদহীন মন্ত্র রাখা যায় না।
+        # (অনুবাদ-পরা না মিললে আগে শুধু সংস্কৃত-মূল ঢুকে যেত।)
+        _bn = v.get("bn")
+        _bns = _flat_text(_bn)
+        # «(২৪৩) …» = উৎসের রিগ্বেদ-নম্বর; পড়ার নম্বর আলাদা ⇒ পাঠে থাকবে না
+        _bns = re.sub(r"^\s*[(]\s*[০-৯0-9]{1,4}\s*[)]\s*", "", _bns).strip()
+        if not _bns:
+            no_bn += 1
+            continue
+        v["bn"] = _bns
         kept.append(v)
+    if no_bn:
+        print(f"   ⚠ অনুবাদহীন {no_bn}টি মন্ত্র বাদ (পাঠ শুধু বাংলায়)", flush=True)
     if dropped:
         print(f"   ⚠ বিদেশি পাঠ মেশানো {dropped}টি মন্ত্র বাদ দেওয়া হলো", flush=True)
     verses = kept
@@ -878,8 +1104,14 @@ def split_oversized(v, limit=4000):
     শ্লোকে ঢুকিয়ে দিত (একটাই «মন্ত্র», ৩২,০০০ অক্ষর) — ফলে শ্লোক-সংখ্যা
     এক-তৃতীয়াংশে নেমে যেত আর পড়াও যেত না।
     """
-    bn = (v.get("bn") or "").strip()
-    if len(bn) <= limit and len(v.get("sk") or "") <= limit:
+    def _one(x):
+        """sk/bn কখনো list, কখনো str — এক রূপে আনি (নইলে .strip() ভেঙে পড়ে)।"""
+        if isinstance(x, (list, tuple)):
+            return " ".join(str(y) for y in x).strip()
+        return str(x or "").strip()
+
+    bn = _one(v.get("bn"))
+    if len(bn) <= limit and len(_one(v.get("sk"))) <= limit:
         return [v]
     parts = [x.strip() for x in re.split(r"(?<=[।॥])\s+", bn) if x.strip()]
     chunks, buf = [], ""
@@ -900,7 +1132,7 @@ def split_oversized(v, limit=4000):
             cut = cut[sp:].strip()
         if cut:
             chunks.append(cut)
-    sk = (v.get("sk") or "").strip()
+    sk = _one(v.get("sk"))
     out = []
     for i, c in enumerate(chunks, 1):
         nv = dict(v)
@@ -1197,11 +1429,14 @@ def main_run(args):
         txt = fetch_paged(args.url)
         vs = parse_verses(txt)
         print(f"মন্ত্র: {len(vs)}")
+        def _s(x):
+            # sk/bn/anv কখনো list, কখনো str — কেটে ছাপার আগে এক রূপে আনি
+            return " ".join(x) if isinstance(x, list) else str(x or "")
         for v in vs[: args.dump or 3]:
-            print(f" {v['n']} | sk: {v['sk'][:80]}")
-            print(f"    bn: {v['bn'][:100]}")
-            if v["bnNote"]:
-                print(f"    note: {v['bnNote'][:60]}")
+            print(f" {v['n']} | sk: {_s(v['sk'])[:80]}")
+            print(f"    bn: {_s(v['bn'])[:100]}")
+            if _s(v.get("bnNote")):
+                print(f"    note: {_s(v['bnNote'])[:60]}")
         if args.dump:
             os.makedirs(os.path.join(args.out, "_debug"), exist_ok=True)
             fn = re.sub(r"[^\w]+", "_", urllib.parse.unquote(args.url))[-60:]
@@ -1497,8 +1732,17 @@ def main_run(args):
             for v in vs:
                 for part in split_oversized(v):
                     part = dict(part)
+                    src = part.pop("src", None)      # উৎস-নম্বর (২৪৩) — ক্রম নয়
                     part["n"] = offset + len(verses) + 1
+                    if src and not part.get("seg"):
+                        part["seg"] = src
                     verses.append(part)
+            # ⚠ উৎসের «(২৪৩)» সংখ্যাগুলো রিগ্বেদ-ক্রম, সূক্তের ভেতরের ১…n নয়।
+            #   তাই প্রতি সূক্ত-পাতার পরে ক্রম আবার ১ থেকে শুরু করি।
+            if args.slug == "samaveda":
+                base = offset
+                for i, v in enumerate(verses[base:], 1):
+                    v["n"] = i          # প্রতি সূক্তে ১…n
             done += 1
             print(f"   ✓ {label}: {len(vs)} মন্ত্র (মোট {len(verses)})", flush=True)
             if args.max and done >= args.max:
@@ -1597,8 +1841,13 @@ def main_run(args):
             title = args.title if norm(tail_t) in norm(args.title) else f"{args.title} — {tail_t}"
         else:
             title = tail_t or f"অধ্যায় {idx}"
-        chapters.append(write_chapter(out_dir, idx, title, vs, u))
         print(f"   ✓ {len(vs)} {args.word}")
+        # ⚠ পাঠের নম্বর সব সময় ১…n — উৎসের «(২৪৩)» রিগ্বেদ-সংখ্যা `seg`-এ থাকে।
+        #   পার্সার নিজেই ১…n দেয়, তবু n_override থাকলে সেটি এখানে ঠিক করে দিই।
+        if args.slug == "samaveda":
+            for i, v in enumerate(vs, 1):
+                v["n"] = i
+        chapters.append(write_chapter(out_dir, idx, title, vs, u))
         time.sleep(0.4)
 
     if args.slug and chapters:

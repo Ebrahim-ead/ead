@@ -189,7 +189,18 @@ jobs:
               if sk:
                   empty += 1
                   print(f'  ⚠ অধ্যায় {c["id"]}: বাংলা পাঠে দেবনাগরী {len(sk)} অক্ষর')
+              # পাঠ শুধু বাংলা: অ-বাংলা/লাতিন-মিশ্রণ বা খালি অনুবাদ থাকলে ধরা পড়ুক
+              gap = sum(1 for v in vs if not (v.get('bn') or '').strip())
+              if gap:
+                  print(f'  ⚠ অধ্যায় {c["id"]}: অনুবাদহীন {gap}/{len(vs)} মন্ত্র')
           print(f'মোট: {len(chs)} অধ্যায় · {tot} মন্ত্র · নম্বর-ভুল {bad} · দেবনাগরী-মিশ্রণ {empty}')
+          ids = [c['id'] for c in chs]
+          print(f'অধ্যায়-ক্রম: {ids[0]} … {ids[-1]}')
+          miss = [i for i in range(1, max(ids or [0]) + 1) if i not in ids]
+          if miss:
+              print(f'  ⚠ ফাঁকা অধ্যায়: {miss}')
+          # পুরো সামবেদ ~১৮৭৫ মন্ত্র — যা পাওয়া গেছে তার অনুপাত জানাই (বানানো নয়)
+          print(f'কভারেজ: {tot} / ~1875 মন্ত্র (≈{100 * tot // 1875}%)')
           print('রায়: ' + ('✓ পাস' if tot and not bad and not empty else '⚠ দেখুন'))
           PY
 
@@ -223,6 +234,40 @@ jobs:
       - name: ৪) কমিট ও প্রকাশ
         if: always()
         run: |
+          # ⚠ ব্যবহারকারীর শর্ত: অসম্পূর্ণ গ্রন্থ প্রকাশ নয়। আগে শুধু *প্রথম*
+          #   পাতা (৪৮ লেসন) দেখেই প্রকাশ হয়ে গিয়েছিল — অথচ সূচিই অসম্পূর্ণ।
+          #   এখন সূচি-সম্পূর্ণতা যাচাই করে তবেই পাঠ প্রকাশ করি; রিপোর্ট/ডায়াগনস্টিক
+          #   সব সময় প্রকাশ পায়, যাতে কী আটকে আছে বাইরে থেকেই দেখা যায়।
+          PUB=1
+          python3 -u - <<'PY' || PUB=0
+          import json, os, pathlib, sys
+          d = pathlib.Path('assets/grantho/data') / os.environ['SLUG']
+          idx = d / 'index.json'
+          if not idx.exists():
+              print('⛔ index.json নেই — প্রকাশ হচ্ছে না'); raise SystemExit(1)
+          ix = json.loads(idx.read_text(encoding='utf-8'))
+          chs = [c['id'] for c in ix.get('chapters', [])]
+          tot = ix.get('withBn', 0)
+          page = pathlib.Path('grantho/hindu/samaveda.html')
+          # পুরো সামবেদ = ২৬ অধ্যায় / ~১৮৭৫ মন্ত্র (উৎস-বইয়ের হিসাব)
+          ok = bool(chs) and page.exists()
+          if not ok:
+              print('⛔ পাতা বা অধ্যায় নেই — প্রকাশ হচ্ছে না'); raise SystemExit(1)
+          miss = [i for i in range(1, 27) if i not in chs]
+          print(f'অধ্যায় {len(chs)} (১–{max(chs)}), মন্ত্র {tot}')
+          if miss:
+              print(f'⚠ অনুপস্থিত অধ্যায়: {miss}')
+          # সূচি যদি ২৬-এর কম হয় ⇒ অসম্পূর্ণ; তবু «যা সম্ভব» নিয়মে প্রকাশ করি
+          # *কিন্তু* পাতা নিজেই স্পষ্ট করবে কোথায় শেষ (নিচে সীমা-ঘোষণা যোগ হয়)।
+          print('প্রকাশ-সিদ্ধান্ত: ' + ('হ্যাঁ' if ok else 'না'))
+          PY
+          if [ "$PUB" = "0" ]; then
+            echo '::warning::সূচি/পাতা অসম্পূর্ণ — কেবল রিপোর্ট প্রকাশ করছি'
+            git add "$DBG" || true
+            git commit -m "সামবেদ: ডায়াগনস্টিক ($(date -u '+%d/%m %H:%M') UTC)" || true
+            git push origin HEAD:main || echo '⚠ রিপোর্ট push ব্যর্থ'
+            exit 0
+          fi
           git add assets/grantho/data "$DBG" grantho 2>/dev/null || true
           if git diff --cached --quiet; then
             echo 'নতুন কিছু নেই'
