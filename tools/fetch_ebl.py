@@ -200,7 +200,8 @@ _META_LINE = re.compile(r"^(?:মন্ত্রের?\s*(?:দেবতা|ছ
                         r"দেবতা\s*[:ঃ]|ঋষি\s*[:ঃ]|ছন্দ\s*[:ঃ]|"
                         # «দেবতা অগ্নি ॥ ছন্দ গায়ত্রী ॥» — কোলন ছাড়া ধাঁচ
                         # (এটাই ভুয়া মন্ত্র বানিয়ে সব নম্বর এক ধাপ সরিয়ে দিত)
-                        r"দেবতা\s+|ছন্দ\s+|ঋষি\s*[:ঃ]?\s*[০-৯0-9])")
+                        # «ঋষি ১ ভরদ্বাজ…» / «ছন্দ অনুষ্টুপ» (দাঁড়ি ছাড়া, কোলন ছাড়া)
+                        r"দেবতা\s+|ছন্দ\s+|ঋষি\s*[:ঃ]?\s*(?:[০-৯0-9]|[অ-হ]))")
 # «মন্ত্র :» / «মন্ত্রঃ-» / «মন্ত্র-» — কিন্তু «মন্ত্রের দেবতা», «মন্ত্রসংখ্যা» নয়।
 # কোলন/হাইফেন/ফাঁকা কোনোটাই না থাকলে সেটা শিরোনাম-লাইন, মন্ত্রের পাঠ নয়।
 MTRA = re.compile(r"^মন্ত্র\s*(?:[:ঃ]\s*[\-–—]*|[\-–—]|\s)\s*")
@@ -372,6 +373,95 @@ def _samaveda_numbered(txt):
 
 
 
+def _samaveda_multiline(txt):
+    """«মন্ত্রঃ-» একা লাইনে, মন্ত্র-সংখ্যা ও পাঠ পরের লাইনে — সামবেদ ৪র্থ অধ্যায়।
+
+    গঠন (উৎস-পাতা থেকে হুবহু):
+        মন্ত্রঃ-
+        (৩৫২) প্রত্যস্মৈ পিপীষতে … ভর।
+        অরঙ্গমায় জগ্ময়েহ পশ্চাদধ্বনে নরঃ।।১।।
+        (৩৫৩) আ নো বয়ো …।।২।।
+        ...
+        অনুবাদঃ (৩৫২) সর্ববেত্তা …।। (৩৫৩) গর্ভে থাকাকালীন …।।
+
+    * উৎস-নম্বর (৩৫২) → `seg`; পড়ার নম্বর ১…n
+    * অনুবাদে «(৩৫২)» থাকলে তা দিয়েই জোড়া, নইলে ক্রমে মিলাই
+    """
+    lines = [re.sub(r"\s+", " ", ln).strip() for ln in txt.split("\n")]
+    sk_raw, bn_raw, part = [], [], None
+    for ln in lines:
+        if not ln:
+            continue
+        if re.match(r"^মন্ত্র\s*[:ঃ]", ln):
+            part = "sk"
+            ln = re.sub(r"^মন্ত্র\s*[:ঃ]\s*[\-–—]*\s*", "", ln)
+            if not ln:
+                continue
+        elif re.match(r"^(?:অনুবাদ|অর্থ)\s*[:ঃ]", ln):
+            part = "bn"
+            ln = re.sub(r"^(?:অনুবাদ|অর্থ)\s*[:ঃ]\s*[\-–—]*\s*", "", ln)
+        if _HEAD_TEXT.match(ln) or _META_LINE.match(ln) or ln.startswith("#"):
+            continue
+        if part is None or ln.lower().startswith("bookmark"):
+            continue
+        (sk_raw if part == "sk" else bn_raw).append(ln)
+
+    sk_txt, bn_txt = " ".join(sk_raw), " ".join(bn_raw)
+    if not sk_txt:
+        return None
+
+    idx = [(m.start(), m.group(1)) for m in _NUM_INLINE.finditer(sk_txt)]
+    if not idx:
+        return None
+    sk_parts = []
+    for i, (pos, num) in enumerate(idx):
+        end = idx[i + 1][0] if i + 1 < len(idx) else len(sk_txt)
+        body = sk_txt[pos:end].strip()
+        body = re.sub(r"^[(]\s*[০-৯0-9]{1,4}\s*[)]\s*", "", body).strip()
+        # উৎসের শেষ «॥৩॥» = রিগ্বেদ-ক্রম; আমাদের নিজের ১…n আছে ⇒ বাদ
+        body = re.sub(r"\s*[|]?\s*[।॥]\s*[০-৯0-9]{1,3}\s*$", "", body).strip()
+        body = re.sub(r"\s*[|।॥]+\s*$", "", body).strip()
+        if len(body) < 6:
+            continue
+        sk_parts.append({"src": num, "sk": body})
+
+    bidx = [(m.start(), m.group(1)) for m in _NUM_INLINE.finditer(bn_txt)]
+    bn_map, bn_seq = {}, []
+    if len(bidx) >= max(2, len(sk_parts) // 2):
+        for i, (pos, num) in enumerate(bidx):
+            end = bidx[i + 1][0] if i + 1 < len(bidx) else len(bn_txt)
+            body = bn_txt[pos:end].strip()
+            body = re.sub(r"^[(]\s*[০-৯0-9]{1,4}\s*[)]\s*", "", body).strip()
+            body = re.sub(r"\s*Bookmark\s*$", "", body, flags=re.I)
+            body = re.sub(r"\s*[|।॥]+\s*$", "", body).strip()
+            if len(body) < 6:
+                continue
+            bn_map.setdefault(num, body)
+            bn_seq.append(body)
+    else:
+        segs = [x.strip() for x in re.split(r"(?<=[।॥])\s*(?=[^।॥])", bn_txt) if x.strip()]
+        if len(segs) > len(sk_parts):
+            segs = _merge_to(segs, len(sk_parts))
+        for body in segs:
+            body = re.sub(r"\s*Bookmark\s*$", "", body, flags=re.I)
+            body = re.sub(r"\s*[|।॥]+\s*$", "", body).strip()
+            if len(body) >= 6:
+                bn_seq.append(body)
+
+    res = []
+    for i, v in enumerate(sk_parts):
+        b = bn_map.get(v["src"])
+        if b is None and len(bn_seq) == len(sk_parts):
+            b = bn_seq[i]
+        if not b:                       # অনুবাদহীন মন্ত্র রাখা যায় না
+            continue
+        res.append({"src": to_int(v["src"]), "n": len(res) + 1,
+                    "seg": to_int(v["src"]),
+                    "sk": [v["sk"]] if v["sk"] else [], "anv": [],
+                    "bn": [b], "bnNote": ""})
+    return res or None
+
+
 def parse_verses(txt, bn_meaning=False):
     """পাতার পাঠ → [{'n','sk','anv','bn','bnNote'}]।
 
@@ -509,6 +599,16 @@ def parse_verses(txt, bn_meaning=False):
     #   তাই শর্ত: একই «মন্ত্রঃ» প্যারায় অন্তত দুইটা (num) একসাথে থাকতে হবে।
     if _sama_numbered:
         _mv = _samaveda_numbered(_raw_txt)
+        if _mv:
+            return _mv
+
+    # ---- গঠন: «মন্ত্রঃ-» একা / «(৩৫২) …» পরের লাইনে ----
+    # সামবেদের অধ্যায় ৪-এর পাতাগুলো এমন: লেবেল একা এক লাইনে, মন্ত্র-সংখ্যা
+    # ও পাঠ পরের লাইনে; ঋষি-ব্লকেও «ঋষি ১ ভরদ্বাজ …» (কোলনহীন) থাকে, যা
+    # আগে ভুয়া মন্ত্র হয়ে যেত আর সব নম্বর এক ঘর সরাত।
+    if re.search(r"(^|\n)\s*মন্ত্র\s*[:ঃ]\s*[-–—]?\s*\n\s*\(\s*[০-৯0-9]{1,4}\s*\)", txt) \
+            and re.search(r"(^|\n)\s*(?:অনুবাদ|অর্থ)\s*[:ঃ]", txt):
+        _mv = _samaveda_multiline(txt)
         if _mv:
             return _mv
 
