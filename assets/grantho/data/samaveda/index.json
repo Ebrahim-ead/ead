@@ -1,0 +1,44 @@
+{
+ "slug": "samaveda",
+ "bn": "সামবেদ সংহিতা",
+ "en": "Samaveda",
+ "total": 265,
+ "withBn": 265,
+ "chapters": [
+  {
+   "id": 1,
+   "bn": "সামবেদ সংহিতা — অধ্যায় 1",
+   "count": 90,
+   "from": 1,
+   "to": 90,
+   "withBn": 90
+  },
+  {
+   "id": 2,
+   "bn": "সামবেদ সংহিতা — অধ্যায় 2",
+   "count": 60,
+   "from": 1,
+   "to": 60,
+   "withBn": 60
+  },
+  {
+   "id": 3,
+   "bn": "সামবেদ সংহিতা — অধ্যায় 3",
+   "count": 113,
+   "from": 1,
+   "to": 113,
+   "withBn": 113
+  },
+  {
+   "id": 4,
+   "bn": "সামবেদ সংহিতা — অধ্যায় 4",
+   "count": 2,
+   "from": 1,
+   "to": 2,
+   "withBn": 2
+  }
+ ],
+ "verseWord": "মন্ত্র",
+ "bnSrc": "বাংলা অনুবাদ — ebanglalibrary.com",
+ "note": "মূল সংস্কৃত পাঠ ও বাংলা অনুবাদ — ebanglalibrary.com"
+}
