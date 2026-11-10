@@ -468,7 +468,10 @@
        `vn`; `n` পুস্তকের ভেতরে অনন্য ক্রম (অ্যাংকর ও গ্রুপ-সীমার জন্য)। */
     var shown = (typeof v.vn === "number") ? v.vn : v.n;
     var out = '<article class="g-v' + (hit ? " hit" : "") + '" id="v' + v.n + '">';
-    out += '<div class="g-v-num" aria-hidden="true">' + bn(shown) + '</div><div class="g-v-body">';
+    /* চালিকা-মন্ত্রে নম্বর নেই — শুধু গায়ে দাগ দেওয়া খালি ঘর */
+    out += (v.noNum ? '<div class="g-v-num g-v-nonum" aria-hidden="true"></div>'
+                    : '<div class="g-v-num" aria-hidden="true">' + bn(shown) + '</div>') +
+           '<div class="g-v-body">';
     if (v.hd) out += '<p class="g-v-hd">' + esc(v.hd) + '</p>';
     if (v.spk && state.sk) out += '<p class="g-v-spk">' + esc(v.spk) + '</p>';
     if (state.sk && sk) out += '<p class="g-v-sk" lang="sa">' + sk + '</p>';
@@ -612,7 +615,7 @@
            মণ্ডলের অতিরিক্ত পাঠ জুড়ে যেত (আগের ভুল ছিল এটাই)। */
         var bk2 = bkOf();
         var lastSukta = chapter.suktas[chapter.suktas.length - 1];
-        var extraR = (lastSukta && pick.id === lastSukta.id)
+        var extraR = (lastSukta && +pick.id === +lastSukta.id)
           ? allRaw.filter(function (v) { return v.n > pick.to; })
           : [];
         parts.push('<h3 class="g-sukta-h g-chap-h" id="sukta' + pick.id + '">' +
@@ -629,7 +632,15 @@
           parts.push('<details class="g-front g-paralipo"><summary>এই মণ্ডলের শেষে থাকা ' +
             bn(extraR.length) + 'টি মন্ত্র (সূক্তের চালিকা) — পাঠ অটুট রাখতে দেখানো হচ্ছে' +
             '<span class="g-front-tag">সূক্ত-গণনার বাইরে</span></summary>' +
-            extraR.map(verseHTML).join("") + "</details>");
+            extraR.map(function (v) {
+              /* সূক্তের বাইরের পাঠ (মণ্ডল-চালিকা) — এগুলো কোনো সূক্তের
+                 ক্রমিক মন্ত্র নয়, তাই নম্বর দেখানো মানে ভুল তথ্য। আলাদা
+                 ক্লাসে আঁকি, পরে CSS-এ নম্বরটা লুকিয়ে দিই। */
+              var c = {}; for (var k in v) c[k] = v[k];
+              c.vn = "";          /* نمبر দেখাবে না */
+              c.noNum = true;
+              return verseHTML(c);
+            }).join("") + "</details>");
         }
       }
     }
