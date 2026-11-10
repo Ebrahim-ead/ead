@@ -114,12 +114,21 @@ ORD = (r"(?:প্রথম|দ্বিতীয়|তৃতীয়|চত�
        r"বিংশ|একবিংশ|দ্বাবিংশ|ত্রয়োবিংশ)")
 # শিরোনাম আসে দুই ধাঁচে: «প্রথম সূক্ত : …» আর «দ্বিতীয় অনুবাক প্রথম সূক্ত : …»
 SUKTA_RE = re.compile(r"^\**\s*(?:" + ORD + r"\s+অনুবাক\s+)?" + ORD + r"\s*সূক্ত")
-# একমাত্র সূক্ত-শিরোনাম লাইন চেনার কঠোর রূপ (প্রথম শব্দ দিয়ে শুরু)
-SUKTA_HEAD = re.compile(r"^\**\s*(?:" + ORD + r"\s+অনুবাক\s+)?" + ORD + r"\s*সূক্ত\s*[:ঃ]")
-# শুধু সূক্ত-নাম-লাইন: «প্রথম সূক্তি :», «তৃতীয় সূক্ত :» (কোন সূক্তের ভেতরে আবার শিরোনাম)
-SUKTA_ONLY = re.compile(r"^\**\s*" + ORD + r"\s*সূক্ত[ি]?\s*[:ঃ]")
+# সূক্ত-শিরোনাম চেনার রূপ। বাস্তব পাতায় শিরোনামের আগে গ্রন্থ-অগ্রভাগও আসে:
+#   «অথর্ববেদ – সংহিতা — দ্বিতীয় কাণ্ড প্রথম অনুবাক প্রথম সূক্ত : পরমং ধাম»
+# তাই শুরুর ^-অ্যাংকর তুলে দিলাম; বদলে লাইনটিতে «সূক্ত :» থাকা বắt্য।
+# নীতি: «… অনুবাক … সূক্ত :» ধাঁচটা অগ্রভাগসহও ধরা পড়ে, আর «মন্ত্রঃ …»
+# লাইন (সংস্কৃত) কোথাও «সূক্ত :» পায় না — তাই নিরাপদ।
+SUKTA_HEAD = re.compile(r"^(?:.*?\s)?(?:" + ORD + r"\s+অনুবাক\s+)?(?:কাণ্ড\s+)?"
+                        r"(?:" + ORD + r"\s*)?সূক্ত\s*[:ঃ]")
+SUKTA_ONLY = SUKTA_HEAD
 BN_LABEL = re.compile(r"^\**\s*বঙ্গানুবাদ")
-STOP_LABEL = re.compile(r"^\**\s*(মন্ত্রার্থ|মন্ত্ৰার্থ|টীকা|বিনিয়োগ|দ্বিতীয়|তৃতীয়)")
+# আলোচনা/টীকা যেখানে শুরু হয়। বাস্তব পাতায় শিরোনাম আসে «সূক্তস্য বিনিয়োগঃ—»,
+# «সূক্তস্য বিনিয়োগঃ –», «টীকা–», «মন্ত্রার্থ আলোচনা» ধাঁচে — তাই «বিনিয়োগ»
+# শব্দটিই যেকোনো জায়গায় থাকলে থামি (আগে ^ দিয়ে শুরু-শব্দ ধরা হতো, ফলে
+# «সূক্তস্য বিনিয়োগঃ» মিলত না আর পুরো আলোচনা পাঠে ঢুকে যেত)।
+# ⚠ «বঙ্গানুবাদ» লাইনে এই শব্দ থাকতে পারে না, তাই নিরাপদ।
+STOP_LABEL = re.compile(r"^\**\s*(?:মন্ত্রার্থ|মন্ত্ৰার্থ|টীকা|টীকাল)")
 NUM_END = re.compile(r"[।॥]\s*([০-৯]{1,3})\s*[।॥]?\s*$")
 
 
@@ -145,15 +154,17 @@ def parse_page(lines):
         ln = strip_md(raw)
         if not ln:
             continue
-        # কেবল সত্যিকারের সূক্ত-শিরোনাম («প্রথম সূক্তি : …» / «… সূক্ত : …»)
-        if SUKTA_ONLY.match(ln) or SUKTA_HEAD.match(ln):
+        # কেবল সত্যিকারের সূক্ত-শিরোনাম — সংস্কৃত «মন্ত্রঃ …» লাইন কখনোই নয়
+        if (SUKTA_ONLY.match(ln) or SUKTA_HEAD.match(ln)) and "মন্ত্রঃ" not in ln:
             if cur is not None and buf and seen_bn:
                 _push_sukta(suktas, cur, buf)
             cur, buf, seen_bn = {"title": ln}, [], False
             continue
         if cur is None:
             continue                              # অনুবাক-শিরোনাম/ভূমিকা — বাদ
-        if STOP_LABEL.match(ln) and not BN_LABEL.match(ln):
+        # আলোচনা শুরু: «টীকা/মন্ত্রার্থ» দিয়ে শুরু, অথবা যেকোনো জায়গায়
+        # «বিনিয়োগ» (যেমন «সূক্তস্য বিনিয়োগঃ—»)
+        if (STOP_LABEL.match(ln) or "বিনিয়োগ" in ln) and not BN_LABEL.match(ln):
             if buf and seen_bn:
                 _push_sukta(suktas, cur, buf)
             cur, buf, seen_bn = None, [], False   # আলোচনা/টীকা — বাদ
@@ -198,95 +209,126 @@ def _push_sukta(out, cur, buf):
 def split_translations(chunks):
     """অনুবাদ-অনুচ্ছেদ জোড়া লাগিয়ে মন্ত্র-নম্বর ধরে ভাগ করি।
 
-    উৎসে প্রতি মন্ত্রের অনুবাদ শেষ হয় «।। ৫॥» বা «৫।» / «৫॥» জাতীয় চিহ্নে।
+    উৎসে প্রতি মন্ত্রের অনুবাদ শেষ হয় নম্বর+দাঁড়িতে, কয়েক রকমে:
+        «।। ১২॥»   «। ১২।»   «॥ ১২॥»   বাংলা-দাঁড়ি: «৷৷ ১।» / «৷৷ ২৷»
     এক মন্ত্র কয়েক লাইনে ভাঙা থাকতে পারে — তাই জোড়া লাগিয়ে তারপর ভাগ।
+
+    ⚠ কেন ক্রমিক-যাচাই: দাঁড়ির পর যেকোনো সংখ্যা ধরা হলে বাক্যের ভেতরের
+      সংখ্যাও («১৯০৭ সালে») কেটে পড়ত। তাই কেবল তখনই ভাগ করি যখন নম্বরটি
+      পরের প্রত্যাশিত ক্রম (১, ২, ৩ …) হয় — নইলে ওই সংখ্যা পাঠের অংশ।
     """
     text = " ".join(x for x in chunks if x)
     text = re.sub(r"\s+", " ", text).strip()
     if not text:
         return []
-    # «।। ১২॥» / «। ১২।» / «॥ ১২॥» — শেষ-নম্বর ধরে ভাগ
-    pat = re.compile(r"(?<=[।॥])\s*([০-৯]{1,3})\s*(?:[।॥]){1,2}")
-    out, start, vn = [], 0, 0
+    pat = re.compile(r"(?<=[।॥৷])\s*([০-৯]{1,3})\s*(?:[।॥৷]{1,2})?")
+    out, start, expect = [], 0, 1
     for m in pat.finditer(text):
+        num = int(m.group(1).translate(BN_DIGITS))
+        if num != expect:
+            continue                       # বাক্যের ভেতরের সংখ্যা — পাঠেই থাকুক
         seg = text[start:m.start()].strip()
         if len(seg) >= 8:
-            vn += 1
-            out.append({"bn": seg, "vn": vn})
-        start = m.end()
-    tail = text[start:].strip(" ।॥")
-    # শেষ অংশ যদি অর্থপূর্ণ হয় এবং নম্বরহীন হয় → শেষ মন্ত্রের সঙ্গে জুড়ি
+            out.append({"bn": seg, "vn": expect})
+            expect += 1
+            start = m.end()
+    tail = text[start:].strip(" ।॥৷")
+    # শেষ অংশ যদি নম্বরহীন হয়: ছোট লেজ আগের মন্ত্রে জুড়ি, নইলে নতুন মন্ত্র
     if tail and len(tail) >= 8:
         if out and len(tail) < 40:
             out[-1]["bn"] = (out[-1]["bn"] + " " + tail).strip()
         else:
-            vn += 1
-            out.append({"bn": tail, "vn": vn})
+            out.append({"bn": tail, "vn": expect})
     return out
 
 
 # ---------------- তালিকা ----------------
 LINK_RE = re.compile(r'href="(https://www\.ebanglalibrary\.com/(?:lessons|topics)/'
-                     r'[^"#?]+)"[^>]*>\s*([^<]{1,90}?)\s*<')
+                     r'[^"#?]+)"[^>]*>\s*([^<]{0,90}?)</a>')
+# লেসন-URL-এর স্লাগেই ক্রম থাকে: «…/lessons/০১।১-প্রথম-কাণ্ড-প্রথম-অনুবাক/»
+SLUG_NUM = re.compile(r"/lessons/([০-৯]{1,2})\s*।\s*([০-৯]{1,2})")
+# শিরোনামের সংখ্যা (স্লাগ নষ্ট হলেও ফলব্যাক)
+TITLE_NUM = re.compile(r"^([০-৯]{1,2})\s*।\s*([০-৯]{1,2})")
+STOP_TITLE = re.compile(r"নিবেদন|ভূমিকা|সূচিপত্র|পরিশিষ্ট|গ্রন্থপঞ্জি")
 
 
 def _page_rows(h):
-    """এক পাতা HTML → [(kanda, anuvaka, url, title)] — «০১।১ …» ধাঁচের লিংক।"""
-    out = []
+    """এক পাতা HTML → [(kanda, anuvaka, url, title)]।
+
+    ক্রম দুভাবে খুঁজি: আগে লেসন-URL-এর স্লাগে (নির্ভরযোগ্য — পুরো URL-ই
+    বহু পৃষ্ঠায় দেখা যায়), না পেলে শিরোনামের «০১।১ …» লেখায়। ভূমিকা/
+    সম্পাদকের নিবেদন বাদ যায়, কারণ সেগুলোতে সূক্ত-শিরোনাম নেই।
+    """
+    out, seen = [], set()
     for mm in LINK_RE.finditer(h or ""):
         u = htmllib.unescape(mm.group(1))
+        if u in seen:
+            continue
         t = re.sub(r"\s+", " ", htmllib.unescape(mm.group(2))).strip()
-        km = re.match(r"^([০-৯]{1,2})\s*।\s*([০-৯]{1,2})", t)
-        if not km:
-            continue                       # ভূমিকা/বই-পাতা ইত্যাদি বাদ
-        kanda, anuv = to_int(km.group(1)), to_int(km.group(2))
-        if 1 <= kanda <= 20:
-            out.append((kanda, anuv, u, t))
+        if STOP_TITLE.search(t):
+            continue
+        num = SLUG_NUM.search(urllib.parse.unquote(u)) or TITLE_NUM.match(t)
+        if not num:
+            continue
+        kanda, anuv = to_int(num.group(1)), to_int(num.group(2))
+        if not (1 <= kanda <= 20):
+            continue
+        seen.add(u)
+        out.append((kanda, anuv, u, t or f"{bnnum(kanda)}।{bnnum(anuv)}"))
     return out
 
 
 def lesson_index(limit=0):
-    """সব অনুবাক-পাতার (কাণ্ড, অনুবাক, url, শিরোনাম) তালিকা।
+    """সব অনুবাক-পাতার (কাণ্ড, অনুবাক, url, শিরোনাম) তালিকা — BFS।
 
-    উৎসে তালিকা পৃষ্ঠায় ভাগ করা (?ld-courseinfo-lesson-page=N)। পৃষ্ঠা-সংখ্যা
-    কেবল «of N» লেখায় ধরা যায় না, তাই দুই পথে: (১) «of N», (২) নইলে খালি
-    পাতা/নতুন লিংক না পাওয়া পর্যন্ত ঘুরি (সর্বোচ্চ ১৫ পাতা)। যাতে এক প্যাটার্ন
-    বদলালেও পুরো ২০ কাণ্ড পাওয়া যায় — ব্যবহারকারীর শর্ত: অসম্পূর্ণ নয়।
+    কেন BFS: বই-পাতার সূচি আংশিক (ব্রাউজারে কেবল কাণ্ড ১–৭ দেখায়; মন্তব্যেও
+    পাঠকেরা «বাকি কাণ্ড কোথায়?» লিখেছেন)। কিন্তু প্রতিটি লেসন-পাতার ভেতরে
+    পুরো কোর্সের সাইডবার-তালিকা থাকে (নিজের পেজিনেশনে)। তাই বই-পাতা থেকে
+    শুরু করে যতগুলো লেসন-পাতার সন্ধান পাওয়া যায় সব ঘুরে লিংক জমা করি —
+    এক প্যাটার্ন/এক অঞ্চল বদলালেও বাকি কাণ্ড বাদ পড়ে না।
+
+    ব্যবহারকারীর শর্ত: ২০ কাণ্ড সম্পূর্ণ না হলে গ্রন্থ যোগ হবে না — তাই অর্ধেক
+    তালিকা নিয়ে সন্তুষ্ট হই না, যতটা পাওয়া যায় সব পথে খুঁজি।
     """
-    first = get(BOOK)
-    seen_url, rows = set(), []
-
-    def take(h):
-        n = 0
+    seen_url, rows, queue = set(), [], [BOOK]
+    pages_done = 0
+    while queue and pages_done < 400:
+        url = queue.pop(0)
+        pages_done += 1
+        h = get(url)
+        if not h:
+            continue
+        before = len(rows)
         for kanda, anuv, u, t in _page_rows(h):
             if u in seen_url:
                 continue
             seen_url.add(u)
             rows.append({"kanda": kanda, "anuvaka": anuv, "url": u, "title": t})
-            n += 1
-        return n
-
-    take(first)
-    m = re.search(r"(?:of|/|শেষ)\s*<?[^0-9]{0,6}(\d{1,3})", first or "")
-    total = min(int(m.group(1)), 15) if m else 0
-    # ২ থেকে ঘুরি — প্যাটার্ন মিললে total পর্যন্ত, না মিললে যতক্ষণ নতুন লিংক মেলে
-    page, empty = 2, 0
-    while page <= max(total, 15):
-        h = get(f"{BOOK}?ld-courseinfo-lesson-page={page}")
-        got = take(h) if h else 0
-        if got == 0:
-            empty += 1
-            if empty >= 2 and (not total or page > total):
-                break
-        else:
-            empty = 0
-        if total and page >= total:
-            break
-        page += 1
-        time.sleep(1.2)
+            # প্রতিটি নতুন লেসন-পাতাও ঘুরব — তার সাইডবারে আরও লেসন থাকতে পারে
+            queue.append(u)
+        # বই-পাতার নিজস্ব পেজিনেশন (৩ পৃষ্ঠা: «1 of 3»)
+        if url == BOOK:
+            m = re.search(r"(\d{1,3})\s*of\s*(\d{1,3})", h)
+            if m:
+                for i in range(2, min(int(m.group(2)), 12) + 1):
+                    queue.append(f"{BOOK}?ld-courseinfo-lesson-page={i}")
+        # লেসন-পাতার সাইডবার-পেজিনেশন (?ld-lesson-page=N) — পূর্ণ কোর্স-তালিকা
+        elif "?" not in url:
+            for i in (1, 2, 3, 4, 5):
+                queue.append(f"{url}?ld-lesson-page={i}")
+        if len(rows) > before:
+            print(f"   · নতুন {len(rows) - before}টি লেসন-লিংক "
+                  f"({rows[-1]['title'][:30]}) — মোট {len(rows)}", flush=True)
         if limit and len(rows) >= limit:
             break
+        time.sleep(0.6)
     rows.sort(key=lambda r: (r["kanda"], r["anuvaka"]))
+    # কাণ্ড-ভিত্তিক সারসংক্ষেপ (কোন কাণ্ডে কত অনুবাক পাওয়া গেল)
+    per = {}
+    for r in rows:
+        per[r["kanda"]] = per.get(r["kanda"], 0) + 1
+    print("কাণ্ড-কভারেজ: " + " · ".join(f"{k}:{v}" for k, v in sorted(per.items())),
+          flush=True)
     return rows
 
 
