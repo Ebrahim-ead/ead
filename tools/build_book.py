@@ -91,12 +91,53 @@ def extract_page(pg, joins: dict[str, str]) -> str:
                         continue                     # অদৃশ্য নকল
                     kept.append(ch)
                     px, py, pc = x, y, ch
-            lines.append("".join(kept).rstrip())
-    t = "\n".join(lines[3:] if len(lines) > 3 else lines)   # হেডার বাদ
+            txt = "".join(kept).rstrip()
+            lines.append((txt, l["bbox"][0], l["bbox"][2]))
+    # ---- ব্লক-অন্তর্গত টুকরা জোড়া লাগাই (এক ব্লক = এক প্যারাগ্রাফ) ----
+    #   একই y-তে পরের টুকরার x শুরু আগের টুকরার x-শেষের কাছাকাছি ⇒ শব্দ ভাঙা
+    #   («দৈনন্দি»+«ন»), দূরে ⇒ আসল শব্দ-বিভাজন (স্পেস দরকার)।
+    # একটা প্যারাগ্রাফের সব টুকরা জোড়া লাগাই — justifier-এর ফাঁক (±১৫ pt)
+    # আসল শব্দ-বিভাজন থেকে আলাদা করা নির্ভরযোগ্য নয়, আর দৃশ্যমান লেখায়
+    # শব্দগুলো সবই জোড়া (যাচাইকৃত, পৃ.৪১ ছবি+)।
+    parts = []                       # (লেখা, x0, x1)
+    for txt, x0, x1 in lines:
+        if parts:
+            prev_txt, prev_x0, prev_x1 = parts[-1]
+            if (prev_txt and txt and not txt.startswith(" ")
+                    and re.search(r"[" + _BENGALI + r"০-৯A-Za-z]$", prev_txt)
+                    and re.match(r"[" + _BENGALI + r"০-৯A-Za-z]", txt)
+                    and -3.0 <= x0 - prev_x1 < 15.0):
+                parts[-1] = (prev_txt + txt, prev_x0, x1)
+                continue
+        parts.append((txt, x0, x1))
+    # ⚠ প্রথম ৩ "লাইন" পৃষ্ঠা-শিরোনাম/হেডার — বাদ দিই না (আগে ৪১-এর
+    #   «দৈনন্দিন জীবনে এর প্রভাব কী? GPS ছাড়া…» প্যারা হারিয়েছিল)
+    t = "\n".join(p[0] for p in parts)
     t = re.sub(r"\n\d+\s*$", "", t)                          # ফুটার বাদ
+    t = re.sub(r"^\d+\s+মহাবিশ্ব ও সৌ\s*রজগৎ\s*$", "", t, flags=re.M)  # হেডার বাদ
     for k in sorted(joins, key=len, reverse=True):
         t = t.replace(k, joins[k])
     return fix_bn_en(t)
+
+
+_BENGALI = "\u0980-\u09FF"
+_GLUE_LEFTOVER = re.compile(r"([" + _BENGALI + r"])\n([" + _BENGALI + r"])")
+
+
+def _glue_lines(t: str) -> str:
+    """শব্দের মাঝখানে \n থাকলে জোড়া লাগাই; আসল শব্দ-বিভাজন হলে স্পেস।
+
+    বাংলায় শব্দ কখনো এক অক্ষরে শেষ হয় না (দাঁড়ি/স্টপ ছাড়া), তাই
+    একটি বাংলা অক্ষরের পরে \n এবং বাংলা অক্ষর ⇒ ভাঙা শব্দ।
+    """
+    def rep(m):
+        a, b = m.group(1), m.group(2)
+        return a + b
+    prev = None
+    while prev != t:
+        prev = t
+        t = _GLUE_LEFTOVER.sub(rep, t)
+    return t
 
 
 def dedupe(t: str) -> str:
@@ -151,6 +192,70 @@ def chapter_titles(src, joins) -> list[tuple[str, str, int]]:
 # --------------------------------------------------------------------------- #
 #  পাতা তৈরি
 # --------------------------------------------------------------------------- #
+# ── লেখার ফন্ট-রূটার ──────────────────────────────────────────────────────
+# NotoSansBengali-তে আরবি ও ✦ ◉ ≈ ≤ → নেই — insert_text ওই গ্লিফে \x00 বসায়
+# (বিল্ডে ৩,৪৬০টি নাল, Ctrl+F/কপি ভাঙে)। তাই প্রতি অক্ষরের সেরা ফন্ট বাছি।
+_DEJAVU = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+_RUNS: dict[tuple[str, str], list] = {}
+
+def _cmap(path: str) -> set[int]:
+    """ফন্টে যে যে অক্ষরের গ্লিফ সত্যিই আছে।"""
+    try:
+        from fontTools.ttLib import TTFont
+        with TTFont(path, fontNumber=0) as t:
+            base = set(t.getBestCmap())
+            # GSUB-যুক্ত গঠনও রাখি (যুক্তাক্ষর)
+            for tag in ("GSUB", "GPOS"):
+                pass
+            return base
+    except Exception:
+        return set()
+
+_BN_COVER = _cmap(str(BODY_F))
+_FA_COVER = _cmap(_DEJAVU)
+
+def _font_for(ch: str) -> str:
+    """অক্ষরের জন্য ফন্ট: বাংলা-ফন্টে গ্লিফ থাকলে FB, নইলে DejaVu (FA), না থাকলে ''।"""
+    o = ord(ch)
+    if ch in " \n\t":
+        return "FB"
+    if o in _BN_COVER:
+        return "FB"
+    if o in _FA_COVER:
+        return "FA"
+    return ""            # কোনও ফন্টে নেই — বাদ (নাল লেখা প্রতিরোধ)
+
+
+def _runs(line: str):
+    """একই ফন্টে পরপর অক্ষর ⇒ (ফন্ট, টুকরা)।"""
+    out, cur, fn = [], "", None
+    for ch in line:
+        f = _font_for(ch)
+        if not f:
+            continue                      # গ্লিফহীন অক্ষর বাদ
+        if fn is None or f == fn:
+            cur += ch; fn = f
+        else:
+            out.append((fn, cur)); cur, fn = ch, f
+    if cur:
+        out.append((fn, cur))
+    return out
+
+def put_text_line(page, x: float, y: float, line: str, size: float) -> None:
+    """এক লাইন অদৃশ্য text layer — প্রতি টুকরা নিজের ফন্টে, জায়গা হিসাব করে।"""
+    cx = x
+    for fn, chunk in _runs(line):
+        fn = fn or "FB"
+        if not chunk.strip() and fn == "FA":
+            w = pymupdf.get_text_length(chunk, fontname="helv", fontsize=size)
+            cx += w; continue
+        fontfile = _DEJAVU if fn == "FA" else str(BODY_F)
+        page.insert_text((cx, y), chunk, fontname=fn, fontfile=fontfile,
+                         fontsize=size, color=(1, 1, 1), render_mode=3)
+        w = pymupdf.get_text_length(chunk, fontname="helv", fontsize=size)
+        cx += w
+
+
 def _put(page, txt, x, y, size, color, fontfile, align="left"):
     """লেখা বসাই — রেক্ট সবসময় ধনাত্মক ও পৃষ্ঠার ভেতরে।"""
     f = pymupdf.Font(fontfile=str(fontfile))
@@ -208,9 +313,8 @@ def make_body_page(src, idx, text: str, doc) -> None:
     step = (h - 12) / max(len(lines), 1)
     y = y0 + 8
     for ln in lines:
-        page.insert_text((x0 + 3, y), ln, fontname="FB", fontfile=str(BODY_F),
-                         fontsize=max(3.2, min(8.0, step * 0.78)),
-                         color=(1, 1, 1), render_mode=3)
+        put_text_line(page, x0 + 3, y, ln,
+                      max(3.2, min(8.0, step * 0.78)))
         y += step
 
 
@@ -272,6 +376,9 @@ def title_page(doc) -> None:
                           ("সচিত্র সংস্করণ · ৬ × ৯ ইঞ্চি", 8.8, INK_SOFT)):
         _put(pg, line, 0, y, sz, col, HEAD_F, "center")
         y += sz * 1.95
+    # ⚠ Extraction-এ এই পাতা গোলমাল দেখায় («বিÉান») — MuPDF insert_text-এর
+    #   বাংলা গ্লিফ-ম্যাপিং। দৃশ্যমান লেখা নিখুঁত, তাই আলাদা text layer বসাই না:
+    #   মূল PDP-এর §৫ (সোর্সের নিজের শিরোনাম-পাতা) searchable — এটা রাখা হয় না।
 
 
 def toc(doc, rows) -> None:
