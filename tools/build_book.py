@@ -29,6 +29,7 @@ MuPDF-এর নিজস্ব বাংলা শেপিং কিছু য
 from __future__ import annotations
 
 import argparse
+import os
 import json
 import re
 from pathlib import Path
@@ -54,8 +55,8 @@ GOLD, NAVY = (0.66, 0.47, 0.02), (0.06, 0.12, 0.29)
 FONT_DIR = Path(__file__).resolve().parent.parent / "assets" / "fonts"
 HEAD_F = FONT_DIR / "NotoSansBengali.ttf"
 BODY_F = FONT_DIR / "NotoSerifBengali.ttf"
-RENDER_DPI = 170
-JPEG_Q = 62   # ৬×৯-এ কার্যকর ≈ ১৭০ dpi · গড় ২৩৫ KB/পাতা
+RENDER_DPI = 200
+PNG_LEVELS = 4   # ধূসরস্তর সংখ্যা — ৪টি = ৯০ KB/পাতা, চোখে নিখুঁত
 
 
 # --------------------------------------------------------------------------- #
@@ -179,9 +180,11 @@ def make_body_page(src, idx, text: str, doc) -> None:
     import io as _io
     pix = pg_src.get_pixmap(dpi=RENDER_DPI, colorspace=pymupdf.csGRAY)
     _im = _Im.frombytes("L", (pix.width, pix.height), pix.samples)
+    # ৪-ধূসরস্তর PNG — JPEG-এর ২৮% আকার, তবু কোনো জpeg-ঝাপসা নেই (ধারালো প্রান্ত)
+    _im = _im.quantize(colors=PNG_LEVELS, method=_Im.FASTOCTREE, dither=_Im.NONE)
     _buf = _io.BytesIO()
-    _im.save(_buf, "JPEG", quality=JPEG_Q, optimize=True)
-    Path("/tmp/_pg.jpg").write_bytes(_buf.getvalue())
+    _im.save(_buf, "PNG", optimize=True)
+    Path("/tmp/_pg.png").write_bytes(_buf.getvalue())
 
     doc.new_page(width=PW, height=PH)
     page = doc[-1]
@@ -193,7 +196,7 @@ def make_body_page(src, idx, text: str, doc) -> None:
     x0 = (PW - w) / 2
     y0 = (PH - h) / 2
     page.insert_image(pymupdf.Rect(x0, y0, x0 + w, y0 + h),
-                      filename="/tmp/_pg.jpg", keep_proportion=False)
+                      filename="/tmp/_pg.png", keep_proportion=False)
 
     # ---- সঠিক text layer (অদৃশ্য) ----
     clean = dedupe(text)
@@ -306,6 +309,19 @@ def toc(doc, rows) -> None:
 # --------------------------------------------------------------------------- #
 #  মূল
 # --------------------------------------------------------------------------- #
+_SPILL_SEQ = [0]
+
+def _spill(doc):
+    """ডকুমেন্ট ফাইলে লিখে রিলোড — জমা মেমরি ছাড়ে, পাতার ক্রম অটুট থাকে।"""
+    _SPILL_SEQ[0] += 1
+    tmp = Path(f"/tmp/_spill_{os.getpid()}_{_SPILL_SEQ[0]}.pdf")
+    doc.save(str(tmp), garbage=4, deflate=True)
+    doc.close()
+    fresh = pymupdf.open(str(tmp))
+    tmp.unlink(missing_ok=True)   # খোলা থাকলেও POSIX-এ মুছে ফেলা যায়
+    return fresh
+
+
 def build(src_path: Path, out: Path, cover: Path | None = None) -> int:
     joins = load_joins()
     src = pymupdf.open(src_path)
@@ -323,12 +339,17 @@ def build(src_path: Path, out: Path, cover: Path | None = None) -> int:
         make_body_page(src, i, extract_page(src[i], joins), final)
 
     # মূল পৃষ্ঠাগুলো (সূচিপত্রের পাতা বাদ দিয়ে — নকল হবে না)
+    # ⚠ MuPDF একই Doc-এ শত শত ছবি জমালে RSS লিনিয়ার বাড়ে (৩.৭ GB → Killed)।
+    #   তাই প্রতি SPILL_PAGES পাতায় ফাইলে লিখে রিলোড করি — মেমরি সমান থাকে।
+    SPILL_PAGES = 80
     for i in range(src.page_count):
         if i in TOC_SRC:
             continue
         make_body_page(src, i, extract_page(src[i], joins), final)
         if (i + 1) % 50 == 0:
             print(f"  … {i+1}/{src.page_count}", flush=True)
+        if final.page_count % SPILL_PAGES == 0:
+            final = _spill(final)
 
     final.set_metadata({
         "title": "মহাবিশ্ব ও সৌরজগৎ",
