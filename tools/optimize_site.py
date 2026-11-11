@@ -312,7 +312,11 @@ def step_pdf(dry: bool) -> None:
               "islamResponseViewer", "ইসলামের প্রতি আপত্তির জবাব", "১৪.৭ MB",
               "islam-opponents-response.pdf"),
              ("book-islam-science.html", "files/islam-science-selection.pdf",
-              "scienceViewer", "ইসলাম ও বিজ্ঞান", "২.৫ MB", "islam-science-selection.pdf")]
+              "scienceViewer", "ইসলাম ও বিজ্ঞান", "২.৫ MB", "islam-science-selection.pdf"),
+             # ⚠ ৬ × ৯ ইঞ্চি সংস্করণ — ২০২৬-১১-১১ (নতুন)
+             ("book-mahaviswa.html", "files/mahaviswa-solar-system.pdf",
+              "mahaviswaViewer", "মহাবিশ্ব ও সৌরজগৎ", "৭৮ MB · ৫৪৪ পৃষ্ঠা",
+              "mahaviswa-solar-system.pdf")]
     missing = 0
     for fn, pdf, vid, title, size, dl in books:
         f = ROOT / fn
