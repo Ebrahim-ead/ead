@@ -22,6 +22,7 @@ const PAGES = [
   { file: 'book-comparative-religion.html', pdf: 'files/comparative-religions-color.pdf' },
   { file: 'book-islam-response.html', pdf: 'files/islam-opponents-response.pdf' },
   { file: 'book-islam-science.html', pdf: 'files/islam-science-selection.pdf' },
+  { file: 'book-mahaviswa.html', pdf: 'files/mahaviswa-solar-system.pdf' },
 ];
 
 const SCRIPT = readFileSync('assets/book-pdf.js', 'utf8');
