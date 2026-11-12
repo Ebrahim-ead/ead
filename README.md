@@ -3,7 +3,7 @@
 ## পেজসমূহ
 - `index.html` — হোমপেজ ও বিষয়-পরিচিতি
 - `topics.html` — নাস্তিকতা, তুলনামূলক ধর্মতত্ত্ব ও সংশ্লিষ্ট প্রশ্ন
-- `atheism.html`, `atheism-2.html` — নিজস্ব প্রবন্ধের বিভাগ; প্রতি পৃষ্ঠায় ৮টি কার্ড, পৃষ্ঠা নম্বর (১ | ২) দিয়ে বিভক্ত
+- `atheism.html` — নিজস্ব প্রবন্ধের বিভাগ; প্রতি পৃষ্ঠায় ৮টি কার্ড (`?page=N`, `assets/article-pages.js`)। `atheism-2.html` এখন পুরোনো লিংকের জন্য রিডাইরেক্ট-পাতা (noindex, `atheism.html`-এ canonical)
 - `contingency-argument.html` — “মহাবিশ্ব কেন অস্তিত্বশীল?” পূর্ণ প্রবন্ধ
 - `four-pillars-logic.html` — যুক্তিবিদ্যায় দক্ষ হতে চারটি বিষয়
 - `quran-compilation-history.html` — কুরআনের উৎস ও সংকলনের ইতিহাস
@@ -44,6 +44,26 @@ X প্রোফাইল: https://x.com/ebrahimn23o
 হেডারের থিম বাটন থেকে ডার্ক/লাইট থিম বদলানো যায়; পছন্দটি এই ব্রাউজারে সংরক্ষিত থাকে।
 
 SEO: Open Graph/Twitter title ও description এবং `assets/og-cover.jpg` তৈরি আছে। পাবলিক ডোমেইন জানা হলে canonical ও absolute share-image URL এবং sitemap যুক্ত করতে হবে। আপাতত শুধু crawl-অনুমতি `robots.txt` দেওয়া আছে।
+
+## সাইট-সার্চ
+
+হেডারের «খুঁজুন» বোতাম, `Ctrl`/`⌘`+`K` বা `/` চাপলে পুরো সাইট-জুড়ে সার্চ খোলে। ফল আসে এক ফাইল থেকেই — কোনো সার্ভার বা fetch লাগে না, তাই `file://`-তেও কাজ করে।
+
+- `assets/search-index.js` — উৎপন্ন সূচি (≈১৮০ KB): ২৬টি পাতা, ১১৪ সূরা, ৭ কিতাব, ৪৮ গ্রন্থ-অধ্যায়
+- `assets/site-search.js` — মোডাল, কীবোর্ড-নেভিগেশন, হাইলাইট, ফোকাস-ট্র্যাপ
+- `tools/build_search_index.py` — সূচি তৈরি করে
+- `tools/wire_search.py` — সব পাতায় বোতাম ও স্ক্রিপ্ট বসায় (বারবার চালালেও ডুপ্লিকেট হয় না)
+- `tools/test_search.mjs` — ১৮টি স্বয়ংক্রিয় পরীক্ষা
+
+**এইচটিএমএল বদলালে:**
+
+```bash
+python3 tools/build_search_index.py   # সূচি নতুন করে বানায়
+python3 tools/wire_search.py          # নতুন পাতা থাকলে তার সঙ্গে যুক্ত করে
+node tools/test_search.mjs            # যাচাই
+```
+
+বাংলা বানান-ভিন্নতাও মেলে — `ি`/`ী`, `ু`/`ূ`, `য়`/`য`, নুকতা ও `ৎ` সার্চে সমান ধরা হয় (যেমন «ইয়াসিন» লিখলেও «সূরা ইয়াসীন» পাওয়া যায়)।
 
 ## হোস্টিং
 ZIP extract করে `ebrahim-ead-website/` ফোল্ডারের সব HTML, `assets/` ও `files/` একসঙ্গে হোস্ট করুন। `index.html` হলো হোমপেজ। এই ZIP-এ build source নেই; source ও data workspace-এ আলাদাভাবে আছে।
