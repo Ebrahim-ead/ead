@@ -23,7 +23,6 @@ const PAGES = [
   { file: 'book-islam-response.html', pdf: 'files/islam-opponents-response.pdf' },
   { file: 'book-islam-science.html', pdf: 'files/islam-science-selection.pdf' },
   { file: 'book-mahaviswa.html', pdf: 'files/mahaviswa-solar-system.pdf' },
-  { file: 'book-pathshala.html', pdf: 'files/mahaviswasher-pathshala.pdf' },
 ];
 
 const SCRIPT = readFileSync('assets/book-pdf.js', 'utf8');
