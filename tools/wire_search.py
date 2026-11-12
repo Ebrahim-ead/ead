@@ -6,6 +6,8 @@
 
 · `header-actions`-এর শুরুতে সার্চ-বোতাম যোগ করে (থিম-টগলের আগে)।
 · `</body>`-এর ঠিক আগে search-index.js + site-search.js যোগ করে।
+· search-ayahs.js (২.১ MB) এখানে যোগ হয় না — site-search.js নিজেই
+  দরকারমতো লোড করে, তাই প্রতিটি পাতায় ভার বাড়ে না।
 · বারবার চালালেও ডুপ্লিকেট হয় না।
 """
 from __future__ import annotations

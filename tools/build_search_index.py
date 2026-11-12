@@ -8,6 +8,7 @@
 সূচিতে যা ঢোকে:
   * প্রতিটি HTML পাতার মূল-বিষয়বস্তু (main) — path, শিরোনাম, সারাংশ
   * কুরআনের ১১৪টি সূরা — নাম, অর্থ, আয়াত-সংখ্যা
+  * কুরআনের ৬,২৩৬টি আয়াত — ভেতরের বাংলা লেখাতেও সার্চ হয়
   * হাদিসের ৭টি কিতাব ও ৩৬১টি অধ্যায় — কর্তৃপক্ষ, হাদিস-সংখ্যা
   * ধর্মীয় গ্রন্থের অধ্যায় — গীতা, বাইবেল, বেদ ইত্যাদি
 
@@ -132,6 +133,44 @@ def build_quran() -> list[dict]:
     return out
 
 
+AYAH_OUT = ROOT / "assets" / "search-ayahs.js"
+
+
+def build_ayah_file() -> int:
+    """কুরআনের সব আয়াত — আলাদা ফাইলে, শুধু সার্চ করলে লোড হয়।
+
+    ৬,২৩৬ আয়াত · ~২.৫ MB (বাংলা লেখা ৩ বাইট/অক্ষর) — তাই মূল সূচির
+    সঙ্গে রাখা যায় না। এন্ট্রি সংক্ষিপ্ত অ্যারে: [সূরা, আয়াত, লেখা]।
+    """
+    idx_path = ROOT / "assets" / "quran" / "data" / "index.json"
+    if not idx_path.exists():
+        return 0
+    rows: list[list] = []
+    for f in sorted((ROOT / "assets" / "quran" / "data" / "suras").glob("*.json")):
+        try:
+            data = json.loads(f.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        sn = data.get("n") or int(f.stem)
+        for v in data.get("verses", []):
+            an = v.get("a")
+            bn = (v.get("bn") or "").strip()
+            if an is None or not bn:
+                continue
+            text = re.sub(r"^\s*[০-৯0-9]+\s*[.।]\s*", "", bn)      # শুরুর নম্বর
+            text = re.sub(r"\s*\[\s*[০-৯0-9]+\s*\]", "", text)     # টীকা-চিহ্ন [১]
+            text = re.sub(r"\s+", " ", text).strip()
+            rows.append([sn, an, text])
+    payload = json.dumps(rows, ensure_ascii=False, separators=(",", ":"))
+    AYAH_OUT.write_text(
+        "/* স্বয়ংক্রিয়ভাবে তৈরি — হাতে সম্পাদনা করবেন না।\n"
+        "   সার্চ করলে তবেই লোড হয়। নতুন করে বানাতে: python3 tools/build_search_index.py */\n"
+        f"window.SITE_AYAHS={payload};\n",
+        encoding="utf-8",
+    )
+    return len(rows)
+
+
 def build_hadith() -> list[dict]:
     idx = ROOT / "assets" / "hadith" / "data" / "index.json"
     if not idx.exists():
@@ -205,6 +244,11 @@ def main() -> int:
     print(f"✓ {OUT.relative_to(ROOT)} — {len(rows)} এন্ট্রি, {kb:.0f} KB")
     for k, v in sorted(counts.items()):
         print(f"   {k:12} {v}")
+
+    n_ayah = build_ayah_file()
+    if n_ayah:
+        akb = AYAH_OUT.stat().st_size / 1024
+        print(f"✓ {AYAH_OUT.relative_to(ROOT)} — {n_ayah} আয়াত, {akb:.0f} KB (শুধু সার্চে লোড হয়)")
     return 0
 
 

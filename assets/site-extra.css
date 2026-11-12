@@ -59,3 +59,9 @@ html.ss-open{overflow:hidden}
 @media (hover:none) and (pointer:coarse){.ss-chip{min-height:44px}.search-btn{min-height:44px}}
 /* ছোট স্ক্রিনে ডেস্কটপ-বোতাম পুরো লেবেল দেখাবে */
 @media (prefers-reduced-motion:reduce){.ss-panel{animation:none}}
+/* ── সার্চে কুরআনের আয়াত ───────────────────────────────── */
+.ss-tag-ayah{border-color:var(--gold3);color:var(--gold2)}
+.ss-ayah-go{display:inline-block;margin-top:5px;font-size:12px;color:var(--gold2);opacity:.9}
+.ss-result.is-active .ss-ayah-go{opacity:1}
+.ss-desc mark{background:rgba(245,184,28,.3);color:inherit;border-radius:3px;padding:0 1px}
+@media (max-width:820px){.ss-ayah-go{font-size:12.5px}}

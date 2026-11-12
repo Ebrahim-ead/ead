@@ -4,7 +4,8 @@
    · সূচি আসে assets/search-index.js থেকে (window.SITE_SEARCH)
      — কোনো fetch নেই, তাই file:// থেকেও কাজ করে।
    · মোডাল ডায়ালগ; Ctrl/⌘+K বা «/» চাপে খোলে।
-   · ফল: পাতা, কুরআনের সূরা, হাদিসের কিতাব, ধর্মীয় গ্রন্থ।
+   · ফল: পাতা, কুরআনের সূরা, **কুরআনের আয়াত**, হাদিসের কিতাব, ধর্মীয় গ্রন্থ।
+   · আয়াতের সূচি (۲.১ MB) আলাদা ফাইলে — সার্চে টাইপ করলে তবেই নামে।
    · তীর-কী ↑↓, Enter, Esc কাজ করে; ফোকাস-ট্র্যাপ আছে।
    · সূচি লোড না হলে বোতামটি নিজেই লুকিয়ে যায় — কিছু ভাঙে না।
    ============================================================ */
@@ -43,7 +44,8 @@
     page: 'পাতা',
     quran: 'কুরআন',
     hadith: 'হাদিস',
-    grantho: 'গ্রন্থ'
+    grantho: 'গ্রন্থ',
+    ayah: 'আয়াত'
   };
 
   /* ── মোডাল কাঠামো ── */
@@ -162,8 +164,22 @@
       if (r.d) {
         var dd = document.createElement('span');
         dd.className = 'ss-desc';
-        dd.textContent = r.d;
+        if (r.t === 'ayah' && typeof r._i === 'number' && r._i > 40) {
+          // মিল-শব্দের আশপাশ দেখাই — লেখার শুরু নয়
+          dd.appendChild(document.createTextNode('…' + r.d.slice(r._i - 40)));
+        } else if (r.t === 'ayah') {
+          dd.appendChild(highlight(r.d, q));
+        } else {
+          dd.textContent = r.d;
+        }
         a.appendChild(dd);
+      }
+
+      if (r.t === 'ayah') {
+        var go = document.createElement('span');
+        go.className = 'ss-ayah-go';
+        go.textContent = 'আয়াত খুলুন →';
+        a.appendChild(go);
       }
 
       li.appendChild(a);
@@ -189,6 +205,129 @@
     if (el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
   }
 
+  /* ── কুরআনের আয়াত: আলাদা ফাইল, চাহিদা-ভিত্তিক লোড ──
+     মূল সূচি ১৮০ KB — হালকা। আয়াত ২.১ MB, তাই প্রথম টাইপে নামে।
+     fetch ব্যর্থ হলে (file://) <script> ট্যাগে চেষ্টা করি। */
+  var ayahs = null;          // [[সূরা, আয়াত, লেখা, ফোল্ড-করা লেখা], …]
+  var ayahState = 'idle';    // idle | loading | ready | failed
+  var ayahWaiters = [];
+
+  function readyAyahs(list) {
+    ayahs = list || [];
+    ayahState = ayahs.length ? 'ready' : 'failed';
+    // কী-লেখা আগেই ফোল্ড করে রাখি — প্রতি কী-স্ট্রোকে norm() নয়
+    for (var i = 0; i < ayahs.length; i++) ayahs[i][3] = norm(ayahs[i][2]);
+    var w = ayahWaiters; ayahWaiters = [];
+    for (var k = 0; k < w.length; k++) { try { w[k](); } catch (e) {} }
+  }
+
+  function loadAyahs(cb) {
+    if (ayahState === 'ready' || ayahState === 'failed') { cb(); return; }
+    ayahWaiters.push(cb);
+    if (ayahState === 'loading') return;
+    ayahState = 'loading';
+
+    var src = 'assets/search-ayahs.js';
+    var done = false;
+    function finish(list) { if (done) return; done = true; readyAyahs(list); }
+
+    if (window.fetch && location.protocol !== 'file:') {
+      fetch(src).then(function (r) { return r.text(); }).then(function (txt) {
+        // ফাইলটি «window.SITE_AYAHS=[…];» — JSON অংশটুকু কেটে নিই
+        var a = txt.indexOf('['), b = txt.lastIndexOf(']');
+        finish(a > -1 && b > a ? JSON.parse(txt.slice(a, b + 1)) : []);
+      }).catch(function () { scriptFallback(); });
+    } else {
+      scriptFallback();
+    }
+
+    function scriptFallback() {
+      var el = document.createElement('script');
+      el.onload = function () { finish(window.SITE_AYAHS || []); };
+      el.onerror = function () { finish(null); };
+      el.src = src;
+      document.head.appendChild(el);
+    }
+  }
+
+  /* ── প্রতিশব্দ: কুরআনে যে শব্দ নেই, মানুষ যা খোঁজে ──
+     যেমন কুরআনে «নামাজ» নয় «সালাত»; «রোজা» নয় «সিয়াম»।
+     ব্যবহারকারী একটি লিখলে অন্যটাও খুঁজি। */
+  var SYNONYMS = {
+    'নামাজ': ['সালাত', 'নামায'],
+    'নামায': ['সালাত', 'নামাজ'],
+    'সালাত': ['নামাজ'],
+    'রোজা': ['সিয়াম', 'সাওম'],
+    'রোযা': ['সিয়াম', 'সাওম'],
+    'সিয়াম': ['রোজা'],
+    'যাকাত': ['জাকাত'],
+    'জাকাত': ['যাকাত'],
+    'হজ': ['হজ্জ'],
+    'ওযু': ['উযু', 'অযু'],
+    'গোসল': ['গুসল'],
+    'জান্নাত': ['জন্নাত'],
+    'জাহান্নাম': ['দোযখ', 'দোজখ'],
+    'দোযখ': ['জাহান্নাম'],
+    'ফেরেশতা': ['মালাক', 'ফেরেশ্তা'],
+    'শয়তান': ['শাইতান', 'ইবলিস'],
+    'ইবলিস': ['শয়তান'],
+    'তাওবা': ['তওবা'],
+    'তওবা': ['তাওবা'],
+    'ঈমান': ['ইমান'],
+    'ইমান': ['ঈমান'],
+    'কিয়ামত': ['কিয়ামত', 'ক্বিয়ামত'],
+    'আখিরাত': ['আখেরাত'],
+    'আখেরাত': ['আখিরাত'],
+    'পাপ': ['গুনাহ', 'পাপ'],
+    'গুনাহ': ['পাপ'],
+    'ক্ষমা': ['মাগফিরাত'],
+    'ধৈর্য': ['সবর'],
+    'সবর': ['ধৈর্য'],
+    'কৃতজ্ঞতা': ['শোকর'],
+    'শোকর': ['কৃতজ্ঞতা'],
+    'পরকাল': ['আখিরাত'],
+    'আল্লাহ': ['আল্লাহ্'],
+    'নবী': ['নবি', 'রাসুল'],
+    'রাসুল': ['রাসূল', 'নবী'],
+    'কিতাব': ['গ্রন্থ'],
+    'দান': ['সদকা'],
+    'সদকা': ['দান'],
+  };
+
+  /* প্রশ্নকে একাধিক কী-তে ভাঙি */
+  function expand(q) {
+    var out = [q];
+    var extra = SYNONYMS[q];
+    if (extra) out = out.concat(extra);
+    return out;
+  }
+
+  /* আয়াত-ফল: পুরো লেখায় মিল খুঁজি, ফল-সংখ্যা সীমিত রাখি */
+  var ayahCache = {};       // প্রশ্ন → ফল (বারবার একই খোঁজে দ্রুত)
+  function searchAyahs(nq, limit) {
+    if (!ayahs) return [];
+    if (ayahCache[nq]) return ayahCache[nq].slice(0, limit);
+    var keys = expand(nq).map(norm).filter(function (k, i, arr) { return k && arr.indexOf(k) === i; });
+    if (!keys.length) return [];
+    var hits = [], seen = {};
+    for (var k = 0; k < keys.length; k++) {
+      var nk = keys[k];
+      for (var i = 0; i < ayahs.length; i++) {
+        var a = ayahs[i];
+        var at = a[3] || '';
+        var idx = at.indexOf(nk);
+        if (idx === -1) continue;
+        var id = a[0] + ':' + a[1];
+        if (seen[id]) continue;
+        seen[id] = 1;
+        hits.push({ a: a, i: idx });
+        if (hits.length >= limit * 6) break;
+      }
+    }
+    ayahCache[nq] = hits;
+    return hits.slice(0, limit);
+  }
+
   /* ── স্কোরিং: শিরোনাম-মিল > বর্ণনা > কীওয়ার্ড ── */
   function search(q) {
     var nq = norm(q);
@@ -196,8 +335,9 @@
     var out = [];
     for (var i = 0; i < data.length; i++) {
       var r = data[i];
-      var name = norm(r.n);
-      var desc = norm(r.d || '');
+      if (!r._n) { r._n = norm(r.n); r._d = norm(r.d || ''); }   // একবারই গুনি
+      var name = r._n;
+      var desc = r._d;
       var key = r.k || '';
       var score = 0;
       if (name === nq) score = 100;
@@ -212,12 +352,58 @@
       out.push({ r: r, s: score });
     }
     out.sort(function (a, b) { return b.s - a.s; });
-    return out.slice(0, 24).map(function (x) { return x.r; });
+    var top = out.slice(0, 24).map(function (x) { return x.r; });
+
+    /* আয়াত — শুধু ৩+ অক্ষরের খোঁজে (ছোট শব্দে সব মিলে যেত)।
+       পুরো তালিকা না ভরিয়ে নিচে জুড়ে দিই: আগে পাতা/সূরা/বই, পরে আয়াত। */
+    if (nq.length >= 3) {
+      var ah = searchAyahs(nq, 40);
+      if (ah.length) {
+        // আয়াত সব শেষে — আগে সাধারণ ফল, পরে আয়াত
+        ah.slice(0, 14).forEach(function (h) {
+          var a = h.a;
+          top.push({
+            t: 'ayah',
+            u: 'quran.html#' + a[0] + ':' + a[1],
+            n: 'আয়াত ' + a[1] + ' · সূরা ' + (suraName(a[0]) || a[0]),
+            d: a[2],
+            _i: h.i,
+            _q: nq
+          });
+        });
+      }
+    }
+    return top;
+  }
+
+  /* সূরার নাম — URL থেকে (#সূরা:আয়াত), তাই ক্রম-অনুমান লাগে না */
+  var suraNames = null;
+  function suraName(n) {
+    if (!suraNames) {
+      suraNames = {};
+      for (var i = 0; i < data.length; i++) {
+        var r = data[i];
+        if (r.t !== 'quran') continue;
+        var m = /#(\d+)$/.exec(r.u);
+        if (!m) continue;
+        suraNames[+m[1]] = r.n.replace(/^সূরা\s+/, '');
+      }
+    }
+    return suraNames[n];
   }
 
   var debounce = 0;
+  var lastQuery = '';
   function onInput() {
     var q = input.value.trim();
+    lastQuery = q;
+    if (q.length >= 3 && ayahState !== 'ready') {
+      count.textContent = (ayahState === 'loading' ? 'আয়াত খোঁজা হচ্ছে…' : 'আয়াত-সূচি আনা হচ্ছে…');
+      loadAyahs(function () {
+        if (input.value.trim() !== q) return;   // এর মধ্যে টাইপ বদলেছে
+        render(search(asciiDigits(q)), q);
+      });
+    }
     clearTimeout(debounce);
     debounce = setTimeout(function () {
       render(search(asciiDigits(q)), q);
@@ -233,6 +419,8 @@
     render([], '');
     // ইনপুটে ফোকাস দিই (মোবাইলে কিবোর্ড খুলবে)
     setTimeout(function () { input.focus(); }, 20);
+    // নীরবে আয়াত-সূচি নামিয়ে রাখি — প্রথম খোঁজেই প্রস্তুত
+    setTimeout(function () { loadAyahs(function () {}); }, 300);
   }
 
   function close() {
