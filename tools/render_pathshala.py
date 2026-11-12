@@ -284,6 +284,7 @@ class Book:
             self.para(text)
             return
         head, rest = m.group(1), m.group(2).strip()
+        head = head.replace("**", "")        # ভেতরের অবশিষ্ট ** সরাই
         full = head + (" " + rest if rest else "")
         lines = wrap(full, TEXT_W, FS_BODY)
         # প্রথম লাইনে বোল্ড অংশ
@@ -384,6 +385,107 @@ class Book:
             yy += h
         self.y = y1 + 14
 
+
+    # -- টেবিল ----------------------------------------------------------
+    def table(self, rows: list[str]) -> None:
+        """| … | টেবিল — শিরোনাম-সারি, রঙিন ব্যাকগ্রাউন্ড, লাইন-ভাঙা।"""
+        parsed: list[list[str]] = []
+        header_idx = -1
+        for raw in rows:
+            cells = [c.strip() for c in raw.strip().strip("|").split("|")]
+            if all(re.fullmatch(r":?-{2,}:?", c) for c in cells if c):
+                header_idx = len(parsed) - 1
+                continue
+            parsed.append(cells)
+        if not parsed:
+            return
+        ncol = max(len(r) for r in parsed)
+        parsed = [r + [""] * (ncol - len(r)) for r in parsed]
+
+        fs = 8.5
+        lead = 11.8
+        padx = 5.0
+        # কলামের প্রস্থ — বিষয়বস্তুর দৈর্ঘ্য অনুপাতে, ন্যূনতম/সর্বোচ্চ সীমা
+        want = []
+        for c in range(ncol):
+            w = max(BODY_M.text_w(r[c], fs) for r in parsed)
+            want.append(min(max(w, 34.0), TEXT_W * 0.62))
+        tot = sum(want)
+        widths = [max(38.0, w / tot * TEXT_W) for w in want]
+        scale = TEXT_W / sum(widths)
+        widths = [w * scale for w in widths]
+
+        # সারি-উচ্চতা আগে মাপি
+        layout = []
+        for ri, r in enumerate(parsed):
+            is_head = (ri <= header_idx) or (header_idx < 0 and ri == 0)
+            bold = is_head
+            cell_lines = [wrap(r[c], widths[c] - 2 * padx, fs, head=bold)
+                          for c in range(ncol)]
+            h = max(len(cl) for cl in cell_lines) * lead + 7.0
+            layout.append((cell_lines, h, is_head))
+
+        def draw_block():
+            x_end = M_OUT + sum(widths)
+            y0 = self.y
+            yy = y0
+            for cell_lines, h, is_head in layout:
+                if yy + h > PH - M_BOT:
+                    self._new_page()
+                    yy = self.y
+                    y0 = yy
+                    x_end = M_OUT + sum(widths)
+                fill = PANEL if is_head else None
+                if fill:
+                    self.page.draw_rect(pymupdf.Rect(M_OUT, yy, x_end, yy + h),
+                                        color=None, fill=fill)
+                elif (yy - y0) // max(h, 1) % 2 == 0:
+                    self.page.draw_rect(pymupdf.Rect(M_OUT, yy, x_end, yy + h),
+                                        color=None, fill=(0.984, 0.988, 0.992))
+                cx = M_OUT
+                for c in range(ncol):
+                    for li, ln in enumerate(cell_lines[c]):
+                        put_line(self.page, cx + padx,
+                                 yy + 5.0 + fs * 0.86 + li * lead,
+                                 ln, fs, NAVY if is_head else INK, head=is_head)
+                    cx += widths[c]
+                # নিচের রেখা
+                self.page.draw_line(pymupdf.Point(M_OUT, yy + h),
+                                    pymupdf.Point(x_end, yy + h),
+                                    color=PANEL_BD, width=0.5)
+                yy += h
+            # বাইরের সীমারেখা
+            self.page.draw_rect(pymupdf.Rect(M_OUT, y0, x_end, yy),
+                                color=INK_SOFT, width=0.6)
+            self.y = yy + 10.0
+
+        # পুরো টেবিল এক পৃষ্ঠায় না ধরলে ভাগ করি (শিরোনাম পুনরাবৃত্তি)
+        total_h = sum(h for _, h, _ in layout)
+        avail = self.space()
+        if total_h <= avail:
+            draw_block()
+            return
+        # ভাগ: যত সারি একটি পৃষ্ঠায় ধরে
+        head_rows = [l for l in layout[:max(header_idx + 1, 1)]]
+        head_h = sum(h for _, h, _ in head_rows)
+        body = layout[len(head_rows):]
+        while body:
+            self.ensure(40)
+            self.y += 2
+            cap = self.space() - head_h - 6
+            take = []
+            used = 0.0
+            for item in body:
+                if used + item[1] <= cap:
+                    take.append(item); used += item[1]
+                else:
+                    break
+            if not take:
+                take = [body[0]]
+            layout = head_rows + take
+            draw_block()
+            body = body[len(take):]
+
     # -- ছবির পাতা -----------------------------------------------------
     def image_page(self, caption: str, path: str | None = None,
                    full: bool = True) -> None:
@@ -445,8 +547,18 @@ class Book:
 # ══════════════════════════════════════════════════════════════════════════
 # ক্যাপশন-কীওয়ার্ড → ছবি (বাংলা শব্দে মিলানো)
 IMG_KEYS: list[tuple[tuple[str, ...], str]] = [
-    (("দুধসাগর", "রাতের আকাশ", "ছাদ"),            "01_night.jpg"),
+    (("মঙ্গলের পৃষ্ঠ", "মঙ্গল —", "লাল ধুলি"),      "03_mars.jpg"),
+    (("বৃহস্পতি",),                                "04_jupiter.jpg"),
+    (("শনি",),                                     "05_saturn.jpg"),
+    (("ইউরেনাস",),                                 "06_uranus.jpg"),
+    (("নেপচুন",),                                  "07_neptune.jpg"),
+    (("প্লুটো",),                                  "08_pluto.jpg"),
+    (("ধূমকেতু",),                                 "09_comet.jpg"),
+    (("Space Station", "ISS", "কৃত্রিম"),          "10_iss.jpg"),
+    (("JWST", "জেমস ওয়েব"),                        "11_jwst.jpg"),
+    (("M87", "কৃষ্ণগহ্বর"),                          "12_blackhole.jpg"),
     (("বিগ ব্যাং", "প্রসারণ", "সময়রেখা"),          "02_bigbang.jpg"),
+    (("দুধসাগর", "রাতের আকাশ", "ছাদ"),            "01_night.jpg"),
 ]
 
 
@@ -496,7 +608,12 @@ def render_md(book: Book, md: str) -> None:
         elif s.startswith("**") and "**" in s[2:]:
             book.bold_para(s)
         elif s.startswith("|"):
-            book.para(s, size=8.6, lead=12.6, color=INK)
+            rows = []
+            while i < len(lines) and lines[i].strip().startswith("|"):
+                rows.append(lines[i].strip())
+                i += 1
+            book.table(rows)
+            continue
         else:
             book.para(s)
         i += 1
@@ -507,7 +624,7 @@ def build(chapter_files: list[Path], out: Path) -> int:
     # প্রচ্ছদ-পাতা
     b = Book()
     b.page.insert_image(pymupdf.Rect(0, 0, PW, PH),
-                        filename=str(ROOT / "assets/img/book-pathshala-cover.jpg"), keep_proportion=False)
+                        filename=str(ROOT / "assets" / "img" / "book-pathshala-cover.jpg"), keep_proportion=False)
     b._new_page()
     # শিরোনাম-পাতা
     put_line(b.page, M_OUT, 150, "মহাবিশ্বের পাঠশালা", 30, NAVY, head=True)
@@ -520,7 +637,7 @@ def build(chapter_files: list[Path], out: Path) -> int:
 
 
 if __name__ == "__main__":
-    files = sorted(Path(CONTENT_DIR).glob("ch*.md"))
-    out = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "files/mahaviswasher-pathshala.pdf"
+    files = sorted(CONTENT_DIR.glob("ch*.md")) + [CONTENT_DIR / "appendix.md"]
+    out = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / "book.pdf"
     n = build(files, out)
     print(f"✓ {out} — {n} পৃষ্ঠা")
