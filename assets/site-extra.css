@@ -65,3 +65,24 @@ html.ss-open{overflow:hidden}
 .ss-result.is-active .ss-ayah-go{opacity:1}
 .ss-desc mark{background:rgba(245,184,28,.3);color:inherit;border-radius:3px;padding:0 1px}
 @media (max-width:820px){.ss-ayah-go{font-size:12.5px}}
+
+/* ── প্রবন্ধের সূত্র-তালিকা ─────────────────────────────── */
+.article-refs{margin-top:clamp(32px,5vw,56px);padding-top:clamp(22px,3vw,32px);border-top:1px solid var(--line)}
+.article-refs-title{font-size:clamp(19px,2.4vw,23px);margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:10px}
+.article-refs-title::before{content:"";width:3px;height:1.05em;border-radius:2px;background:linear-gradient(var(--gold),var(--gold3));flex:0 0 auto}
+.article-refs-note{font-size:14px;line-height:1.8;color:var(--muted);margin-bottom:16px;max-width:68ch}
+.article-refs-list{list-style:none;counter-reset:ref;padding:0;margin:0 0 20px;display:grid;gap:10px}
+.article-refs-list li{counter-increment:ref;position:relative;padding:12px 14px 12px 46px;font-size:14.5px;line-height:1.8;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:12px;transition:border-color .2s var(--ease),background .2s var(--ease)}
+.article-refs-list li:hover{background:var(--card2);border-color:var(--line2)}
+.article-refs-list li::before{content:counter(ref);position:absolute;left:14px;top:13px;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:rgba(245,184,28,.14);border:1px solid var(--gold3);color:var(--gold2);font-size:12px;font-weight:700}
+.article-refs-list b{font-weight:700}
+.article-refs-list i{color:var(--muted);font-style:italic}
+.article-refs-list a{color:var(--gold2);text-decoration:none;border-bottom:1px dotted var(--gold3);white-space:nowrap}
+.article-refs-list a:hover{border-bottom-style:solid}
+.article-refs-warn{font-size:13.5px;line-height:1.8;color:var(--muted);padding:12px 14px;border-left:3px solid var(--gold3);background:rgba(245,184,28,.055);border-radius:0 10px 10px 0;margin:0}
+.article-refs-warn b{color:var(--gold2)}
+@media (max-width:640px){
+  .article-refs-list li{padding:11px 12px 11px 42px;font-size:14px}
+  .article-refs-list li::before{left:12px;top:12px;width:20px;height:20px;font-size:11px}
+  .article-refs-list a{white-space:normal}
+}

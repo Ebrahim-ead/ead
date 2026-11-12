@@ -45,6 +45,37 @@ X প্রোফাইল: https://x.com/ebrahimn23o
 
 SEO: Open Graph/Twitter title ও description এবং `assets/og-cover.jpg` তৈরি আছে। পাবলিক ডোমেইন জানা হলে canonical ও absolute share-image URL এবং sitemap যুক্ত করতে হবে। আপাতত শুধু crawl-অনুমতি `robots.txt` দেওয়া আছে।
 
+## সূত্র-তালিকা
+
+১৩টি প্রবন্ধের মধ্যে ৯টিতে «সূত্র ও আরও পড়ুন» সেকশন আছে। এতে প্রতিটি দাবির উৎস, বইয়ের নাম, সংস্করণ ও যেখানে সম্ভব অফিসিয়াল লিংক দেওয়া — পাঠক নিজে যাচাই করতে পারেন।
+
+**নতুন প্রবন্ধ লেখার সময়** প্রবন্ধের `</article>`-এর ঠিক আগে এই কাঠামো ব্যবহার করুন:
+
+```html
+<section class="article-refs"><h2 class="article-refs-title">সূত্র ও আরও পড়ুন</h2>
+<p class="article-refs-note">সংক্ষিপ্ত ব্যাখ্যা…</p>
+<ol class="article-refs-list">
+<li><b>লেখকের নাম</b> — <i>বইয়ের নাম</i> (প্রকাশক, সাল)। কেন ব্যবহার হয়েছে।</li>
+</ol>
+<p class="article-refs-warn"><b>সতর্কতা:</b> …</p>
+</section>
+```
+
+CSS: `.article-refs*` — `assets/site-extra.css`-এ।
+
+**নিয়ম:** সব বহিঃসংযোগে `rel="noopener nofollow" target="_blank"` দিতে হবে।
+
+## sitemap
+
+`tools/update_sitemap.py` — প্রতিটি ফাইলের git-তারিখ থেকে `lastmod` বসায়।
+
+```bash
+python3 tools/update_sitemap.py --dry-run   # কী বদলাবে দেখুন
+python3 tools/update_sitemap.py             # প্রয়োগ
+```
+
+**Shallow clone-এ সতর্কতা:** যদি সব ফাইলের git-তারিখ একই হয় (স্বাভাবিক, কারণ shallow clone-এ মাত্র ১টি কমিট থাকে), স্ক্রিপ্ট **কোনো `lastmod` লেখে না** — বানানো তারিখের চেয়ে না-থাকা ভালো, কারণ Google বানানো `lastmod` উপেক্ষা করে। পূর্ণ ইতিহাস থাকলে (`git fetch --unshallow`) নিজে থেকেই সত্যিকার তারিখ বসবে।
+
 ## সাইট-সার্চ
 
 হেডারের «খুঁজুন» বোতাম, `Ctrl`/`⌘`+`K` বা `/` চাপলে পুরো সাইট-জুড়ে সার্চ খোলে। ফল আসে এক ফাইল থেকেই — কোনো সার্ভার বা fetch লাগে না, তাই `file://`-তেও কাজ করে।
