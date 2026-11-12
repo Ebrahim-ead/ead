@@ -495,6 +495,8 @@ class Book:
         if not has_img:
             # ছবি এখনো নেই — লেখার মাঝে ছোট প্লেসহোল্ডার (ফাঁকা পাতা নয়)
             h = 132.0
+            if self.space() < h + 26:
+                self._new_page()          # পৃষ্ঠার একদম শেষে ঝুলতে দিই না
             self.ensure(h + 26)
             box = pymupdf.Rect(M_OUT, self.y, PW - M_IN, self.y + h)
             self.page.draw_rect(box, color=PANEL_BD, fill=PANEL, width=0.8)
