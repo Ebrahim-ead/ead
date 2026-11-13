@@ -200,6 +200,15 @@ GRANTH_LABELS = {
     "yajurveda-shukla": "শুক্ল যজুর্বেদ",
 }
 
+# কোন গ্রন্থ-পাতা কোন ফোল্ডারে — grantho.js `data-granth` পড়ে `#ch<N>` hash-এ
+GRANTH_PAGE = {
+    "gita": "grantho/hindu/gita.html",
+    "rigveda": "grantho/hindu/rigveda.html",
+    "veda": "grantho/hindu/veda.html",
+    "yajurveda-shukla": "grantho/hindu/yajurveda-shukla.html",
+    "bible": "grantho/christian/bible.html",
+}
+
 
 def build_grantho() -> list[dict]:
     base = ROOT / "assets" / "grantho" / "data"
@@ -209,20 +218,28 @@ def build_grantho() -> list[dict]:
     for granth_dir in sorted(p for p in base.iterdir() if p.is_dir()):
         gslug = granth_dir.name
         glabel = GRANTH_LABELS.get(gslug, gslug)
-        for f in sorted(granth_dir.glob("ch*.json"))[:12]:
+        for f in sorted(granth_dir.glob("ch*.json"), key=lambda x: int(re.sub(r"\D", "", x.stem) or 0)):
             try:
                 d = json.loads(f.read_text(encoding="utf-8"))
             except Exception:
                 continue
+            # ফাঁকা ফাইল বাদ (বাইবেলে ৫৪টি ডুপ্লিকেট শেল আছে — count=0, কোনো শ্লোক নেই)
+            if not d.get("verses") or d.get("count", 0) == 0:
+                continue
             cid = d.get("id") or f.stem.replace("ch", "")
             cname = d.get("bn") or f"অধ্যায় {cid}"
+            testament = d.get("testament") or ""
+            # খোঁজার জন্য প্রথম কয়েক শ্লোকের লেখাও কী-তে রাখি (ভারসাম্যরক্ষা)
+            sample = " ".join((v.get("bn") or "")[:160] for v in (d.get("verses") or [])[:2])
+            unit = d.get("groupWord") or "অধ্যায়"
             out.append(
                 {
                     "t": "grantho",
-                    "u": f"grantho.html#ch{cid}",
+                    "u": f"{GRANTH_PAGE.get(gslug, 'grantho.html')}#ch{cid}",
                     "n": f"{glabel} — {cname}",
-                    "d": f"{d.get('count', '?')}টি শ্লোক/অধ্যায় · {glabel}",
-                    "k": norm(f"{glabel} {cname} {gslug} {cid}"),
+                    "d": f"{d.get('count', '?')}টি শ্লোক · {unit} {cid}"
+                         + (f" · {testament}" if testament else ""),
+                    "k": norm(f"{glabel} {cname} {gslug} {cid} {testament} {sample}"),
                 }
             )
     return out

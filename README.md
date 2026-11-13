@@ -67,7 +67,9 @@ CSS: `.article-refs*` — `assets/site-extra.css`-এ।
 
 ## sitemap
 
-`tools/update_sitemap.py` — প্রতিটি ফাইলের git-তারিখ থেকে `lastmod` বসায়।
+`tools/update_sitemap.py` **এবং** `tools/seo.py` — দুটোই shallow clone সনাক্ত করে `lastmod` বাদ দেয়।
+
+> **গুরুত্বপূর্ণ:** `tools/seo.py` প্রতিবার `sitemap.xml` **নতুন করে বানায়**। তাই sitemap হাতে সম্পাদনা করবেন না — `seo.py` চালালে সেটি মুছে যাবে। shallow-সনাক্তকরণ এখন `seo.py`-তেও যোগ করা হয়েছে, তাই বানানো `lastmod` আর ফিরে আসবে না।
 
 ```bash
 python3 tools/update_sitemap.py --dry-run   # কী বদলাবে দেখুন

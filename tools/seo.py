@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import argparse
+import subprocess
 import glob
 import pathlib
 import re
@@ -72,8 +73,32 @@ def add_meta(s: str, base: str, p: pathlib.Path) -> tuple[str, list[str]]:
     return s, notes
 
 
+def _all_same_commit_date() -> bool:
+    """shallow clone-এ সব ফাইলের git-তারিখ একই হয় — সনাক্ত করি।
+
+    তখন lastmod লেখা অর্থহীন (Google বানানো lastmod উপেক্ষা করে),
+    তাই বাদ দেওয়া হয়।
+    """
+    try:
+        out = subprocess.run(
+            ["git", "log", "-1", "--format=%cs"],
+            cwd=ROOT, capture_output=True, text=True, timeout=10,
+        )
+        depth = subprocess.run(
+            ["git", "rev-list", "--count", "HEAD"],
+            cwd=ROOT, capture_output=True, text=True, timeout=10,
+        )
+        return depth.stdout.strip() == "1" and bool(out.stdout.strip())
+    except Exception:
+        return False
+
+
 def build_sitemap(base: str) -> str:
     today = date.today().isoformat()
+    # shallow clone হলে lastmod বাদ — বানানো তারিখের চেয়ে না-থাকা ভালো
+    skip_lastmod = _all_same_commit_date()
+    if skip_lastmod:
+        print("⚠ shallow clone (১টি কমিট) — sitemap-এ lastmod বাদ দেওয়া হচ্ছে")
     rows = []
     for p in pages():
         rel = p.relative_to(ROOT).as_posix()
@@ -86,7 +111,8 @@ def build_sitemap(base: str) -> str:
         if 'content="noindex' in head or "content='noindex" in head:
             continue
         pr, ch = PRIORITY.get(rel, ("0.7" if "/" not in rel else "0.6", "monthly"))
-        rows.append(f"  <url><loc>{url_of(p, base)}</loc><lastmod>{today}</lastmod>"
+        stamp = "" if skip_lastmod else f"<lastmod>{today}</lastmod>"
+        rows.append(f"  <url><loc>{url_of(p, base)}</loc>{stamp}"
                     f"<changefreq>{ch}</changefreq><priority>{pr}</priority></url>")
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
@@ -114,7 +140,7 @@ def main() -> int:
     sm = ROOT / "sitemap.xml"
     new = build_sitemap(base)
     if not sm.exists() or sm.read_text(encoding="utf-8") != new:
-        print(f"sitemap.xml: {len(pages())} URLs")
+        print(f"sitemap.xml: {new.count(chr(60) + 'url' + chr(62))} URLs")
         if not a.dry_run:
             sm.write_text(new, encoding="utf-8")
 

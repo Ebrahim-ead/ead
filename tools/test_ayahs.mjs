@@ -1,11 +1,13 @@
 /* ============================================================
    test_ayahs.mjs — কুরআনের আয়াত-সার্চের পরীক্ষা (বাস্তব HTTP-তে)
    ------------------------------------------------------------
-   চালাতে:  python3 -m http.server 8778 (আগে) → node tools/test_ayahs.mjs
+   চালাতে:  python3 -m http.server 8781 (আগে) → node tools/test_ayahs.mjs
    ============================================================ */
 import { JSDOM, VirtualConsole } from 'jsdom';
 
-const BASE = 'http://127.0.0.1:8778/';
+// পোর্ট বদলাতে: PORT=8781 node tools/test_ayahs.mjs
+const PORT = process.env.PORT || 8778;
+const BASE = `http://127.0.0.1:${PORT}/`;
 let pass = 0, fail = 0;
 const ok = (m) => { pass++; console.log(`  ✓ ${m}`); };
 const bad = (m) => { fail++; console.log(`  ✗ ${m}`); };
