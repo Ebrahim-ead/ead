@@ -105,6 +105,20 @@ for (const [q, test] of cases) {
   test(r) ? ok(`«${q}» → ${r.length} ফল`) : bad(`«${q}» → অপ্রাসঙ্গিক ${r.length} ফল: ${r.slice(0, 3).map((x) => x.name).join(' | ')}`);
 }
 
+/* ── ৩ক. গ্রন্থ (বাইবেল) ── */
+console.log('\nগ্রন্থ-সার্চ');
+const grantho = DATA.filter((r) => r.t === 'grantho');
+grantho.length >= 100 ? ok(`${grantho.length}টি গ্রন্থ-এন্ট্রি`) : bad(`গ্রন্থ-এন্ট্রি কম: ${grantho.length}`);
+const bibl = grantho.filter((r) => r.u.startsWith('grantho/christian/bible.html'));
+bibl.length >= 40 ? ok(`বাইবেলের ${bibl.length}টি বই সূচিতে`) : bad(`বাইবেল-এন্ট্রি কম: ${bibl.length}`);
+const noEmpty = grantho.every((r) => /[1-9]\d*টি শ্লোক/.test(r.d || ''));
+noEmpty ? ok('ফাঁকা (0 শ্লোক) এন্ট্রি নেই') : bad('ফাঁকা এন্ট্রি আছে (count=0)');
+for (const q of ['মথি', 'আদিপুস্তক', 'যোহন']) {
+  const r = await run(q);
+  const hit = r.some((x) => x.href && x.href.startsWith('grantho/christian/bible.html'));
+  hit ? ok(`«${q}» → বাইবেলের বই মিলেছে`) : bad(`«${q}» → বাইবেলের বই মেলেনি`);
+}
+
 /* ── ৩খ. হাইলাইট ── */
 console.log('\nহাইলাইট');
 await run('সূরা');

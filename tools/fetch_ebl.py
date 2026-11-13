@@ -978,6 +978,11 @@ def write_chapter(out_dir, idx, title, verses, url):
             d["anv"] = v["anv"]
         vs.append(d)
     os.makedirs(out_dir, exist_ok=True)
+    # ফাঁকা অধ্যায় লেখা হয় না — index.json-এও থাকবে না, তাই «ভূত» ফাইল
+    # জমে না। বাইবেলে একবার ৫৪টি ফাঁকা ch*.json জমেছিল (count=0),
+    # যেগুলো কোন বইয়ের সঙ্গে যুক্ত ছিল না — শুধুই মৃত ওজন।
+    if not vs:
+        return None
     obj = {"id": idx, "bn": title, "count": len(vs), "from": 1, "to": len(vs),
            "verses": vs, "url": url}
     with open(os.path.join(out_dir, f"ch{idx}.json"), "w", encoding="utf-8") as f:
@@ -1686,8 +1691,9 @@ def main_run(args):
             if not bucket[a]:
                 continue
             title = f"{args.title} — {a}" if args.title else f"অধ্যায় {a}"
-            chapters.append(write_chapter(out_dir, a, title, bucket[a],
-                                          BASE + "/topics/…"))
+            ch_meta = write_chapter(out_dir, a, title, bucket[a], BASE + "/topics/…")
+            if ch_meta:            # ফাঁকা অধ্যায় বাদ (write_chapter None দেয়)
+                chapters.append(ch_meta)
         if args.slug and chapters:
             idx = write_index_guarded(out_dir, args.slug, args.title or args.slug,
                                       chapters, args.word)
