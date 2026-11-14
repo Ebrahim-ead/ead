@@ -37,11 +37,18 @@ const w = dom.window, d = w.document;
 await new Promise((r) => setTimeout(r, 1200));
 
 console.log('\nলোড');
-w.SITE_SEARCH ? ok(`মূল সূচি ${w.SITE_SEARCH.length} এন্ট্রি`) : bad('মূল সূচি লোড হয়নি');
+// সূচি আর পাতার HTML-এ ছাপা হয় না — চাহিদা-মতো নামে (২৭৮ KB সাশ্রয়)।
+// তাই আগে যাচাই: পাতায় <script src=search-index.js> যেন না থাকে।
+/\/assets\/search-index\.js/.test(html)
+  ? bad('পাতায় সূচি সরাসরি লোড হচ্ছে (চাহিদা-মতো হওয়া উচিত)')
+  : ok('পাতায় সূচি ছাপা হয় না — চাহিদা-মতো নামবে');
+
 d.querySelector('.ss') ? ok('সার্চ-মোডাল তৈরি') : bad('মোডাল নেই');
 
-/* বোতামে ক্লিক → আয়াত-সূচি নিজে নামবে */
+/* বোতামে ক্লিক → সূচি নামবে, তারপর মোডাল খুলবে */
 d.querySelector('[data-search-open]').dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+await new Promise((r) => setTimeout(r, 1500));
+w.SITE_SEARCH ? ok(`বোতাম চাপায় সূচি নামল — ${w.SITE_SEARCH.length} এন্ট্রি`) : bad('সূচি নামেনি');
 const inp = d.querySelector('.ss-input');
 
 async function search(q, ms = 900) {

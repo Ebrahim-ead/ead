@@ -70,16 +70,19 @@ console.log('\n২. ডেটা-ক্যাশ — এন্ট্রি-স�
 }
 
 // ── ৩. ডেটা: মাপ-সীমা কার্যকর? (৪০ MB)
-console.log('\n৩. ডেটা-ক্যাশ — মাপ-সীমা (৪০ MB)');
+console.log(`\n৩. ডেটা-ক্যাশ — মাপ-সীমা (${Math.round(L[DATA_NAME][1]/1048576)} MB)`);
 {
   CA.delete(DATA_NAME);
   const c = await caches.open(DATA_NAME);
-  const MB=1048576;
-  for (let i=0;i<60;i++) await c.put({url:`/big/${i}.json`}, {_bytes: 1*MB}); // ৬০ MB
+  const MB = 1048576;
+  const budgetMB = Math.round(L[DATA_NAME][1] / MB);
+  for (let i = 0; i < 80; i++) await c.put({ url: `/big/${i}.json` }, { _bytes: 1 * MB }); // ৮০ MB
   await trim(DATA_NAME);
-  const keys=await c.keys();
-  keys.length ? ok(`৬০ MB → ${keys.length}টি এন্ট্রি (মোট ${keys.length} MB ≤ ৪০)`) : bad('সব মুছে গেছে');
-  keys.length<=40 ? ok(`মাপ সীমার ভিতরে (${keys.length} MB ≤ 40 MB)`) : bad(`${keys.length} MB — সীমা ছাড়িয়েছে`);
+  const keys = await c.keys();
+  keys.length ? ok(`৮০ MB → ${keys.length}টি এন্ট্রি`) : bad('সব মুছে গেছে');
+  keys.length <= budgetMB
+    ? ok(`মাপ সীমার ভিতরে (${keys.length} MB ≤ ${budgetMB} MB)`)
+    : bad(`${keys.length} MB — সীমা ${budgetMB} MB ছাড়িয়েছে`);
 }
 
 // ── ৪. শেল-ক্যাশ: এখন সত্যিই trim হয়?

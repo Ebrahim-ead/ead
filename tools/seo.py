@@ -68,6 +68,29 @@ def add_meta(s: str, base: str, p: pathlib.Path) -> tuple[str, list[str]]:
             s = s.replace("</head>", block + "</head>", 1)
         notes.append("og:image")
 
+    # og:url — শেয়ার-লিংকের প্রামাণিক ঠিকানা (একই কনটেন্ট একাধিক URL-এ নয়)
+    if 'property="og:url"' not in s:
+        url = url_of(p, base)
+        anchor = re.search(r'<meta property="og:title"[^>]*>', s)
+        line = f'<meta property="og:url" content="{url}">\n'
+        if anchor:
+            i = s.find("\n", anchor.end()) + 1
+            s = s[:i] + line + s[i:]
+        else:
+            s = s.replace("</head>", line + "</head>", 1)
+        notes.append("og:url")
+
+    # twitter:image — X/Twitter কার্ডে ছবি (og:image X পড়ে না)
+    if 'name="twitter:image"' not in s:
+        line = f'<meta name="twitter:image" content="{og}">\n'
+        anchor = re.search(r'<meta name="twitter:card"[^>]*>', s)
+        if anchor:
+            i = s.find("\n", anchor.end()) + 1
+            s = s[:i] + line + s[i:]
+        else:
+            s = s.replace("</head>", line + "</head>", 1)
+        notes.append("twitter:image")
+
     if 'rel="canonical"' not in s:
         s = s.replace("</head>", f'<link rel="canonical" href="{url_of(p, base)}">\n</head>', 1)
         notes.append("canonical")
