@@ -98,6 +98,27 @@ man.scope === '/ead/' ? ok("manifest scope '/ead/'") : bad(`manifest scope ${man
 /scope: '\/ead\/'/.test(fs.readFileSync(pwaPath, 'utf8')) ? ok("SW scope '/ead/'") : bad('SW scope মেলেনি');
 man.start_url.startsWith('/ead/') ? ok(`start_url ${man.start_url}`) : bad('start_url ভুল');
 
+/* ── ৬. হিরোর স্থায়ী ইনস্টল-বোতাম ── */
+console.log('\nইনস্টল-বোতাম');
+const idx = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const btn = idx.match(/<button[^>]*id="install-btn"[^>]*>/);
+btn ? ok('#install-btn আছে') : bad('#install-btn নেই');
+if (btn) {
+  /class="btn ghost"/.test(btn[0]) ? ok('.btn.ghost — বাকি দুটোর মতো') : bad('চেহারা ক্লাস ভুল');
+  /type="button"/.test(btn[0]) ? ok('type="button" (ফর্ম সাবমিট নয়)') : bad('type নেই');
+  !/hidden/.test(btn[0]) ? ok('inline-এ লুকানো নয় — JS ছাড়াও দেখা যায়') : bad('inline-এ hidden');
+  /aria-label=/.test(btn[0]) ? ok('aria-label আছে') : bad('aria-label নেই');
+}
+/<use href="#install"/.test(idx) ? ok('#install আইকন ব্যবহার') : bad('#install আইকন নেই');
+const sprite = (fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8').match(/<symbol id="install"[\s\S]*?<\/symbol>/) || [''])[0];
+sprite ? ok('#install symbol সংজ্ঞায়িত') : bad('#install symbol নেই');
+// স্প্রাইট সব পাতায়
+const noIcon = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'))
+  .filter((f) => !/symbol id="install"/.test(fs.readFileSync(path.join(ROOT, f), 'utf8')));
+noIcon.length === 0 ? ok('সব পাতায় #install sprite') : bad(`sprite নেই: ${noIcon.join(', ')}`);
+// pwa.js-এ হ্যান্ডলার
+/mountInstallButton/.test(fs.readFileSync(pwaPath, 'utf8')) ? ok('বোতামের হ্যান্ডলার আছে') : bad('হ্যান্ডলার নেই');
+
 /* ── ফল ── */
 console.log(`\n${fail === 0 ? '✓' : '✗'} পাশ ${pass} · ফেল ${fail}\n`);
 process.exit(fail === 0 ? 0 : 1);

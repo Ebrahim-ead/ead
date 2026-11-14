@@ -90,5 +90,94 @@ function mk(){
   dom.window.close();
 }
 
+
+/* ── ৫. হিরোর স্থায়ী ইনস্টল-বোতাম ─────────────────────────── */
+// বোতামটা index.html-এই inline থাকে; এখানে সেই বাস্তব HTML-ই লোড করি।
+const realHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+
+function mkWithButton({standalone = false, ua} = {}) {
+  const vc = new VirtualConsole();
+  const dom = new JSDOM(realHtml, {
+    runScripts: 'outside-only', url: 'https://x.test/ead/index.html', virtualConsole: vc,
+  });
+  const w = dom.window;
+  w.matchMedia = (q) => ({ matches: standalone && /standalone/.test(q), media: q, addEventListener(){}, removeEventListener(){}, addListener(){}, removeListener(){} });
+  if (ua) Object.defineProperty(w.navigator, 'userAgent', { value: ua });
+  const reg = { installing:null, waiting:null, active:null, addEventListener(){}, update(){ return Promise.resolve(); } };
+  w.navigator.serviceWorker = { register: () => Promise.resolve(reg), ready: Promise.resolve(reg), addEventListener(){}, controller: null };
+  return { w, dom };
+}
+
+{
+  const { w, dom } = mkWithButton();
+  w.eval(js);
+  await new Promise(r => setTimeout(r, 60));
+  const btn = w.document.querySelector('#install-btn');
+  btn ? ok('হিরোতে #install-btn আছে') : bad('#install-btn নেই');
+  btn && btn.classList.contains('btn') && btn.classList.contains('ghost')
+    ? ok('বাকি দুটোর মতো .btn.ghost চেহারা') : bad('চেহারার ক্লাস ভুল');
+  btn && !btn.hidden ? ok('ব্রাউজার-প্রম্পট ছাড়াই বোতাম দেখা যায়') : bad('বোতাম লুকানো');
+  // বোতামটা সত্যিই দুটোর পাশে — .btns-এর তৃতীয় সন্তান
+  const btns = w.document.querySelector('.btns');
+  btns && btns.children.length === 3 && btns.children[2] === btn
+    ? ok('«আলোচনার বিষয়»-এর ডান পাশে তৃতীয় বোতাম') : bad(`সারিতে ${btns ? btns.children.length : '?'}টি বোতাম`);
+  dom.window.close();
+}
+
+// ৫খ. ইনস্টল-প্রম্পট এলে চাপে সেটাই চলে
+{
+  const { w, dom } = mkWithButton();
+  w.eval(js);
+  await new Promise(r => setTimeout(r, 60));
+  let prompted = 0;
+  const ev = new w.Event('beforeinstallprompt');
+  ev.preventDefault = () => {};
+  ev.prompt = () => { prompted++; };
+  ev.userChoice = Promise.resolve({ outcome: 'accepted' });
+  w.dispatchEvent(ev);
+  await new Promise(r => setTimeout(r, 60));
+  w.document.querySelector('#install-btn').click();
+  await new Promise(r => setTimeout(r, 60));
+  prompted === 1 ? ok('চাপলে ব্রাউজারের আসল ইনস্টল-প্রম্পট') : bad(`প্রম্পট চলেনি (${prompted})`);
+  dom.window.close();
+}
+
+// ৫গ. প্রম্পট না থাকলে (iOS) — কীভাবে ইনস্টল করবেন বলে দেয়
+{
+  const { w, dom } = mkWithButton({ ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1' });
+  w.eval(js);
+  await new Promise(r => setTimeout(r, 60));
+  w.document.querySelector('#install-btn').click();
+  await new Promise(r => setTimeout(r, 80));
+  const h = w.document.querySelector('.pwa-hint');
+  h ? ok('প্রম্পট না থাকলে নির্দেশনা দেখায়') : bad('কোনো নির্দেশনা নেই');
+  h && /শেয়ার/.test(h.textContent) && /হোম স্ক্রিন/.test(h.textContent)
+    ? ok('iOS-এ «শেয়ার ▸ হোম স্ক্রিনে যোগ করুন»') : bad('iOS নির্দেশনা ভুল');
+  h && w.document.querySelector('.pwa-hint .pwa-btn.ghost') ? ok('নির্দেশনা বন্ধ করার বোতাম') : bad('বন্ধের বোতাম নেই');
+  dom.window.close();
+}
+
+// ৫ঘ. ইনস্টল হয়ে গেলে বোতাম আর দেখায় না
+{
+  const { w, dom } = mkWithButton({ standalone: true });
+  w.eval(js);
+  await new Promise(r => setTimeout(r, 60));
+  const btn = w.document.querySelector('#install-btn');
+  btn && btn.hidden ? ok('standalone-এ বোতাম লুকায়') : bad('standalone-এও দেখা যাচ্ছে');
+  dom.window.close();
+}
+
+// ৫ঙ. appinstalled ইভেন্টেও লুকায়
+{
+  const { w, dom } = mkWithButton();
+  w.eval(js);
+  await new Promise(r => setTimeout(r, 60));
+  const btn = w.document.querySelector('#install-btn');
+  const before = !btn.hidden;
+  w.dispatchEvent(new w.Event('appinstalled'));
+  before && btn.hidden ? ok('appinstalled-এ বোতাম লুকায়') : bad('appinstalled-এ লুকায়নি');
+  dom.window.close();
+}
+
 console.log(`\n${fail?'✗':'✓'} পাশ ${pass} · ফেল ${fail}\n`);
 process.exit(fail?1:0);

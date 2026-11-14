@@ -158,6 +158,70 @@
     }).catch(function () { deferredPrompt = null; });
   }
 
+  /* ---- ২খ. হিরোর স্থায়ী «অ্যাপ ইনস্টল করুন» বোতাম ------------------
+     ব্যানার বন্ধ করার অধিকার ব্যবহারকারীর; এই বোতামটা কিন্তু সবসময়
+     থাকবে (আগে থেকেই inline — JS না চললেও দেখা যায়)। শুধু ইনস্টল হয়ে
+     গেলে লুকোই, কারণ তখন আর ইনস্টল করার কিছু নেই।
+     ব্রাউজার প্রম্পট দিতে না চাইলে (iOS, Firefox, পুরোনো ব্রাউজার)
+     চাপলে কী করতে হবে সেটি বুঝিয়ে দিই — বোতামটা যেন নিষ্ক্রিয় না লাগে। */
+  var installBtn = null;
+  var hint = null;
+
+  function buildHint() {
+    if (isIOS()) {
+      return 'Safari-তে নিচের <b>শেয়ার</b> বোতাম ▸ <b>«হোম স্ক্রিনে যোগ করুন»</b> চাপলেই আইকন এসে যাবে।';
+    }
+    if (isAndroid()) {
+      return 'Chrome-এ উপরে ডানের <b>⋮</b> মেনু ▸ <b>«অ্যাপ ইনস্টল করুন»</b> চাপুন।';
+    }
+    return 'ব্রাউজারের ঠিকানার পাশে <b>ইনস্টল</b> আইকনে চাপুন, নয়তো <b>Ctrl</b>+<b>Shift</b>+<b>B</b> চেপে বুকমার্ক-বার থেকে সাইটটি টেনে নিন।';
+  }
+
+  function showHint() {
+    if (hint) return;
+    hint = document.createElement('div');
+    hint.className = 'pwa-banner pwa-hint is-open';
+    hint.setAttribute('role', 'dialog');
+    hint.setAttribute('aria-label', 'কীভাবে ইনস্টল করবেন');
+    hint.innerHTML = '<div class="pwa-body"><b>অ্যাপ হিসেবে ইনস্টল</b>'
+      + '<span class="pwa-note">' + buildHint() + '</span></div>';
+
+    var act = document.createElement('div');
+    act.className = 'pwa-actions';
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'pwa-btn ghost';
+    close.textContent = 'বুঝেছি';
+    close.addEventListener('click', hideHint);
+    act.appendChild(close);
+    hint.appendChild(act);
+
+    document.body.appendChild(hint);
+    open(hint);
+  }
+
+  function hideHint() {
+    if (!hint) return;
+    hint.classList.remove('is-open');
+    var h = hint; hint = null;
+    setTimeout(function () { if (h.parentNode) h.parentNode.removeChild(h); }, 320);
+  }
+
+  function onInstallClick() {
+    if (deferredPrompt) { doInstall(); return; }
+    showHint();
+  }
+
+  function mountInstallButton() {
+    installBtn = document.getElementById('install-btn');
+    // লাইভ সাইটে গোপন রেখেই দেখাই — হিরোর তিনটি বোতাম সমান গুরুত্ব পাবে।
+    // (inline-এ hidden নেই, তাই JS বন্ধ থাকলেও ব্যবহারকারী বোতামটা দেখেন।)
+    if (!installBtn) return;
+    if (isStandalone() || navigator.standalone === true) { installBtn.hidden = true; return; }
+    installBtn.hidden = false;
+    installBtn.addEventListener('click', onInstallClick);
+  }
+
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();          // নিজের বাটন দেখাব
     deferredPrompt = e;
@@ -170,6 +234,8 @@
   window.addEventListener('appinstalled', function () {
     deferredPrompt = null;
     hideBanner();
+    hideHint();
+    if (installBtn) installBtn.hidden = true;
     try { localStorage.setItem(DISMISS_KEY, String(Date.now() + 365 * 24 * 3600 * 1000)); } catch (e) {}
   });
 
@@ -240,6 +306,7 @@
 
   function boot() {
     registerSW();
+    mountInstallButton();
     if (!navigator.onLine) showOffline();
     maybeIOSHint();
   }
