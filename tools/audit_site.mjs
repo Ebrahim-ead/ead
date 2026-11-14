@@ -63,9 +63,11 @@ for(const f of files){
   const need=['site.css','site-extra.css'];
   for(const n of need) if(!html.includes(n)) errs.push('missing '+n);
   if(!/property="og:image"/.test(html)) errs.push('no og:image');
-  if(path.basename(f)==='404.html'){
-    if(!/name="robots"[^>]*noindex/.test(html)) errs.push('404 should be noindex');
-    if(/rel="canonical"/.test(html)) errs.push('404 should not have canonical');
+  // 404.html আর offline.html — দুটোই সার্চে যাওয়ার যোগ্য নয়: noindex থাকবে,
+  // canonical থাকবে না (canonical থাকলে সার্চ-ইঞ্জিন ওদের আলাদা পাতা ভাবতে পারে)।
+  if(path.basename(f)==='404.html'||path.basename(f)==='offline.html'){
+    if(!/name="robots"[^>]*noindex/.test(html)) errs.push(path.basename(f)+' should be noindex');
+    if(/rel="canonical"/.test(html)) errs.push(path.basename(f)+' should not have canonical');
   } else if(!/rel="canonical"/.test(html)) errs.push('no canonical');
   // গ্রন্থ-পাতার পরিচয়: data-granth/data-base যেন পাতার নিজের slug-এর ডেটা-ফোল্ডার
   // দেখায়। build_pages.py টেমপ্লেট হিসেবে অন্য গ্রন্থের পাতা ব্যবহার করে, আর আগে
