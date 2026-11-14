@@ -1,7 +1,12 @@
 {
- "_commit": "7af05145a8bd084ef74a3377fc66ca6411132f62",
+ "_commit": "0cf8881fda739863bb05e61c2461132858b9a81a",
  "_note": "এটি ভালো-জানা ডেটার হিসাব; এর চেয়ে ১৫%-এর বেশি ছোট হলে guard_data.py ফিরিয়ে আনে।",
  "slugs": {
+  "bible": {
+   "total": 24087,
+   "withBn": 23736,
+   "chapters": 46
+  },
   "gita": {
    "total": 701,
    "withBn": 700,
@@ -16,11 +21,6 @@
    "total": 1791,
    "withBn": 1791,
    "chapters": 40
-  },
-  "bible": {
-   "total": 24087,
-   "withBn": 23736,
-   "chapters": 46
   }
  }
 }
