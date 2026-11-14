@@ -338,6 +338,54 @@
     window.addEventListener('load', restoreScroll);
   }
 
+
+  /* ---- ৬. SW-কে display-mode জানাই ------------------------------------------
+     Service Worker নিজে জানতে পারে না (Client-এ displayMode নেই)। তাই
+     ইনস্টল-মোডে চলছি কি না সেটা পেজ থেকে জানিয়ে দিই — SW এর ভিত্তিতে
+     পরের নেভিগেশন cache-first করবে (তাৎক্ষণিক খোলা)।
+     নীরব, ব্যর্থ হলেও কিছু ভাঙে না; মেসেজ না পৌঁছালে SW আগের নিরাপদ
+     network-first-ই ব্যবহার করবে। */
+  function currentMode() {
+    if (navigator.standalone === true) return 'standalone';   // iOS
+    if (!window.matchMedia) return 'browser';
+    var modes = ['standalone', 'minimal-ui', 'fullscreen', 'window-controls-overlay'];
+    for (var i = 0; i < modes.length; i++) {
+      try {
+        if (window.matchMedia('(display-mode: ' + modes[i] + ')').matches) return modes[i];
+      } catch (e) {}
+    }
+    return 'browser';
+  }
+
+  function tellMode() {
+    if (!('serviceWorker' in navigator)) return;
+    var send = function (sw) {
+      if (!sw) return;
+      try {
+        sw.postMessage({ type: 'MODE', mode: currentMode(), url: location.href });
+      } catch (e) {}
+    };
+    // কন্ট্রোলার থাকলে এখনই, নাহলে SW প্রস্তুত হলে
+    send(navigator.serviceWorker.controller);
+    try {
+      navigator.serviceWorker.ready.then(function (reg) { send(reg.active); });
+    } catch (e) {}
+    // কন্ট্রোলার পেলে (প্রথম রেজিস্ট্রেশনের পর) আবার জানাই
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      send(navigator.serviceWorker.controller);
+    });
+    // ব্যবহারকারী «হোম স্ক্রিনে যোগ করুন» করলে মোড বদলায়
+    if (window.matchMedia) {
+      ['standalone', 'minimal-ui', 'fullscreen'].forEach(function (m) {
+        try {
+          var mq = window.matchMedia('(display-mode: ' + m + ')');
+          if (mq.addEventListener) mq.addEventListener('change', tellMode);
+          else if (mq.addListener) mq.addListener(tellMode);
+        } catch (e) {}
+      });
+    }
+  }
+
   /* ---- চালু ---- */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
@@ -347,6 +395,7 @@
 
   function boot() {
     registerSW();
+    tellMode();
     mountInstallButton();
     if (!navigator.onLine) showOffline();
     maybeIOSHint();

@@ -42,7 +42,7 @@
 /* শেল ও পাতা আলাদা সংস্করণ নম্বর পায় — শুধু শেল-তালিকা বদলালে
    ব্যবহারকারীর জমানো ডেটা (১৪২ MB পর্যন্ত) মুছে যাওয়া উচিত নয়।
    ডেটার গঠন বদলালে তবেই DATA_VERSION বাড়াবেন। */
-var SHELL_VERSION = 'v2';
+var SHELL_VERSION = 'v4';
 var DATA_VERSION = 'v1';
 
 var SHELL_CACHE = 'ead-shell-' + SHELL_VERSION;
@@ -74,7 +74,8 @@ var SHELL = [
   '/ead/assets/site-search.js',
   '/ead/assets/pwa.js',
 
-  '/ead/assets/fonts/noto-sans-bengali.woff2',
+  '/ead/assets/fonts/noto-sans-bengali-400.woff2',
+  '/ead/assets/fonts/noto-sans-bengali-700.woff2',
 
   '/ead/assets/img/favicon-32.png',
   '/ead/assets/img/icon-192.png',
@@ -88,6 +89,8 @@ var SHELL = [
 /* ---- ইনস্টলের পরেই নামুক (নীরবে, সাইট চলার পথ আটকাবে না) ----
    এগুলো বড়/কম-দরকারি — SHELL শেষ হলে আলাদাভাবে নামাই। */
 var PREFETCH = [
+  '/ead/assets/fonts/noto-sans-bengali-600.woff2',
+  '/ead/assets/fonts/noto-sans-bengali-800.woff2',
   '/ead/assets/search-index.js',
   '/ead/assets/reader-tools.js',
   '/ead/assets/book-pdf.js',
@@ -97,19 +100,28 @@ var PREFETCH = [
   '/ead/assets/img/b612b62bb3.jpg'
 ];
 
-/* ---- ক্লায়েন্ট ইনস্টল-মোডে (standalone) চলছে কি ----
-   Navigation-অনুরোধে display-mode জানা যায় না, তাই ক্লায়েন্ট-তালিকা
-   দেখি। ব্যর্থ হলে false — অর্থাৎ আগের নিরাপদ network-first। */
-function isStandaloneNav() {
-  return self.clients.matchAll({ type: 'window', includeUncontrolled: true })
-    .then(function (list) {
-      for (var i = 0; i < list.length; i++) {
-        if (list[i].frameType === 'top-level' &&
-            /standalone|minimal-ui/.test(list[i].displayMode || '')) return true;
-      }
-      return false;
-    })
-    .catch(function () { return false; });
+/* ---- ক্লায়েন্ট ইনস্টল-মোডে চলছে কি ----
+   ⚠ Service Worker display-mode জানতেই পারে না — Client/WindowClient-এ
+   এমন কোনো প্রপার্টি নেই, navigation-অনুরোধেও নেই (প্ল্যাটফর্ম-সীমা)।
+   তাই পেজ নিজেই জানায়: pwa.js «MODE» মেসেজ পাঠায় («standalone» বা
+   «browser»), আমরা URL ধরে মনে রাখি। মেসেজ না এলে আগের নিরাপদ
+   network-first — কিছুই ভাঙে না। */
+var displayModeByUrl = {};
+
+function setDisplayMode(url, mode) {
+  if (!url) return;
+  try {
+    var k = new URL(url).pathname;
+    displayModeByUrl[k] = (mode === 'standalone' || mode === 'minimal-ui'
+      || mode === 'fullscreen') ? 'standalone' : 'browser';
+  } catch (e) {}
+}
+
+function isAppNav(url) {
+  try {
+    var mode = displayModeByUrl[new URL(url).pathname];
+    return mode === 'standalone';
+  } catch (e) { return false; }
 }
 
 /* ---- কোন পথে ডেটা (cache-first) ---- */
@@ -138,17 +150,23 @@ self.addEventListener('install', function (event) {
         })
       );
     }).then(function () {
-      /* SHELL প্রস্তুত — এখন বাকিগুলো নীরবে নামাই।
-         একটা ব্যর্থ হলেও install ভাঙে না। */
-      return caches.open(SHELL_CACHE).then(function (cache) {
-        return Promise.all(PREFETCH.map(function (u) {
-          return cache.add(new Request(u, { cache: 'reload' })).catch(function () {});
-        }));
-      });
-    }).then(function () {
       return self.skipWaiting();   /* নতুন SW সঙ্গে সঙ্গে সক্রিয় */
     })
   );
+
+  /* SHELL প্রস্তুত — বাকিগুলো নীরবে নামাই।
+     ⚠ এখানে event.waitUntil **নেই** — ইচ্ছাকৃত। install ইভেন্ট তখনই
+     শেষ হয় যখন তার সব waitUntil-promise মিটে যায়; PREFETCH-কে
+     waitUntil-এ রাখলে ০.৫৭ MB না নামা পর্যন্ত SW সক্রিয় হত না
+     (আগে ঠিক এই ভুলটাই হয়েছিল)। এখন SHELL শেষ = install শেষ =
+     activate = অ্যাপ চালু; বাকি ফাইলগুলো পটভূমিতে নামে।
+     প্রতিটা ফাইল আলাদা add — একটা ব্যর্থ/আধা-থাকলেও বাকিগুলো জমে,
+     আর যেটা বাদ পড়ল তা প্রথম ব্যবহারেই runtime-এ ক্যাশ হবে। */
+  caches.open(SHELL_CACHE).then(function (cache) {
+    PREFETCH.forEach(function (u) {
+      cache.add(new Request(u, { cache: 'reload' })).catch(function () {});
+    });
+  }).catch(function () {});
 });
 
 /* ============================================================
@@ -196,11 +214,7 @@ self.addEventListener('fetch', function (event) {
      ব্রাউজার-ট্যাব : network-first → ক্যাশ → offline   (নতুন লেখা সর্বদা)
      ইনস্টল-অ্যাপ    : cache-first (SWR)               (সাথে সাথে খোলে) */
   if (req.mode === 'navigate') {
-    event.respondWith(
-      isStandaloneNav().then(function (inApp) {
-        return inApp ? appNav(req) : webNav(req, event);
-      })
-    );
+    event.respondWith(isAppNav(req.url) ? appNav(req) : webNav(req, event));
     return;
   }
 
@@ -377,6 +391,11 @@ self.addEventListener('message', function (event) {
   var data = event.data || {};
   if (data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+  }
+  if (data.type === 'MODE') {
+    /* পেজ তার display-mode জানাল — এই URL-এর পরের নেভিগেশন থেকে
+       ইনস্টল-মোড বুঝব (appNav)। */
+    setDisplayMode(data.url || (event.source && event.source.url), data.mode);
   }
   if (data.type === 'CLEAR_DATA') {
     caches.delete(DATA_CACHE).then(function () {
