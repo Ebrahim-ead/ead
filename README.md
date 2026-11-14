@@ -123,6 +123,7 @@ python3 tools/update_sitemap.py             # প্রয়োগ
 `assets/pwa.js` (প্রতিটি পাতায় `defer`):
 
 - `/ead/sw.js` রেজিস্টার করে — শুধু `https:` বা `localhost`-এ
+- **হোম-হিরোতে স্থায়ী বোতাম:** «আলোচনার বিষয়»-এর ডান পাশে তৃতীয় `.btn.ghost` — সব ব্রাউজারেই দেখা যায়; চাপলে ব্রাউজারের আসল প্রম্পট, না থাকলে (iOS/পুরোনো) ধাপে-ধাপে নির্দেশনা
 - **Android/ডেস্কটপ:** `beforeinstallprompt` ধরে ৩ সেকেন্ড পর নিজের «ইনস্টল করুন» ব্যানার
 - **iPhone/iPad (Safari):** ১০ সেকেন্ড পর «শেয়ার ▸ হোম স্ক্রিনে যোগ করুন» নির্দেশনা
 - **আপডেট:** নতুন SW পেলে «নতুন সংস্করণ এসেছে — রিফ্রেশ» বার
@@ -136,8 +137,8 @@ python3 tools/update_sitemap.py             # প্রয়োগ
 ```bash
 python3 tools/wire_icons.py     # সব পাতায় favicon/manifest/iOS-মেটা বসায়
 node tools/test_icons.mjs       # ১৮টি পরীক্ষা
-node tools/test_pwa.mjs         # ২৫টি পরীক্ষা (SW, শেল, offline, সংযোগ)
-node tools/test_pwa_ui.mjs      # ১৩টি পরীক্ষা (ব্যানার, আপডেট, অফলাইন-নোটিশ)
+node tools/test_pwa.mjs         # ৩৪টি পরীক্ষা (SW, শেল, offline, সংযোগ, বোতাম)
+node tools/test_pwa_ui.mjs      # ২৩টি পরীক্ষা (ব্যানার, বোতাম, আপডেট, অফলাইন-নোটিশ)
 ```
 
 `wire_icons.py` বারবার চালালেও ডুপ্লিকেট করে না; পুরোনো SVG-data-favicon নিজে সরায়।

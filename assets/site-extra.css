@@ -124,3 +124,22 @@ html.ss-open{overflow:hidden}
   /* অ্যাপ-মোডে ইনস্টল-ব্যানার কখনো নয় */
   .pwa-banner:not(.pwa-update){display:none!important}
 }
+
+/* ── হিরোর «অ্যাপ ইনস্টল করুন» বোতাম ও ইনস্টল-নির্দেশনা ─────── */
+/* <button> ডিফল্টে ফونت/কার্সর পায় না — .btn-এর চেহারা মেলাতে */
+.btns>button.btn{font:inherit;cursor:pointer;text-align:start;background:rgba(255,255,255,.035);color:#f2f7fc;border-color:var(--gold)}
+.btns>button.btn:hover{background:rgba(245,184,28,.1)}
+.btns>button.btn:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
+.btns>button.btn .tx b{font-weight:700}
+.pwa-hint{z-index:181}
+.pwa-hint .pwa-body b{color:var(--gold2)}
+html[data-theme="light"] .btns>button.btn{background:rgba(255,255,255,.9);color:#16262e;border-color:rgba(166,108,0,.5)}
+html[data-theme="light"] .btns>button.btn:hover{background:rgba(245,184,28,.16)}
+html[data-theme="light"] .pwa-hint .pwa-body b{color:#8a5a00}
+@media (max-width:560px){
+  .btns>button.btn{width:100%;justify-content:flex-start}
+}
+@media (display-mode:standalone){
+  /* ইনস্টল হয়ে গেলে বোতামটাই অর্থহীন */
+  .btns>button.btn#install-btn{display:none!important}
+}
