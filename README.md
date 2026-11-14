@@ -96,6 +96,29 @@ python3 tools/update_sitemap.py             # প্রয়োগ
 > **নকশা:** সোনালি খোলা বই + শনিগ্রহ + আলোর চাঁদ — সাইটের গভীর রঙে (`#040c10`)।
 > **সতর্কতা:** ৩২px ফ্যাভিকন **আলাদা সরল design** — বিস্তারিত আইকন ছোটে ঘোলা হয়ে যায়।
 
+### বাংলা ফন্ট — নিজের হোস্টে
+
+আগে Google Fonts থেকে **Hind Siliguri** আসত: ২টি বাইরের ডোমেইন, ৪টি আলাদা woff2, ৪+ রাউন্ডট্রিপ — আর **অফলাইনে কিছুই নয়** (তাই ইনস্টল করা অ্যাপে ফন্ট লাফাত)।
+
+এখন `assets/fonts/noto-sans-bengali.woff2` — **২০২ KB, variable (ওজন ১০০–৯০০)**:
+
+| আগে | এখন |
+|---|---|
+| `NotoSansBengali.ttf` ৪৫৩ KB | `noto-sans-bengali.woff2` **২০২ KB** |
+| `NotoSerifBengali.ttf` ৯৫৯ KB | ↑ একটাই ফাইলেই সব ওজন |
+
+`fonttools subset` দিয়ে বাংলা + ল্যাটিন + চিহ্ন রেখে দেবনাগরী ও অন্য স্ক্রিপ্ট বাদ। **সব বাংলা অক্ষর, যুক্তাক্ষর-লিগেচার ও ৮০০-ওজন অটুট।** `font-display:swap` তাই লেখা কখনো লুকায় না; `system-ui` ফলব্যাক-চেইনও আছে।
+
+```bash
+python3 - <<'EOF'
+from fontTools import subset
+subset.main(['assets/fonts/NotoSansBengali.ttf',
+  '--output-file=assets/fonts/noto-sans-bengali.woff2', '--flavor=woff2',
+  '--unicodes=U+0980-09FF,U+200C-200D,U+0020-007E,...', '--layout-features=*',
+  '--desubroutinize', '--drop-tables+=DSIG,meta'])
+EOF
+```
+
 ### `manifest.json`
 
 ```json
@@ -111,7 +134,7 @@ python3 tools/update_sitemap.py             # প্রয়োগ
 
 | স্তর | কী | কৌশল |
 |---|---|---|
-| `ead-shell-v2` | CSS · JS · ফন্ট · আইকন (২৩ ফাইল, ≈২.২ MB কাঁচা ≈০.৬ MB গজিপ) | install-এ precache → cache-first, **৩০০ এন্ট্রি / ৬ MB** |
+| `ead-shell-v2` | যা ছাড়া সাইট চলে না — ১৮ ফাইল, **০.৬৩ MB** | install-এ precache → cache-first, **৩০০ এন্ট্রি / ৬ MB** |
 | `ead-pages-v2` | HTML পাতা | network-first → ক্যাশ → `offline.html`, **২০০ এন্ট্রি / ২৫ MB** |
 | `ead-data-v1` | হাদিস/কুরআন/গ্রন্থের JSON + `search-ayahs.js` | cache-first, **২৫০ এন্ট্রি / ৪৫ MB** |
 
@@ -119,7 +142,11 @@ python3 tools/update_sitemap.py             # প্রয়োগ
 
 **সংস্করণ:** শেল/পাতার কিছু বদলালে `SHELL_VERSION` বাড়ান — শুধু শেল-ক্যাশ বদলাবে, **ব্যবহারকারীর জমানো ডেটা অটুট থাকবে**। ডেটার JSON-গঠন বদলালে তবেই `DATA_VERSION`।
 
-- **প্রথম খোলা:** শুধু শেল নামে (≈০.৬ MB) — ১৪৪ MB ডেটা পরে পড়ার সময় নীরবে জমে
+- **ইনস্টল:** ২.২৬ → **০.৬৩ MB** (−৭২%)। `search-index.js` (২৭৮ KB) আর প্রিক্যাশে নেই, ১.৪ MB TTF বাদ
+- **PREFETCH:** SHELL শেষ হলে `search-index.js` ও পঠন-স্ক্রিপ্টগুলো (০.৫৭ MB) নীরবে নামে — প্রথম সার্চও তাৎক্ষণিক, কিন্তু ইনস্টল আটকায় না
+- **ইনস্টল-মোডে (standalone):** পাতা **cache-first** (stale-while-revalidate) — অ্যাপ খোলা তাৎক্ষণিক, পরের খোলায় নতুন লেখা। ব্রাউজার-ট্যাবে আগের মতোই network-first
+- **navigationPreload:** ব্রাউজার নেটওয়ার্ক-অনুরোধ SW চালুর সাথেই শুরু করে — প্রথম পাতা দ্রুত
+- **scroll-স্থিতি:** ইনস্টল-মোডে পৃষ্ঠা ছাড়ার স্থান মনে থাকে, ফিরে এলে সেখানেই
 - **কখনো ক্যাশে নয়:** অন্য ডোমেইন (`origin` যাচাই), `POST`/বাইরের রিকোয়েস্ট
 - **আপডেট:** `SHELL_VERSION` বদলালে নতুন শেল-ক্যাশ; পুরোনো শেল/পাতা নিজে মুছে যায়, ডেটা থাকে
 - `offline.html` — ইন্টারনেট ছাড়া খোলা হলে এটাই দেখায় (noindex, canonical নেই)
