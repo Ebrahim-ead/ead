@@ -100,24 +100,45 @@ python3 tools/update_sitemap.py             # প্রয়োগ
 
 আগে Google Fonts থেকে **Hind Siliguri** আসত: ২টি বাইরের ডোমেইন, ৪টি আলাদা woff2, ৪+ রাউন্ডট্রিপ — আর **অফলাইনে কিছুই নয়** (তাই ইনস্টল করা অ্যাপে ফন্ট লাফাত)।
 
-এখন `assets/fonts/noto-sans-bengali.woff2` — **২০২ KB, variable (ওজন ১০০–৯০০)**:
+এখন **৪টি আলাদা ওজনের ফাইল**, নিজেরই সার্ভার থেকে:
 
-| আগে | এখন |
-|---|---|
-| `NotoSansBengali.ttf` ৪৫৩ KB | `noto-sans-bengali.woff2` **২০২ KB** |
-| `NotoSerifBengali.ttf` ৯৫৯ KB | ↑ একটাই ফাইলেই সব ওজন |
+| ফাইল | আকার | কখন নামে |
+|---|---|---|
+| `noto-sans-bengali-400.woff2` | ৪৪.৬ KB | প্রথম দৃশ্য — **preload** |
+| `noto-sans-bengali-700.woff2` | ৪৭.৯ KB | প্রথম দৃশ্য — **preload** |
+| `noto-sans-bengali-600.woff2` | ৪৭.৭ KB | নিষ্ক্রিয় — SW precache |
+| `noto-sans-bengali-800.woff2` | ৪৭.৮ KB | নিষ্ক্রিয় — SW precache |
+| **মোট** | **১৮৮ KB** | |
 
-`fonttools subset` দিয়ে বাংলা + ল্যাটিন + চিহ্ন রেখে দেবনাগরী ও অন্য স্ক্রিপ্ট বাদ। **সব বাংলা অক্ষর, যুক্তাক্ষর-লিগেচার ও ৮০০-ওজন অটুট।** `font-display:swap` তাই লেখা কখনো লুকায় না; `system-ui` ফলব্যাক-চেইনও আছে।
+> **কেন চারটি, এক variable ফাইল নয়?** আগের variable ফাইলটা ছিল ২০২ KB, আর ব্রাউজার **পুরোটা** নামাত প্রথম লেখার আগেই। এখন প্রথম দৃশ্যে লাগে শুধু ৪০০+৭০০ = **৯২ KB** — বাকি দুই ওজন পরে, আর ইনস্টল করা অ্যাপে SW সেগুলো আগেই জমিয়ে রাখে। ৫০০/৫৫০/৬৫০/৭৫০-এর আলাদা ফাইল নেই — ব্রাউজার নিকটতম ওজনে ম্যাপ করে, তাই ফাইল বাড়ে না।
+
+`@fontsource/noto-sans-bengali` (৫.৩.০)-এর `bengali` + `latin` + `latin-ext` খণ্ড থেকে প্রতিটি ওজনের দরকারি অক্ষর নিয়ে `Merger` দিয়ে জোড়া লাগানো। **`latin-ext` লাগে কারণ `ē` (Palaistinē) ওখানেই আছে।** `--layout-features=*` তাই যুক্তাক্ষর-লিগেচার (ক্ষ, জ্ঞ, ন্দ্র, স্থ) অটুট।
+
+**অক্ষর-কভারেজ:** সাইটের ৯০টি অ-আরবি অক্ষরের প্রতিটা ফন্টে আছে — দাঁড়ি (**।**, সাইটে ২,৯৫৫ বার) সহ। শুধু ৫টি চিহ্ন (`π ﷺ ¬ ⁿ ₂`) কোনো Noto Sans Bengali ফাইলে নেই; ওগুলো ব্রাউজারের সিস্টেম-ফন্টে দেখায় — এটা ফন্টের সীমা, দোষ নয়। `tools/test_fonts.mjs` প্রতিবার এই কভারেজ যাচাই করে।
 
 ```bash
+# ১. সোর্স নামাও (ফ্রি, npm-এ)
+npm pack @fontsource/noto-sans-bengali@5.3.0 && tar xzf *.tgz
+# ২. প্রতি ওজনে: bengali+latin+latin-ext থেকে দরকারি অক্ষর subset করে জোড়া লাগাও
 python3 - <<'EOF'
 from fontTools import subset
-subset.main(['assets/fonts/NotoSansBengali.ttf',
-  '--output-file=assets/fonts/noto-sans-bengali.woff2', '--flavor=woff2',
-  '--unicodes=U+0980-09FF,U+200C-200D,U+0020-007E,...', '--layout-features=*',
-  '--desubroutinize', '--drop-tables+=DSIG,meta'])
+from fontTools.merge import Merger
+for w in (400, 600, 700, 800):
+    parts = []
+    for part in ('bengali', 'latin', 'latin-ext'):
+        src = f'package/files/noto-sans-bengali-{part}-{w}-normal.woff2'
+        out = f'/tmp/q-{w}-{part}.woff2'
+        subset.main([src, f'--output-file={out}', '--flavor=woff2',
+                     '--unicodes=U+0020-00FF,U+0100-017F,U+0980-09FF,U+200C-200D,U+2010-203A,U+20B9',
+                     '--layout-features=*', '--desubroutinize',
+                     '--drop-tables+=DSIG,meta', '--no-hinting'])
+        parts.append(out)
+    m = Merger().merge(parts); m.flavor = 'woff2'
+    m.save(f'assets/fonts/noto-sans-bengali-{w}.woff2')
 EOF
 ```
+
+`font-display:swap` তাই লেখা কখনো লুকায় না; `system-ui` ফলব্যাক-চেইনও আছে।
 
 ### `manifest.json`
 

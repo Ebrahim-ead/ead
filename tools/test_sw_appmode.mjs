@@ -28,8 +28,14 @@ class FakeCache {
   async match(req) { return this.m.get(typeof req === 'string' ? req : req.url); }
   async keys() { return [...this.m.keys()].map((k) => ({ url: k })); }
   async delete(req) { return this.m.delete(typeof req === 'string' ? req : req.url); }
-  async add() { return; }
+  async add(req) {
+    const u = typeof req === 'string' ? req : (req.url || '');
+    /* ১০ নম্বর পরীক্ষা: ধীর PREFETCH নকল করি */
+    if (SLOW && /600|800/.test(u)) await new Promise((r) => setTimeout(r, 300));
+    return;
+  }
 }
+let SLOW = false;
 const store = new Map();
 const CA = {
   open: async (n) => { if (!store.has(n)) store.set(n, new FakeCache()); return store.get(n); },
@@ -43,6 +49,14 @@ const CA = {
   },
   keys: async () => [...store.keys()],
 };
+
+/* SW-কে display-mode জানাতে পেজের মতো মেসেজ পাঠাই */
+function tellMode(handlers, mode = 'standalone', url = 'https://x.test/ead/index.html') {
+  handlers.message({
+    data: { type: 'MODE', mode, url },
+    source: { postMessage() {}, url },
+  });
+}
 
 function res(body, { ok = true } = {}) {
   return {
@@ -108,6 +122,7 @@ async function navigate(h, { preload = null } = {}) {
 console.log('\n১. ইনস্টল-অ্যাপ — ক্যাশে থাকলে সাথে সাথে');
 {
   const { handlers } = await boot({ standalone: true, net: true });
+  tellMode(handlers, 'standalone');        // পেজ জানাল: ইনস্টল-মোড
   const c = await CA.open(store.size ? [...store.keys()][0] : 'ead-pages-v2');
   // ক্যাশে আগের কপি রাখি
   for (const n of store.keys()) await (await CA.open(n)).put({ url: 'https://x.test/ead/index.html' }, res('CACHED'));
@@ -121,14 +136,16 @@ console.log('\n১. ইনস্টল-অ্যাপ — ক্যাশে �
 console.log('\n২. ইনস্টল-অ্যাপ — ক্যাশে না থাকলে নেটওয়ার্ক');
 {
   const { handlers } = await boot({ standalone: true, net: true });
+  tellMode(handlers, 'standalone');
   const r = await navigate(handlers);
-  r && /^FRESH:/.test(r._body) ? ok('নেটওয়ার্ক থেকে আনে') : bad(`আসেনি — ${r && r._body}`);
+  r && /^FRESH/.test(r._body) ? ok('নেটওয়ার্ক থেকে আনে') : bad(`আসেনি — ${r && r._body}`);
 }
 
 /* ── ৩. ইনস্টল-মোড, নেট নেই, ক্যাশে নেই → offline.html ── */
 console.log('\n৩. অ্যাপে নেট নেই');
 {
   const { handlers } = await boot({ standalone: true, net: false });
+  tellMode(handlers, 'standalone');
   const r = await navigate(handlers);
   r && r._body === 'OFFLINE-PAGE'
     ? ok('offline.html ফলব্যাক — অ্যাপ ফাঁকা থাকে না')
@@ -139,6 +156,7 @@ console.log('\n৩. অ্যাপে নেট নেই');
 console.log('\n৪. stale-while-revalidate');
 {
   const { handlers } = await boot({ standalone: true, net: true });
+  tellMode(handlers, 'standalone');
   for (const n of store.keys()) await (await CA.open(n)).put({ url: 'https://x.test/ead/index.html' }, res('CACHED'));
   await navigate(handlers);
   await new Promise((r) => setTimeout(r, 120));
@@ -154,9 +172,10 @@ console.log('\n৪. stale-while-revalidate');
 console.log('\n৫. ব্রাউজার-ট্যাব — network-first অটুট');
 {
   const { handlers } = await boot({ standalone: false, net: true });
+  tellMode(handlers, 'browser');
   for (const n of store.keys()) await (await CA.open(n)).put({ url: 'https://x.test/ead/index.html' }, res('CACHED'));
   const r = await navigate(handlers);
-  r && /^FRESH:/.test(r._body) ? ok('নতুন লেখা-ই আগে (network-first)') : bad(`ট্যাবে ক্যাশ আগে চলে গেল — ${r && r._body}`);
+  r && /^FRESH/.test(r._body) ? ok('নতুন লেখা-ই আগে (network-first)') : bad(`ট্যাবে ক্যাশ আগে চলে গেল — ${r && r._body}`);
 }
 
 /* ── ৬. navigationPreload চালু হয় ── */
@@ -176,6 +195,59 @@ console.log('\n৭. preloadResponse ব্যবহার');
   const r = await navigate(handlers, { preload: res('PRELOADED') });
   r && r._body === 'PRELOADED' ? ok('preload-এর উত্তর কাজে লাগে (নেটওয়ার্ক-অপেক্ষা বাঁচে)')
                                : bad(`preload অবহেলিত — পেল ${r && r._body}`);
+}
+
+
+/* ── ৮. পেজ → SW মেসেজ (আসল পথ) ─────────────────────────────
+   ⚠ আগে SW-এ Client.displayMode পড়া হত — প্রপার্টিটাই নেই,
+   তাই appNav কখনো চলত না। এখন pwa.js মেসেজ পাঠায়। */
+console.log('\n৮. pwa.js → SW মেসেজ');
+{
+  const pwa = fs.readFileSync(path.join(ROOT, 'assets/pwa.js'), 'utf8');
+  /type:\s*'MODE'/.test(pwa) ? ok('pwa.js MODE মেসেজ পাঠায়') : bad('MODE মেসেজ নেই');
+  /controllerchange/.test(pwa) ? ok('কন্ট্রোলার পেলে আবার জানায়') : bad('controllerchange নেই');
+  /display-mode:/.test(pwa) ? ok('display-mode মিডিয়া-কোয়েরি') : bad('মিডিয়া-কোয়েরি নেই');
+  /navigator\.standalone/.test(pwa) ? ok('iOS navigator.standalone') : bad('iOS পথ নেই');
+  /* মৃত কোড গেছে? */
+  /\.displayMode/.test(fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8'))
+    ? bad('SW-এ এখনো মৃত Client.displayMode কোড') : ok('মৃত Client.displayMode সরানো');
+}
+
+/* ── ৯. মেসেজ বোঝা যায় ── */
+console.log('\n৯. SW মেসেজ থেকে মোড');
+{
+  const { handlers } = await boot({ standalone: false, net: true });
+  /* about.html-এর জন্য মোড জানাই, কিন্তু index.html-এ চাপ দিই —
+     index আগের network-first-ই থাকবে (URL-ভিত্তিক বিচার) */
+  tellMode(handlers, 'standalone', 'https://x.test/ead/about.html');
+  for (const n of store.keys()) await (await CA.open(n)).put({ url: 'https://x.test/ead/index.html' }, res('CACHED'));
+  const r = await navigate(handlers);
+  r && /^FRESH/.test(r._body)
+    ? ok('অন্য পাতার মোড অন্য পাতায় প্রভাব ফেলে না (URL-ভিত্তিক)')
+    : bad(`URL-ভিত্তিক বিচার কাজ করছে না — পেল ${r && r._body}`);
+}
+
+
+const withTimeout = (p, ms) => Promise.race([p, new Promise((r) => setTimeout(r, ms))]);
+
+/* ── ১০. install-বিলম্ব: PREFETCH আটকায় না ───────────────────
+   ⚠ আসল বাগ: PREFETCH-এর waitUntil install-শেষকে পিছিয়ে দিত,
+   তাই ধীর নেটওয়ার্কে অ্যাপ ইনস্টলের পরও চালু হত না। */
+console.log('\n১০. install-বিলম্ব');
+{
+  /* ধীর PREFETCH — প্রতিটা ফাইলে ৩০০ms */
+  SLOW = true;
+  const t0 = Date.now();
+  const { handlers } = await boot({ standalone: false, net: true });
+  await withTimeout(handlers.install, 1200);   // SHELL শেষ হলেই install শেষ
+  const ms = Date.now() - t0;
+  SLOW = false;
+  ms < 250 ? ok(`install ${ms}ms-এ শেষ — PREFETCH (৩০০ms×২) আটকায়নি`)
+           : bad(`install ${ms}ms — PREFETCH আটকে দিচ্ছে`);
+  !/waitUntil\(\s*caches\.open\(SHELL_CACHE\)[\s\S]{0,400}PREFETCH/.test(
+    fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8'))
+    ? ok('PREFETCH waitUntil-এর ভিতরে নেই (কোড-যাচাই)')
+    : bad('PREFETCH এখনো waitUntil-এ');
 }
 
 console.log(`\n${fail ? '✗' : '✓'} পাশ ${pass} · ফেল ${fail}\n`);
