@@ -1,0 +1,68 @@
+{
+  "name": "Ebrahim Ead — নাস্তিকতা ও তুলনামূলক ধর্মতত্ত্ব",
+  "short_name": "Ebrahim Ead",
+  "description": "নাস্তিকতা, তুলনামূলক ধর্মতত্ত্ব, কুরআন, হাদিস, ধর্মীয় গ্রন্থ ও প্রবন্ধ — অফলাইনেও পড়া যায়।",
+  "lang": "bn",
+  "dir": "ltr",
+  "start_url": "/ead/?src=pwa",
+  "scope": "/ead/",
+  "id": "/ead/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#040c10",
+  "theme_color": "#040c10",
+  "categories": ["books", "education", "reference"],
+  "icons": [
+    {
+      "src": "/ead/assets/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/ead/assets/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/ead/assets/img/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/ead/assets/img/app-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "কুরআন",
+      "short_name": "কুরআন",
+      "url": "/ead/quran.html",
+      "icons": [{ "src": "/ead/assets/img/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "হাদিস",
+      "short_name": "হাদিস",
+      "url": "/ead/hadith.html",
+      "icons": [{ "src": "/ead/assets/img/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "ধর্মীয় গ্রন্থ",
+      "short_name": "গ্রন্থ",
+      "url": "/ead/grantho.html",
+      "icons": [{ "src": "/ead/assets/img/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "প্রবন্ধ",
+      "short_name": "প্রবন্ধ",
+      "url": "/ead/atheism.html",
+      "icons": [{ "src": "/ead/assets/img/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

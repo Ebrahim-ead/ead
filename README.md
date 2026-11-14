@@ -78,6 +78,42 @@ python3 tools/update_sitemap.py             # প্রয়োগ
 
 **Shallow clone-এ সতর্কতা:** যদি সব ফাইলের git-তারিখ একই হয় (স্বাভাবিক, কারণ shallow clone-এ মাত্র ১টি কমিট থাকে), স্ক্রিপ্ট **কোনো `lastmod` লেখে না** — বানানো তারিখের চেয়ে না-থাকা ভালো, কারণ Google বানানো `lastmod` উপেক্ষা করে। পূর্ণ ইতিহাস থাকলে (`git fetch --unshallow`) নিজে থেকেই সত্যিকার তারিখ বসবে।
 
+## অ্যাপ-আইকন ও PWA
+
+সাইটটি ফোনে ও ডেস্কটপে **অ্যাপ হিসেবে ইনস্টল** করা যায় — `manifest.json` + আইকন-সেট আছে।
+
+### আইকন-ফাইল
+
+| ফাইল | মাপ | কাজ |
+|---|---|---|
+| `assets/img/favicon-32.png` | 32×32 | ট্যাব-আইকন (সরল design — ছোটে পড়া যায়) |
+| `assets/img/apple-touch-icon.png` | 180×180 | iPhone হোম-স্ক্রিন |
+| `assets/img/icon-192.png` | 192×192 | Android হোম-স্ক্রিন |
+| `assets/img/icon-512.png` | 512×512 | PWA install prompt |
+| `assets/img/icon-maskable-512.png` | 512×512 | Android adaptive (২০% প্যাডিং) |
+| `assets/img/app-icon.png` | 1024×1024 | মূল উৎস |
+
+> **নকশা:** সোনালি খোলা বই + শনিগ্রহ + আলোর চাঁদ — সাইটের গভীর রঙে (`#040c10`)।
+> **সতর্কতা:** ৩২px ফ্যাভিকন **আলাদা সরল design** — বিস্তারিত আইকন ছোটে ঘোলা হয়ে যায়।
+
+### `manifest.json`
+
+```json
+{ "display": "standalone", "start_url": "/ead/?src=pwa",
+  "scope": "/ead/", "theme_color": "#040c10",
+  "icons": [ 192 · 512 · maskable-512 · 1024 ],
+  "shortcuts": [ কুরআন · হাদিস · গ্রন্থ · প্রবন্ধ ] }
+```
+
+### টুল
+
+```bash
+python3 tools/wire_icons.py     # সব পাতায় favicon/manifest/iOS-মেটা বসায়
+node tools/test_icons.mjs       # ১৮টি পরীক্ষা
+```
+
+`wire_icons.py` বারবার চালালেও ডুপ্লিকেট করে না; পুরোনো SVG-data-favicon নিজে সরায়।
+
 ## সাইট-সার্চ
 
 হেডারের «খুঁজুন» বোতাম, `Ctrl`/`⌘`+`K` বা `/` চাপলে পুরো সাইট-জুড়ে সার্চ খোলে। ফল আসে এক ফাইল থেকেই — কোনো সার্ভার বা fetch লাগে না, তাই `file://`-তেও কাজ করে।
