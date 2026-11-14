@@ -12,9 +12,48 @@
 (function () {
   'use strict';
 
-  var data = window.SITE_SEARCH;
   var triggers = document.querySelectorAll('[data-search-open]');
-  if (!data || !data.length || !triggers.length) return;
+  if (!triggers.length) return;
+
+  /* ── সূচি চাহিদা-মতো লোড ──
+     আগে search-index.js (২৭৮ KB) প্রতিটি পাতায় ছাপা হত — সার্চ না
+     খুললেও। এখন বোতাম চাপলে বা Ctrl+K/«/» চাপলে তবেই নামে।
+     আগের মতোই file://-এ কাজ করে (public-path নয়, সাধারণ <script>)। */
+  var data = null;
+  var loading = null;
+
+  /* সূচি আগে থেকেই হাতে থাকলে (পরীক্ষা, বা পুরোনো ক্যাশ) সেটাই ব্যবহার করি */
+  function ready() {
+    if (!data && window.SITE_SEARCH && window.SITE_SEARCH.length) data = window.SITE_SEARCH;
+    return data;
+  }
+  var INDEX_PATH = (function () {
+    // আমরা নিজেরাই কোন পথে আছি, সেখান থেকেই ভাই-ফাইল ধরি
+    var me = document.currentScript;
+    if (me && me.src) return me.src.replace(/site-search\.js(\?.*)?$/, 'search-index.js');
+    if (window.__SEARCH_INDEX_PATH) return window.__SEARCH_INDEX_PATH;
+    return '/ead/assets/search-index.js';
+  })();
+
+  function loadIndex(done) {
+    if (ready()) { done(); return; }
+    if (loading) { loading.push(done); return; }
+    loading = [done];
+    var el = document.createElement('script');
+    el.src = INDEX_PATH;
+    el.async = true;
+    var settle = function () {
+      var waiting = loading || [];
+      loading = null;
+      if (window.SITE_SEARCH && window.SITE_SEARCH.length) data = window.SITE_SEARCH;
+      for (var i = 0; i < waiting.length; i++) {
+        try { waiting[i](data); } catch (e) {}
+      }
+    };
+    el.addEventListener('load', settle);
+    el.addEventListener('error', settle);
+    document.head.appendChild(el);
+  }
 
   /* ── বাংলা অক্ষর স্বাভাবিক করা (সার্চ-মিলের জন্য) ──
      একই শব্দের একাধিক বানান মিলবে: ি/ী, ু/ূ, য়/য, নুকতা, ৎ — সব সমান। */
@@ -331,7 +370,8 @@
   /* ── স্কোরিং: শিরোনাম-মিল > বর্ণনা > কীওয়ার্ড ── */
   function search(q) {
     var nq = norm(q);
-    if (!nq) return [];
+    if (!nq || !ready()) return [];
+    data = ready();
     var out = [];
     for (var i = 0; i < data.length; i++) {
       var r = data[i];
@@ -381,6 +421,8 @@
   function suraName(n) {
     if (!suraNames) {
       suraNames = {};
+      if (!ready()) return '';
+      data = ready();
       for (var i = 0; i < data.length; i++) {
         var r = data[i];
         if (r.t !== 'quran') continue;
@@ -410,7 +452,8 @@
     }, 90);
   }
 
-  function open() {
+  /* মোডাল খোলার লোকাল বডি — সূচি হাতে আসার পরেই চলে */
+  function openNow() {
     if (!root.hidden) return;
     lastFocus = document.activeElement;
     root.hidden = false;
@@ -423,8 +466,32 @@
     setTimeout(function () { loadAyahs(function () {}); }, 300);
   }
 
+  /* ব্যবহারকারী চাপলেন → সাথে সাথে মোডাল দেখাই, সূচি নামার সময়
+     «সূচি খুলছে…» লেখা থাকে, তারপর ফল দেখাই। দেরি ~২০০ms, তবু
+     ব্যবহারকারী বুঝতে পারেন সাইট সাড়া দিয়েছে। */
+  function open() {
+    if (!root.hidden) return;              /* আগেই খোলা */
+    if (ready()) { openNow(); return; }
+
+    /* শেল আগেই দেখাই — কিন্তু খালি ইনপুটে টাইপ করলে লোড শেষে খোঁজ চলবে */
+    root.hidden = false;
+    document.documentElement.classList.add('ss-open');
+    root.classList.add('ss-loading');
+    input.value = '';
+    setTimeout(function () { input.focus(); }, 20);
+
+    loadIndex(function () {
+      root.classList.remove('ss-loading');
+      render([], '');
+      // লোড হওয়ার আগেই কিছু টাইপ করেছেন? — সাথে সাথে খোঁজ দিই
+      if (input.value.trim()) onInput();
+      setTimeout(function () { loadAyahs(function () {}); }, 300);
+    });
+  }
+
   function close() {
     if (root.hidden) return;
+    root.classList.remove('ss-loading');
     root.hidden = true;
     document.documentElement.classList.remove('ss-open');
     if (lastFocus && lastFocus.focus) lastFocus.focus();

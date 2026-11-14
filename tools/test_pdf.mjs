@@ -98,5 +98,75 @@ for (const p of PAGES) {
   fail += dErr.length;
 }
 
+
+/* ── ৪. ডাউনলোড-অগ্রগতি ─────────────────────────────────────
+   ৯–১৫ MB PDF নামার সময় ব্যবহারকারী যেন «কিছুই হচ্ছে না» না ভাবেন।
+   ভুয়া fetch + stream বানিয়ে দেখি অগ্রগতি সত্যিই দেখায়। */
+console.log('\nডাউনলোড-অগ্রগতি');
+{
+  const html = readFileSync('book-islam-response.html', 'utf8');
+  const dom = new JSDOM(html, {
+    runScripts: 'outside-only',
+    url: 'https://ebrahim-ead.github.io/ead/book-islam-response.html',
+    beforeParse(win) {
+      win.matchMedia = (q) => ({ matches: false, media: q, addEventListener(){}, removeEventListener(){}, addListener(){}, removeListener(){} });
+      // ৩টি খণ্ডে ৩০ KB "PDF"
+      const total = 30000;
+      let sent = 0;
+      const CHUNK = 10000;
+      win.fetch = () => Promise.resolve({
+        ok: true,
+        headers: { get: (h) => (h.toLowerCase() === 'content-length' ? String(total) : null) },
+        body: {
+          getReader: () => ({
+            read: () => {
+              if (sent >= total) return Promise.resolve({ done: true });
+              sent += CHUNK;
+              return Promise.resolve({ done: false, value: new Uint8Array(CHUNK) });
+            },
+          }),
+        },
+      });
+      win.__downloads = [];
+      // <a>.click() ধরার জন্য প্যাচ
+      const origClick = win.HTMLAnchorElement.prototype.click;
+      win.HTMLAnchorElement.prototype.click = function () {
+        if (this.hasAttribute('download')) win.__downloads.push(this.getAttribute('href'));
+        else if (origClick) origClick.call(this);
+      };
+      // jsdom-এ Response নেই — stream-সহায়ক কিনা যাচাই করতে হয়
+      win.Response = function () {};
+      win.Response.prototype.body = null;
+      win.URL.createObjectURL = () => 'blob:fake';
+      win.URL.revokeObjectURL = () => {};
+    },
+  });
+  const w = dom.window, d = w.document;
+  w.eval(SCRIPT);
+
+  const link = d.querySelector('a[download][href$=".pdf"]');
+  link ? console.log('   ✓ ডাউনলোড-লিঙ্কে হাত দেওয়া হয়েছে') : (console.log('   ✗ লিঙ্ক পাওয়া যায়নি'), fail++);
+
+  // চাপ দিই
+  const ev = new w.MouseEvent('click', { bubbles: true, cancelable: true, button: 0 });
+  const notCancelled = link.dispatchEvent(ev);
+  if (!notCancelled) console.log('   ✓ ডিফল্ট ডাউনলোড ঠেকানো (নিজে নামাই)');
+  else (console.log('   ✗ ডিফল্ট আচরণ ঠেকানো হয়নি'), fail++);
+
+  // অগ্রগতি দেখা যায়?
+  await new Promise((r) => setTimeout(r, 150));
+  const bar = link.querySelector('[data-dl-bar]');
+  const main = link.querySelector('.tx b')?.textContent || '';
+  if (bar) console.log('   ✓ অগ্রগতি-বার তৈরি');
+  else (console.log('   ✗ অগ্রগতি-বার নেই'), fail++);
+
+  await new Promise((r) => setTimeout(r, 600));
+  const finished = w.__downloads.length > 0;
+  finished ? console.log('   ✓ নামা শেষে ফাইল সেভ হয়েছে') : (console.log('   ✗ ফাইল সেভ হয়নি'), fail++);
+  const after = link.querySelector('.tx b')?.textContent || '';
+  /ডাউনলোড হয়েছে/.test(after) ? console.log('   ✓ শেষে «ডাউনলোড হয়েছে ✓» দেখায়')
+    : (console.log(`   ✗ শেষে ভুল লেখা: «${after}»`), fail++);
+}
+
 console.log(`\n${fail ? `⛔ ${fail}টি সমস্যা` : '✓ ফোন ও ডেস্কটপ — দুই জায়গাতেই PDF খোলার পথ ঠিক'}`);
 process.exit(fail ? 1 : 0);

@@ -60,7 +60,10 @@ const dom = new JSDOM(page, { runScripts: 'dangerously', url: 'https://ebrahim-e
 const w = dom.window;
 const d = w.document;
 
-// স্ক্রিপ্ট দুটি হাতে ইনজেক্ট করি (jsdom fetch করে না)
+// সার্চ এখন সূচি চাহিদা-মতো লোড করে (document.currentScript → null in jsdom),
+// তাই পাথটা হাতে বলে দিই; jsdom fetch করতে পারে না বলে সূচিটাও হাতে ইনজেক্ট করি।
+w.__SEARCH_INDEX_PATH = 'assets/search-index.js';
+w.SITE_SEARCH = undefined;
 for (const src of ['assets/search-index.js', 'assets/site-search.js']) {
   const el = d.createElement('script');
   el.textContent = fs.readFileSync(path.join(ROOT, src), 'utf8');
@@ -75,6 +78,9 @@ btn ? ok('সার্চ-বোতাম পাওয়া গেছে') : ba
 function run(query) {
   const input = d.querySelector('.ss-input');
   const root = d.querySelector('.ss');
+  // মোডাল খুলি — এখন সূচি চাহিদা-মতো নামে, open() ডাকলেই তা হয়
+  const btn = d.querySelector('[data-search-open]');
+  if (root.hidden) btn.dispatchEvent(new w.Event('click', { bubbles: true }));
   root.hidden = false;
   input.value = query;
   input.dispatchEvent(new w.Event('input'));
