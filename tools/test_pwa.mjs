@@ -35,7 +35,17 @@ try {
 /self\.addEventListener\('activate'/.test(sw) ? ok('activate হ্যান্ডলার আছে') : bad('activate নেই');
 /self\.addEventListener\('fetch'/.test(sw) ? ok('fetch হ্যান্ডলার আছে') : bad('fetch নেই');
 /ead-shell-/.test(sw) ? ok('ক্যাশের নাম ead-*-এ scoped') : bad('ক্যাশের নাম scoped নয়');
-/trimCache|DATA_MAX_ENTRIES/.test(sw) ? ok('ডেটা-ক্যাশে সীমা আছে') : bad('সীমা নেই (ফোন ভরে যাবে)');
+/* তিন ক্যাশেরই বাজেট থাকতে হবে — এন্ট্রি আর বাইট, দুটোই */
+var limitCount = (sw.match(/LIMITS\[/g) || []).length;
+limitCount >= 3 ? ok(`${limitCount}টি ক্যাশের বাজেট ঘোষিত`) : bad(`বাজেট কম (${limitCount})`);
+/LIMITS\[PAGE_CACHE\]/.test(sw) ? ok('পাতা-ক্যাশে সীমা আছে') : bad('পাতা-ক্যাশে সীমা নেই');
+/LIMITS\[SHELL_CACHE\]/.test(sw) ? ok('শেল-ক্যাশে সীমা আছে') : bad('শেল-ক্যাশে সীমা নেই');
+/LIMITS\[DATA_CACHE\]/.test(sw) ? ok('ডেটা-ক্যাশে সীমা আছে') : bad('ডেটা-ক্যাশে সীমা নেই');
+// trim আসলে তিন জায়গাতেই ডাকা হয়?
+var trimCalls = (sw.match(/trimCache\(/g) || []).length - 1; // সংজ্ঞা বাদ
+trimCalls >= 3 ? ok(`trimCache ${trimCalls} জায়গায় ডাকা`) : bad(`trimCache csak ${trimCalls} জায়গায়`);
+// মাপ সত্যিই মাপা হয়?
+/sizeOf/.test(sw) ? ok('বাইট-মাপ হিসাব হয় (sizeOf)') : bad('মাপ মাপা হয় না');
 /origin !== self\.location\.origin/.test(sw) ? ok('বাইরের ডোমেইন বাদ') : bad('বাইরের ডোমেইন ক্যাশ করবে');
 
 /* pre-cache তালিকা বের করি */
