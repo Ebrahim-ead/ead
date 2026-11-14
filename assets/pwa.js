@@ -297,6 +297,47 @@
   window.addEventListener('offline', showOffline);
   window.addEventListener('online', hideOffline);
 
+
+  /* ---- ৫. ফিরে এলে যেখানে ছিলেন --------------------------------------------------
+     ইনস্টল করা অ্যাপে প্রতিবার শূন্য থেকে শুরু হলে «অ্যাপ» মনে হয় না।
+     পৃষ্ঠা ছাড়ার আগে scroll-স্থিতি মনে রাখি, ফিরে এলে ফিরিয়ে দিই।
+     কেবল ইনস্টল-মোডে — ব্রাউজার-ট্যাবে ব্রাউজারের নিজের behavior-ই ভালো। */
+  var SCROLL_KEY = 'ead:scroll:';
+
+  function isApp() {
+    return isStandalone() || (window.matchMedia && window.matchMedia('(display-mode: minimal-ui)').matches);
+  }
+
+  function restoreScroll() {
+    if (!isApp()) return;
+    var key = SCROLL_KEY + location.pathname + location.search;
+    var y = 0;
+    try { y = +(sessionStorage.getItem(key) || 0); } catch (e) { return; }
+    if (!y || y < 40) return;
+    // ছবি/ফন্ট আসার পর উচ্চতা বদলায় — দুই ধাপে ফিরিয়ে দিই
+    var go = function () {
+      try { window.scrollTo(0, y); } catch (e) {}
+    };
+    go();
+    setTimeout(go, 120);
+    if (window.requestAnimationFrame) requestAnimationFrame(function () { setTimeout(go, 60); });
+  }
+
+  function saveScroll() {
+    if (!isApp()) return;
+    var key = SCROLL_KEY + location.pathname + location.search;
+    try { sessionStorage.setItem(key, String(window.pageYOffset || 0)); } catch (e) {}
+  }
+
+  if (isApp()) {
+    window.addEventListener('pagehide', saveScroll);
+    window.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') saveScroll();
+    });
+    restoreScroll();
+    window.addEventListener('load', restoreScroll);
+  }
+
   /* ---- চালু ---- */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);

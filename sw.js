@@ -55,7 +55,10 @@ LIMITS[SHELL_CACHE] = [300, 6 * 1024 * 1024];
 LIMITS[PAGE_CACHE] = [200, 25 * 1024 * 1024];
 LIMITS[DATA_CACHE] = [250, 45 * 1024 * 1024];
 
-/* ---- অ্যাপ-শেল: সব পেজ + স্টাইল/স্ক্রিপ্ট/ফন্ট/আইকন ---- */
+/* ---- অ্যাপ-শেল: যা ছাড়া সাইট চলে না ----
+   ইনস্টলে কেবল এগুলোই নামে — দ্রুত ইনস্টল, কম ডেটা।
+   ২০২ KB ফন্ট ১.৪ MB TTF-এর বদলে এসেছে; search-index.js (২৭৮ KB)
+   আর এখানে নেই — সার্চ খুললে runtime-এ ক্যাশ হবে। */
 var SHELL = [
   '/ead/',
   '/ead/index.html',
@@ -68,22 +71,46 @@ var SHELL = [
   '/ead/assets/site-motion.css',
   '/ead/assets/nav-motion.js',
   '/ead/assets/site-motion.js',
-  '/ead/assets/search-index.js',
   '/ead/assets/site-search.js',
   '/ead/assets/pwa.js',
-  '/ead/assets/reader-tools.js',
-  '/ead/assets/book-pdf.js',
-  '/ead/assets/article-pages.js',
 
-  '/ead/assets/fonts/NotoSansBengali.ttf',
-  '/ead/assets/fonts/NotoSerifBengali.ttf',
+  '/ead/assets/fonts/noto-sans-bengali.woff2',
 
   '/ead/assets/img/favicon-32.png',
   '/ead/assets/img/icon-192.png',
+  '/ead/assets/img/apple-touch-icon.png',
+
+  /* হোম-পাতার প্রথম দৃশ্যের ছবি — অফলাইনে প্রথম খোলাতেই দেখা যাবে */
+  '/ead/assets/img/1f4b2d3123.webp',
+  '/ead/assets/img/f2b99e768b.webp'
+];
+
+/* ---- ইনস্টলের পরেই নামুক (নীরবে, সাইট চলার পথ আটকাবে না) ----
+   এগুলো বড়/কম-দরকারি — SHELL শেষ হলে আলাদাভাবে নামাই। */
+var PREFETCH = [
+  '/ead/assets/search-index.js',
+  '/ead/assets/reader-tools.js',
+  '/ead/assets/book-pdf.js',
+  '/ead/assets/article-pages.js',
   '/ead/assets/img/icon-512.png',
   '/ead/assets/img/icon-maskable-512.png',
-  '/ead/assets/img/apple-touch-icon.png'
+  '/ead/assets/img/b612b62bb3.jpg'
 ];
+
+/* ---- ক্লায়েন্ট ইনস্টল-মোডে (standalone) চলছে কি ----
+   Navigation-অনুরোধে display-mode জানা যায় না, তাই ক্লায়েন্ট-তালিকা
+   দেখি। ব্যর্থ হলে false — অর্থাৎ আগের নিরাপদ network-first। */
+function isStandaloneNav() {
+  return self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+    .then(function (list) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].frameType === 'top-level' &&
+            /standalone|minimal-ui/.test(list[i].displayMode || '')) return true;
+      }
+      return false;
+    })
+    .catch(function () { return false; });
+}
 
 /* ---- কোন পথে ডেটা (cache-first) ---- */
 function isData(url) {
@@ -111,6 +138,14 @@ self.addEventListener('install', function (event) {
         })
       );
     }).then(function () {
+      /* SHELL প্রস্তুত — এখন বাকিগুলো নীরবে নামাই।
+         একটা ব্যর্থ হলেও install ভাঙে না। */
+      return caches.open(SHELL_CACHE).then(function (cache) {
+        return Promise.all(PREFETCH.map(function (u) {
+          return cache.add(new Request(u, { cache: 'reload' })).catch(function () {});
+        }));
+      });
+    }).then(function () {
       return self.skipWaiting();   /* নতুন SW সঙ্গে সঙ্গে সক্রিয় */
     })
   );
@@ -132,6 +167,13 @@ self.addEventListener('activate', function (event) {
         })
       );
     }).then(function () {
+      /* navigationPreload: ব্রাউজার নেটওয়ার্ক-অনুরোধ SW চালুর সাথে
+         সাথেই شروع করে — SW ও নেটওয়ার্ক সমান্তরালে চলে, তাই প্রথম
+         পাতাটা আগে আসে (ইনস্টল করা অ্যাপে বোধগম্যভাবে দ্রুত)। */
+      if (self.registration.navigationPreload) {
+        return self.registration.navigationPreload.enable().catch(function () {});
+      }
+    }).then(function () {
       return self.clients.claim();  /* খোলা ট্যাবও নতুন SW পায় */
     })
   );
@@ -149,24 +191,15 @@ self.addEventListener('fetch', function (event) {
   try { url = new URL(req.url); } catch (e) { return; }
   if (url.origin !== self.location.origin) return;
 
-  /* নেভিগেশন (পাতা খোলা) — network-first, নেট না থাকলে ক্যাশ, তাও না থাকলে offline */
+  /* নেভিগেশন (পাতা খোলা)
+     ------------------------------------------------------------
+     ব্রাউজার-ট্যাব : network-first → ক্যাশ → offline   (নতুন লেখা সর্বদা)
+     ইনস্টল-অ্যাপ    : cache-first (SWR)               (সাথে সাথে খোলে) */
   if (req.mode === 'navigate') {
     event.respondWith(
-      fetch(req)
-        .then(function (res) {
-          if (res && res.ok) {
-            var copy = res.clone();
-            caches.open(PAGE_CACHE).then(function (c) {
-              c.put(req, copy).then(function () { trimCache(PAGE_CACHE); });
-            });
-          }
-          return res;
-        })
-        .catch(function () {
-          return caches.match(req).then(function (hit) {
-            return hit || caches.match('/ead/offline.html') || caches.match('/ead/index.html');
-          });
-        })
+      isStandaloneNav().then(function (inApp) {
+        return inApp ? appNav(req) : webNav(req, event);
+      })
     );
     return;
   }
@@ -215,6 +248,64 @@ self.addEventListener('fetch', function (event) {
 
   /* বাকি সব — সাধারণ নেটওয়ার্ক */
 });
+
+/* ============================================================
+   appNav — ইনস্টল করা অ্যাপে পাতা খোলা
+   ------------------------------------------------------------
+   ক্যাশে থাকলে সাথে সাথে দেখাই, আর নীরবে নেটওয়ার্ক থেকে নতুন কপি
+   নামিয়ে রাখি (stale-while-revalidate)। ফলে অ্যাপ খোলা তাৎক্ষণিক,
+   অথচ পরের খোলায় নতুন লেখা — দুইয়ের সুবিধাই।
+   ============================================================ */
+function appNav(req) {
+  return caches.match(req).then(function (hit) {
+    var fresh = fetch(req).then(function (res) {
+      if (res && res.ok) {
+        var copy = res.clone();
+        caches.open(PAGE_CACHE).then(function (c) {
+          c.put(req, copy).then(function () { trimCache(PAGE_CACHE); });
+        });
+      }
+      return res;
+    }).catch(function () { return null; });
+
+    if (hit) {
+      fresh.catch(function () {});      /* নীরবে আপডেট, UI আটকাবে না */
+      return hit;
+    }
+    return fresh.then(function (res) {
+      /* নিরাপদ fallback: caches.match() Promise ফেরায় — সত্য-মিথ্যা নয়।
+         আগে `res || caches.match(...)` লিখা ছিল, যা সবসময় Promise-ই
+         দিত, ফলে অফলাইন-পাতা কখনো আসত না। */
+      if (res) return res;
+      return caches.match('/ead/offline.html')
+        .then(function (o) { return o || caches.match('/ead/index.html'); });
+    });
+  });
+}
+
+/* ============================================================
+   webNav — ব্রাউজার-ট্যাবে পাতা খোলা (আগের আচরণ)
+   ============================================================ */
+function webNav(req, event) {
+  return (event.preloadResponse || Promise.resolve(null))
+    .then(function (pre) { return pre || fetch(req); })
+    .then(function (res) {
+      if (res && res.ok) {
+        var copy = res.clone();
+        caches.open(PAGE_CACHE).then(function (c) {
+          c.put(req, copy).then(function () { trimCache(PAGE_CACHE); });
+        });
+      }
+      return res;
+    })
+    .catch(function () {
+      return caches.match(req).then(function (hit) {
+        if (hit) return hit;
+        return caches.match('/ead/offline.html')
+          .then(function (o) { return o || caches.match('/ead/index.html'); });
+      });
+    });
+}
 
 /* ============================================================
    trimCache — ক্যাশকে বাজেটের ভিতরে রাখি
