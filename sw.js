@@ -1,0 +1,217 @@
+/* ============================================================
+   sw.js — Service Worker (অফলাইন সমর্থন)
+   ------------------------------------------------------------
+   ## কৌশল — কেন এভাবে
+
+   সাইট ১৮৩ MB। পুরোটা আগেই ক্যাশ করা অসম্ভব (ফোনে জায়গা নেই,
+   ব্যবহারকারীর ডেটাও নষ্ট হবে)। তাই তিন স্তরে ভাগ:
+
+   ১. **অ্যাপ-শেল** (≈৪ MB) — HTML/CSS/JS/ফন্ট/আইকন
+      install-এ ক্যাশ → অফলাইনেও সাইট খোলে।
+   ২. **পেজ** — network-first, ব্যর্থ হলে ক্যাশ।
+      ⇒ নতুন লেখা সবসময় আসবে, কিন্তু নেট ছাড়াও পুরোনোটা পড়া যাবে।
+   ৩. **ডেটা** (হাদিস/কুরআন/গ্রন্থ JSON, ছবি) — cache-first।
+      যা একবার পড়েছেন, পরে নেট ছাড়াই পড়তে পারবেন।
+
+   ## সীমা
+
+   ডেটা-ক্যাশে সর্বোচ্চ ৬০০ এন্ট্রি / ≈৮০ MB — তার বেশি হলে
+   পুরোনো লঘিষ্ঠ-ব্যবহৃত এন্ট্রি বাদ যায়। এতে ফোন ভরে যায় না।
+
+   ## সংস্করণ
+
+   কোন ফাইল বদলালে `VERSION` বাড়ান — পুরোনো ক্যাশ নিজে মুছে যাবে।
+   ============================================================ */
+
+var VERSION = 'v1';
+var SHELL_CACHE = 'ead-shell-' + VERSION;
+var PAGE_CACHE = 'ead-pages-' + VERSION;
+var DATA_CACHE = 'ead-data-' + VERSION;
+
+var DATA_MAX_ENTRIES = 600;
+var DATA_MAX_BYTES = 80 * 1024 * 1024;
+
+/* ---- অ্যাপ-শেল: সব পেজ + স্টাইল/স্ক্রিপ্ট/ফন্ট/আইকন ---- */
+var SHELL = [
+  '/ead/',
+  '/ead/index.html',
+  '/ead/offline.html',
+  '/ead/manifest.json',
+
+  '/ead/assets/site.css',
+  '/ead/assets/site-extra.css',
+  '/ead/assets/nav-motion.css',
+  '/ead/assets/site-motion.css',
+  '/ead/assets/nav-motion.js',
+  '/ead/assets/site-motion.js',
+  '/ead/assets/search-index.js',
+  '/ead/assets/site-search.js',
+  '/ead/assets/pwa.js',
+
+  '/ead/assets/fonts/NotoSansBengali.ttf',
+  '/ead/assets/fonts/NotoSerifBengali.ttf',
+
+  '/ead/assets/img/favicon-32.png',
+  '/ead/assets/img/icon-192.png',
+  '/ead/assets/img/icon-512.png',
+  '/ead/assets/img/icon-maskable-512.png',
+  '/ead/assets/img/apple-touch-icon.png'
+];
+
+/* ---- কোন পথে ডেটা (cache-first) ---- */
+function isData(url) {
+  return /\/(assets\/(hadith|quran|grantho|filistin)\/|search-ayahs\.js$)/.test(url.pathname);
+}
+
+/* ---- কোন পথে শেল-ফাইল (cache-first, দ্রুত) ---- */
+function isShellAsset(url) {
+  return /\.(css|js|woff2?|ttf|png|jpg|jpeg|webp|svg|ico)$/.test(url.pathname);
+}
+
+/* ============================================================
+   install — শেল ক্যাশ
+   ============================================================ */
+self.addEventListener('install', function (event) {
+  event.waitUntil(
+    caches.open(SHELL_CACHE).then(function (cache) {
+      /* আলাদা আলাদা করে যোগ করি: একটা ফাইল ব্যর্থ হলে
+         পুরো install ভেঙে না যায়। */
+      return Promise.all(
+        SHELL.map(function (u) {
+          return cache.add(new Request(u, { cache: 'reload' })).catch(function () {
+            /* স্কিপ — পরে runtime-এ ধরা পড়বে */
+          });
+        })
+      );
+    }).then(function () {
+      return self.skipWaiting();   /* নতুন SW সঙ্গে সঙ্গে সক্রিয় */
+    })
+  );
+});
+
+/* ============================================================
+   activate — পুরোনো সংস্করণের ক্যাশ মুছি
+   ============================================================ */
+self.addEventListener('activate', function (event) {
+  var keep = [SHELL_CACHE, PAGE_CACHE, DATA_CACHE];
+  event.waitUntil(
+    caches.keys().then(function (names) {
+      return Promise.all(
+        names.map(function (n) {
+          /* শুধু আমাদের নিজের পুরোনো ক্যাশ — অন্য কিছুর ছোঁব না */
+          if (n.indexOf('ead-') === 0 && keep.indexOf(n) === -1) {
+            return caches.delete(n);
+          }
+        })
+      );
+    }).then(function () {
+      return self.clients.claim();  /* খোলা ট্যাবও নতুন SW পায় */
+    })
+  );
+});
+
+/* ============================================================
+   fetch — কৌশল নির্বাচন
+   ============================================================ */
+self.addEventListener('fetch', function (event) {
+  var req = event.request;
+
+  /* শুধু GET; বাইরের ডোমেইন ছোঁব না */
+  if (req.method !== 'GET') return;
+  var url;
+  try { url = new URL(req.url); } catch (e) { return; }
+  if (url.origin !== self.location.origin) return;
+
+  /* নেভিগেশন (পাতা খোলা) — network-first, নেট না থাকলে ক্যাশ, তাও না থাকলে offline */
+  if (req.mode === 'navigate') {
+    event.respondWith(
+      fetch(req)
+        .then(function (res) {
+          if (res && res.ok) {
+            var copy = res.clone();
+            caches.open(PAGE_CACHE).then(function (c) { c.put(req, copy); });
+          }
+          return res;
+        })
+        .catch(function () {
+          return caches.match(req).then(function (hit) {
+            return hit || caches.match('/ead/offline.html') || caches.match('/ead/index.html');
+          });
+        })
+    );
+    return;
+  }
+
+  /* ডেটা — cache-first, না থাকলে নেট + ক্যাশে রাখি */
+  if (isData(url)) {
+    event.respondWith(
+      caches.match(req).then(function (hit) {
+        if (hit) return hit;
+        return fetch(req).then(function (res) {
+          if (res && res.ok) {
+            var copy = res.clone();
+            caches.open(DATA_CACHE).then(function (c) {
+              c.put(req, copy).then(function () { trimCache(DATA_CACHE); });
+            });
+          }
+          return res;
+        });
+      })
+    );
+    return;
+  }
+
+  /* স্টাইল/স্ক্রিপ্ট/ফন্ট/ছবি — cache-first, নেট-ফলব্যাক */
+  if (isShellAsset(url)) {
+    event.respondWith(
+      caches.match(req).then(function (hit) {
+        return (
+          hit ||
+          fetch(req).then(function (res) {
+            if (res && res.ok) {
+              var copy = res.clone();
+              caches.open(SHELL_CACHE).then(function (c) { c.put(req, copy); });
+            }
+            return res;
+          }).catch(function () {
+            return new Response('', { status: 504, statusText: 'offline' });
+          })
+        );
+      })
+    );
+    return;
+  }
+
+  /* বাকি সব — সাধারণ নেটওয়ার্ক */
+});
+
+/* ============================================================
+   trimCache — ডেটা-ক্যাশে সীমা রাখি
+   ============================================================ */
+function trimCache(name) {
+  caches.open(name).then(function (cache) {
+    cache.keys().then(function (keys) {
+      if (keys.length <= DATA_MAX_ENTRIES) return;
+      /* পুরোনো (আগে যোগ হওয়া) এন্ট্রি আগে বাদ */
+      var remove = keys.length - DATA_MAX_ENTRIES;
+      Promise.all(
+        keys.slice(0, remove).map(function (k) { return cache.delete(k); })
+      );
+    });
+  });
+}
+
+/* ============================================================
+   message — পেজ থেকে আদেশ (ইনস্টল-বাটন/আপডেট)
+   ============================================================ */
+self.addEventListener('message', function (event) {
+  var data = event.data || {};
+  if (data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+  if (data.type === 'CLEAR_DATA') {
+    caches.delete(DATA_CACHE).then(function () {
+      if (event.source) event.source.postMessage({ type: 'DATA_CLEARED' });
+    });
+  }
+});

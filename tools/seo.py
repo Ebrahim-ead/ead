@@ -50,9 +50,10 @@ def url_of(p: pathlib.Path, base: str) -> str:
 
 def add_meta(s: str, base: str, p: pathlib.Path) -> tuple[str, list[str]]:
     notes = []
-    # 404 পাতা ইচ্ছে করেই noindex ও canonical-হীন (audit_site.mjs সেটিই আশা করে);
-    # আগে seo.py এখানে canonical বসিয়ে দিত, ফলে অডিট ❌ হতো।
-    if p.name == "404.html":
+    # 404 আর offline পাতা ইচ্ছে করেই noindex ও canonical-হীন (audit_site.mjs
+    # সেটিই আশা করে); আগে seo.py এখানে canonical বসিয়ে দিত, ফলে অডিট ❌ হতো।
+    # offline.html সার্ভিস-ওয়ার্কার-নির্দিষ্ট, কোনো URL-এর প্রতিনিধি নয়।
+    if p.name in ("404.html", "offline.html"):
         return s, notes
     og = base + "assets/og-cover.jpg"
     if 'property="og:image"' not in s:
