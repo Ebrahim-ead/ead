@@ -111,13 +111,17 @@ python3 tools/update_sitemap.py             # প্রয়োগ
 
 | স্তর | কী | কৌশল |
 |---|---|---|
-| `ead-shell-v1` | CSS · JS · ফন্ট · আইকন (২০ ফাইল, ≈২.২ MB কাঁচা ≈০.৬ MB গজিপ) | install-এ precache → cache-first |
-| `ead-pages-v1` | HTML পাতা | network-first → ক্যাশ → `offline.html` |
-| `ead-data-v1` | হাদিস/কুরআন/গ্রন্থের JSON + `search-ayahs.js` | cache-first, সর্বোচ্চ ৬০০ এন্ট্রি / ৮০ MB |
+| `ead-shell-v2` | CSS · JS · ফন্ট · আইকন (২৩ ফাইল, ≈২.২ MB কাঁচা ≈০.৬ MB গজিপ) | install-এ precache → cache-first, **৩০০ এন্ট্রি / ৬ MB** |
+| `ead-pages-v2` | HTML পাতা | network-first → ক্যাশ → `offline.html`, **২০০ এন্ট্রি / ২৫ MB** |
+| `ead-data-v1` | হাদিস/কুরআন/গ্রন্থের JSON + `search-ayahs.js` | cache-first, **২৫০ এন্ট্রি / ৪০ MB** |
+
+**সীমা কীভাবে মানা হয়:** প্রতিটি ক্যাশের দুই বাজেট — এন্ট্রি-সংখ্যা আর মোট বাইট। যেটা আগে ছাড়ায়, সেই অনুযায়ী পুরোনো এন্ট্রি বাদ যায় (`trimCache` → `sizeOf`)। আকার আসে `Content-Length` থেকে; না থাকলে `blob()` করে সত্যিকারের মাপ। স্ক্যানগুলো serialized — একসাথে অনেক fetch এলে বারবার পুরো ক্যাশ স্ক্যান করে না।
+
+**সংস্করণ:** শেল/পাতার কিছু বদলালে `SHELL_VERSION` বাড়ান — শুধু শেল-ক্যাশ বদলাবে, **ব্যবহারকারীর জমানো ডেটা অটুট থাকবে**। ডেটার JSON-গঠন বদলালে তবেই `DATA_VERSION`।
 
 - **প্রথম খোলা:** শুধু শেল নামে (≈০.৬ MB) — ১৪৪ MB ডেটা পরে পড়ার সময় নীরবে জমে
 - **কখনো ক্যাশে নয়:** অন্য ডোমেইন (`origin` যাচাই), `POST`/বাইরের রিকোয়েস্ট
-- **আপডেট:** `VERSION` বদলালে নতুন ক্যাশ; পুরোনো `ead-*` নিজে মুছে যায়
+- **আপডেট:** `SHELL_VERSION` বদলালে নতুন শেল-ক্যাশ; পুরোনো শেল/পাতা নিজে মুছে যায়, ডেটা থাকে
 - `offline.html` — ইন্টারনেট ছাড়া খোলা হলে এটাই দেখায় (noindex, canonical নেই)
 
 `assets/pwa.js` (প্রতিটি পাতায় `defer`):
@@ -137,7 +141,8 @@ python3 tools/update_sitemap.py             # প্রয়োগ
 ```bash
 python3 tools/wire_icons.py     # সব পাতায় favicon/manifest/iOS-মেটা বসায়
 node tools/test_icons.mjs       # ১৮টি পরীক্ষা
-node tools/test_pwa.mjs         # ৩৪টি পরীক্ষা (SW, শেল, offline, সংযোগ, বোতাম)
+node tools/test_pwa.mjs         # ৩৯টি পরীক্ষা (SW, শেল, offline, সংযোগ, বোতাম)
+node tools/test_sw_limits.mjs   # ১৬টি পরীক্ষা (ক্যাশ-সীমা আসলে মানা হয় কি)
 node tools/test_pwa_ui.mjs      # ২৩টি পরীক্ষা (ব্যানার, বোতাম, আপডেট, অফলাইন-নোটিশ)
 ```
 
