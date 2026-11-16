@@ -146,13 +146,25 @@
       var meta = bn(c.count) + " " + VW;
       if (c.suktaCount) meta += " · " + bn(c.suktaCount) + " " + GW;
       if (c.prefaceCount) meta += " · অনুক্রমণিকা";
+      /* অসম্পূর্ণ পুস্তক চিহ্নিত: ডেটার chaptersTotal-এর কম perChapter থাকলে
+         (যেমন সামসঙ্গীত ১৫/১৫০) — পাঠক যেন ধরে নিতে না পারেন পাঠটি পূর্ণ।
+         সংখ্যাটি হার্ডকোড নয়, index.json থেকেই আসে। */
+      var haveCh = c.perChapter ? Object.keys(c.perChapter).length : 0;
+      var fullCh = +c.chaptersTotal || 0;
+      var partial = fullCh > haveCh;
+      /* অসম্পূর্ণ হলে suktaCount-এর জায়গায় «৩৯/৪০» দেখাই — দুবার নয় */
+      if (partial && haveCh) {
+        meta = bn(c.count) + " " + VW + " · " + bn(haveCh) + "/" + bn(fullCh) + " " + GW;
+      }
       /* ইংরেজি নাম ডেটার `en` থেকেই (Genesis, Exodus …) — বাংলা নামের পাশে,
          ছোট করে ও LTR-এ, যাতে দুই ভাষার নাম একসাথে পড়া যায়। */
       var tag = c.en ? ' <span class="g-bk-en" lang="en" dir="ltr">' + esc(c.en) + "</span>" : "";
+      var badge = partial ? ' <span class="g-bk-p" title="' +
+        esc("অসম্পূর্ণ — " + bn(haveCh) + "/" + bn(fullCh) + " " + GW) + '">অসম্পূর্ণ</span>' : "";
       return '<button class="g-ch g-bk' + (on ? " on" : "") + '" type="button" data-ch="' + c.id + '"' +
         (on ? ' aria-current="true"' : "") + '>' +
         '<span class="num">' + bn(c.num || c.id) + '</span>' +
-        '<span class="txt"><span class="nm">' + esc(c.bn) + tag + '</span>' +
+        '<span class="txt"><span class="nm">' + esc(c.bn) + tag + badge + '</span>' +
         '<span class="meta">' + meta + "</span></span></button>";
     }).join("");
     box.querySelectorAll("[data-ch]").forEach(function (b) {
