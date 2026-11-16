@@ -527,6 +527,28 @@ def write_index(books):
     দেখতই না)। তাই প্রতিটি পুস্তকের ফাইল পড়ে সূচি মেলে-চলে।
     """
     OUT.mkdir(parents=True, exist_ok=True)
+    # ⚠ ম্যানিফেস্ট আংশিক হতে পারে (উৎসের সূচি বদলালে নতুন পুস্তক বাদ পড়ে)।
+    #   ডিস্কে থাকা প্রতিটি ch<N>.json সূচিতে উঠতেই হবে — নইলে নামানো পাঠ
+    #   থাকলেও পাঠক সেটি দেখতে পান না (২০২৬-১১-১৬: merge_bible_gap ১৬টি পুস্তক
+    #   লিখেছিল, কিন্তু ম্যানিফেস্টে ৫০ থাকায় সূচিতে কেবল ৫০টিই উঠেছিল)।
+    known = {b["i"] for b in books}
+    for fp in sorted(OUT.glob("ch*.json")):
+        try:
+            i = int(fp.stem[2:])
+        except ValueError:
+            continue
+        if i in known:
+            continue
+        try:
+            d0 = json.loads(fp.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if not d0.get("count"):
+            continue
+        books.append({"i": i, "bn": d0.get("bn", ""), "en": d0.get("en", ""),
+                      "lesson": d0.get("url", ""),
+                      "ntopics": d0.get("suktaCount") or len(d0.get("suktas") or [])})
+        known.add(i)
     chs, total, withbn = [], 0, 0
     for b in books:
         fp = OUT / f'ch{b["i"]}.json'

@@ -102,6 +102,17 @@
 
   function chapterIds(bk) {
     var n = bk.grid && bk.grid.count ? +bk.grid.count : (+bk.suktaCount || 0);
+    /* নিরাপত্তা-নেট: suktaCount শূন্য বা perChapter-এর চেয়ে কম হলে ডেটার
+       perChapter-ই ভরসা — নইলে অধ্যায়-গ্রিড ফাঁকা দেখিয়ে পাঠ আটকে যায়
+       (২০২৬-১১-১৬: ১৬টি পুস্তকে suktas ছিল না, তাই গ্রিডই আঁকা হতো না)। */
+    if (bk.perChapter) {
+      var maxCh = 0;
+      for (var k in bk.perChapter) {
+        var v = +k;
+        if (v > maxCh) maxCh = v;
+      }
+      if (maxCh > n) n = maxCh;
+    }
     var out = [];
     for (var i = 1; i <= n; i++) out.push(i);
     return out;
