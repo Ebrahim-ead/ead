@@ -1,14 +1,16 @@
 /* ============================================================
-   test_sw_appmode.mjs — ইনস্টল করা অ্যাপে «সাথে সাথে খোলা»
+   test_sw_appmode.mjs — নেভিগেশন আচরণ (নেটওয়ার্ক-প্রথম)
    ------------------------------------------------------------
    চালাতে:  node tools/test_sw_appmode.mjs
 
    যা যাচাই করে:
-     · ইনস্টল-মোডে (standalone) পাতা ক্যাশ থেকে সাথে সাথে আসে
-     · ক্যাশে না থাকলে নেটওয়ার্ক, নেটওয়ার্কও না থাকলে offline.html
-     · ক্যাশে থাকা অবস্থাতেই নীরবে নেটওয়ার্ক থেকে নতুন কপি নামে (SWR)
-     · ব্রাউজার-ট্যাবে আগের network-first আচরণই থাকে
-     · navigationPreload চালু হয়
+     · নতুন লেখা-ই আগে আসে (network-first)
+     · নেভিগেশন-preload ব্যবহার হয় — অতিরিক্ত অপেক্ষা নেই
+     · নেট নেই → ক্যাশ → offline.html (কখনো ফাঁকা নয়)
+     · install-এ PREFETCH আটকায় না (তাৎক্ষণিক সক্রিয়)
+
+   ⚠ আগে ইনস্টল-মোডে cache-first আলাদা পথ ছিল; ইনস্টল-সিস্টেম
+   বাদ দেওয়ায় সেটি সরানো হয়েছে। এখন সবাই একই নিরাপদ পথে।
    ============================================================ */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -37,6 +39,12 @@ class FakeCache {
 }
 let SLOW = false;
 const store = new Map();
+
+/* ক্যাশের নাম ধরে কী বের করি — version বদলালেও কাজ করবে */
+function storeKey(prefix) {
+  for (const k of store.keys()) if (k.startsWith(prefix)) return k;
+  return prefix;
+}
 const CA = {
   open: async (n) => { if (!store.has(n)) store.set(n, new FakeCache()); return store.get(n); },
   delete: async (n) => store.delete(n),
@@ -50,14 +58,6 @@ const CA = {
   keys: async () => [...store.keys()],
 };
 
-/* SW-কে display-mode জানাতে পেজের মতো মেসেজ পাঠাই */
-function tellMode(handlers, mode = 'standalone', url = 'https://x.test/ead/index.html') {
-  handlers.message({
-    data: { type: 'MODE', mode, url },
-    source: { postMessage() {}, url },
-  });
-}
-
 function res(body, { ok = true } = {}) {
   return {
     ok, _body: body,
@@ -68,19 +68,19 @@ function res(body, { ok = true } = {}) {
 }
 
 /* ── sw.js চালাই নিয়ন্ত্রিত পরিবেশে ───────────────────── */
-async function boot({ standalone = false, net = true } = {}) {
-  store.clear();
+async function boot({ net = true, fresh = true, overrideFetch = null } = {}) {
+  if (fresh) store.clear();
   vm.doFail; // noop
 
   let fetchCalls = 0;
   const ctx = vm.createContext({
     caches: CA,
     Promise, console, URL, Response: class {},
-    fetch: (req) => {
+    fetch: overrideFetch || ((req) => {
       fetchCalls++;
       if (!net) return Promise.reject(new Error('offline'));
       return Promise.resolve(res('FRESH:' + (req.url || req)));
-    },
+    }),
     setTimeout, clearTimeout,
   });
 
@@ -88,7 +88,7 @@ async function boot({ standalone = false, net = true } = {}) {
   ctx.self = {
     location: { origin: 'https://x.test' },
     clients: {
-      matchAll: async () => (standalone ? [{ frameType: 'top-level', displayMode: 'standalone' }] : [{ frameType: 'top-level', displayMode: 'browser' }]),
+      matchAll: async () => [{ frameType: 'top-level' }],
       claim: async () => {},
     },
     registration: { navigationPreload: { enable: async () => { ctx.__preloadOn = true; } } },
@@ -118,61 +118,37 @@ async function navigate(h, { preload = null } = {}) {
   return await out;
 }
 
-/* ── ১. ইনস্টল-মোড, ক্যাশে পাতা আছে → তাৎক্ষণিক ── */
-console.log('\n১. ইনস্টল-অ্যাপ — ক্যাশে থাকলে সাথে সাথে');
-{
-  const { handlers } = await boot({ standalone: true, net: true });
-  tellMode(handlers, 'standalone');        // পেজ জানাল: ইনস্টল-মোড
-  const c = await CA.open(store.size ? [...store.keys()][0] : 'ead-pages-v2');
-  // ক্যাশে আগের কপি রাখি
-  for (const n of store.keys()) await (await CA.open(n)).put({ url: 'https://x.test/ead/index.html' }, res('CACHED'));
-
-  const r = await navigate(handlers);
-  r && r._body === 'CACHED' ? ok('ক্যাশের কপি সাথে সাথে (নেটওয়ার্কের অপেক্ষা নয়)')
-                            : bad(`ক্যাশ ব্যবহার হয়নি — পেল: ${r && r._body}`);
-}
-
-/* ── ২. ইনস্টল-মোড, ক্যাশে কিছু নেই → নেটওয়ার্ক ── */
-console.log('\n২. ইনস্টল-অ্যাপ — ক্যাশে না থাকলে নেটওয়ার্ক');
-{
-  const { handlers } = await boot({ standalone: true, net: true });
-  tellMode(handlers, 'standalone');
-  const r = await navigate(handlers);
-  r && /^FRESH/.test(r._body) ? ok('নেটওয়ার্ক থেকে আনে') : bad(`আসেনি — ${r && r._body}`);
-}
-
 /* ── ৩. ইনস্টল-মোড, নেট নেই, ক্যাশে নেই → offline.html ── */
 console.log('\n৩. অ্যাপে নেট নেই');
 {
-  const { handlers } = await boot({ standalone: true, net: false });
-  tellMode(handlers, 'standalone');
+  const { handlers } = await boot({ net: false });
   const r = await navigate(handlers);
   r && r._body === 'OFFLINE-PAGE'
     ? ok('offline.html ফলব্যাক — অ্যাপ ফাঁকা থাকে না')
     : bad(`ফলব্যাক ভুল — পেল: ${r && r._body}`);
 }
 
-/* ── ৪. SWR: ক্যাশে থাকলেও নীরবে নতুন কপি নামে ── */
-console.log('\n৪. stale-while-revalidate');
+/* ── ৪. নেট নেই, কিন্তু ক্যাশে আছে → ক্যাশ থেকেই ── */
+console.log('\n৪. নেট নেই, ক্যাশে আছে → ক্যাশ থেকেই');
 {
-  const { handlers } = await boot({ standalone: true, net: true });
-  tellMode(handlers, 'standalone');
-  for (const n of store.keys()) await (await CA.open(n)).put({ url: 'https://x.test/ead/index.html' }, res('CACHED'));
-  await navigate(handlers);
-  await new Promise((r) => setTimeout(r, 120));
-  let updated = false;
-  for (const n of store.keys()) {
-    const v = await (await CA.open(n)).match({ url: 'https://x.test/ead/index.html' });
-    if (v && /^FRESH:/.test(v._body)) updated = true;
-  }
-  updated ? ok('ক্যাশ নীরবে নতুন কপিতে হালনাগাদ') : bad('নতুন কপি সংরক্ষণ হয়নি — লেখা পুরোনোই থেকে যাবে');
+  const { handlers } = await boot({ net: true });
+  /* PAGE_CACHE-এ আগের কপি জমাই (আগের কোনো ভিজিটের মতো) */
+  const pageName = storeKey('ead-pages-v5');
+  const pc = await CA.open(pageName);
+  await pc.put({ url: 'https://x.test/ead/index.html' }, res('CACHED'));
+
+  /* এবার নেট বন্ধ করে নতুন SW পরিবেশ */
+  const { handlers: h2 } = await boot({ net: false, fresh: false });
+  const r = await navigate(h2, { preload: null });  // preload-ও নেই = সত্যিকারের অফলাইন
+  r && r._body === 'CACHED'
+    ? ok('অফলাইনে আগের কপি পাওয়া যায়')
+    : bad(`অফলাইনে ক্যাশ ব্যবহার হয়নি — পেল: ${r && r._body}`);
 }
 
 /* ── ৫. ব্রাউজার-ট্যাব: আগের আচরণ অটুট ── */
 console.log('\n৫. ব্রাউজার-ট্যাব — network-first অটুট');
 {
   const { handlers } = await boot({ standalone: false, net: true });
-  tellMode(handlers, 'browser');
   for (const n of store.keys()) await (await CA.open(n)).put({ url: 'https://x.test/ead/index.html' }, res('CACHED'));
   const r = await navigate(handlers);
   r && /^FRESH/.test(r._body) ? ok('নতুন লেখা-ই আগে (network-first)') : bad(`ট্যাবে ক্যাশ আগে চলে গেল — ${r && r._body}`);
@@ -195,36 +171,6 @@ console.log('\n৭. preloadResponse ব্যবহার');
   const r = await navigate(handlers, { preload: res('PRELOADED') });
   r && r._body === 'PRELOADED' ? ok('preload-এর উত্তর কাজে লাগে (নেটওয়ার্ক-অপেক্ষা বাঁচে)')
                                : bad(`preload অবহেলিত — পেল ${r && r._body}`);
-}
-
-
-/* ── ৮. পেজ → SW মেসেজ (আসল পথ) ─────────────────────────────
-   ⚠ আগে SW-এ Client.displayMode পড়া হত — প্রপার্টিটাই নেই,
-   তাই appNav কখনো চলত না। এখন pwa.js মেসেজ পাঠায়। */
-console.log('\n৮. pwa.js → SW মেসেজ');
-{
-  const pwa = fs.readFileSync(path.join(ROOT, 'assets/pwa.js'), 'utf8');
-  /type:\s*'MODE'/.test(pwa) ? ok('pwa.js MODE মেসেজ পাঠায়') : bad('MODE মেসেজ নেই');
-  /controllerchange/.test(pwa) ? ok('কন্ট্রোলার পেলে আবার জানায়') : bad('controllerchange নেই');
-  /display-mode:/.test(pwa) ? ok('display-mode মিডিয়া-কোয়েরি') : bad('মিডিয়া-কোয়েরি নেই');
-  /navigator\.standalone/.test(pwa) ? ok('iOS navigator.standalone') : bad('iOS পথ নেই');
-  /* মৃত কোড গেছে? */
-  /\.displayMode/.test(fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8'))
-    ? bad('SW-এ এখনো মৃত Client.displayMode কোড') : ok('মৃত Client.displayMode সরানো');
-}
-
-/* ── ৯. মেসেজ বোঝা যায় ── */
-console.log('\n৯. SW মেসেজ থেকে মোড');
-{
-  const { handlers } = await boot({ standalone: false, net: true });
-  /* about.html-এর জন্য মোড জানাই, কিন্তু index.html-এ চাপ দিই —
-     index আগের network-first-ই থাকবে (URL-ভিত্তিক বিচার) */
-  tellMode(handlers, 'standalone', 'https://x.test/ead/about.html');
-  for (const n of store.keys()) await (await CA.open(n)).put({ url: 'https://x.test/ead/index.html' }, res('CACHED'));
-  const r = await navigate(handlers);
-  r && /^FRESH/.test(r._body)
-    ? ok('অন্য পাতার মোড অন্য পাতায় প্রভাব ফেলে না (URL-ভিত্তিক)')
-    : bad(`URL-ভিত্তিক বিচার কাজ করছে না — পেল ${r && r._body}`);
 }
 
 

@@ -42,7 +42,7 @@
 /* শেল ও পাতা আলাদা সংস্করণ নম্বর পায় — শুধু শেল-তালিকা বদলালে
    ব্যবহারকারীর জমানো ডেটা (১৪২ MB পর্যন্ত) মুছে যাওয়া উচিত নয়।
    ডেটার গঠন বদলালে তবেই DATA_VERSION বাড়াবেন। */
-var SHELL_VERSION = 'v4';
+var SHELL_VERSION = 'v5';
 var DATA_VERSION = 'v1';
 
 var SHELL_CACHE = 'ead-shell-' + SHELL_VERSION;
@@ -100,29 +100,9 @@ var PREFETCH = [
   '/ead/assets/img/b612b62bb3.jpg'
 ];
 
-/* ---- ক্লায়েন্ট ইনস্টল-মোডে চলছে কি ----
-   ⚠ Service Worker display-mode জানতেই পারে না — Client/WindowClient-এ
-   এমন কোনো প্রপার্টি নেই, navigation-অনুরোধেও নেই (প্ল্যাটফর্ম-সীমা)।
-   তাই পেজ নিজেই জানায়: pwa.js «MODE» মেসেজ পাঠায় («standalone» বা
-   «browser»), আমরা URL ধরে মনে রাখি। মেসেজ না এলে আগের নিরাপদ
-   network-first — কিছুই ভাঙে না। */
-var displayModeByUrl = {};
-
-function setDisplayMode(url, mode) {
-  if (!url) return;
-  try {
-    var k = new URL(url).pathname;
-    displayModeByUrl[k] = (mode === 'standalone' || mode === 'minimal-ui'
-      || mode === 'fullscreen') ? 'standalone' : 'browser';
-  } catch (e) {}
-}
-
-function isAppNav(url) {
-  try {
-    var mode = displayModeByUrl[new URL(url).pathname];
-    return mode === 'standalone';
-  } catch (e) { return false; }
-}
+/* ⚠ ইনস্টল-সিস্টেম বাদ দেওয়া হয়েছে (ব্যবহারকারীর নির্দেশ)। তাই
+   display-mode জেনে আলাদা নেভিগেশন-পথ রাখার দরকার নেই — সব পাতা
+   একই নিরাপদ পথে (webNav) যায়, নেভিগেশন-preload ব্যবহার করে। */
 
 /* ---- কোন পথে ডেটা (cache-first) ---- */
 function isData(url) {
@@ -211,10 +191,11 @@ self.addEventListener('fetch', function (event) {
 
   /* নেভিগেশন (পাতা খোলা)
      ------------------------------------------------------------
-     ব্রাউজার-ট্যাব : network-first → ক্যাশ → offline   (নতুন লেখা সর্বদা)
-     ইনস্টল-অ্যাপ    : cache-first (SWR)               (সাথে সাথে খোলে) */
+     network-first → ক্যাশ → offline। নতুন লেখা সর্বদা আগে; নেট না
+     থাকলে আগের কপি, তাও না থাকলে offline.html।
+     (ইনস্টল-সিস্টেম বাদ দেওয়ায় আলাদা appNav পথ আর নেই।) */
   if (req.mode === 'navigate') {
-    event.respondWith(isAppNav(req.url) ? appNav(req) : webNav(req, event));
+    event.respondWith(webNav(req, event));
     return;
   }
 
@@ -264,41 +245,7 @@ self.addEventListener('fetch', function (event) {
 });
 
 /* ============================================================
-   appNav — ইনস্টল করা অ্যাপে পাতা খোলা
-   ------------------------------------------------------------
-   ক্যাশে থাকলে সাথে সাথে দেখাই, আর নীরবে নেটওয়ার্ক থেকে নতুন কপি
-   নামিয়ে রাখি (stale-while-revalidate)। ফলে অ্যাপ খোলা তাৎক্ষণিক,
-   অথচ পরের খোলায় নতুন লেখা — দুইয়ের সুবিধাই।
-   ============================================================ */
-function appNav(req) {
-  return caches.match(req).then(function (hit) {
-    var fresh = fetch(req).then(function (res) {
-      if (res && res.ok) {
-        var copy = res.clone();
-        caches.open(PAGE_CACHE).then(function (c) {
-          c.put(req, copy).then(function () { trimCache(PAGE_CACHE); });
-        });
-      }
-      return res;
-    }).catch(function () { return null; });
-
-    if (hit) {
-      fresh.catch(function () {});      /* নীরবে আপডেট, UI আটকাবে না */
-      return hit;
-    }
-    return fresh.then(function (res) {
-      /* নিরাপদ fallback: caches.match() Promise ফেরায় — সত্য-মিথ্যা নয়।
-         আগে `res || caches.match(...)` লিখা ছিল, যা সবসময় Promise-ই
-         দিত, ফলে অফলাইন-পাতা কখনো আসত না। */
-      if (res) return res;
-      return caches.match('/ead/offline.html')
-        .then(function (o) { return o || caches.match('/ead/index.html'); });
-    });
-  });
-}
-
-/* ============================================================
-   webNav — ব্রাউজার-ট্যাবে পাতা খোলা (আগের আচরণ)
+   webNav — পাতা খোলা (নেভিগেশন-preload + নেটওয়ার্ক, ব্যর্থে ক্যাশ)
    ============================================================ */
 function webNav(req, event) {
   return (event.preloadResponse || Promise.resolve(null))
@@ -385,18 +332,14 @@ function sizeOf(res) {
 }
 
 /* ============================================================
-   message — পেজ থেকে আদেশ (ইনস্টল-বাটন/আপডেট)
+   message — পেজ থেকে আদেশ (আপডেট/ডেটা-মুছে-ফেলা)
    ============================================================ */
 self.addEventListener('message', function (event) {
   var data = event.data || {};
   if (data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-  if (data.type === 'MODE') {
-    /* পেজ তার display-mode জানাল — এই URL-এর পরের নেভিগেশন থেকে
-       ইনস্টল-মোড বুঝব (appNav)। */
-    setDisplayMode(data.url || (event.source && event.source.url), data.mode);
-  }
+
   if (data.type === 'CLEAR_DATA') {
     caches.delete(DATA_CACHE).then(function () {
       if (event.source) event.source.postMessage({ type: 'DATA_CLEARED' });
