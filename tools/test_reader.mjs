@@ -24,15 +24,15 @@ function pages() {
     .flatMap((dir) => fs.readdirSync(dir)
       .filter((f) => f.endsWith('.html'))
       .map((f) => path.join(dir, f)))
-    /* grantho.js-ভিত্তিক রিডারই এখানে পরীক্ষা হয়। English Bible নিজের আলাদা
-       ক্ষুদ্র রিডার চালায় (data-granth="english-bible"), শুধু nav-motion-এর
-       জন্য grantho.js লোড করে — তাই granth-handler বাদ দিয়ে ছাঁকা হয়।
-       তার নিজস্ব টেস্ট: tools/test_english_bible.mjs */
+    /* গ্রন্থ-রিডার যেকোনো ইঞ্জিনেই চলতে পারে: grantho.js (গীতা/বেদ) বা
+       bible-reader.js (বাংলা বাইবেল — grantho.js শেয়ার করায় আলাদা রাখা)।
+       English Bible-এর নিজস্ব ক্ষুদ্র রিডার আলাদা টেস্টে চলে
+       (tools/test_english_bible.mjs), তাই তাকে বাদ দেওয়া হয়। */
     .filter((f) => {
       const h = fs.readFileSync(f, 'utf8');
       const g = (h.match(/data-granth="([^"]*)"/) || [])[1];
-      return /data-base="/.test(h) && g && g !== 'english-bible'
-        && /grantho\.js/.test(h);
+      const engine = /grantho\.js/.test(h) || /bible-reader\.js/.test(h);
+      return /data-base="/.test(h) && g && g !== 'english-bible' && engine;
     });
 }
 
@@ -84,10 +84,12 @@ async function testPage(file) {
       text: async () => (ok ? fs.readFileSync(fp, 'utf8') : ''),
     };
   };
+  /* কোন ইঞ্জিন? পাতায় যে স্ক্রিপ্ট-ট্যাগ আছে সেটাই সত্য — হার্ডকোড নয়। */
+  const engine = /bible-reader\.js/.test(html) ? 'bible-reader.js' : 'grantho.js';
   try {
-    window.eval(fs.readFileSync(path.join(ROOT, 'assets/grantho/grantho.js'), 'utf8'));
+    window.eval(fs.readFileSync(path.join(ROOT, 'assets/grantho', engine), 'utf8'));
   } catch (e) {
-    errs.push(`grantho.js চালানো যায়নি: ${e.message}`);
+    errs.push(`${engine} চালানো যায়নি: ${e.message}`);
   }
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   await wait(1200);
