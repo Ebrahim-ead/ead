@@ -32,8 +32,11 @@ TOL = 0.85          # ১৫%-এর বেশি কমলেই সন্দ�
 #   তাই samaveda এখান থেকেও বাদ — এই তালিকা থেকেই ডেটা ও পাতা মুছে যায়,
 #   কাজেই এখানে না সরালে পরের রানেই সামবেদ ফিরে আসত।
 ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "bible")
+# ⚠ ২০২৬-১১-১৬: «english-bible.html» এখানে না থাকায় Data Guard প্রতিবার
+#   রানেই ইংরেজি বাইবেলের পাতা মুছে দিত (বাংলা কার্ডও build_pages.py-তে
+#   নতুন করে গ্রিড লেখার সময় হারাত)। দুটোই এখন সমন্বিত।
 KEEP_PAGES = {"gita.html", "rigveda.html", "veda.html",
-              "yajurveda-shukla.html", "bible.html"}
+              "yajurveda-shukla.html", "bible.html", "english-bible.html"}
 
 
 def load_json(p, default=None):

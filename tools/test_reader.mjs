@@ -24,12 +24,14 @@ function pages() {
     .flatMap((dir) => fs.readdirSync(dir)
       .filter((f) => f.endsWith('.html'))
       .map((f) => path.join(dir, f)))
-    /* grantho.js-ভিত্তিক রিডারই এখানে পরীক্ষা হয় (data-granth আছে এমন পাতা)।
-       English Bible-এর নিজস্ব ক্ষুদ্র রিডার — তার আলাদা টেস্ট আছে
-       (tools/test_english_bible.mjs), তাই এখানে ঢোকাই না। */
+    /* grantho.js-ভিত্তিক রিডারই এখানে পরীক্ষা হয়। English Bible নিজের আলাদা
+       ক্ষুদ্র রিডার চালায় (data-granth="english-bible"), শুধু nav-motion-এর
+       জন্য grantho.js লোড করে — তাই granth-handler বাদ দিয়ে ছাঁকা হয়।
+       তার নিজস্ব টেস্ট: tools/test_english_bible.mjs */
     .filter((f) => {
       const h = fs.readFileSync(f, 'utf8');
-      return /data-base="/.test(h) && /data-granth="/.test(h)
+      const g = (h.match(/data-granth="([^"]*)"/) || [])[1];
+      return /data-base="/.test(h) && g && g !== 'english-bible'
         && /grantho\.js/.test(h);
     });
 }

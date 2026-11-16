@@ -705,9 +705,20 @@ def main():
                 part = sum(1 for c in chs if c.get("missing"))
                 # কার্ড ছোট রাখার চাহিদা — নিয়ম-ভাগ বাদ, শুধু পদ/পুস্তক/অধ্যায়
                 sub = f'{commas(r["withbn"])} পদ · {commas(r["nch"])} পুস্তক'
+                # english-bible কার্ডও এখানেই তৈরি হয় — নাহলে প্রতিবার গ্রিড
+                # নতুন করে লেখার সময় (replace_grid পুরোটা বদলে দেয়) কার্ডটি
+                # হারিয়ে যায়। ডেটা না থাকলে কার্ড বসানো হয় না।
+                en = load("bible/english")
+                en_card = ""
+                if en and en.get("total"):
+                    en_card = card(
+                        "christian/english-bible.html", "খ্রিস্টান · বাইবেল",
+                        "English Bible",
+                        f'{commas(en["total"])} পদ · {commas(en["totalBooks"])} পুস্তক · The New American Bible',
+                        "")
                 replace_grid("christian.html",
                              card("christian/bible.html", "খ্রিস্টান · বাইবেল",
-                                  "বাংলা বাইবেল", sub, meta["excerpt"]), sub="")
+                                  "বাংলা বাইবেল", sub, meta["excerpt"]) + en_card, sub="")
                 print(f"bible: {r['withbn']}/{r['total']} · {r['nch']} পুস্তক · "
                       f"{idx.get('suktaTotal') or sum(c.get('suktaCount', 0) for c in chs)} অধ্যায়")
     refresh_sitemap(built)
