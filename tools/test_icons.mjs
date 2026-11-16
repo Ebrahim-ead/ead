@@ -87,5 +87,51 @@ broken.length === 0 ? ok(`${hrefs.length}টি লিংক সব বৈধ`) 
 const scBad = (man?.shortcuts ?? []).filter((s) => !fs.existsSync(P(s.url)));
 scBad.length === 0 ? ok(`${man?.shortcuts?.length ?? 0}টি shortcut বৈধ`) : bad(`ভাঙা shortcut: ${scBad.map(s => s.url).join(', ')}`);
 
+/* ── সোশ্যাল লিংক — Threads সহ ────────────────────────────
+   ফুটারের আইকন-সারিতে Threads আছে কি না, প্রতিটি পাতায়
+   (সাব-ফোল্ডার সহ)। পাশাপাশি #threads সিম্বল ও লিংকের বৈধতা। */
+console.log('\nসোশ্যাল (Threads)');
+{
+  const all = [];
+  (function walk(d) {
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      if (e.name === 'node_modules' || e.name === '.git' || e.name === '_debug') continue;
+      const fp = path.join(d, e.name);
+      if (e.isDirectory()) walk(fp);
+      else if (e.name.endsWith('.html')) all.push(fp);
+    }
+  })(ROOT);
+
+  const noLink = all.filter((f) => !/href="https:\/\/www\.threads\.com\/@ead2212"/.test(fs.readFileSync(f, 'utf8')));
+  noLink.length === 0
+    ? ok(`${all.length}টি পাতায় Threads লিংক`)
+    : bad(`${noLink.length}টিতে নেই: ${noLink.slice(0, 4).map((f) => path.relative(ROOT, f)).join(', ')}`);
+
+  const noSym = all.filter((f) => !/id="threads"/.test(fs.readFileSync(f, 'utf8')));
+  noSym.length === 0
+    ? ok(`${all.length}টি পাতায় #threads সিম্বল`)
+    : bad(`${noSym.length}টিতে সিম্বল নেই`);
+
+  /* সঠিক জায়গা: Instagram-এর ঠিক পরে */
+  const idx = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const ig = idx.indexOf('aria-label="Instagram"');
+  const th = idx.indexOf('aria-label="Threads"');
+  const rd = idx.indexOf('aria-label="Reddit"');
+  ig > 0 && th > ig && rd > th
+    ? ok('সারিতে জায়গা: Instagram ▸ Threads ▸ Reddit')
+    : bad(`সারির ক্রম ভুল (ig:${ig} th:${th} rd:${rd})`);
+
+  /* সিম্বল ব্যবহার হচ্ছে */
+  /<use href="#threads"\/>/.test(idx) ? ok('#threads আইকন ব্যবহৃত') : bad('#threads ব্যবহার নেই');
+  /aria-label="Threads"/.test(idx) ? ok('aria-label="Threads" (স্ক্রিন-রিডার)') : bad('aria-label নেই');
+  /target="_blank" rel="noopener"/.test(
+    (idx.match(/<a href="https:\/\/www\.threads\.com\/@ead2212"[^>]*>/) || [''])[0])
+    ? ok('নিরাপদে নতুন ট্যাবে খোলে (noopener)') : bad('noopener নেই');
+
+  /* CSS-এ ব্র্যান্ড-রঙ */
+  const css = fs.readFileSync(path.join(ROOT, 'assets/site.css'), 'utf8');
+  /\.soc a\[href\*="threads\.com"\]/.test(css) ? ok('Threads-এর নিজস্ব স্টাইল') : bad('Threads-স্টাইল নেই');
+}
+
 console.log(`\n${fail === 0 ? '✓' : '✗'} পাশ ${pass} · ফেল ${fail}\n`);
 process.exit(fail === 0 ? 0 : 1);
