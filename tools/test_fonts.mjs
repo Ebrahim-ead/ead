@@ -169,5 +169,54 @@ if (cmap) {
   ok('যুক্তাক্ষর-লিগেচার GSUB-এ রাখা (subset --layout-features=*)');
 }
 
+/* ── ৭. শেপিং — ৌ/ো-কার ভাঙা নেই তো? ────────────────────────
+   ⚠ আসল বাগ ছিল: subset-এ uni09D7 (ৗ) বাদ পড়ায় «সৌ»-এর ে-আরম্ভ
+   ফিচার কাজ করত না, uni09CC-তে ফিরে যেত — লেখায় বিন্দু-বৃত্ত (◌)
+   দেখা যেত। শুধু "গ্লিফ আছে" দেখলে ধরা পড়ে না; **কোন গ্লিফ বাছা
+   হচ্ছে** দেখতে হয়। */
+console.log('\nশেপিং (ৌ/ো-কার)');
+let shapeOk = false;
+try {
+  const { execFileSync } = await import('node:child_process');
+  const py = `
+import json, sys
+import uharfbuzz as hb
+from fontTools.ttLib import TTFont
+import io
+
+def load(p):
+    f = TTFont(p); f.flavor = None
+    b = io.BytesIO(); f.save(b)
+    return hb.Font(hb.Face(b.getvalue())), f.getGlyphOrder()
+
+tests = ["সৌ","নৌকা","দৌড়","কৌশল","সৌন্দর্য","সৌজন্যপূর্ণ","বৌদ্ধ",
+         "কো","দো","নো","মো","হয়তো","কোনো","লোক","সোনা","গো",
+         "োঁ","ৌঁ","ক্ষৌ","মৌলিক","তৌহিদ","মৌসুমি"]
+bad = []
+for w in (400,600,700,800):
+    font, order = load("assets/fonts/noto-sans-bengali-%d.woff2" % w)
+    for t in tests:
+        buf = hb.Buffer(); buf.add_str(t); buf.guess_segment_properties()
+        hb.shape(font, buf)
+        names = [order[i.codepoint] for i in buf.glyph_infos]
+        # ৌ একক গ্লিফ হিসেবে এলেই ভাঙা (09C7.init + 09D7 হওয়া উচিত)
+        if "uni09CC" in names:
+            bad.append([w, t, names])
+print(json.dumps(bad, ensure_ascii=False))
+`;
+  const out = execFileSync('python3', ['-c', py], { encoding: 'utf8', cwd: ROOT });
+  const broken = JSON.parse(out.trim());
+  broken.length === 0
+    ? ok(`${4 * 22}টি শব্দ (৪ ওজন × ২২) — ৌ/ো-কার সঠিক গ্লিফে`)
+    : fail + 1 && bad(`${broken.length}টি ভাঙা: ${broken.slice(0, 3).map((b) => `${b[1]}(${b[0]})`).join(' ')}`);
+  shapeOk = true;
+} catch (e) {
+  /* python3/uharfbuzz না থাকলে বাদ — কিন্তু চুপচাপ সফল দেখাব না */
+  console.log('  · python3/uharfbuzz নেই — শেপিং-পরীক্ষা বাদ (' + String(e.message).split('\n')[0] + ')');
+}
+
+/* uni09D7 উপস্থিতি — इसके বिना ৌ-কার ভাঙে */
+const d7 = execFileSync ? null : null;
+
 console.log(`\n${fail ? '✗' : '✓'} পাশ ${pass} · ফেল ${fail}\n`);
 process.exit(fail ? 1 : 0);

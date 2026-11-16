@@ -88,9 +88,13 @@ if (!fs.existsSync(pwaPath)) {
   } catch (e) { bad('সিনট্যাক্স ভুল'); }
   const js = fs.readFileSync(pwaPath, 'utf8');
   /serviceWorker\.register\('\/ead\/sw\.js'/.test(js) ? ok("SW রেজিস্ট্রেশন পথ '/ead/sw.js'") : bad('রেজিস্ট্রেশন পথ ভুল');
-  /beforeinstallprompt/.test(js) ? ok('ইনস্টল-প্রম্পট ধরা হয়') : bad('beforeinstallprompt নেই');
-  /iPad\|iPhone\|iPod/.test(js) ? ok('iOS শনাক্তকরণ আছে') : bad('iOS শনাক্তকরণ নেই');
-  /prefers|display-mode: standalone/.test(js) ? ok('standalone শনাক্তকরণ') : bad('standalone নেই');
+  /* ইনস্টল-সিস্টেম বাদ দেওয়া হয়েছে (ব্যবহারকারীর নির্দেশ) — নিশ্চিত করি
+     যেন কোনোদিন ভুলে আবার ফিরে না আসে। */
+  !/beforeinstallprompt/.test(js) ? ok('ইনস্টল-প্রম্পট নেই (বাদ দেওয়া)') : bad('beforeinstallprompt এখনো আছে');
+  !/appinstalled/.test(js) ? ok('appinstalled শ্রোতা নেই') : bad('appinstalled এখনো আছে');
+  !/install-btn/.test(js) ? ok('ইনস্টল-বোতাম কোড নেই') : bad('install-btn এখনো আছে');
+  !/পুনরায়.*ইনস্টল|অ্যাপ হিসেবে ইনস্টল/.test(js) ? ok('ইনস্টল-ব্যানার লেখা নেই') : bad('ইনস্টল-ব্যানার লেখা আছে');
+  /display-mode:/.test(js) ? ok('display-mode শনাক্তকরণ (অফলাইন-স্ক্রল)') : bad('display-mode শনাক্তকরণ নেই');
 }
 
 /* ── ৪. প্রতিটি পাতায় pwa.js ── */
@@ -108,26 +112,35 @@ man.scope === '/ead/' ? ok("manifest scope '/ead/'") : bad(`manifest scope ${man
 /scope: '\/ead\/'/.test(fs.readFileSync(pwaPath, 'utf8')) ? ok("SW scope '/ead/'") : bad('SW scope মেলেনি');
 man.start_url.startsWith('/ead/') ? ok(`start_url ${man.start_url}`) : bad('start_url ভুল');
 
-/* ── ৬. হিরোর স্থায়ী ইনস্টল-বোতাম ── */
-console.log('\nইনস্টল-বোতাম');
+/* ── ৬. ইনস্টল-সিস্টেম সম্পূর্ণ বাদ ──
+   ব্যবহারকারীর নির্দেশ: «অ্যাপ ইনস্টল সিস্টেম বাদ দিয়ে দাও»।
+   তাই এখন উল্টো যাচাই — কোথাও যেন এর চিহ্ন না থাকে। */
+console.log('\nইনস্টল-সিস্টেম বাদ');
 const idx = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const btn = idx.match(/<button[^>]*id="install-btn"[^>]*>/);
-btn ? ok('#install-btn আছে') : bad('#install-btn নেই');
-if (btn) {
-  /class="btn ghost"/.test(btn[0]) ? ok('.btn.ghost — বাকি দুটোর মতো') : bad('চেহারা ক্লাস ভুল');
-  /type="button"/.test(btn[0]) ? ok('type="button" (ফর্ম সাবমিট নয়)') : bad('type নেই');
-  !/hidden/.test(btn[0]) ? ok('inline-এ লুকানো নয় — JS ছাড়াও দেখা যায়') : bad('inline-এ hidden');
-  /aria-label=/.test(btn[0]) ? ok('aria-label আছে') : bad('aria-label নেই');
-}
-/<use href="#install"/.test(idx) ? ok('#install আইকন ব্যবহার') : bad('#install আইকন নেই');
-const sprite = (fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8').match(/<symbol id="install"[\s\S]*?<\/symbol>/) || [''])[0];
-sprite ? ok('#install symbol সংজ্ঞায়িত') : bad('#install symbol নেই');
-// স্প্রাইট সব পাতায়
-const noIcon = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'))
-  .filter((f) => !/symbol id="install"/.test(fs.readFileSync(path.join(ROOT, f), 'utf8')));
-noIcon.length === 0 ? ok('সব পাতায় #install sprite') : bad(`sprite নেই: ${noIcon.join(', ')}`);
-// pwa.js-এ হ্যান্ডলার
-/mountInstallButton/.test(fs.readFileSync(pwaPath, 'utf8')) ? ok('বোতামের হ্যান্ডলার আছে') : bad('হ্যান্ডলার নেই');
+!/id="install-btn"/.test(idx) ? ok('হিরোতে ইনস্টল-বোতাম নেই') : bad('#install-btn এখনো আছে');
+!/id="install"/.test(idx) ? ok('#install আইকন-সিম্বল নেই') : bad('#install symbol এখনো আছে');
+
+/* সব পাতায় সাবধান */
+const htmlFiles = [];
+(function walk(d) {
+  for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+    if (e.name === 'node_modules' || e.name === '.git') continue;
+    const fp = path.join(d, e.name);
+    if (e.isDirectory()) walk(fp);
+    else if (e.name.endsWith('.html')) htmlFiles.push(fp);
+  }
+})(ROOT);
+
+const withBtn = htmlFiles.filter((f) => /install-btn|id="install"/.test(fs.readFileSync(f, 'utf8')));
+withBtn.length === 0
+  ? ok(`${htmlFiles.length}টি পাতার কোথাও ইনস্টল-বোতাম/আইকন নেই`)
+  : bad(`এখনো আছে: ${withBtn.map((f) => path.relative(ROOT, f)).slice(0, 5).join(', ')}`);
+
+const css = fs.readFileSync(path.join(ROOT, 'assets/site-extra.css'), 'utf8');
+!/pwa-banner|pwa-btn|pwa-hint|install-btn/.test(css)
+  ? ok('ইনস্টল-ব্যানারের CSS সরানো') : bad('ইনস্টল-CSS এখনো আছে');
+/\.pwa-offline/.test(css)
+  ? ok('অফলাইন-নোটিশের CSS অটুট') : bad('অফলাইন-CSS হারিয়েছে');
 
 /* ── ফল ── */
 console.log(`\n${fail === 0 ? '✓' : '✗'} পাশ ${pass} · ফেল ${fail}\n`);
