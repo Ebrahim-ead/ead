@@ -44,3 +44,10 @@ body{font-family:"Noto Sans Bengali","Hind Siliguri",system-ui,-apple-system,"Se
 .ask-warn{color:#ffd88f;background:rgba(245,184,28,.1);border:1px solid rgba(245,184,28,.38)}
 html[data-theme="light"] .ask-ok{color:#0f6b41;background:rgba(15,107,65,.09);border-color:rgba(15,107,65,.34)}
 html[data-theme="light"] .ask-warn{color:#7a4f00;background:rgba(155,101,0,.08);border-color:rgba(155,101,0,.3)}
+
+/* বাধ্যতামূলক ঘরের চিহ্ন (ask.html) */
+.askbox .req{color:var(--gold2);font-weight:700;margin-left:2px}
+.askbox .req-note{margin:10px 0 0;font-size:12.8px;color:var(--muted);line-height:1.6}
+.askbox .req-note span{color:var(--gold2);font-weight:700}
+html[data-theme="light"] .askbox .req{color:#8a5a00}
+html[data-theme="light"] .askbox .req-note span{color:#8a5a00}
