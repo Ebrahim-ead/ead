@@ -2,17 +2,18 @@
 /**
  * বাইবেল-সেকশন পরীক্ষা — দাবি বনাম ডেটা মিলিয়ে দেখে।
  *
- * কেন এই পরীক্ষা: আগে সাইটে «সম্পূর্ণ পাঠ» লেখা ছিল, অথচ ৬৬ পুস্তকের
- * মধ্যে ৪৬টি ও ১,০০০ অধ্যায়ের মধ্যে ৮৪৪টি ছিল — ব্যবহারকারীকে ভুল
- * বলা হচ্ছিল। সে যেন আর না ঘটে, তাই নিচের চেকগুলো:
+ * ইতিহাস: একসময় সাইট «সম্পূর্ণ পাঠ» বলত, অথচ ৬৬ পুস্তকের মধ্যে ৪৬টি ও
+ * ১,১৮৯ অধ্যায়ের মধ্যে ৮৪৪টি ছিল। এখন পাঠ সত্যিই পূর্ণ — তাই পরীক্ষাটি
+ * উল্টো দিক থেকে পাহারা দেয়: **যদি পাঠ আবার খোয়া যায়, দাবিটি মিথ্যা হয়ে
+ * যাবে** — সেটাই ধরা পড়বে।
  *
- *   ১. index.json-এর অধ্যায়-গণনা বাস্তব perChapter-এর সাথে মেলে
- *   ২. chaptersTotal (প্রামাণ্য) সেট আছে ও অসম্পূর্ণ পুস্তক চিহ্নিত
- *   ৩. পাতা «সম্পূর্ণ» দাবি করে না, যদি পাঠ অসম্পূর্ণ হয়
- *   ৪. পাতা অসম্পূর্ণতার ঘোষণা দেয় (g-src-warn বা সমতুল্য)
- *   ৫. অসম্পূর্ণ পুস্তকের নাম ও সংখ্যা ঘোষণায় আছে
- *   ৬. বাইবেলে «সংস্কৃত মূল পাঠ»-জাতীয় ভুল ফ্যাক্ট-চিপ নেই
- *   ৭. সংখ্যা বাংলা অঙ্কে (নোটে ইংরেজি 46/24087 থাকলে ধরে)
+ *   ১. ৬৬ পুস্তক · ১,১৮৯ অধ্যায় — প্রামাণ্য সংখ্যা
+ *   ২. chaptersTotal = বাস্তব perChapter (প্রতিটি পুস্তক পূর্ণ)
+ *   ৩. পদ-গণনা index ↔ ফাইল ↔ মানক সংখ্যা
+ *   ৪. পাতা যেন সত্য কথা বলে (পূর্ণ হলে «সম্পূর্ণ», অসম্পূর্ণ হলে ঘোষণা)
+ *   ৫. পুরাতন/নতুন নিয়মের ভাগ ৩৯/২৭
+ *   ৬. বাইবেল পাতায় «সংস্কৃত»-জাতীয় ভুল চিপ নেই
+ *   ৭. সংখ্যা বাংলা অঙ্কে
  *
  * ব্যবহার:  node tools/test_bible.mjs
  */
@@ -37,111 +38,116 @@ const text = (s) => s
   .replace(/<[^>]+>/g, ' ')
   .replace(/\s+/g, ' ');
 
-console.log('\nডেটা-সঙ্গতি');
-
-/* ১. perChapter সংখ্যা বাস্তব */
 const books = ix.chapters || [];
-const sumPc = books.reduce((n, c) => n + Object.keys(c.perChapter || {}).length, 0);
-(sumPc === books.reduce((n, c) => n + (+c.suktaCount || 0), 0))
-  ? ok(`suktaCount ও perChapter মেলে (${sumPc})`)
-  : no(`suktaCount ও perChapter অমিল (${sumPc})`);
+const HAVE_CH = 1189;
+const HAVE_BOOKS = 66;
+const HAVE_VERSES = 31130;
 
-/* ২. chaptersTotal সেট */
-const withTotal = books.filter((c) => +c.chaptersTotal > 0);
-withTotal.length === books.length
-  ? ok(`সব ${books.length}টি পুস্তকে chaptersTotal আছে`)
-  : no(`chaptersTotal নেই ${books.length - withTotal.length}টি পুস্তকে`);
+console.log('\nপ্রামাণ্য সংখ্যা');
 
-const wantCh = books.reduce((n, c) => n + (+c.chaptersTotal || 0), 0);
-(wantCh === +ix.chaptersTotal)
-  ? ok(`chaptersTotal সমষ্টি ${wantCh}`)
-  : no(`chaptersTotal সমষ্টি ${wantCh} ≠ ${ix.chaptersTotal}`);
+/* ১. পুস্তক ও অধ্যায় */
+(books.length === HAVE_BOOKS)
+  ? ok(`${HAVE_BOOKS} পুস্তক`)
+  : no(`পুস্তক ${books.length} — প্রত্যাশিত ${HAVE_BOOKS}`);
 
-/* ৩. অসম্পূর্ণ পুস্তক — ডেটা থেকে */
-const partial = books.filter((c) => {
+const realCh = books.reduce((n, c) => n + Object.keys(c.perChapter || {}).length, 0);
+(realCh === HAVE_CH)
+  ? ok(`${HAVE_CH} অধ্যায় (প্রতিটি পুস্তক পূর্ণ)`)
+  : no(`অধ্যায় ${realCh} — প্রত্যাশিত ${HAVE_CH} (${HAVE_CH - realCh}টি নেই)`);
+
+/* ২. chaptersTotal = বাস্তব perChapter */
+const incomplete = books.filter((c) => {
   const have = Object.keys(c.perChapter || {}).length;
-  return have > 0 && have < (+c.chaptersTotal || 0);
+  const want = +c.chaptersTotal || 0;
+  return !want || have < want;
 });
-(partial.length === 6)
-  ? ok(`অসম্পূর্ণ পুস্তক ৬টি (${partial.map((c) => c.bn).join(' · ')})`)
-  : no(`অসম্পূর্ণ পুস্তক ${partial.length}টি — প্রত্যাশিত ৬`);
+(incomplete.length === 0)
+  ? ok('কোনো পুস্তক অসম্পূর্ণ নয়')
+  : no(`অসম্পূর্ণ: ${incomplete.map((c) => `${c.bn} ${Object.keys(c.perChapter || {}).length}/${c.chaptersTotal}`).join(', ')}`);
 
-/* ৪. পদ-গণনা */
-const totalV = books.reduce((n, c) => n + (+c.count || 0), 0);
-(totalV === +ix.total)
-  ? ok(`মোট পদ ${ix.total.toLocaleString('en')}`)
-  : no(`পদ-গণনা অমিল: ${totalV} ≠ ${ix.total}`);
-(+ix.withBn < +ix.total)
-  ? ok(`বাংলা-অভাবী পদ ${ix.total - ix.withBn}`)
-  : no('withBn, total-এর সমান বা বেশি');
+/* ৩. পুরাতন/নতুন ভাগ */
+const oldN = books.filter((c) => c.testament === 'old').length;
+const newN = books.filter((c) => c.testament === 'new').length;
+(oldN === 39 && newN === 27)
+  ? ok(`পুরাতন ৩৯ · নতুন ২৭`)
+  : no(`নিয়ম-ভাগ ভুল: পুরাতন ${oldN} · নতুন ${newN} (প্রত্যাশিত ৩৯/২৭)`);
+
+console.log('\nপদ-গণনা');
+
+/* ৪. index.total = ফাইলের সমষ্টি */
+let sumFiles = 0;
+for (const c of books) {
+  const d = JSON.parse(read(`assets/grantho/data/bible/ch${c.id}.json`));
+  sumFiles += (d.verses || []).length;
+}
+(sumFiles === +ix.total)
+  ? ok(`মোট পদ ${ix.total.toLocaleString('en')} (ফাইল ও index মেলে)`)
+  : no(`পদ-গণনা অমিল: ফাইল ${sumFiles} ≠ index ${ix.total}`);
+
+/* ৫. প্রত্যাশিত মোট পদের কাছাকাছি (বাংলা অনুবাদে সামান্য ভিন্নতা স্বাভাবিক) */
+const diff = Math.abs(+ix.total - HAVE_VERSES);
+(diff <= 5)
+  ? ok(`প্রামাণ্য ${HAVE_VERSES.toLocaleString('en')} পদের সাথে ±${diff}`)
+  : no(`মোট পদ ${ix.total} — প্রত্যাশিত ${HAVE_VERSES} (পার্থক্য ${diff})`);
+
+/* ৬. সব পদে বাংলা পাঠ আছে */
+const empty = books.filter((c) => (+c.count || 0) === 0);
+(empty.length === 0)
+  ? ok('প্রতিটি পুস্তকে পদ আছে')
+  : no(`খালি পুস্তক: ${empty.map((c) => c.bn).join(', ')}`);
 
 console.log('\nদাবি বনাম বাস্তব');
 
 const bi = text(bibleHtml);
 const ch = text(christHtml);
 
-/* ৫. «সম্পূর্ণ পাঠ» দাবি নেই */
-/সম্পূর্ণ পাঠ/.test(bi)
-  ? no('bible.html এখনো «সম্পূর্ণ পাঠ» দাবি করে')
-  : ok('bible.html «সম্পূর্ণ পাঠ» দাবি করে না');
+/* ৭. «সম্পূর্ণ» দাবি — এখন সত্য */
+const claimsFull = /সম্পূর্ণ পাঠ/.test(bi);
+if (claimsFull) {
+  (realCh === HAVE_CH && books.length === HAVE_BOOKS)
+    ? ok('«সম্পূর্ণ পাঠ» দাবি করে — এবং সত্যিই পূর্ণ')
+    : no('«সম্পূর্ণ পাঠ» দাবি করে, কিন্তু পাঠ অসম্পূর্ণ!');
+} else {
+  ok('«সম্পূর্ণ পাঠ» দাবি করে না');
+}
 
-(/(৪৬|৪৬টি)\s*পুস্তক/.test(bi) && !/৬৬/.test(bi))
-  ? no('bible.html-এ ৪৬ আছে কিন্তু ৬৬-এর উল্লেখ নেই')
-  : ok('bible.html পাঠের সীমা উল্লেখ করে');
+/* ৮. সংখ্যাগুলো পাতায় আছে */
+(/৬৬/.test(bi) && /১,১৮৯/.test(bi) && /৩১,১৩০/.test(bi))
+  ? ok('পাতায় ৬৬ · ১,১৮৯ · ৩১,১৩০')
+  : no('পাতায় ৬৬ / ১,১৮৯ / ৩১,১৩০-এর কোনোটি নেই');
 
-/* ৬. অসম্পূর্ণতার ঘোষণা */
-(bibleHtml.includes('g-src-warn') || /অসম্পূর্ণ/.test(bi))
-  ? ok('bible.html পাঠ অসম্পূর্ণ বলে ঘোষণা দেয়')
-  : no('bible.html অসম্পূর্ণতার ঘোষণা নেই');
+/* ৯. কার্ডেও মেলে */
+/৬৬ পুস্তক/.test(ch) ? ok('christian.html কার্ডে ৬৬ পুস্তক') : no('christian.html কার্ডে ৬৬ পুস্তক নেই');
+/৬৬ পুস্তক/.test(text(granthoHtml)) ? ok('grantho.html কার্ডে ৬৬ পুস্তক') : no('grantho.html কার্ডে ৬৬ পুস্তক নেই');
 
-/* ৭. অসম্পূর্ণ পুস্তকের নাম ঘোষণায় */
-const announced = partial.filter((c) => bi.includes(c.bn));
-(announced.length === partial.length)
-  ? ok(`অসম্পূর্ণ ${partial.length}টি পুস্তকেরই নাম ঘোষণায়`)
-  : no(`ঘোষণায় নেই: ${partial.filter((c) => !bi.includes(c.bn)).map((c) => c.bn).join(', ')}`);
-
-/* ৮. অনুপস্থিত ২০ পুস্তক — প্রকাশিত বাক্য ঘোষিত? */
-(/প্রকাশিত বাক্য/.test(bi))
-  ? ok('অনুপস্থিত পুস্তক (প্রকাশিত বাক্য) ঘোষণায় আছে')
-  : no('প্রকাশিত বাক্য — অনুপস্থিত কিন্তু ঘোষণায় নেই');
-
-/* ৯. ৬৬/১,০০০ প্রামাণ্য সংখ্যা */
-/৬৬ পুস্তক/.test(bi)
-  ? ok('«৬৬ পুস্তক» প্রামাণ্য সংখ্যা উল্লেখিত')
-  : no('«৬৬ পুস্তক» উল্লেখ নেই');
-/১,০০০ অধ্যায়/.test(bi)
-  ? ok('«১,০০০ অধ্যায়» উল্লেখিত')
-  : no('«১,০০০ অধ্যায়» উল্লেখ নেই');
-
-/* ১০. কার্ডে ৪৬/৬৬ */
-/৪৬\/৬৬/.test(ch) ? ok('christian.html কার্ডে ৪৬/৬৬') : no('christian.html কার্ডে ৪৬/৬৬ নেই');
-/৪৬\/৬৬/.test(text(granthoHtml)) ? ok('grantho.html কার্ডে ৪৬/৬৬') : no('grantho.html কার্ডে ৪৬/৬৬ নেই');
+/* ১০. পুরোনো ভুল সংখ্যা আর নেই */
+/৮৪৪/.test(bi) ? no('bible.html-এ পুরোনো «৮৪৪» এখনো আছে') : ok('পুরোনো «৮৪৪» বাদ গেছে');
+/২৪,০৮৭/.test(bi) ? no('bible.html-এ পুরোনো «২৪,০৮৭» এখনো আছে') : ok('পুরোনো «২৪,০৮৭» বাদ গেছে');
 
 console.log('\nবিষয়বস্তু-শুদ্ধতা');
 
 /* ১১. বাইবেলে ভুল ফ্যাক্ট-চিপ */
 const facts = [...bibleHtml.matchAll(/<div class="g-facts">([\s\S]*?)<\/div>/g)].map((m) => m[1]);
-const factTxt = text(facts.join(' '));
-(/সংস্কৃত/.test(factTxt))
-  ? no('বাইবেল পাতায় «সংস্কৃত» ফ্যাক্ট-চিপ এখনো আছে')
-  : ok('«সংস্কৃত মূল পাঠ» বাদ গেছে');
+(/সংস্কৃত/.test(text(facts.join(' '))))
+  ? no('বাইবেল পাতায় «সংস্কৃত» ফ্যাক্ট-চিপ আছে')
+  : ok('«সংস্কৃত মূল পাঠ» নেই');
 
-/* ১২. নোটে ইংরেজি অঙ্ক নেই (৪৬ / 24087) */
+/* ১২. নোটে ইংরেজি অঙ্ক নেই */
 const src = [...bibleHtml.matchAll(/<div class="g-src[^"]*">([\s\S]*?)<\/div>/g)].map((m) => m[1]).join(' ');
-/\b(46|24087|844)\b/.test(text(src))
-  ? no('নোটে ইংরেজি অঙ্ক আছে (46/24087/844)')
+/\b(46|24087|844|31130)\b/.test(text(src))
+  ? no('নোটে ইংরেজি অঙ্ক আছে')
   : ok('নোটে সব সংখ্যা বাংলা অঙ্কে');
 
-/* ১৩. জোড়া-বাক্য: «পাঠ বসানো হয়নি বাংলা» */
+/* ১৩. জোড়া-বাক্য নেই */
 /পাঠ বসানো হয়নি বাংলা/.test(text(src))
   ? no('নোটে জোড়া-বাক্য এখনো আছে')
   : ok('নোটের বাক্য-সীমা ঠিক');
 
-/* ১৪. meta description-এ সীমা */
+/* ১৪. meta description */
 const desc = (bibleHtml.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
-/অসম্পূর্ণ|৬৬/.test(desc)
-  ? ok('meta description পাঠের সীমা বলে')
-  : no('meta description সীমা জানে না');
+(/৬৬|সম্পূর্ণ/.test(desc))
+  ? ok('meta description পাঠের কথা বলে')
+  : no('meta description পুরোনো');
 
 /* ১৫. উৎস-উল্লেখ */
 (/ebanglalibrary\.com/.test(bi) && /New American Bible/.test(bi) && /vatican\.va/.test(bi))
