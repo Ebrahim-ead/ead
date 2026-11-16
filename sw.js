@@ -49,8 +49,8 @@
 /* শেল ও পাতা আলাদা সংস্করণ নম্বর পায় — শুধু শেল-তালিকা বদলালে
    ব্যবহারকারীর জমানো ডেটা (১৪২ MB পর্যন্ত) মুছে যাওয়া উচিত নয়।
    ডেটা বদলালেই (গঠন বা বিষয়বস্তু) DATA_VERSION বাড়াবেন। */
-var SHELL_VERSION = 'v7';
-var DATA_VERSION = 'v2';
+var SHELL_VERSION = 'v8';
+var DATA_VERSION = 'v3';
 
 var SHELL_CACHE = 'ead-shell-' + SHELL_VERSION;
 var PAGE_CACHE = 'ead-pages-' + SHELL_VERSION;
@@ -60,7 +60,7 @@ var DATA_CACHE = 'ead-data-' + DATA_VERSION;
 var LIMITS = {};
 LIMITS[SHELL_CACHE] = [300, 6 * 1024 * 1024];
 LIMITS[PAGE_CACHE] = [200, 25 * 1024 * 1024];
-LIMITS[DATA_CACHE] = [400, 120 * 1024 * 1024];
+LIMITS[DATA_CACHE] = [2400, 160 * 1024 * 1024];
 
 /* ---- অ্যাপ-শেল: যা ছাড়া সাইট চলে না ----
    ইনস্টলে কেবল এগুলোই নামে — দ্রুত ইনস্টল, কম ডেটা।
