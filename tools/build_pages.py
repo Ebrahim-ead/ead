@@ -308,7 +308,11 @@ def make_page(slug, idx, meta):
     if total != withbn:
         if withbn:
             facts += f'<span class="g-fact"><b>{commas(total)}</b> মোট {meta["word"]}</span>'
-        facts += f'<span class="g-fact">সংস্কৃত মূল পাঠ</span>'
+        # ⚠ «সংস্কৃত মূল পাঠ» চিপ কেবল বেদ-জাতীয় গ্রন্থে — বাইবেলে সংস্কৃত
+        #   পাঠের প্রশ্নই নেই। আগে এখানে শর্তহীন যোগ হতো, ফলে বাংলা বাইবেলের
+        #   অননুবাদিত পদগুলোকে ভুলভাবে «সংস্কৃত মূল পাঠ» বলা হচ্ছিল।
+        if meta.get("kind") != "bible":
+            facts += '<span class="g-fact">সংস্কৃত মূল পাঠ</span>'
     facts += f'<span class="g-fact"><b>{commas(nch)}</b> {meta["chword"]}</span>'
     nsuk = idx.get("suktaTotal") or sum(c.get("suktaCount", 0) for c in idx["chapters"])
     nshl = idx.get("shlokaTotal") or sum(c.get("shlokaCount", 0) for c in idx["chapters"])
@@ -424,7 +428,9 @@ def make_page(slug, idx, meta):
                 ' কোনো অনুমানভিত্তিক সংস্কৃত পাঠ বসানো হয় না।')
     if withbn < total:
         src += (f' {commas(total - withbn)}টি {meta["word"]}র বাংলা পাঠ উৎসে পাওয়া যায়নি'
-                ' — সংখ্যাটি গোনা আছে, পাঠ বসানো হয়নি')
+                # ⚠ বাক্যটা «।» দিয়ে শেষ করতে হয় — নইলে পরের (ডেটার) নোট
+                #   জুড়ে গিয়ে জোড়া-বাক্য দাঁড়ায় («…পাঠ বসানো হয়নি বাংলা বাইবেল — …»)।
+                ' — সংখ্যাটি গোনা আছে, পাঠ বসানো হয়নি।')
         # উপরের বাক্যে হাজার-কমা + «পদ»র যোগ হয়ে দাঁড়াত «৩৫১টি পদর» —
         # বিশুদ্ধ বানান রক্ষা: meta["word"]-এর পরে সরাসরি «র» নয়, মিলিয়ে।
         src = re.sub(re.escape(meta["word"]) + r"র বাংলা পাঠ",
@@ -468,6 +474,16 @@ def make_page(slug, idx, meta):
                       f'{label} — {commas(withbn)} {meta["word"]}'),
                      (r'(<meta name="twitter:description" content=")[^"]*(")', fulldesc)):
         h = re.sub(pat, lambda m, v=val: m.group(1) + v + m.group(2), h, count=1)
+
+    # বাইবেলের নিজস্ব পাঠক-ইঞ্জিন — grantho.js চারটি গ্রন্থ শেয়ার করে, আর
+    # বাইবেলের আচরণ আলাদা করে গোছাতে হলে ওটায় হাত দিতে হতো (অন্য তিনটি
+    # গ্রন্থ ভাঙার ঝুঁকি)। তাই টেমপ্লেট থেকে আসা grantho.js-ট্যাগটি এখানেই
+    # বদলে দেওয়া হয় — নইলে প্রতি রাতের rebuild-এ পাতা আবার পুরোনো ইঞ্জিনে
+    # ফিরে যেত (২০২৬-১১-১৬-এ ঠিক এমনটাই হয়েছিল)।
+    if meta.get("kind") == "bible":
+        h = h.replace('<script src="../../assets/grantho/grantho.js" defer></script>',
+                      '<script src="../../assets/grantho/bible-reader.js" defer></script>')
+
     outdir.mkdir(parents=True, exist_ok=True)
     (outdir / f"{slug}.html").write_text(
         normalize(slug, h, meta.get("dir", "hindu")), encoding="utf-8")

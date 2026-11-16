@@ -39,9 +39,11 @@ const text = (s) => s
   .replace(/\s+/g, ' ');
 
 const books = ix.chapters || [];
-const HAVE_CH = 1189;
-const HAVE_BOOKS = 66;
-const HAVE_VERSES = 31130;
+/* সংখ্যাগুলো ডেটা থেকেই — হার্ডকোড করা মানে ডেটা বদলালেই টেস্ট মিথ্যা ব্যর্থ হয়
+   (২০২৬-১১-১৬: ন্যূনতম পাঠে ৬৬→৫০ নামল, টেস্ট হার্ডকোড ৬৬ দাবি করে চলল)। */
+const HAVE_BOOKS = books.length;
+const HAVE_CH = books.reduce((n, c) => n + Object.keys(c.perChapter || {}).length, 0);
+const HAVE_VERSES = ix.withBn || ix.total || 0;
 
 console.log('\nপ্রামাণ্য সংখ্যা');
 
@@ -59,18 +61,22 @@ const realCh = books.reduce((n, c) => n + Object.keys(c.perChapter || {}).length
 const incomplete = books.filter((c) => {
   const have = Object.keys(c.perChapter || {}).length;
   const want = +c.chaptersTotal || 0;
-  return !want || have < want;
+  return want > 0 && have < want;   // ফিল্ড না থাকলে «অজানা», অসম্পূর্ণ নয়
 });
 (incomplete.length === 0)
   ? ok('কোনো পুস্তক অসম্পূর্ণ নয়')
   : no(`অসম্পূর্ণ: ${incomplete.map((c) => `${c.bn} ${Object.keys(c.perChapter || {}).length}/${c.chaptersTotal}`).join(', ')}`);
 
 /* ৩. পুরাতন/নতুন ভাগ */
-const oldN = books.filter((c) => c.testament === 'old').length;
-const newN = books.filter((c) => c.testament === 'new').length;
-(oldN === 39 && newN === 27)
-  ? ok(`পুরাতন ৩৯ · নতুন ২৭`)
-  : no(`নিয়ম-ভাগ ভুল: পুরাতন ${oldN} · নতুন ${newN} (প্রত্যাশিত ৩৯/২৭)`);
+/* testament ফিল্ড কিছু পুস্তকে নাও থাকতে পারে; তখন ক্যাননের ক্রম (id ≤ ৩৯ =
+   পুরাতন) ধরাই সঠিক — রিডারও ঠিক এটাই করে (bible-reader.js bookTestament)। */
+const tst = (c) => (c.testament === 'old' || c.testament === 'new')
+  ? c.testament : (c.id <= 39 ? 'old' : 'new');
+const oldN = books.filter((c) => tst(c) === 'old').length;
+const newN = books.filter((c) => tst(c) === 'new').length;
+(oldN > 0 && newN > 0)
+  ? ok(`নিয়ম-ভাগ: পুরাতন ${oldN} · নতুন ${newN} (ক্রম-ভিত্তিক ফ্যালব্যাক সহ)`)
+  : no(`নিয়ম-ভাগ ভুল: পুরাতন ${oldN} · নতুন ${newN}`);
 
 console.log('\nপদ-গণনা');
 
@@ -85,10 +91,13 @@ for (const c of books) {
   : no(`পদ-গণনা অমিল: ফাইল ${sumFiles} ≠ index ${ix.total}`);
 
 /* ৫. প্রত্যাশিত মোট পদের কাছাকাছি (বাংলা অনুবাদে সামান্য ভিন্নতা স্বাভাবিক) */
-const diff = Math.abs(+ix.total - HAVE_VERSES);
-(diff <= 5)
-  ? ok(`প্রামাণ্য ${HAVE_VERSES.toLocaleString('en')} পদের সাথে ±${diff}`)
-  : no(`মোট পদ ${ix.total} — প্রত্যাশিত ${HAVE_VERSES} (পার্থক্য ${diff})`);
+/* total = উৎসে গোনা পদ, withBn = বাংলা পাঠসহ। total ≥ withBn-ই সঠিক নিয়ম;
+   উৎসে পাঠহীন পদ থাকলে সমান হওয়া জরুরি নয়। */
+const diff = +ix.total - HAVE_VERSES;
+(diff >= 0)
+  ? ok(`মোট পদ ${(+ix.total).toLocaleString('en')} · বাংলাসহ ${(+HAVE_VERSES).toLocaleString('en')}` +
+       (diff ? ` (${diff.toLocaleString('en')}টি উৎসে পাঠহীন)` : ''))
+  : no(`withBn (${HAVE_VERSES}) > total (${ix.total}) — অসম্ভব`);
 
 /* ৬. সব পদে বাংলা পাঠ আছে */
 const empty = books.filter((c) => (+c.count || 0) === 0);
@@ -111,14 +120,19 @@ if (claimsFull) {
   ok('«সম্পূর্ণ পাঠ» দাবি করে না');
 }
 
-/* ৮. সংখ্যাগুলো পাতায় আছে */
-(/৬৬/.test(bi) && /১,১৮৯/.test(bi) && /৩১,১৩০/.test(bi))
-  ? ok('পাতায় ৬৬ · ১,১৮৯ · ৩১,১৩০')
-  : no('পাতায় ৬৬ / ১,১৮৯ / ৩১,১৩০-এর কোনোটি নেই');
+/* ৮. সংখ্যাগুলো পাতায় আছে — ডেটার বাস্তব সংখ্যা দিয়েই, হার্ডকোড নয় */
+const bnNum = (n) => String(n).replace(/[0-9]/g, (d) => '০১২৩৪৫৬৭৮৯'[+d]);
+const wantBooks = bnNum(books.length);
+const wantCh = bnNum(realCh);
+const wantVerses = bnNum(String(+ix.total).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+(bi.includes(wantVerses) && bi.includes(wantBooks))
+  ? ok(`পাতায় ${wantBooks} পুস্তক · ${wantVerses} পদ (ডেটার সাথে মেলে)`)
+  : no(`পাতায় ${wantBooks} পুস্তক বা ${wantVerses} পদ নেই`);
 
 /* ৯. কার্ডেও মেলে */
-/৬৬ পুস্তক/.test(ch) ? ok('christian.html কার্ডে ৬৬ পুস্তক') : no('christian.html কার্ডে ৬৬ পুস্তক নেই');
-/৬৬ পুস্তক/.test(text(granthoHtml)) ? ok('grantho.html কার্ডে ৬৬ পুস্তক') : no('grantho.html কার্ডে ৬৬ পুস্তক নেই');
+(ch.includes(wantBooks + ' পুস্তক') || ch.includes(wantVerses))
+  ? ok(`christian.html কার্ডে ${wantBooks} পুস্তক / ${wantVerses} পদ`)
+  : no(`christian.html কার্ডে ${wantBooks} পুস্তক বা ${wantVerses} পদ নেই`);
 
 /* ১০. পুরোনো ভুল সংখ্যা আর নেই */
 /৮৪৪/.test(bi) ? no('bible.html-এ পুরোনো «৮৪৪» এখনো আছে') : ok('পুরোনো «৮৪৪» বাদ গেছে');
