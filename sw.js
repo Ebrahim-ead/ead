@@ -35,15 +35,22 @@
    ## সংস্করণ
 
    শেল/পাতার কিছু বদলালে `SHELL_VERSION` বাড়ান — পুরোনো শেল-ক্যাশ
-   নিজে মুছে যাবে, কিন্তু ডেটা অটুট থাকবে। ডেটার গঠন (JSON-এর আকার)
-   বদলালে তবেই `DATA_VERSION` বাড়ান।
+   নিজে মুছে যাবে, কিন্তু ডেটা অটুট থাকবে।
+
+   ⚠ `DATA_VERSION`: ডেটার **গঠন** বদলালে যেমন বাড়াতে হয়, তেমনি ডেটার
+   **বিষয়বস্তু** বদলালেও (ফাইল যোগ/বাদ, পুস্তক/অধ্যায়/পদ বদল) — কারণ
+   ডেটা cache-first, পুরোনো ক্যাশ থাকলে নতুন ফাইল কখনো নামে না।
+   নিয়ম: ডেটা বদলানো মানে `DATA_VERSION` বাড়ানো + ফিঙ্গারপ্রিন্ট হালনাগাদ:
+       node tools/test_cache_version.mjs --update
+   (টেস্ট নিজেই মনে করিয়ে দেবে — ৪৬ → ৬৬ পুস্তকের সময় এই ধাপ বাদ
+   পড়েছিল, ফলে ব্যবহারকারী পুরোনো ৫০ পুস্তকের তালিকাই দেখছিলেন।)
    ============================================================ */
 
 /* শেল ও পাতা আলাদা সংস্করণ নম্বর পায় — শুধু শেল-তালিকা বদলালে
    ব্যবহারকারীর জমানো ডেটা (১৪২ MB পর্যন্ত) মুছে যাওয়া উচিত নয়।
-   ডেটার গঠন বদলালে তবেই DATA_VERSION বাড়াবেন। */
-var SHELL_VERSION = 'v6';
-var DATA_VERSION = 'v1';
+   ডেটা বদলালেই (গঠন বা বিষয়বস্তু) DATA_VERSION বাড়াবেন। */
+var SHELL_VERSION = 'v7';
+var DATA_VERSION = 'v2';
 
 var SHELL_CACHE = 'ead-shell-' + SHELL_VERSION;
 var PAGE_CACHE = 'ead-pages-' + SHELL_VERSION;
@@ -53,7 +60,7 @@ var DATA_CACHE = 'ead-data-' + DATA_VERSION;
 var LIMITS = {};
 LIMITS[SHELL_CACHE] = [300, 6 * 1024 * 1024];
 LIMITS[PAGE_CACHE] = [200, 25 * 1024 * 1024];
-LIMITS[DATA_CACHE] = [250, 45 * 1024 * 1024];
+LIMITS[DATA_CACHE] = [400, 120 * 1024 * 1024];
 
 /* ---- অ্যাপ-শেল: যা ছাড়া সাইট চলে না ----
    ইনস্টলে কেবল এগুলোই নামে — দ্রুত ইনস্টল, কম ডেটা।
@@ -292,7 +299,7 @@ function trimCache(name) {
           keys.map(function (k) {
             return cache.match(k).then(function (res) {
               if (!res) return { key: k, bytes: 0 };
-              return sizeOf(res).then(function (b) { return { key: k, bytes: b }; });
+              return sizeOf(res, k, name).then(function (b) { return { key: k, bytes: b }; });
             });
           })
         ).then(function (entries) {
@@ -320,15 +327,37 @@ function trimCache(name) {
   return trimChain[name];
 }
 
-/* Content-Length থাকলে সেটাই; না থাকলে blob করে সত্যিকারের আকার */
-function sizeOf(res) {
+/* Content-Length থাকলে সেটাই; না থাকলে blob করে সত্যিকারের আকার।
+
+   ⚠ ক্যাশ থেকে পড়া রেসপন্স (responseType === 'basic' নয়, 'default'-ও
+   হতে পারে) একবার body পড়া হয়ে গেলে আর ব্যবহার করা যায় না। তাই
+   `clone()` করে মাপি এবং মাপার পর সেই ক্লোনটাই ক্যাশে ফিরিয়ে লিখি —
+   নইলে trim-এর সময় পুরোনো এন্ট্রিগুলো নীরবে বিটিয়ে যেত ("body already
+   used"), আর ক্যাশ-হিট হলে পাঠক ফাঁকা পাতা দেখতেন। */
+function sizeOf(res, key, cacheName) {
   var h = res.headers.get('Content-Length');
   if (h) {
     var n = parseInt(h, 10);
     if (!isNaN(n)) return Promise.resolve(n);
   }
-  return res.clone().blob().then(function (b) { return b.size; })
-    .catch(function () { return 0; });
+  var copy = res.clone();
+  var measured;
+  try {
+    measured = copy.blob();
+  } catch (e) {
+    /* body আগেই পড়া হয়ে গেছে — মাপা যায় না, তবে ক্যাশে অটুট থাক */
+    return Promise.resolve(0);
+  }
+  return measured.then(function (b) {
+    /* মাপার জন্য একটি ক্লোন খরচ হয়েছে — ক্যাশে তাজা ক্লোন ফিরিয়ে রাখি,
+       যাতে এই এন্ট্রি পরে আরও একবার পড়া যায় */
+    if (key && cacheName) {
+      caches.open(cacheName).then(function (c) {
+        c.put(key, res.clone()).catch(function () {});
+      }).catch(function () {});
+    }
+    return b.size;
+  }).catch(function () { return 0; });
 }
 
 /* ============================================================

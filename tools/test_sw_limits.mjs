@@ -57,16 +57,19 @@ for (const n of [SHELL_NAME, PAGE_NAME, DATA_NAME]) {
   L[n] ? ok(`${n}: ${L[n][0]} এন্ট্রি / ${(L[n][1]/1048576).toFixed(0)} MB`) : bad(`${n}: বাজেট নেই`);
 }
 
-// ── ২. ডেটা: ৩০০টা ছোট এন্ট্রি → ২৫০-এ নামে?
+// ── ২. ডেটা: বাজেট+৫০টা ছোট এন্ট্রি → বাজেটে নামে?
+//    (সীমা হার্ডকোড নয় — sw.js-এর LIMITS থেকেই, ভবিষ্যতে বদলালে টেস্টও চলবে)
 console.log('\n২. ডেটা-ক্যাশ — এন্ট্রি-সীমা');
 {
+  const MAX = vm.runInContext('LIMITS[DATA_CACHE][0]', ctx);
+  const OVER = 50;
   const c = await caches.open(DATA_NAME);
-  for (let i=0;i<300;i++) await c.put({url:`/d/${i}.json`}, {_bytes:1000});
+  for (let i=0;i<MAX+OVER;i++) await c.put({url:`/d/${i}.json`}, {_bytes:1000});
   await trim(DATA_NAME);
   const n=(await c.keys()).length;
-  n===250 ? ok(`৩০০ → ${n} (সীমা ২৫০)`) : bad(`৩০০ → ${n}, ২৫০ হওয়া উচিত`);
+  n===MAX ? ok(`${MAX+OVER} → ${n} (সীমা ${MAX})`) : bad(`${MAX+OVER} → ${n}, ${MAX} হওয়া উচিত`);
   const keys=await c.keys();
-  keys[0].url==='/d/50.json' ? ok('পুরোনো ৫০টা বাদ, নতুন ২৫০ রাখা') : bad('ভুলগুলো বাদ পড়েছে: '+keys[0].url);
+  keys[0].url===`/d/${OVER}.json` ? ok(`পুরোনো ${OVER}টা বাদ, নতুন ${MAX} রাখা`) : bad('ভুলগুলো বাদ পড়েছে: '+keys[0].url);
 }
 
 // ── ৩. ডেটা: মাপ-সীমা কার্যকর? (৪০ MB)
@@ -130,10 +133,11 @@ console.log('\n৮. একসাথে অনেক trim');
 {
   CA.delete(DATA_NAME);
   const c = await caches.open(DATA_NAME);
-  for (let i=0;i<280;i++) await c.put({url:`/d/${i}.json`}, {_bytes:100});
+  const MAX8 = vm.runInContext('LIMITS[DATA_CACHE][0]', ctx);
+  for (let i=0;i<MAX8+30;i++) await c.put({url:`/d/${i}.json`}, {_bytes:100});
   await Promise.all([1,2,3,4,5].map(()=>trim(DATA_NAME)));
   const n=(await c.keys()).length;
-  n===250 ? ok(`পাঁচবার একসাথে → ${n} (সীমা ২৫০)`) : bad(`${n} — দৌড়-শর্ত`);
+  n===MAX8 ? ok(`পাঁচবার একসাথে → ${n} (সীমা ${MAX8})`) : bad(`${n} — দৌড়-শর্ত`);
 }
 
 // ── ৯. আপডেটে ডেটা বাঁচে?
@@ -148,10 +152,12 @@ console.log('\n৯. সংস্করণ বদলালে ডেটা বা
 
   // activate-এর যুক্তি: ead-* কিন্তু keep-এ নেই → মোছ
   const keep = [shellN, vm.runInContext('PAGE_CACHE', ctx), dataN];
-  const আছে = ['ead-shell-v1', 'ead-pages-v1', 'ead-data-v1', shellN, dataN];
+  /* আগের সংস্করণের ক্যাশ — নাম হার্ডকোড নয়, বর্তমান সংস্করণ থেকে এক ধাপ পিছিয়ে */
+  const prevShell = 'ead-shell-v0', prevPage = 'ead-pages-v0';
+  const আছে = [prevShell, prevPage, shellN, dataN];
   const deleted = আছে.filter(n => n.indexOf('ead-') === 0 && keep.indexOf(n) === -1);
   deleted.indexOf(dataN) === -1 ? ok('activate-এ ডেটা-ক্যাশ মোছে না ✓') : bad('ডেটা মুছে যাচ্ছে — ❌');
-  deleted.length === 2 && deleted.indexOf('ead-shell-v1') >= 0
+  deleted.length === 2 && deleted.indexOf(prevShell) >= 0 && deleted.indexOf(prevPage) >= 0
     ? ok(`শুধু পুরোনো শেল/পাতা মোছে (${deleted.join(', ')})`) : bad(`ভুল ক্যাশ মোছা: ${deleted.join(', ')}`);
 }
 
