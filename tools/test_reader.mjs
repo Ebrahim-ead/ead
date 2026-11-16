@@ -24,7 +24,14 @@ function pages() {
     .flatMap((dir) => fs.readdirSync(dir)
       .filter((f) => f.endsWith('.html'))
       .map((f) => path.join(dir, f)))
-    .filter((f) => /data-base="/.test(fs.readFileSync(f, 'utf8')));
+    /* grantho.js-ভিত্তিক রিডারই এখানে পরীক্ষা হয় (data-granth আছে এমন পাতা)।
+       English Bible-এর নিজস্ব ক্ষুদ্র রিডার — তার আলাদা টেস্ট আছে
+       (tools/test_english_bible.mjs), তাই এখানে ঢোকাই না। */
+    .filter((f) => {
+      const h = fs.readFileSync(f, 'utf8');
+      return /data-base="/.test(h) && /data-granth="/.test(h)
+        && /grantho\.js/.test(h);
+    });
 }
 
 function attrs(html) {

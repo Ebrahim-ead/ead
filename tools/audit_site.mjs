@@ -78,15 +78,46 @@ for(const f of files){
   const mB = html.match(/data-base="([^"]*)"/);
   if (mG && mG[1] !== slug) errs.push(`data-granth "${mG[1]}" ≠ পাতার slug "${slug}"`);
   if (mB) {
+    /* slug ও ডেটা-ফোল্ডারের নাম হুবহু না-ও মিলতে পারে — যেমন
+       english-bible.html → assets/grantho/data/bible/english/। সমতুল্যতা
+       MANUAL_SLUG এ স্পষ্ট লিখে রাখি, অনুমানে ছাড়ি না। */
+    const MANUAL_SLUG = { 'english-bible': 'english' };
     const parts = mB[1].replace(/\/+$/, '').split('/');
-    if (parts[parts.length - 1] !== slug) errs.push(`data-base "${mB[1]}" অন্য গ্রন্থের ফোল্ডার দেখাচ্ছে (slug "${slug}")`);
+    const baseName = parts[parts.length - 1];
+    const expected = MANUAL_SLUG[slug] || slug;
+    if (baseName !== expected) errs.push(`data-base "${mB[1]}" অন্য গ্রন্থের ফোল্ডার দেখাচ্ছে (slug "${slug}")`);
     const idxFp = path.resolve(path.dirname(f), mB[1], 'index.json');
     if (!fs.existsSync(idxFp)) errs.push(`data-base ফোল্ডারে index.json নেই: ${path.relative(ROOTDIR, idxFp)}`);
     // অধ্যায়-শিরোনাম ও সংখ্যা ch{n}.json থেকেই রেন্ডার হয়, তাই index.json-এর
     // সাথে মিল থাকা দরকার — নইলে পাতায় পুরোনো/ভুল শিরোনাম দেখায়
     try {
       const idx = JSON.parse(fs.readFileSync(idxFp, 'utf8'));
+      /* দুই ধাঁচের ডেটা-ফোল্ডার সমর্থিত:
+           ▸ চ্যাপ্টার = ch<id>.json         (গীতা/বেদ/বাংলা বাইবেল)
+           ▸ পুস্তক   = ch<id>_<n>.json       (English Bible — পুস্তক>অধ্যায় স্তর)
+         আগে শুধু প্রথম ধাঁচ মাপা হতো, ফলে দ্বিতীয় ধাঁচের পাতা মিথ্যা-ত্রুটি দেখাত। */
+      /* পুস্তক-ধাঁচ = perChapter আছে **এবং** প্রথম পুস্তকের প্রথম অধ্যায়ের
+         ফাইল ch<id>_<n>.json হিসেবে সত্যিই আছে। (বাংলা বাইবেলেও perChapter
+         আছে, কিন্তু তার ফাইল ch<id>.json — তাই এই প্রমাণ ছাড়া ধাঁচ বদলাই না।) */
+      /* পুস্তক-ধাঁচ = index.chapters-এর প্রতিটি এন্ট্রির ভেতরে chapters[]
+         আছে, আর প্রথম পুস্তকের প্রথম অধ্যায়ের file নামটি সত্যিই विद্যমান
+         (English Bible-এ file: «ch<id>_<n>.json»)।
+         বাংলা বাইবেলেও perChapter আছে, কিন্তু ভেতরের chapters[] নেই — তাই
+         এই প্রমাণ ছাড়া ধাঁচ বদলাই না। */
+      const isBookIdx = (idx.chapters || []).some(c => Array.isArray(c.chapters)
+        && c.chapters.length > 0 && c.chapters[0].file
+        && fs.existsSync(path.join(path.dirname(idxFp), c.chapters[0].file)));
       for (const c of (idx.chapters || [])) {
+        if (isBookIdx) {
+          /* ভেতরের chapters[] (নতুন ধাঁচ) বা perChapter (পুরোনো ধাঁচ) — যেটা আছে */
+          const inner = Array.isArray(c.chapters) && c.chapters.length
+            ? c.chapters.map(x => x.file || `ch${c.id}_${x.n}.json`)
+            : Object.keys(c.perChapter || {}).map(n => `ch${c.id}_${n}.json`);
+          if (!inner.length) { errs.push(`পুস্তক ${c.id}: অধ্যায়-তালিকা নেই`); continue; }
+          const miss = inner.filter(f => !fs.existsSync(path.join(path.dirname(idxFp), f)));
+          if (miss.length) errs.push(`পুস্তক ${c.id}: ${miss.length}টি অধ্যায়-ফাইল নেই (যেমন ${miss[0]})`);
+          continue;
+        }
         const cfp = path.join(path.dirname(idxFp), `ch${c.id}.json`);
         if (!fs.existsSync(cfp)) { errs.push(`চ্যাপ্টার-ফাইল নেই: ch${c.id}.json`); continue; }
         const ch = JSON.parse(fs.readFileSync(cfp, 'utf8'));
