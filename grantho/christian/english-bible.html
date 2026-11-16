@@ -396,6 +396,20 @@
 .e-blocknote p { margin: 0 0 8px; font-size: 14.5px; line-height: 1.75; }
 .e-blocknote p:last-child { margin-bottom: 0; }
 .g-crumb-b { background: none; border: 0; color: var(--gold2); cursor: pointer; font: inherit; padding: 0; }
+/* «← সব পুস্তক» — প্যারেন্ট .g-crumb2 (১২.৫px) থেকে font: inherit হওয়ায়
+   বোতামটা পাঠের তুলনায় ছোট দেখাচ্ছিল। এখানে বড় + স্পষ্ট ক্লিকযোগ্য। */
+#e-crumb { font-size: 15px; gap: 10px; }
+#e-crumb .g-crumb-b {
+  font: 600 15px/1.5 "Hind Siliguri", system-ui, sans-serif;
+  padding: 5px 11px; border-radius: 9px;
+  border: 1px solid rgba(245,184,28,.32);
+  background: rgba(245,184,28,.08);
+  transition: background .18s ease, border-color .18s ease;
+}
+#e-crumb .g-crumb-b:hover { background: rgba(245,184,28,.16); border-color: rgba(245,184,28,.5); }
+#e-crumb .g-crumb-b:focus-visible { outline: 2px solid var(--gold2); outline-offset: 2px; }
+html[data-theme="light"] #e-crumb .g-crumb-b { color: #7a4f00; border-color: rgba(180,120,10,.4); background: rgba(245,184,28,.12); }
+@media (max-width: 620px) { #e-crumb { font-size: 14px; } #e-crumb .g-crumb-b { font-size: 14px; padding: 5px 10px; } }
 .g-crumb-t { margin-left: 10px; font-weight: 700; }
 .e-narrow .e-v { background: rgba(245,184,28,.07); border-radius: 8px; }
 </style>
