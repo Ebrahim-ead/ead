@@ -292,7 +292,10 @@
     /* ---------------- বার্তা পাঠানো ----------------
        ১) FormSubmit (https://formsubmit.co) — AJAX, পেজ বদলায় না।
        ২) ব্যর্থ হলে আগের পথ: কপি / WhatsApp / Messenger (কিছুই হারায় না)। */
-    var FS_FORM = "https://formsubmit.co/ajax/nuzomu";
+    var FS_FORM = "https://formsubmit.co/ajax/www.mdrazu55555@gmail.com";
+    /* ⚠️ FormSubmit-এর /el/nuzomu হলো «Email Link» (হোস্টেড পাতা) — ফর্ম-এন্ডপয়েন্ট
+       নয়, তাই সেখানে POST করলে সাবমিশন তৈরি হয় না। আসল ফর্ম-এন্ডপয়েন্ট = ইমেইল
+       (অথবা অ্যাক্টিভেশনের পর পাওয়া random-string অ্যালিয়াস)। */
     var asb = document.getElementById("askbtn");
     if (asb) {
       asb.onclick = function () {
@@ -387,11 +390,7 @@
           m.appendChild(okP);
           aq.value = "";
         }).catch(function () {
-          /* ২) ব্যর্থ → পুরোনো পথ */
-          var warn = document.createElement("p");
-          warn.className = "ask-warn";
-          warn.textContent = "সরাসরি পাঠানো যায়নি — নিচের বার্তাটি কপি করে বা WhatsApp/Messenger-এ পাঠান।";
-          m.appendChild(warn);
+          /* ২) ব্যর্থ → পুরোনো পথ (prepare নিজেই বার্তা লিখে দেয়, তাই আলাদা সতর্কবার্তা নয়) */
           prepare();
         }).then(function () {
           asb.disabled = false;
