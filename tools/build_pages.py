@@ -439,7 +439,14 @@ def make_page(slug, idx, meta):
                f'<div class="g-src"><b>পাঠ সম্পর্কে।</b> {src}</div>', h, count=1, flags=re.S)
 
     label = f"{main} {sub}".strip()
-    fulldesc = f'{label}-র {commas(withbn)}টি {meta["word"]} বাংলা অনুবাদসহ — ebanglalibrary.com।'
+    # বাইবেলের description হাতে লেখা জেনেরিকে ডিফল্টে পড়ত: «বাংলা বাইবেল-র
+    # ৩১,১৩০টি পদ…» — দ্বিতীয় শব্দে «-র» জোড়া বানান আর পুস্তক-সংখ্যা বাদ।
+    # ক্যানোনিকাল বর্ণনা এখানেই তৈরি হয়, তাই বিশেষ-কেসটাও এখানে রাখা হলো।
+    if meta.get("kind") == "bible":
+        fulldesc = (f"বাংলা বাইবেলের সম্পূর্ণ পাঠ — {commas(nch)} পুস্তক, "
+                    f"{commas(withbn)} পদ বাংলা অনুবাদসহ (ebanglalibrary.com)।")
+    else:
+        fulldesc = f'{label}-র {commas(withbn)}টি {meta["word"]} বাংলা অনুবাদসহ — ebanglalibrary.com।'
     # সতর্কতা: দশার-অভাবে হঠাৎ বড় পতন (যেমন ৯২২২ → ২১ শ্লোক) সাইটে বসিয়ে দেব না।
     env = os.environ.get("GRANTHO_ALLOW_SHRINK", "").strip().lower() in ("1", "true", "yes")
     if not env and (outdir / f"{slug}.html").exists():
