@@ -1,282 +1,171 @@
-/* ============================================================
-   nav-motion.js — drives the shared header navigation glide.
-   Measures the hovered (or current) link and parks the shared
-   indicator under it, then feeds the pointer position to that
-   link's gold fleck. Re-measured on resize, font load and a
-   theme flip so the indicator never drifts out of place.
-   ============================================================ */
-(function () {
-  "use strict";
+(function(){
+"use strict";
+var nav=document.getElementById("site-nav");
+if(!nav)return;
+var reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
+var desktop=window.matchMedia("(min-width:1081px)");
+var links=[].slice.call(nav.querySelectorAll("a")).filter(function(a){return!a.closest(".nav-sub");});
+if(!links.length)return;
+var current=links.filter(function(a){
+  return a.getAttribute("aria-current")==="page"||(a.parentNode&&a.parentNode.classList&&a.parentNode.classList.contains("current"));
+});
+var active=current[0]||links.filter(function(a){return a.classList.contains("on");})[0]||links[0];
+var hovered=null,lastX=null,lastW=null,lastO=null;
 
-  var nav = document.getElementById("site-nav");
-  if (!nav) return;
+function place(el,beforeWrite){
+  if(!el)return;
+  var navRect=nav.getBoundingClientRect();
+  var r=el.getBoundingClientRect();
+  if(!r.width)return;
+  if(beforeWrite&&!nav.hasAttribute("data-glide"))beforeWrite();
+  var x=Math.max(0,r.left-navRect.left);
+  var w=Math.min(r.width,navRect.width-x)-12;
+  var xStr=(x+6)+"px";
+  var wStr=(w>0?w:0)+"px";
+  if(xStr!==lastX){lastX=xStr;nav.style.setProperty("--nav-glide-x",xStr);}
+  if(wStr!==lastW){lastW=wStr;nav.style.setProperty("--nav-glide-w",wStr);}
+  if(lastO!=="1"){lastO="1";nav.style.setProperty("--nav-glide-o","1");}
+}
 
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-  var desktop = window.matchMedia("(min-width:1081px)");
-  /* গ্লাইডার কেবল প্রধান আইটেমগুলোর জন্য — ড্রপডাউনের ভেতরের সাব-লিংক
-     (.nav-sub-item) আলাদা, ওগুলোর নিজের হোভার-আলো আছে। */
-  var links = [].slice.call(nav.querySelectorAll("a")).filter(function (a) {
-    return !a.closest(".nav-sub");
+function sync(){
+  if(!desktop.matches||reduced.matches){
+    if(lastO==="1"){lastO="0";nav.style.setProperty("--nav-glide-o","0");}
+    if(nav.hasAttribute("data-glide"))nav.removeAttribute("data-glide");
+    return;
+  }
+  place(hovered||active,function(){nav.setAttribute("data-glide","");});
+}
+
+function readyGlide(){
+  if(!nav.hasAttribute("data-glide-ready"))nav.setAttribute("data-glide-ready","");
+}
+
+links.forEach(function(a){
+  a.addEventListener("pointerenter",function(e){
+    if(e.pointerType==="touch")return;
+    readyGlide();hovered=a;sync();
   });
-  if (!links.length) return;
+  a.addEventListener("focus",function(){readyGlide();hovered=a;sync();});
+  a.addEventListener("blur",function(){if(hovered===a){hovered=null;sync();}});
+  a.addEventListener("pointermove",function(e){
+    if(!desktop.matches||reduced.matches||e.pointerType==="touch")return;
+    var r=a.getBoundingClientRect();
+    if(!r.width||!r.height)return;
+    a.style.setProperty("--px",((e.clientX-r.left)/r.width)*100+"%");
+    a.style.setProperty("--py",((e.clientY-r.top)/r.height)*100+"%");
+  },{passive:true});
+});
 
-  /* একটি দাগই থাকবে: পুরোনো টেমপ্লেটে দুই লিংকে «current» বসে থাকলেও
-     (ধর্মীয় গ্রন্থ পাতায় «পরিচিতি»-ও রঙিন হতো) গ্লাইড কেবল
-     true-current লিংকের নিচে বসবে, নইলে প্রথমটির নিচে। */
-  var current = links.filter(function (a) {
-    return a.getAttribute("aria-current") === "page" ||
-      (a.parentNode && a.parentNode.classList && a.parentNode.classList.contains("current"));
-  });
-  var active = current[0] || links.filter(function (a) { return a.classList.contains("on"); })[0] || links[0];
-  var hovered = null;
+nav.addEventListener("pointerleave",function(){hovered=null;sync();});
 
-  /* পিলের জায়গা নেভের সাপেক্ষে মাপা হয় — offsetLeft ব্যবহার করা যাবে না:
-     «ধর্মীয় গ্রন্থ» এখন .nav-item-এর ভেতরে, আর ওটার position:relative
-     থাকায় offsetLeft নিজের পিতার সাপেক্ষে প্রায় ০ হয়ে যায় → পিল
-     নেভের বাঁ প্রান্তে (হোমের ওপরে) গিয়ে বসে যেত। getBoundingClientRect
-     নেস্টিং নির্বিশেষে সবসময় ভিউপোর্টের সাপেক্ষে সত্যিকারের অবস্থান দেয়। */
-  function place(el, beforeWrite) {
-    if (!el) return;
-    var navRect = nav.getBoundingClientRect();
-    var r = el.getBoundingClientRect();
-    if (beforeWrite) beforeWrite();
-    if (!r.width) return;
-    /* nav-এর ভেতরে কতটুকু জায়গা আছে তার বাইরে যেন পিল না বেরোয় */
-    var x = Math.max(0, r.left - navRect.left);
-    var w = Math.min(r.width, navRect.width - x) - 12;
-    nav.style.setProperty("--nav-glide-x", (x + 6) + "px");
-    nav.style.setProperty("--nav-glide-w", (w > 0 ? w : 0) + "px");
-    nav.style.setProperty("--nav-glide-o", "1");
-  }
+var queued=null;
+function refresh(){
+  if(queued)return;
+  queued=requestAnimationFrame(function(){queued=null;sync();});
+}
 
-  function sync() {
-    if (!desktop.matches || reduced.matches) {
-      nav.style.setProperty("--nav-glide-o", "0");
-      nav.removeAttribute("data-glide");
-      return;
-    }
-    place(hovered || active, function () {
-      nav.setAttribute("data-glide", "");   /* CSS drops the old underline after layout reads */
-    });
-  }
+var listen=function(mql,fn){
+  if(mql.addEventListener)mql.addEventListener("change",fn);
+  else if(mql.addListener)mql.addListener(fn);
+};
+listen(desktop,refresh);
+listen(reduced,refresh);
+window.addEventListener("resize",refresh,{passive:true});
+window.addEventListener("orientationchange",refresh,{passive:true});
+window.addEventListener("load",refresh);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(refresh);
+var themeBtn=document.querySelector("[data-theme-toggle]");
+if(themeBtn)themeBtn.addEventListener("click",function(){setTimeout(refresh,80);});
+if(window.ResizeObserver)new ResizeObserver(refresh).observe(nav);
 
-  links.forEach(function (a) {
-    a.addEventListener("pointerenter", function (e) {
-      if (e.pointerType === "touch") return;
-      hovered = a; sync();
-    });
-    a.addEventListener("focus", function () { hovered = a; sync(); });
-    a.addEventListener("blur", function () {
-      if (hovered === a) { hovered = null; sync(); }
-    });
-    a.addEventListener("pointermove", function (e) {
-      if (!desktop.matches || reduced.matches || e.pointerType === "touch") return;
-      var r = a.getBoundingClientRect();
-      if (!r.width || !r.height) return;
-      a.style.setProperty("--px", ((e.clientX - r.left) / r.width) * 100 + "%");
-      a.style.setProperty("--py", ((e.clientY - r.top) / r.height) * 100 + "%");
-    }, { passive: true });
-  });
-
-  nav.addEventListener("pointerleave", function () {
-    hovered = null;
-    sync();
-  });
-
-  /* keep the indicator glued to the right link when anything moves.
-     sync() rather than place(), so crossing the mobile breakpoint or
-     flipping the motion preference also updates the fallback state. */
-  var queued = null;
-  function refresh() {
-    if (queued) return;
-    queued = requestAnimationFrame(function () {
-      queued = null;
-      sync();
-    });
-  }
-
-  var listen = function (mql, fn) {
-    if (mql.addEventListener) mql.addEventListener("change", fn);
-    else if (mql.addListener) mql.addListener(fn);
-  };
-  listen(desktop, refresh);
-  listen(reduced, refresh);
-
-  window.addEventListener("resize", refresh, { passive: true });
-  window.addEventListener("orientationchange", refresh, { passive: true });
-  window.addEventListener("load", refresh);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
-
-  var themeBtn = document.querySelector("[data-theme-toggle]");
-  if (themeBtn) themeBtn.addEventListener("click", function () { setTimeout(refresh, 80); });
-
-  if (window.ResizeObserver) new ResizeObserver(refresh).observe(nav);
-
-  function boot() {
-    if (!desktop.matches || reduced.matches) {
-      sync();
-      return;
-    }
-    /* প্রথম ফ্রেমে স্টাইল-লেখার ঠিক পরপর লেআউট না মেপে rAF-এ একসাথে মাপি —
-       Forced Reflow এড়ানো যায় ও পিলটিও মসৃণভাবে নেমে আসে। */
-    nav.style.setProperty("--nav-glide-o", "0");
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () { sync(); });
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot);
-  } else {
-    boot();
-  }
+function boot(){
+  if(!desktop.matches||reduced.matches){sync();return;}
+  requestAnimationFrame(function(){requestAnimationFrame(sync);});
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);
+else boot();
 })();
 
-/* ============================================================
-   ধর্মীয় গ্রন্থ — নেভ ড্রপডাউন
-   ডেস্কটপ: লিংকের পাশের তির-বোতামে খোলে/বন্ধ হয় (হোভারেও)।
-   ফোন: একই বোতাম ড্রয়ারের ভেতরে সাব-লিস্ট খোলে।
-   Esc / বাইরে চাপ / লিংকে গেলে বন্ধ।
-   ============================================================ */
-(function () {
-  "use strict";
-  var item = document.getElementById("nav-item-grantho");
-  if (!item) return;
-  var btn = item.querySelector(".nav-sub-toggle");
-  var panel = document.getElementById("nav-sub-grantho");
-  if (!btn || !panel) return;
+(function(){
+"use strict";
+var item=document.getElementById("nav-item-grantho");
+if(!item)return;
+var btn=item.querySelector(".nav-sub-toggle");
+var panel=document.getElementById("nav-sub-grantho");
+if(!btn||!panel)return;
+var nav=document.getElementById("site-nav");
+var wide=window.matchMedia("(min-width:1081px)");
+var hoverOK=window.matchMedia("(hover:hover) and (pointer:fine)");
+var hoverTimer=null;
 
-  var nav = document.getElementById("site-nav");
-  var wide = window.matchMedia("(min-width:1081px)");
-  var hoverOK = window.matchMedia("(hover:hover) and (pointer:fine)");
-  var hoverTimer = null;
+function isOpen(){return btn.getAttribute("aria-expanded")==="true";}
+function set(open){
+  btn.setAttribute("aria-expanded",open?"true":"false");
+  panel.classList.toggle("open",open);
+}
+function close(){if(isOpen())set(false);}
 
-  function isOpen() { return btn.getAttribute("aria-expanded") === "true"; }
-  function set(open) {
-    btn.setAttribute("aria-expanded", open ? "true" : "false");
-    panel.classList.toggle("open", open);
-  }
-  function close() { if (isOpen()) set(false); }
-
-  btn.addEventListener("click", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    set(!isOpen());
+btn.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();set(!isOpen());});
+if(hoverOK){
+  item.addEventListener("pointerenter",function(e){
+    if(e.pointerType==="touch"||!wide.matches)return;
+    clearTimeout(hoverTimer);if(!isOpen())set(true);
   });
-
-  /* ডেস্কটপে হোভার করলেই খোলা — মেনুতে ঢুকতে বোতাম খোঁজার দরকার নেই */
-  if (hoverOK) {
-    item.addEventListener("pointerenter", function (e) {
-      if (e.pointerType === "touch" || !wide.matches) return;
-      clearTimeout(hoverTimer);
-      if (!isOpen()) set(true);
-    });
-    item.addEventListener("pointerleave", function (e) {
-      if (e.pointerType === "touch" || !wide.matches) return;
-      clearTimeout(hoverTimer);
-      hoverTimer = setTimeout(close, 220);
-    });
-  }
-  /* প্যানেলের ভেতরে ঢুকলে খোলা থাকবে — নইলে সাব-লিংকে ক্লিক করা যেত না */
-  panel.addEventListener("pointerenter", function () {
-    if (wide.matches && hoverOK.matches) clearTimeout(hoverTimer);
+  item.addEventListener("pointerleave",function(e){
+    if(e.pointerType==="touch"||!wide.matches)return;
+    clearTimeout(hoverTimer);hoverTimer=setTimeout(close,220);
   });
-  panel.addEventListener("pointerleave", function () {
-    if (wide.matches && hoverOK.matches) hoverTimer = setTimeout(close, 220);
-  });
-
-  /* বাইরে চাপ / Esc */
-  document.addEventListener("click", function (e) {
-    if (!item.contains(e.target)) close();
-  });
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && isOpen()) {
-      btn.focus({ preventScroll: true });
-      close();
-    }
-  });
-  panel.addEventListener("click", function (e) {
-    if (e.target.closest && e.target.closest("a")) close();
-  });
-  /* তৈরি-হয়নি এমন ধর্মে চাপলে কোথাও যাবে না */
-  panel.addEventListener("click", function (e) {
-    var soon = e.target.closest && e.target.closest(".nav-sub-item.is-soon");
-    if (soon) e.preventDefault();
-  });
-
-  /* breakpoint বদলালে খোলা-অবস্থা যেন আটকে না থাকে */
-  var reset = function () { close(); };
-  if (wide.addEventListener) wide.addEventListener("change", reset);
-  else if (wide.addListener) wide.addListener(reset);
-
-  /* ড্রয়ার বন্ধ হলে সাব-লিস্টও বন্ধ */
-  if (nav) {
-    new MutationObserver(function () {
-      if (!nav.classList.contains("open")) close();
-    }).observe(nav, { attributes: true, attributeFilter: ["class"] });
-  }
+}
+panel.addEventListener("pointerenter",function(){if(wide.matches&&hoverOK.matches)clearTimeout(hoverTimer);});
+panel.addEventListener("pointerleave",function(){if(wide.matches&&hoverOK.matches)hoverTimer=setTimeout(close,220);});
+document.addEventListener("click",function(e){if(!item.contains(e.target))close();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&isOpen()){btn.focus({preventScroll:true});close();}});
+panel.addEventListener("click",function(e){if(e.target.closest&&e.target.closest("a"))close();});
+panel.addEventListener("click",function(e){var soon=e.target.closest&&e.target.closest(".nav-sub-item.is-soon");if(soon)e.preventDefault();});
+var reset=function(){close();};
+if(wide.addEventListener)wide.addEventListener("change",reset);else if(wide.addListener)wide.addListener(reset);
+if(nav){
+  new MutationObserver(function(){if(!nav.classList.contains("open"))close();}).observe(nav,{attributes:true,attributeFilter:["class"]});
+}
 })();
 
-/* ============================================================
-   মোবাইল-মেনু (☰) — এক জায়গায়, সব পাতার জন্য।
-   আগে এই কোডটি প্রতি পাতায় আলাদা করে inline বসানো ছিল; quran.html ও
-   hadith.html-এ কপি করতে ভুলে গিয়েছিল, ফলে ওই দুই পাতায় ☰ চাপলে
-   কিছুই হত না। এখন এখানে একবার থাকলে সব পাতায় কাজ করবে।
-   defer-এ চলে, তাই DOM তৈরি হওয়ার পর চলে; data-base-নির্ভর লোডারও
-   তখনই শুরু হয়, ফলে ক্রম নিয়ে আর চিন্তা নেই।
-   ============================================================ */
-(function () {
-  "use strict";
-  var burger = document.querySelector(".burger");
-  var nav = document.querySelector(".nav");
-  if (!burger || !nav) return;
-  /* pagers-এর নিজের খোলা-বন্ধ আচরণ থাকলে (কিছু পাতায় ☰ আলাদা কাজে
-     বসানো), সেটিকে আর দ্বিগুণ বাঁধা দিই না। */
-  if (burger.dataset && burger.dataset.menuBound === "1") return;
+(function(){
+"use strict";
+var burger=document.querySelector(".burger");
+var nav=document.querySelector(".nav");
+if(!burger||!nav)return;
+if(burger.dataset&&burger.dataset.menuBound==="1")return;
+var body=document.body;
+var backdrop=document.querySelector(".nav-backdrop");
+var navLinks=Array.prototype.slice.call(nav.querySelectorAll("a[href]"));
+var headerButtons=Array.prototype.slice.call(document.querySelectorAll(".header-actions button"));
+var menuFocusables=navLinks.concat(headerButtons);
 
-  var body = document.body;
-  var backdrop = document.querySelector(".nav-backdrop");
-  var navLinks = Array.prototype.slice.call(nav.querySelectorAll("a[href]"));
-  var headerButtons = Array.prototype.slice.call(document.querySelectorAll(".header-actions button"));
-  var menuFocusables = navLinks.concat(headerButtons);
+function setMenuOpen(open,restoreFocus){
+  nav.classList.toggle("open",open);
+  if(backdrop)backdrop.classList.toggle("on",open);
+  if(body)body.classList.toggle("menu-open",open);
+  burger.setAttribute("aria-expanded",open?"true":"false");
+  burger.setAttribute("aria-label",open?"মেনু বন্ধ করুন":"মেনু খুলুন");
+  burger.title=open?"মেনু বন্ধ করুন":"মেনু খুলুন";
+  burger.textContent=open?"\u00d7":"\u2630";
+  if(open&&navLinks[0])window.requestAnimationFrame(function(){navLinks[0].focus();});
+  else if(!open&&restoreFocus)burger.focus();
+}
 
-  function setMenuOpen(open, restoreFocus) {
-    nav.classList.toggle("open", open);
-    if (backdrop) backdrop.classList.toggle("on", open);
-    if (body) body.classList.toggle("menu-open", open);
-    burger.setAttribute("aria-expanded", open ? "true" : "false");
-    burger.setAttribute("aria-label", open ? "মেনু বন্ধ করুন" : "মেনু খুলুন");
-    burger.title = open ? "মেনু বন্ধ করুন" : "মেনু খুলুন";
-    burger.textContent = open ? "\u00d7" : "\u2630";
-    if (open && navLinks[0]) window.requestAnimationFrame(function () { navLinks[0].focus(); });
-    else if (!open && restoreFocus) burger.focus();
+burger.addEventListener("click",function(){setMenuOpen(!nav.classList.contains("open"),false);});
+nav.addEventListener("click",function(e){var link=e.target.closest?e.target.closest("a"):null;if(link)setMenuOpen(false,false);});
+if(backdrop)backdrop.addEventListener("click",function(){setMenuOpen(false,true);});
+document.addEventListener("keydown",function(e){
+  if(!nav.classList.contains("open"))return;
+  if(e.key==="Escape"){e.preventDefault();setMenuOpen(false,true);return;}
+  if(e.key==="Tab"&&menuFocusables.length){
+    var first=menuFocusables[0],last=menuFocusables[menuFocusables.length-1],activeEl=document.activeElement;
+    if(e.shiftKey&&(activeEl===first||menuFocusables.indexOf(activeEl)<0)){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&(activeEl===last||menuFocusables.indexOf(activeEl)<0)){e.preventDefault();first.focus();}
   }
-
-  burger.addEventListener("click", function () {
-    setMenuOpen(!nav.classList.contains("open"), false);
-  });
-  nav.addEventListener("click", function (e) {
-    var link = e.target.closest ? e.target.closest("a") : null;
-    if (link) setMenuOpen(false, false);
-  });
-  if (backdrop) backdrop.addEventListener("click", function () { setMenuOpen(false, true); });
-  document.addEventListener("keydown", function (e) {
-    if (!nav.classList.contains("open")) return;
-    if (e.key === "Escape") { e.preventDefault(); setMenuOpen(false, true); return; }
-    if (e.key === "Tab" && menuFocusables.length) {
-      var first = menuFocusables[0], last = menuFocusables[menuFocusables.length - 1];
-      var activeEl = document.activeElement;
-      if (e.shiftKey && (activeEl === first || menuFocusables.indexOf(activeEl) < 0)) {
-        e.preventDefault(); last.focus();
-      } else if (!e.shiftKey && (activeEl === last || menuFocusables.indexOf(activeEl) < 0)) {
-        e.preventDefault(); first.focus();
-      }
-    }
-  });
-  window.addEventListener("resize", function () {
-    if (window.innerWidth > 1080 && nav.classList.contains("open")) setMenuOpen(false, false);
-  });
-  if (burger.dataset) burger.dataset.menuBound = "1";
-  /* আগের inline কোড থাকলে সেটি বুঝবে মেনু ইতিমধ্যে বাঁধা হয়েছে */
-  window.__eadMenuBound = true;
+});
+window.addEventListener("resize",function(){if(window.innerWidth>1080&&nav.classList.contains("open"))setMenuOpen(false,false);});
+if(burger.dataset)burger.dataset.menuBound="1";
+window.__eadMenuBound=true;
 })();

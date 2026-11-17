@@ -33,7 +33,7 @@
 
 
 <link rel="stylesheet" href="../assets/nav-motion.css">
-<link rel="stylesheet" href="../assets/site-motion.css">
+<link rel="stylesheet" href="../assets/site-motion.css" media="print" onload="this.onload=null;this.media=\'all\'"><noscript><link rel="stylesheet" href="../assets/site-motion.css"></noscript>
 <link rel="stylesheet" href="../assets/grantho/grantho.css"><link rel="canonical" href="https://ebrahim-ead.github.io/ead/grantho/hindu.html">
 </head>
 <body>
@@ -179,19 +179,23 @@
 
     var prog = document.querySelector(".prog");
     var up = document.querySelector(".up");
-    var ticking = false;
+    var ticking = false, scrolled = false;
     function onScroll() {
-      var h = document.documentElement;
-      var max = h.scrollHeight - h.clientHeight;
-      var y = window.scrollY || h.scrollTop;
-      if (prog) prog.style.width = (max > 0 ? (y / max) * 100 : 0) + "%";
-      if (up) up.classList.toggle("show", y > 420);
       ticking = false;
+      var h = document.documentElement;
+      var y = window.scrollY || h.scrollTop || 0;
+      if (!y && !scrolled) return;
+      scrolled = true;
+      var max = h.scrollHeight - h.clientHeight;
+      if (prog) prog.style.transform = "scaleX(" + (max > 0 ? Math.min(1, y / max) : 0).toFixed(4) + ")";
+      if (up) up.classList.toggle("show", y > 420);
     }
     window.addEventListener("scroll", function () {
       if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
     }, { passive: true });
-    if (typeof requestAnimationFrame === "function") requestAnimationFrame(onScroll); else onScroll();
+    if ((window.scrollY || document.documentElement.scrollTop || 0) > 0) {
+      if (typeof requestAnimationFrame === "function") requestAnimationFrame(onScroll); else onScroll();
+    }
 
     if (up) up.onclick = function () { window.scrollTo({ top: 0, behavior: rm ? "auto" : "smooth" }); };
 
