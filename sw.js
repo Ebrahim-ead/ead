@@ -49,7 +49,7 @@
 /* শেল ও পাতা আলাদা সংস্করণ নম্বর পায় — শুধু শেল-তালিকা বদলালে
    ব্যবহারকারীর জমানো ডেটা (১৪২ MB পর্যন্ত) মুছে যাওয়া উচিত নয়।
    ডেটা বদলালেই (গঠন বা বিষয়বস্তু) DATA_VERSION বাড়াবেন। */
-var SHELL_VERSION = 'v10';
+var SHELL_VERSION = 'v11';
 var DATA_VERSION = 'v6';
 
 var SHELL_CACHE = 'ead-shell-' + SHELL_VERSION;
@@ -89,6 +89,9 @@ var SHELL = [
   '/ead/assets/img/apple-touch-icon.png',
 
   /* হোম-পাতার প্রথম দৃশ্যের ছবি — অফলাইনে প্রথম খোলাতেই দেখা যাবে */
+  '/ead/assets/img/logo-avatar.webp',
+  '/ead/assets/img/1f4b2d3123-sm.webp',
+  '/ead/assets/img/f2b99e768b-sm.webp',
   '/ead/assets/img/1f4b2d3123.webp',
   '/ead/assets/img/f2b99e768b.webp'
 ];
@@ -103,8 +106,7 @@ var PREFETCH = [
   '/ead/assets/book-pdf.js',
   '/ead/assets/article-pages.js',
   '/ead/assets/img/icon-512.png',
-  '/ead/assets/img/icon-maskable-512.png',
-  '/ead/assets/img/b612b62bb3.jpg'
+  '/ead/assets/img/icon-maskable-512.png'
 ];
 
 /* ⚠ ইনস্টল-সিস্টেম বাদ দেওয়া হয়েছে (ব্যবহারকারীর নির্দেশ)। তাই

@@ -35,10 +35,11 @@
      থাকায় offsetLeft নিজের পিতার সাপেক্ষে প্রায় ০ হয়ে যায় → পিল
      নেভের বাঁ প্রান্তে (হোমের ওপরে) গিয়ে বসে যেত। getBoundingClientRect
      নেস্টিং নির্বিশেষে সবসময় ভিউপোর্টের সাপেক্ষে সত্যিকারের অবস্থান দেয়। */
-  function place(el) {
+  function place(el, beforeWrite) {
     if (!el) return;
     var navRect = nav.getBoundingClientRect();
     var r = el.getBoundingClientRect();
+    if (beforeWrite) beforeWrite();
     if (!r.width) return;
     /* nav-এর ভেতরে কতটুকু জায়গা আছে তার বাইরে যেন পিল না বেরোয় */
     var x = Math.max(0, r.left - navRect.left);
@@ -54,8 +55,9 @@
       nav.removeAttribute("data-glide");
       return;
     }
-    nav.setAttribute("data-glide", "");   /* CSS drops the old underline now */
-    place(hovered || active);
+    place(hovered || active, function () {
+      nav.setAttribute("data-glide", "");   /* CSS drops the old underline after layout reads */
+    });
   }
 
   links.forEach(function (a) {
@@ -111,14 +113,16 @@
   if (window.ResizeObserver) new ResizeObserver(refresh).observe(nav);
 
   function boot() {
-    sync();
-    /* the pill animates in from just under the header the first time */
-    if (desktop.matches && !reduced.matches) {
-      nav.style.setProperty("--nav-glide-o", "0");
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () { sync(); });
-      });
+    if (!desktop.matches || reduced.matches) {
+      sync();
+      return;
     }
+    /* প্রথম ফ্রেমে স্টাইল-লেখার ঠিক পরপর লেআউট না মেপে rAF-এ একসাথে মাপি —
+       Forced Reflow এড়ানো যায় ও পিলটিও মসৃণভাবে নেমে আসে। */
+    nav.style.setProperty("--nav-glide-o", "0");
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { sync(); });
+    });
   }
 
   if (document.readyState === "loading") {

@@ -104,18 +104,32 @@
       y = window.pageYOffset || document.documentElement.scrollTop || 0;
       max = document.documentElement.scrollHeight - window.innerHeight;
     }
-    measure();
-    window.addEventListener("scroll", measure, { passive: true });
-    window.addEventListener("resize", measure, { passive: true });
-
-    var last = -1;
-    return function tick() {
+    var last = -1, scheduled = false;
+    function update() {
+      scheduled = false;
       var p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
       if (Math.abs(p - last) < 0.0015) return;
       last = p;
       bar.style.transform = "scaleX(" + p.toFixed(4) + ")";
       bar.classList.toggle("on", p > 0.005 && max > 420);
       bar.style.opacity = p > 0.005 ? "1" : "0";
+    }
+    function scheduleUpdate() {
+      if (scheduled) return;
+      scheduled = true;
+      if (typeof requestAnimationFrame === "function") requestAnimationFrame(update);
+      else update();
+    }
+    window.addEventListener("scroll", function () { measure(); scheduleUpdate(); }, { passive: true });
+    window.addEventListener("resize", function () { measure(); scheduleUpdate(); }, { passive: true });
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(function () { measure(); update(); });
+    } else {
+      measure(); update();
+    }
+
+    return function tick() {
+      update();
     };
   }
 
@@ -132,7 +146,8 @@
       var s = (window.pageYOffset || 0) > 24;
       if (s !== stuck) { stuck = s; bar.classList.toggle("m-stuck", s); }
     }
-    apply();
+    if (typeof requestAnimationFrame === "function") requestAnimationFrame(apply);
+    else apply();
     window.addEventListener("scroll", apply, { passive: true });
   }
 
@@ -181,11 +196,10 @@
     if (ring) tickers.push(ring);
     tickers = tickers.filter(Boolean);
 
-    /* progress ও header এখন নিজেরাই scroll/resize-এ চলে (passive),
-       তাই এদের আর প্রতি-ফ্রেম লুপে রাখা হয় না। ফলে ফোনে স্ক্রল করার
-       সময় অকারণ rAF ফ্রেম জ্বলে না — ফ্রেম-টাইম ও ব্যাটারি দুটোই বাঁচে। */
-    var still = [progress(), header()].filter(Boolean);
-    still.forEach(function (t) { t(); });
+    /* progress ও header নিজেরাই rAF + passive scroll/resize-এ চলে,
+       তাই প্রথম ফ্রেমে forced reflow হয় না ও ফ্রেম-বাজেটও বাঁচে। */
+    progress();
+    header();
 
     theme();
 
