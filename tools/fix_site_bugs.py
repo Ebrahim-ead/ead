@@ -30,7 +30,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 
 def pages() -> list[pathlib.Path]:
-    return sorted(ROOT.glob("*.html")) + sorted((ROOT / "grantho").rglob("*.html"))
+    return [p for p in sorted(ROOT.glob("*.html")) if not re.fullmatch(r"google[0-9a-f]+\.html", p.name, re.I)] + sorted((ROOT / "grantho").rglob("*.html"))
 
 
 def read(p: pathlib.Path) -> str:

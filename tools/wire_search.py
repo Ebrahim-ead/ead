@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import sys
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -65,7 +66,7 @@ def main() -> int:
     check = "--check" in sys.argv
     ok = skipped = already = 0
     for p in sorted(ROOT.glob("*.html")):
-        if p.name in {"atheism-2.html"}:  # রিডাইরেক্ট পাতা
+        if p.name in {"atheism-2.html"} or re.fullmatch(r"google[0-9a-f]+\.html", p.name, re.I):  # রিডাইরেক্ট/ভেরিফিকেশন পাতা
             continue
         res = wire(p)
         if check:

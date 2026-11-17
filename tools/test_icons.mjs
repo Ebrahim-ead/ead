@@ -63,7 +63,7 @@ man?.icons?.some((i) => i.purpose === 'maskable') ? ok('maskable আইকন �
 
 /* ── ৩. প্রতিটি পাতায় ট্যাগ ── */
 console.log('\nপাতা-সংযোগ');
-const pages = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html') && f !== 'atheism-2.html');
+const pages = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html') && f !== 'atheism-2.html' && !/^google[0-9a-f]+\.html$/i.test(f));
 const noManifest = [], noIos = [], noFavicon = [];
 for (const f of pages) {
   const s = fs.readFileSync(path.join(ROOT, f), 'utf8');
@@ -98,7 +98,7 @@ console.log('\nসোশ্যাল (Threads)');
       if (e.name === 'node_modules' || e.name === '.git' || e.name === '_debug') continue;
       const fp = path.join(d, e.name);
       if (e.isDirectory()) walk(fp);
-      else if (e.name.endsWith('.html')) all.push(fp);
+      else if (e.name.endsWith('.html') && !/^google[0-9a-f]+\.html$/i.test(e.name)) all.push(fp);
     }
   })(ROOT);
 

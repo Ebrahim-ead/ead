@@ -54,7 +54,7 @@ function allPages(dir = ROOT, out = []) {
     if (e.name === 'node_modules' || e.name === '.git' || e.name === '_debug') continue;
     const p = path.join(dir, e.name);
     if (e.isDirectory()) allPages(p, out);
-    else if (e.name.endsWith('.html')) out.push(path.relative(ROOT, p));
+    else if (e.name.endsWith('.html') && !/^google[0-9a-f]+\.html$/i.test(e.name)) out.push(path.relative(ROOT, p));
   }
   return out;
 }

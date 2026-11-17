@@ -87,7 +87,7 @@ def norm(text: str) -> str:
 def build_pages() -> list[dict]:
     rows: list[dict] = []
     for path in sorted(ROOT.glob("*.html")):
-        if path.name in SKIP_PAGES:
+        if path.name in SKIP_PAGES or re.fullmatch(r"google[0-9a-f]+\.html", path.name, re.I):
             continue
         raw = path.read_text(encoding="utf-8", errors="ignore")
         title = clean_html(TITLE_RE.search(raw).group(1)) if TITLE_RE.search(raw) else path.stem

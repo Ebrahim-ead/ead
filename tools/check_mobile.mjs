@@ -27,7 +27,7 @@ function walk(dir, out = []) {
     const p = join(dir, name);
     const st = statSync(p);
     if (st.isDirectory()) walk(p, out);
-    else if (name.endsWith('.html')) out.push(p);
+    else if (name.endsWith('.html') && !/^google[0-9a-f]+\.html$/i.test(name)) out.push(p);
   }
   return out;
 }

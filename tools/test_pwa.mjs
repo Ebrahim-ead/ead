@@ -99,7 +99,7 @@ if (!fs.existsSync(pwaPath)) {
 
 /* ── ৪. প্রতিটি পাতায় pwa.js ── */
 console.log('\nপাতা-সংযোগ');
-const pages = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html') && f !== 'atheism-2.html');
+const pages = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html') && f !== 'atheism-2.html' && !/^google[0-9a-f]+\.html$/i.test(f));
 const without = pages.filter((f) => !/assets\/pwa\.js/.test(fs.readFileSync(path.join(ROOT, f), 'utf8')));
 without.length === 0 ? ok(`${pages.length}টি পাতায় pwa.js`) : bad(`pwa.js নেই: ${without.join(', ')}`);
 const offHas = /assets\/pwa\.js/.test(fs.readFileSync(offPath, 'utf8'));
