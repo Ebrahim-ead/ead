@@ -549,7 +549,7 @@ def write_index(books):
                       "lesson": d0.get("url", ""),
                       "ntopics": d0.get("suktaCount") or len(d0.get("suktas") or [])})
         known.add(i)
-    chs, total, withbn = [], 0, 0
+    chs, total, withbn, gap_filled = [], 0, 0, False
     for b in books:
         fp = OUT / f'ch{b["i"]}.json'
         if not fp.exists():
@@ -563,6 +563,8 @@ def write_index(books):
             continue
         total += d["count"]
         withbn += d.get("withBn", 0)
+        if d.get("pv") is None:
+            gap_filled = True
         # অধ্যায়-গ্রিডের জন্য ডেটাই যথেষ্ট: কোন অধ্যায়ে কত পদ, আর উৎসের
         # নাম-ক্রম (ফাঁকা অধ্যায় থাকলে তালিকা থেকে লেবেল মেলে)। পাঠক-পাতায়
         # পুরো বই নামানোর আগেই অধ্যায়-সংখ্যাগুলো দেখানো যায়।
@@ -575,15 +577,24 @@ def write_index(books):
                     "testament": d.get("testament", ""), "url": d.get("url", b["lesson"]),
                     "perChapter": per_ch,
                     **({"missing": d["missing"]} if d.get("missing") else {})})
+    _bn_commas = lambda n: f"{int(n):,}".translate(str.maketrans("0123456789", BN))
+    if gap_filled:
+        note = ("বাংলা বাইবেল — ebanglalibrary.com থেকে সংগৃহীত; অনুপস্থিত পাঠ "
+                "godlytalias/Bible-Database (একই বাংলা অনুবাদ) থেকে পূরণ করা হয়েছে। "
+                f"{_bn_commas(len(chs))} পুস্তক, {_bn_commas(total)} পদ। "
+                "উৎসে যে পাঠ পাওয়া যায়নি তা অনুমান করে বসানো হয়নি "
+                "(হিসাব _debug/bible_report.txt-এ)।")
+    else:
+        note = ("বাংলা বাইবেল — ebanglalibrary.com থেকে সংগৃহীত। "
+                f"{_bn_commas(len(chs))} পুস্তক, {_bn_commas(total)} পদ। উৎস-সাইটের কিছু অধ্যায় এখন "
+                "লগইন-সাপেক্ষ — সেগুলো নামেনি; অনুমান করে কিছু বসানো হয়নি "
+                "(হিসাব _debug/bible_report.txt-এ)।")
     idx = {
         "slug": SLUG, "bn": "বাইবেল", "en": "Bangla Bible",
         "total": total, "withBn": withbn,
         "verseWord": "পদ", "chword": "পুস্তক", "groupWord": "অধ্যায়",
         "chapters": chs, "url": BOOK_URL,
-        "note": ("বাংলা বাইবেল — ebanglalibrary.com থেকে সংগৃহীত। "
-                 f"{len(chs)} পুস্তক, {total} পদ। উৎস-সাইটের কিছু অধ্যায় এখন "
-                 "লগইন-সাপেক্ষ — সেগুলো নামেনি; অনুমান করে কিছু বসানো হয়নি "
-                 "(হিসাব _debug/bible_report.txt-এ)।"),
+        "note": note,
     }
     (OUT / "index.json").write_text(
         json.dumps(idx, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
@@ -604,11 +615,11 @@ def cmd_probe(args):
         url = b["topics"][0]
         h = F.get(url) or ""
         (DBG / f"bible_sample_{b['i']}.html").write_text(h[:200000], encoding="utf-8")
-        region, _ = content_region(h)
-        txt = F.text_of(region)
+        cands = _region_candidates(h)
         vs, notes, how = parse_chapter(h, url, b["topicLabels"][0])
-        (DBG / f"bible_text_{b['i']}.txt").write_text(F.text_of(content_region(h)[0]),
-                                                      encoding="utf-8")
+        region = next((r for r, strat in cands if strat == how), cands[0][0])
+        txt = F.page_text(h) if region is h else F.text_of(region)
+        (DBG / f"bible_text_{b['i']}.txt").write_text(txt, encoding="utf-8")
         head = f"=== {b['bn']} ({b['en']}) · অধ্যায় {b['topicLabels'][0]} ==="
         info = (f"{head}\n"
                 f"html বাইট: {len(h)} · পাঠ-অক্ষর: {len(txt)} · কৌশল: {how}\n"
@@ -638,13 +649,13 @@ def cmd_fetch(args):
         if not (lo <= b["i"] <= hi):
             continue
         fp = OUT / f"ch{b['i']}.json"
-        # রিজিউম: সব অধ্যায় আগেই নেমে থাকলে আবার নামানো হয় না
+        # রিজিউম: সব অধ্যায় আগেই নেমে থাকলে (অথবা গ্যাপ-ফিল থেকে পূর্ণ থাকলে) আবার নামানো হয় না
         if args.resume and fp.exists():
             try:
                 old = json.loads(fp.read_text(encoding="utf-8"))
-                if old.get("count") and old.get("suktaCount") == b["ntopics"] \
-                        and not old.get("missing") \
-                        and old.get("pv") == PARSER_VERSION:
+                if old.get("count") and not old.get("missing") and (
+                        (old.get("suktaCount") == b["ntopics"] and old.get("pv") == PARSER_VERSION)
+                        or old.get("pv") is None):
                     made.append(old)
                     skipped += 1
                     continue
@@ -729,7 +740,10 @@ def cmd_fetch(args):
                   f"বাকি পুস্তকগুলো রিজিউম হবে।", flush=True)
             report.append(f"বাজেটে থেমেছে: {b['i']}-তম পুস্তকের পর")
             break
-    idx = write_index(books)
+    if done == 0 and (OUT / "index.json").exists():
+        idx = json.loads((OUT / "index.json").read_text(encoding="utf-8"))
+    else:
+        idx = write_index(books)
     onfile = idx["chapters"]
     tot_missing = sum(len(x.get("missing", [])) for x in onfile)
     tot_empty = sum(1 for x in onfile for v in _verses_of(x) if v.get("srcEmpty"))

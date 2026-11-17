@@ -31,9 +31,8 @@ on:
       - '.github/workflows/fetch-bible.yml'
       - 'tools/fetch_bible.py'
       - 'tools/fetch_bible_en.py'
-  schedule:
-    # বাকি থাকলে পরের রানে নিজেই এগিয়ে যায়; সম্পূর্ণ হলে প্রথম ধাপেই বেরিয়ে যায়
-    - cron: '17 */2 * * *'
+  # ৬৬ পুস্তক (৩১,১৩০ পদ) ও ইংরেজি NAB সম্পূর্ণ হওয়ায় প্রতি ২ ঘণ্টার schedule বন্ধ;
+  # প্রয়োজনে Actions ট্যাব থেকে workflow_dispatch দিয়ে হাতে চালানো যাবে।
 
 permissions:
   contents: write
@@ -67,20 +66,12 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: ঠিক করা (git)
-        run: |
-          git config user.name  "grantho-bot"
-          git config user.email "bot@users.noreply.github.com"
-          mkdir -p "$DBG"
-          echo "রান: $GITHUB_RUN_ID · $(date -u '+%d/%m %H:%M:%S') UTC · sha ${GITHUB_SHA:0:7}" \
-            > "$DBG/bible_run.txt"
-
       # ── ০) বর্তমান অবস্থা ───────────────────────────────────────
-      # সব পুস্তক আগেই নেমে গেলে নেটওয়ার্ক-কল না করেই রান শেষ হয়।
+      # সব পুস্তক আগেই নেমে গেলে কোনো ফাইল না ছুঁয়েই (dirty না করে) রান শেষ হয়।
       - name: ০) বর্তমান অবস্থা
         id: state
         run: |
-          python3 -u - <<'PY' | tee "$DBG/bible_state.txt"
+          python3 -u - <<'PY' | tee /tmp/bible_state.txt
           import json, pathlib
           p = pathlib.Path('assets/grantho/data/bible/index.json')
           if not p.exists():
@@ -91,16 +82,34 @@ jobs:
           chs = j.get('chapters', [])
           miss = sum(len(c.get('missing', [])) for c in chs)
           en_done = pathlib.Path('assets/grantho/data/_debug/bible_en_done.txt').exists()
+          eng_p = pathlib.Path('assets/grantho/data/bible/english/index.json')
+          eng_ok = False
+          if eng_p.exists():
+              try:
+                  ej = json.loads(eng_p.read_text(encoding='utf-8'))
+                  eng_ok = len(ej.get('chapters', [])) >= 66 and (ej.get('total') or 0) > 0
+              except Exception:
+                  eng_ok = False
           print(f'পুস্তক {len(chs)} · পদ {j.get("total")} · অসম্পূর্ণ অধ্যায় {miss} · '
-                f'ইংরেজি-হাঁটা শেষ: {"হ্যাঁ" if en_done else "না"}')
-          print('complete=' + ('true' if len(chs) >= 66 and not miss and en_done else 'false'))
+                f'ইংরেজি সম্পূর্ণ: {"হ্যাঁ" if (en_done or eng_ok) else "না"}')
+          print('complete=' + ('true' if len(chs) >= 66 and not miss and (en_done or eng_ok) else 'false'))
           PY
-          echo "complete=$(grep -o 'complete=[a-z]*' "$DBG/bible_state.txt" | tail -1 | cut -d= -f2)" \
+          echo "complete=$(grep -o 'complete=[a-z]*' /tmp/bible_state.txt | tail -1 | cut -d= -f2)" \
             >> "$GITHUB_OUTPUT"
+
+      - name: ঠিক করা (git)
+        if: steps.state.outputs.complete != 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name  "grantho-bot"
+          git config user.email "bot@users.noreply.github.com"
+          mkdir -p "$DBG"
+          cp /tmp/bible_state.txt "$DBG/bible_state.txt"
+          echo "রান: $GITHUB_RUN_ID · $(date -u '+%d/%m %H:%M:%S') UTC · sha ${GITHUB_SHA:0:7}" \
+            > "$DBG/bible_run.txt"
 
       # ── ০.৫) পুস্তক-সূচি ────────────────────────────────────────
       - name: ০.৫) পুস্তক-সূচি আবিষ্কার
-        if: steps.state.outputs.complete != 'true'
+        if: steps.state.outputs.complete != 'true' || inputs.probe_only == true
         run: |
           python3 -u tools/fetch_bible.py --discover 2>&1 | tee "$DBG/bible_discover.txt" || true
           tail -6 "$DBG/bible_discover.txt" || true
@@ -110,7 +119,7 @@ jobs:
       # তিনটি নমুনা (পুরাতন নিয়মের প্রথম, নতুন নিয়মের প্রথম, শেষ পুস্তক)
       # পার্স করে ফল ও কাঁচা পাতা _debug-এ রাখা হয়।
       - name: ০.৭৫) উৎস-প্রোব
-        if: steps.state.outputs.complete != 'true'
+        if: steps.state.outputs.complete != 'true' || inputs.probe_only == true
         run: |
           python3 -u tools/fetch_bible.py --probe --probe-books 1 40 66 2>&1 \
             | tee "$DBG/bible_probe_log.txt" || true
@@ -124,12 +133,12 @@ jobs:
             --resume --delay 0.7 --budget "$BUDGET" 2>&1 \
             | tee -a "$DBG/bible_run.txt" | tail -80 || true
 
-      # ── .৫) ইংরেজি অনুবাদ (NAB, vatican.va) ───────────────────
+      # ── ১.৫) ইংরেজি অনুবাদ (NAB, vatican.va) ───────────────────
       # পাতার কোড পরপর হেঁটে প্রতি পাতার নিজের ব্রেডক্রাম্ব দিয়ে পুস্তক-অধ্যায়
       # চেনা হয়; তারপর বাংলার সঙ্গে পদ হুবহু মিললেই ইংরেজি বসে (না মিললে বাদ
       # + অমিল-তালিকা)। বাজেট আলাদা, যাতে বাংলা-ফেচের সময় না কাড়ে।
       - name: ১.৫) ইংরেজি (NAB) নামানো + মেলানো
-        if: inputs.probe_only != true
+        if: steps.state.outputs.complete != 'true' && inputs.probe_only != true
         env:
           # পার্সার বদলালে পুরোনো ভাঙা পাঠ গুনে তালিকা আটকে যেত। রি-ওয়াকে
           # জমা প্রচলিত বই-ফাইল মুছে ফেলা হয়, যাতে নতুন পার্সারই হিসাব দেয়।
@@ -140,11 +149,11 @@ jobs:
           python3 -u tools/fetch_bible_en.py --join 2>&1 | tee "$DBG/bible_en_join.txt" || true
           python3 -u tools/fetch_bible_en.py --verify 2>&1 | tee "$DBG/bible_en_verify.txt" || true
 
-      # ── ) স্বতন্ত্র যাচাই ──────────────────────────────────────
+      # ── ২) স্বতন্ত্র যাচাই ─────────────────────────────────────
       # পার্সার পাস করলেও ডেটা ফাইলে গঠনগত ভুল থাকতে পারে (নম্বর উল্টাপাল্টা,
       # ফাঁকা পাঠ)। তখন কাঁচা/ভাঙা ডেটা প্রকাশ না করে আগের অবস্থায় ফেরানো হয়।
       - name: ২) ডেটা যাচাই
-        if: always()
+        if: (success() || failure()) && (steps.state.outputs.complete != 'true' || github.event_name == 'workflow_dispatch')
         run: |
           set +e
           python3 -u - <<'PY' | tee "$DBG/bible_verify.txt"
@@ -227,7 +236,7 @@ jobs:
 
       # ── ৩) সাইট-পাতা বিল্ড ─────────────────────────────────────
       - name: ৩) সাইট-পাতা বিল্ড
-        if: always()
+        if: (success() || failure()) && (steps.state.outputs.complete != 'true' || (github.event_name == 'workflow_dispatch' && inputs.probe_only != true))
         run: |
           python3 -u tools/build_pages.py 2>&1 | tee -a "$DBG/bible_run.txt" | tail -15 || true
 
@@ -235,7 +244,7 @@ jobs:
       # গার্ড ডেটা হারালে বেসলাইন ধরে ফিরিয়ে আনে। অল্প অংশ নামলেই বেসলাইন
       # বানালে সেই অল্পটাই "ভালো অবস্থা" ধরা হতো — তাই যথেষ্ট পাঠ এলে তবেই।
       - name: ৩.৫) বেসলাইন হালনাগাদ
-        if: always()
+        if: (success() || failure()) && (steps.state.outputs.complete != 'true' || (github.event_name == 'workflow_dispatch' && inputs.probe_only != true))
         run: |
           python3 -u - <<'PY' | tee -a "$DBG/bible_run.txt"
           import json, pathlib
@@ -257,7 +266,7 @@ jobs:
       # ── ৩.৭৫) ডায়াগনস্টিক আর্টিফ্যাক্ট ───────────────────────────
       # লগ পড়া যায় না বলেই এই ফাইলগুলোই আসল চোখ: প্রোব, রিপোর্ট, যাচাই, অমিল।
       - name: ডায়াগনস্টিক আর্টিফ্যাক্ট
-        if: always()
+        if: (success() || failure()) && (steps.state.outputs.complete != 'true' || github.event_name == 'workflow_dispatch')
         uses: actions/upload-artifact@v4
         with:
           name: bible-debug-${{ github.run_number }}
@@ -268,7 +277,7 @@ jobs:
 
       # ── ৪) কমিট + প্রকাশ ──────────────────────────────────────
       - name: ৪) কমিট + প্রকাশ
-        if: always()
+        if: (success() || failure()) && (steps.state.outputs.complete != 'true' || github.event_name == 'workflow_dispatch')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -286,14 +295,21 @@ jobs:
           fi
           MSG="বাংলা বাইবেল: নামানো পাঠ ও ডায়াগনস্টিক ($(date -u '+%d/%m %H:%M') UTC)"
           git commit -m "$MSG" || exit 1
-          git fetch origin main --depth=1 || true
-          git rebase origin/main || git rebase --abort || true
-          if git push origin HEAD:main; then
-            echo '✓ main-এ প্রকাশ হয়েছে'
-            exit 0
-          fi
+          # --depth=1 ব্যবহার করলে পূর্ণ ইতিহাসের সাথে shallow graft তৈরি হয়ে rebase ব্যাহত হতে পারে
+          for attempt in 1 2 3; do
+            git fetch origin main || true
+            if git rebase FETCH_HEAD; then
+              if git push origin HEAD:main; then
+                echo '✓ main-এ প্রকাশ হয়েছে'
+                exit 0
+              fi
+            else
+              git rebase --abort || true
+            fi
+            sleep 3
+          done
           echo 'সরাসরি push ব্যর্থ — বট-ব্র্যাঞ্চ দিয়ে চেষ্টা'
-          git fetch origin "${BOT_BRANCH}" --depth=1 || true
+          git fetch origin "${BOT_BRANCH}" || true
           # বট-ব্র্যাঞ্চ রানারের একার; পুরোনো স্ন্যাপশট থাকলে সাধারণ push ফিরে
           # যায়, তাই ফোর্স-পুশ নিরাপদ (মানুষের ব্র্যাঞ্চ নয়)।
           if ! git push --force origin "HEAD:refs/heads/${BOT_BRANCH}"; then
@@ -302,12 +318,17 @@ jobs:
           fi
           NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
           if [ -z "$NUM" ]; then
-            gh pr create --base main --head "${BOT_BRANCH}" --title "$MSG" \
-              --body "রিপোর্ট: assets/grantho/data/_debug/bible_report.txt ও bible_verify.txt" || true
+            PR_OUT=$(gh pr create --base main --head "${BOT_BRANCH}" --title "$MSG" \
+              --body "রিপোর্ট: assets/grantho/data/_debug/bible_report.txt ও bible_verify.txt" 2>&1) || true
+            echo "$PR_OUT"
             sleep 5
             NUM=$(gh pr list --head "${BOT_BRANCH}" --state open --json number -q '.[0].number' || true)
           fi
-          if [ -z "$NUM" ]; then echo '⛔ PR তৈরি হয়নি' >> "$DBG/bible_run.txt"; exit 1; fi
+          if [ -z "$NUM" ]; then
+            echo "::error::PR তৈরি হয়নি (কমিট ${BOT_BRANCH}-এ সংরক্ষিত আছে)। Settings → Actions → General → Allow GitHub Actions to create and approve pull requests চালু আছে কি না দেখুন।"
+            echo "⛔ PR তৈরি হয়নি: ${PR_OUT:-unknown}" >> "$DBG/bible_run.txt"
+            exit 1
+          fi
           # আগে এখানেই রান থেমে যেত: PR তৈরির সাথে সাথে merge চাইলে চেক
           # pending থাকায় «not mergeable»। তাই আগে চেক শেষ হওয়া পর্যন্ত অপেক্ষা।
           for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
@@ -322,8 +343,7 @@ jobs:
             echo "✓ প্রকাশ হয়েছে (PR #$NUM)"
             echo "প্রকাশ: PR #$NUM merge হয়েছে" >> "$DBG/bible_run.txt"
           else
-            # মার্জ ব্যর্থ হলেও রান ব্যর্থ নয়: ডেটা বট-ব্র্যাঞ্চে নিরাপদে থাকে,
-            # পরের রান (২ ঘণ্টা পর) আবার চেষ্টা করবে।
-            echo "⚠ merge ব্যর্থ (PR #$NUM) — পরের রানে আবার চেষ্টা হবে"
+            # মার্জ ব্যর্থ হলেও রান ব্যর্থ নয়: ডেটা বট-ব্র্যাঞ্চে নিরাপদে থাকে।
+            echo "⚠ merge ব্যর্থ (PR #$NUM) — বট-ব্র্যাঞ্চে সংরক্ষিত আছে"
             echo "প্রকাশ: merge ব্যর্থ (PR #$NUM)" >> "$DBG/bible_run.txt"
           fi

@@ -239,10 +239,11 @@ def cmd_fetch(args):
     pend = {int(k): v for k, v in (prog.get("pendCh") or {}).items()}
     t0 = time.time()
     misses = 0
+    empty_streak = 0
     pages = saved = 0
     unknown_seen = 0
     report = []
-    while misses < 3:
+    while misses < 3 and empty_streak < 100:
         url = BASE + "__P" + tok + ".HTM"
         try:
             h = F.get(url)
@@ -251,10 +252,18 @@ def cmd_fetch(args):
             misses += 1
             tok = tok_next(tok)
             continue
+        if not h:  # F.get() HTTP 404-এ None ফেরায় — নইলে কর্পাস-শেষেও misses শূন্য থেকে যেত
+            misses += 1
+            tok = tok_next(tok)
+            continue
         misses = 0
         pages += 1
         lines = [x.strip() for x in F.page_text(h).split("\n")]
         name, ch = page_identity(lines)
+        if name is None and ch is None:
+            empty_streak += 1
+        else:
+            empty_streak = 0
         if name is None and ch is None and unknown_seen < 3:
             unknown_seen += 1
             (DBG / "bible_en_unknown.txt").write_text(
@@ -286,7 +295,7 @@ def cmd_fetch(args):
         saved += save_raw(pend_name, pend, report)
         prog["pendName"], prog["pendCh"] = None, {}
         prog_p.write_text(json.dumps(prog, ensure_ascii=False), encoding="utf-8")
-    if misses >= 3 and saved:   # কর্পাসের শেষ পর্যন্ত হাঁটা + কিছু পেয়েছি
+    if (misses >= 3 or empty_streak >= 100) and (saved or any(RAW.glob("raw*.json"))):   # কর্পাসের শেষ পর্যন্ত হাঁটা
         (DBG / "bible_en_done.txt").write_text(
             f"পাতা {pages} · পুস্তক-ফাইল {saved} · {time.strftime('%d/%m %H:%M')} UTC\n",
             encoding="utf-8")
