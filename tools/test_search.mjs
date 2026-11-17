@@ -43,7 +43,7 @@ malformed.length === 0 ? ok('সব এন্ট্রিতে নাম ও UR
 
 /* ── ২. প্রতিটি পাতায় তারের সংযোগ ── */
 console.log('\nপাতা-সংযোগ');
-const pages = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html') && f !== 'atheism-2.html');
+const pages = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html') && f !== 'atheism-2.html' && !/^google[0-9a-f]+\.html$/i.test(f));
 const missingBtn = [], missingScript = [];
 for (const f of pages) {
   const s = fs.readFileSync(path.join(ROOT, f), 'utf8');

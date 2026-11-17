@@ -24,7 +24,7 @@ const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => e.
   // প্যাকেজের ভেতরের পাতা স্ক্যান হয়ে ভুয়া «ত্রুটি» ওঠে
   ? (e.name === 'assets' || e.name === 'node_modules' || e.name.startsWith('.')
       ? [] : walk(path.join(d, e.name)))
-  : (e.name.endsWith('.html') ? [path.join(d, e.name)] : []));
+  : (e.name.endsWith('.html') && !/^google[0-9a-f]+\.html$/i.test(e.name) ? [path.join(d, e.name)] : []));
 const files = arg.length ? arg : walk(ROOTDIR).map((p) => path.relative(ROOTDIR, p));
 let issues=0;
 for(const f of files){

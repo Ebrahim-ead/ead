@@ -56,6 +56,8 @@ def main() -> int:
     check = "--check" in sys.argv
     ok = already = skipped = 0
     for p in sorted(ROOT.glob("*.html")):
+        if re.fullmatch(r"google[0-9a-f]+\.html", p.name, re.I):
+            continue
         res = wire(p)
         if res == "ok":
             ok += 1
