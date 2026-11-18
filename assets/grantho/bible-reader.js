@@ -684,12 +684,27 @@
       else { newBooks++; newVerses += +c.count || 0; }
     });
 
+    var scrollToReader = function () {
+      var target = document.querySelector(".g-toolbar") || document.getElementById("grantho-reader");
+      if (!target || !target.scrollIntoView) return;
+      var red = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({ behavior: red ? "auto" : "smooth", block: "start" });
+    };
+
     var cardA = document.getElementById("g-chart-a");
     if (cardA) {
       var pickT = function (t) {
         testFilter = t;
-        renderTestaments();
-        applyTestFilter();
+        var cur = bookById(bookId);
+        var match = null;
+        if (!cur || bookTestament(cur) !== t) {
+          for (var i = 0; i < index.chapters.length; i++) {
+            if (bookTestament(index.chapters[i]) === t) { match = index.chapters[i]; break; }
+          }
+        }
+        if (match) showBookView(match.id);
+        else renderTestaments();
+        scrollToReader();
       };
       sk.renderDonut(cardA, {
         title: "পুরাতন ও নতুন নিয়ম অনুপাত",
@@ -716,7 +731,7 @@
             shortVal: bn(c.count),
             title: c.bn + " — " + bnNum(c.count) + " " + VW,
             aria: c.bn + " খুলুন",
-            onClick: function () { showBookView(c.id); }
+            onClick: function () { showBookView(c.id); scrollToReader(); }
           };
         })
       });
