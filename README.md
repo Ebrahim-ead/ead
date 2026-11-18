@@ -25,6 +25,7 @@
 - `assets/islam-opponents-response-cover.jpg`, `assets/islam-opponents-response-wrap.jpg` — নতুন বইয়ের সামনের প্রচ্ছদ ও পূর্ণ প্রচ্ছদ
 - `ask.html` — নাস্তিকতা ও তুলনামূলক ধর্মতত্ত্ব-সম্পর্কিত মতবিনিময়
 - `about.html`, `contact.html` — সাইটের পরিসর ও যোগাযোগ
+- `policy.html` — উৎস ও সংশোধন নীতি (ধর্মীয় গ্রন্থ, প্রবন্ধ ও বইয়ের প্রাথমিক উৎস, অনুমান-বর্জন মানদণ্ড ও সংশোধন প্রক্রিয়া)
 - `hadith.html` — হাদিস-পাঠক: সিহাহ সিত্তাহর ছয় কিতাব + **মিশকাতুল মাসাবিহ** (মোট ৪০,৩৪৯ হাদিস · ৩৬১ অধ্যায়), আরবি মূল ও বাংলা অনুবাদসহ
 - `assets/hadith/data/` — হাদিসের ডেটা: `<কিতাব>/<অধ্যায়>.json` + `index.json` (সব ডেটা সাইটের ভেতরেই)
 - `tools/fetch_mishkat.py` — muslimbangla.com (বই ১৩) থেকে মিশকাত নামানোর যন্ত্র: `--discover`, `--fetch`, `--build`, `--verify`

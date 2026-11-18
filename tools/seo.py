@@ -36,6 +36,7 @@ PRIORITY = {
     "ask.html": ("0.6", "monthly"),
     "about.html": ("0.6", "yearly"),
     "contact.html": ("0.5", "yearly"),
+    "policy.html": ("0.6", "yearly"),
 }
 
 
