@@ -49,7 +49,7 @@
 /* শেল ও পাতা আলাদা সংস্করণ নম্বর পায় — শুধু শেল-তালিকা বদলালে
    ব্যবহারকারীর জমানো ডেটা (১৪২ MB পর্যন্ত) মুছে যাওয়া উচিত নয়।
    ডেটা বদলালেই (গঠন বা বিষয়বস্তু) DATA_VERSION বাড়াবেন। */
-var SHELL_VERSION = 'v14';
+var SHELL_VERSION = 'v15';
 var DATA_VERSION = 'v6';
 
 var SHELL_CACHE = 'ead-shell-' + SHELL_VERSION;

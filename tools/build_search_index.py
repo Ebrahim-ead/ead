@@ -46,6 +46,7 @@ PAGE_NAMES = {
     "ask.html": "মতবিনিময়",
     "about.html": "পরিচিতি",
     "contact.html": "যোগাযোগ",
+    "policy.html": "উৎস ও সংশোধন নীতি",
 }
 
 SKIP_PAGES = {"404.html", "atheism-2.html"}  # রিডাইরেক্ট/noindex
@@ -106,7 +107,7 @@ def build_pages() -> list[dict]:
                 "u": path.name,
                 "n": title or PAGE_NAMES.get(path.name, path.stem),
                 "d": (desc or body)[:150],
-                "k": norm(" ".join([title, desc, body[:2600]])),
+                "k": norm(" ".join([title, desc, body[:2100]])),
             }
         )
     return rows

@@ -51,3 +51,11 @@ html[data-theme="light"] .ask-warn{color:#7a4f00;background:rgba(155,101,0,.08);
 .askbox .req-note span{color:var(--gold2);font-weight:700}
 html[data-theme="light"] .askbox .req{color:#8a5a00}
 html[data-theme="light"] .askbox .req-note span{color:#8a5a00}
+
+/* প্রবন্ধ-সূত্র, নীতি ও নোট-অংশে স্পষ্ট লিংক শৈলী */
+.prose a:not(.btn),.g-note a,.q-src-more a,.h-src-more a,.article-refs-note a,.article-refs-warn a{color:var(--gold2);text-decoration:underline;text-underline-offset:3px}
+.prose a:not(.btn):hover,.g-note a:hover,.q-src-more a:hover,.h-src-more a:hover,.article-refs-note a:hover,.article-refs-warn a:hover{color:var(--gold)}
+.prose .article-refs-list a{white-space:normal}
+html[data-theme="light"] .prose a:not(.btn),html[data-theme="light"] .g-note a,html[data-theme="light"] .q-src-more a,html[data-theme="light"] .h-src-more a,html[data-theme="light"] .article-refs-note a,html[data-theme="light"] .article-refs-warn a{color:var(--gold2)}
+html[data-theme="light"] .prose a:not(.btn):hover,html[data-theme="light"] .g-note a:hover,html[data-theme="light"] .q-src-more a:hover,html[data-theme="light"] .h-src-more a:hover,html[data-theme="light"] .article-refs-note a:hover,html[data-theme="light"] .article-refs-warn a:hover{color:var(--gold3)}
+
