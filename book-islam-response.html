@@ -30,7 +30,7 @@
 
 
 <link rel="stylesheet" href="assets/nav-motion.css">
-<link rel="stylesheet" href="assets/site-motion.css" media="print" onload="this.onload=null;this.media=\'all\'"><noscript><link rel="stylesheet" href="assets/site-motion.css"></noscript>
+<link rel="stylesheet" href="assets/site-motion.css" media="print" onload="this.onload=null;this.media='all'"><noscript><link rel="stylesheet" href="assets/site-motion.css"></noscript>
 <link rel="canonical" href="https://ebrahim-ead.github.io/ead/book-islam-response.html">
 </head>
 <body>
@@ -133,7 +133,7 @@
 <a class="btn ghost" href="assets/islam-opponents-response-wrap.jpg" rel="noopener" target="_blank"><span class="tx"><b>পূর্ণ প্রচ্ছদ বড় করে দেখুন</b><small>নতুন ট্যাবে ছবি খুলবে</small></span></a>
 </div>
 <a aria-label="ইসলাম বিরোধীদের জবাব বইয়ের পূর্ণ প্রচ্ছদ বড় করে দেখুন" class="book-wrap-image" href="assets/islam-opponents-response-wrap.jpg" rel="noopener" target="_blank">
-<img alt="ইসলাম বিরোধীদের জবাব বইয়ের পিছনের প্রচ্ছদ, স্পাইন ও সামনের প্রচ্ছদ" decoding="async" loading="lazy" src="assets/img/35388c5e9d.webp"/ width="900" height="628" style="height:auto">
+<img alt="ইসলাম বিরোধীদের জবাব বইয়ের পিছনের প্রচ্ছদ, স্পাইন ও সামনের প্রচ্ছদ" decoding="async" loading="lazy" src="assets/img/35388c5e9d.webp" width="900" height="628" style="height:auto">
 </a>
 </div>
 </div></section>
@@ -395,32 +395,20 @@
 })();
 
 (function () {
-  var frame = document.getElementById("bookPdf");
-  var viewer = document.getElementById("bookViewer");
-  var placeholder = document.getElementById("bookPlaceholder");
-  var colorPath = "files/comparative-religions-color.pdf";
-  function loadBook(scroll) {
-    if (frame) frame.src = colorPath;
-    if (viewer) viewer.hidden = false;
-    if (placeholder) placeholder.hidden = true;
-    if (scroll) {
-      var target = document.getElementById("read-online");
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }
-  document.querySelectorAll("[data-load-book]").forEach(function (button) {
-    button.addEventListener("click", function () { loadBook(true); });
-  });
-})();
-
-
-
-(function () {
   var frame = document.getElementById("islamResponsePdf");
   var viewer = document.getElementById("islamResponseViewer");
   var placeholder = document.getElementById("islamResponsePlaceholder");
   var pdfPath = "files/islam-opponents-response.pdf";
   function loadIslamBook() {
+    if (window.__bookPdf && !window.__bookPdf.inlineOk) {
+      if (viewer) viewer.hidden = true;
+      if (placeholder) placeholder.hidden = true;
+      var fb = document.querySelector(".book-pdf-fallback");
+      if (fb) fb.hidden = false;
+      var t1 = document.getElementById("islam-response-reader");
+      if (t1) t1.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
     if (frame) frame.src = pdfPath;
     if (viewer) viewer.hidden = false;
     if (placeholder) placeholder.hidden = true;
@@ -429,17 +417,6 @@
   }
   document.querySelectorAll("[data-load-islam-book]").forEach(function (button) {
     button.addEventListener("click", loadIslamBook);
-  });
-})();
-
-(function () {
-  document.querySelectorAll('[data-load-science]').forEach(function (button) {
-    button.addEventListener('click', function () {
-      document.getElementById('sciencePdf').src = 'files/islam-science-selection.pdf';
-      document.getElementById('scienceViewer').hidden = false;
-      document.getElementById('sciencePlaceholder').hidden = true;
-      document.getElementById('islam-science-reader').scrollIntoView({behavior:'smooth',block:'start'});
-    });
   });
 })();
 

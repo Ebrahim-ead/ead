@@ -512,6 +512,16 @@
   }
 
   /* সার্চ পুরো গ্রন্থ জুড়ে — একবার সব অধ্যায় এনে মিলিয়ে রাখি */
+  function hasEnglishData(chMeta) {
+    if (chMeta && grouped) return +(chMeta.aligned || 0) > 0;
+    if (root.dataset.hasEn === "true") return true;
+    if (!index || !index.chapters) return false;
+    for (var i = 0; i < index.chapters.length; i++) {
+      if (+(index.chapters[i].aligned || 0) > 0) return true;
+    }
+    return false;
+  }
+
   var allLoaded = null, enByCh = {};
   function loadAll() {
     if (allLoaded) return Promise.resolve(allLoaded);
@@ -519,9 +529,12 @@
       return loadJSON(BASE + "ch" + c.id + ".json");
     })).then(function (list) {
       allLoaded = list;
+      if (!hasEnglishData()) return allLoaded;
       return Promise.all(list.map(function (c, i) {
-        return loadJSON(BASE + "en/ch" + index.chapters[i].id + ".json")
-          .then(function (e) { enByCh[index.chapters[i].id] = e; })
+        var meta = index.chapters[i];
+        if (!hasEnglishData(meta)) return Promise.resolve();
+        return loadJSON(BASE + "en/ch" + meta.id + ".json")
+          .then(function (e) { enByCh[meta.id] = e; })
           .catch(function () {});
       }));
     }).then(function () { return allLoaded; });
@@ -566,7 +579,9 @@
     /* খোঁজার অবস্থায় থাকলে পুরো গ্রন্থের ফলাফল দেখাই */
     if (state.q && state.q.length >= 2) {
       if (bnNoteEl) bnNoteEl.hidden = true;
-      bodyEl.innerHTML = '<p class="g-loading">খোঁজা হচ্ছে…</p>';
+      bodyEl.innerHTML = window.EadSkeleton
+        ? window.EadSkeleton.readerSkeleton({ cards: 3, head: false, label: "খোঁজা হচ্ছে…" })
+        : '<p class="g-loading">খোঁজা হচ্ছে…</p>';
       loadAll().then(function () {
         var r = searchHTML(state.q);
         bodyEl.innerHTML = r.html;
@@ -740,7 +755,9 @@
       renderChapters();
     }
     setPrevNext();
-    bodyEl.innerHTML = '<p class="g-loading">লোড হচ্ছে…</p>';
+    bodyEl.innerHTML = window.EadSkeleton
+      ? window.EadSkeleton.readerSkeleton({ cards: 4, head: false, label: "লোড হচ্ছে…" })
+      : '<p class="g-loading">লোড হচ্ছে…</p>';
     /* ফাইলের নাম: গ্রুপযুক্ত গ্রন্থে ফাইল = পুস্তক (ch<book>.json), গ্রুপ = অধ্যায়।
        একক-স্তরে ফাইলই অধ্যায় — আগের আচরণ অটুট। */
     var fileId = grouped ? bookId : id;
@@ -751,7 +768,9 @@
     if (grouped && grpMax && id > grpMax) { gridMissing = true; } else { gridMissing = false; }
     Promise.all([
       loadJSON(BASE + "ch" + fileId + ".json"),
-      loadJSON(BASE + "en/ch" + fileId + ".json").catch(function () { return null; })
+      hasEnglishData(grpMeta)
+        ? loadJSON(BASE + "en/ch" + fileId + ".json").catch(function () { return null; })
+        : Promise.resolve(null)
     ]).then(function (r) {
       if (chapterId !== id || (grouped && bookId !== fileId)) return;
       chapter = r[0]; chapterEn = r[1];
@@ -883,11 +902,83 @@
   if (bnBtn0) { bnBtn0.classList.toggle("on", state.bn); bnBtn0.setAttribute("aria-pressed", state.bn ? "true" : "false"); }
   if (onlyBnEl) onlyBnEl.checked = state.onlyBn;
 
+  function renderGranthoCharts() {
+    var sk = window.EadSkeleton;
+    var metaC = document.getElementById("g-chart-meta");
+    if (metaC && index) {
+      metaC.textContent = bn(index.chapters.length) + " " + CW + " · " + bnNum(index.total) + " " + VW;
+    }
+    if (!sk || !index || !index.chapters || !index.chapters.length) return;
+
+    var chs = index.chapters;
+    var cardA = document.getElementById("g-chart-a");
+    var cardB = document.getElementById("g-chart-b");
+
+    if (cardA) {
+      if (chs.length <= 12) {
+        sk.renderBarChart(cardA, {
+          title: CW + " অনুযায়ী " + VW + " বিন্যাস",
+          badge: bn(chs.length) + " " + CW,
+          bars: chs.map(function (c) {
+            return {
+              label: bn(c.id),
+              value: +c.count || 0,
+              shortVal: bn(c.count),
+              title: c.bn + " — " + bnNum(c.count) + " " + VW,
+              aria: c.bn + " খুলুন",
+              onClick: function () { grouped ? showBookView(c.id) : openChapter(c.id); }
+            };
+          })
+        });
+      } else {
+        var bucketSize = Math.ceil(chs.length / 10);
+        var buckets = [];
+        for (var i = 0; i < chs.length; i += bucketSize) {
+          var sl = chs.slice(i, i + bucketSize);
+          var sum = sl.reduce(function (acc, x) { return acc + (+x.count || 0); }, 0);
+          var first = sl[0], last = sl[sl.length - 1];
+          buckets.push({
+            label: first.id === last.id ? bn(first.id) : bn(first.id) + "–" + bn(last.id),
+            value: sum,
+            shortVal: bn(sum),
+            title: CW + " " + bn(first.id) + "–" + bn(last.id) + ": " + bnNum(sum) + " " + VW,
+            aria: first.bn + " খুলুন",
+            onClick: (function (cid) {
+              return function () { grouped ? showBookView(cid) : openChapter(cid); };
+            })(first.id)
+          });
+        }
+        sk.renderBarChart(cardA, {
+          title: CW + " অনুযায়ী " + VW + " বিস্তৃতি",
+          badge: bn(chs.length) + " " + CW,
+          bars: buckets
+        });
+      }
+    }
+
+    if (cardB) {
+      var top5 = chs.slice().sort(function (a, b) { return (+b.count || 0) - (+a.count || 0); }).slice(0, 5);
+      sk.renderHBarChart(cardB, {
+        title: "বৃহত্তম ৫ " + CW,
+        badge: "ক্লিকে খুলুন",
+        rows: top5.map(function (c) {
+          return {
+            label: c.bn,
+            value: +c.count || 0,
+            meta: bnNum(c.count) + " " + VW + (c.suktaCount ? " · " + bn(c.suktaCount) + " " + GW : ""),
+            onClick: function () { grouped ? showBookView(c.id) : openChapter(c.id); }
+          };
+        })
+      });
+    }
+  }
+
   loadJSON(BASE + "index.json").then(function (d) {
     index = d;
     if (d.verseWord) VW = d.verseWord;
     if (d.groupWord) GW = d.groupWord;
     if (d.chword) CW = d.chword;
+    renderGranthoCharts();
     /* সব খণ্ডেই বাংলা থাকলে এই ছাঁকনি অকেজো — অথচ বোতামটি থেকে গেলে মনে হয়
        কিছু বাদ পড়ছে। তাই তখন লুকিয়ে রাখি (সংস্কৃত-টগলের মতোই)। */
     if (onlyBnEl && d.total && d.withBn === d.total) {
