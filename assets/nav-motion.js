@@ -137,9 +137,15 @@ if(!burger||!nav)return;
 if(burger.dataset&&burger.dataset.menuBound==="1")return;
 var body=document.body;
 var backdrop=document.querySelector(".nav-backdrop");
-var navLinks=Array.prototype.slice.call(nav.querySelectorAll("a[href]"));
-var headerButtons=Array.prototype.slice.call(document.querySelectorAll(".header-actions button"));
-var menuFocusables=navLinks.concat(headerButtons);
+var firstNavFocus=nav.querySelector("a[href],button");
+function getMenuFocusables(){
+  var navEls=Array.prototype.slice.call(nav.querySelectorAll("a[href],button")).filter(function(el){
+    var sub=el.closest&&el.closest(".nav-sub");
+    return !sub||sub.classList.contains("open");
+  });
+  var headerButtons=Array.prototype.slice.call(document.querySelectorAll(".header-actions button"));
+  return navEls.concat(headerButtons);
+}
 
 function setMenuOpen(open,restoreFocus){
   nav.classList.toggle("open",open);
@@ -149,7 +155,7 @@ function setMenuOpen(open,restoreFocus){
   burger.setAttribute("aria-label",open?"মেনু বন্ধ করুন":"মেনু খুলুন");
   burger.title=open?"মেনু বন্ধ করুন":"মেনু খুলুন";
   burger.textContent=open?"\u00d7":"\u2630";
-  if(open&&navLinks[0])window.requestAnimationFrame(function(){navLinks[0].focus();});
+  if(open&&firstNavFocus)window.requestAnimationFrame(function(){firstNavFocus.focus();});
   else if(!open&&restoreFocus)burger.focus();
 }
 
@@ -159,7 +165,9 @@ if(backdrop)backdrop.addEventListener("click",function(){setMenuOpen(false,true)
 document.addEventListener("keydown",function(e){
   if(!nav.classList.contains("open"))return;
   if(e.key==="Escape"){e.preventDefault();setMenuOpen(false,true);return;}
-  if(e.key==="Tab"&&menuFocusables.length){
+  if(e.key==="Tab"){
+    var menuFocusables=getMenuFocusables();
+    if(!menuFocusables.length)return;
     var first=menuFocusables[0],last=menuFocusables[menuFocusables.length-1],activeEl=document.activeElement;
     if(e.shiftKey&&(activeEl===first||menuFocusables.indexOf(activeEl)<0)){e.preventDefault();last.focus();}
     else if(!e.shiftKey&&(activeEl===last||menuFocusables.indexOf(activeEl)<0)){e.preventDefault();first.focus();}

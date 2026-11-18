@@ -24,6 +24,7 @@ function cursor(){
   var ring=document.createElement("div");
   ring.className="m-cursor";
   ring.setAttribute("aria-hidden","true");
+  ring.style.cssText="position:fixed;left:0;top:0;pointer-events:none;z-index:9999;";
   document.body.appendChild(ring);
   var x=-100,y=-100,rx=-100,ry=-100,hot=false,shown=false,lastTarget=null,dirty=false;
 
@@ -66,6 +67,7 @@ function progress(){
   var bar=document.createElement("div");
   bar.className="m-progress";
   bar.setAttribute("aria-hidden","true");
+  bar.style.cssText="position:fixed;left:0;right:0;top:0;pointer-events:none;";
   document.body.appendChild(bar);
   var max=0,y=0,last=0,scheduled=false;
   function measure(){
@@ -112,17 +114,23 @@ function theme(){
   if(!supportsVT||reduced.matches)return;
   var btn=document.querySelector("[data-theme-toggle]");
   if(!btn)return;
-  btn.addEventListener("click",function(){
-    if(!document.startViewTransition)return;
-    var next=document.documentElement.getAttribute("data-theme")==="light"?"dark":"light";
-    var prev=document.documentElement.getAttribute("data-theme")||"dark";
-    if(next===prev)return;
-    document.documentElement.setAttribute("data-theme",prev);
-    document.startViewTransition(function(){
-      document.documentElement.setAttribute("data-theme",next);
-      try{localStorage.setItem("ebrahim-ead-theme",next);}catch(e){}
-    });
-  });
+  var dispatching=false;
+  btn.addEventListener("click",function(e){
+    if(dispatching||!document.startViewTransition)return;
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    try{
+      document.startViewTransition(function(){
+        dispatching=true;
+        try{btn.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true}));}
+        finally{dispatching=false;}
+      });
+    }catch(err){
+      dispatching=true;
+      try{btn.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true}));}
+      finally{dispatching=false;}
+    }
+  },true);
 }
 
 var tickers=[];

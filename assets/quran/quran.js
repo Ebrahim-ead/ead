@@ -68,8 +68,6 @@
   var cache = {};
   var lastQuery = "";
   var fullRun = false;
-  var lastQuery = "";
-  var fullRun = false;
 
   /* ---------------------------------------------------------- *
    * elements
@@ -116,8 +114,10 @@
         var fromHash = location.hash.match(/^#(\d+)(?::(\d+))?$/);
         var last = store(LS.last);
         var start = fromHash ? +fromHash[1] : (last && last.s ? last.s : 1);
-        if (!(start >= 1 && start <= 114)) start = 1;
-        loadSura(start, fromHash && fromHash[2] ? +fromHash[2] : null, true);
+        var jumpV = fromHash ? (fromHash[2] ? +fromHash[2] : null)
+                             : (last && last.s === start && last.v && last.v > 1 ? +last.v : null);
+        if (!(start >= 1 && start <= 114)) { start = 1; jumpV = null; }
+        loadSura(start, jumpV, true);
       })
       .catch(function () {
         mainEl.innerHTML = '<div class="q-empty">সূরার তালিকা লোড করা যায়নি। ' +
@@ -200,6 +200,66 @@
       '</button>';
   }
 
+  function renderCharts() {
+    var sk = window.EadSkeleton;
+    var metaEl = document.getElementById("q-chart-meta");
+    if (metaEl && index) {
+      metaEl.textContent = bn(index.suras.length) + " সূরা · " + bn(String(index.total).replace(/\B(?=(\d{3})+(?!\d))/g, ",")) + " আয়াত";
+    }
+    if (!sk || !index || !index.suras) return;
+
+    var makkiSuras = 0, madaniSuras = 0, makkiAyat = 0, madaniAyat = 0;
+    index.suras.forEach(function (s) {
+      if (s.type === "makki") { makkiSuras++; makkiAyat += +s.count || 0; }
+      else { madaniSuras++; madaniAyat += +s.count || 0; }
+    });
+
+    var donutEl = document.getElementById("q-chart-donut");
+    if (donutEl) {
+      sk.renderDonut(donutEl, {
+        title: "অবতরণ অনুযায়ী অনুপাত",
+        badge: bn(index.suras.length) + " সূরা",
+        centerValue: bn(index.suras.length),
+        centerLabel: "মোট সূরা",
+        items: [
+          {
+            label: "মক্কী সূরা (" + bn(makkiSuras) + "টি)",
+            value: makkiAyat,
+            valueText: sk.bnNum(makkiAyat) + " আয়াত",
+            color: "var(--chart-c1)",
+            onClick: function () { loadSura(1); }
+          },
+          {
+            label: "মাদানী সূরা (" + bn(madaniSuras) + "টি)",
+            value: madaniAyat,
+            valueText: sk.bnNum(madaniAyat) + " আয়াত",
+            color: "var(--chart-c2)",
+            onClick: function () { loadSura(2); }
+          }
+        ]
+      });
+    }
+
+    var barsEl = document.getElementById("q-chart-bars");
+    if (barsEl) {
+      var top10 = index.suras.slice().sort(function (a, b) { return b.count - a.count; }).slice(0, 10);
+      sk.renderBarChart(barsEl, {
+        title: "দীর্ঘতম ১০ সূরা (আয়াত)",
+        badge: "ক্লিকে খুলুন",
+        bars: top10.map(function (s) {
+          return {
+            label: bn(s.n) + ".",
+            value: s.count,
+            shortVal: bn(s.count),
+            title: s.bn + " — " + bn(s.count) + " আয়াত",
+            aria: s.bn + " (" + bn(s.count) + " আয়াত) খুলুন",
+            onClick: function () { loadSura(s.n); }
+          };
+        })
+      });
+    }
+  }
+
   function renderList() {
     /* one straight 1–114 list: no grouping, just the order of the mushaf */
     listEl.innerHTML = index.suras.map(suraButton).join("");
@@ -213,6 +273,7 @@
 
     $("#q-total").textContent = bn(index.total) + " আয়াত · " + bn(114) + " সূরা";
     bindFilter();
+    renderCharts();
   }
 
   /* 114 names are a lot: give the reader a box instead of a hunt */
@@ -246,6 +307,7 @@
    * ---------------------------------------------------------- */
   function loadSura(n, jumpTo, replace) {
     if (!(n >= 1 && n <= 114)) return;
+    var wasSame = current === n;
     current = n;
     markActive(n);
     closeDrawer();
@@ -256,16 +318,19 @@
     else history.pushState(null, "", hash);
 
     if (cache[n]) {
-      if (jumpTo && n === current && mainEl.querySelector("#v" + jumpTo)) {
+      if (jumpTo && wasSame && mainEl.querySelector("#v" + jumpTo)) {
         /* already rendered: just move to the ayah instead of repainting */
         scrollToVerse(jumpTo);
+        store(LS.last, { s: n, v: jumpTo });
         return;
       }
       paint(n, meta, cache[n], jumpTo);
       return;
     }
 
-    mainEl.innerHTML = '<div class="q-empty">সূরা লোড হচ্ছে…</div>';
+    mainEl.innerHTML = window.EadSkeleton
+      ? window.EadSkeleton.readerSkeleton({ cards: 4, rtl: true, label: "সূরা লোড হচ্ছে…" })
+      : '<div class="q-empty">সূরা লোড হচ্ছে…</div>';
     fetch(DATA + "suras/" + n + ".json")
       .then(function (r) { return r.json(); })
       .then(function (d) { cache[n] = d; paint(n, meta, d, jumpTo); })
@@ -335,7 +400,7 @@
     });
 
     applySettings();
-    store(LS.last, { s: n, v: 1 });
+    store(LS.last, { s: n, v: jumpTo || 1 });
     if (jumpTo) scrollToVerse(jumpTo);
     else window.scrollTo({ top: mainEl.offsetTop - 120, behavior: "auto" });
   }
@@ -550,11 +615,15 @@
       return;
     }
 
-    /* sura by name */
-    var nameHits = index.suras.filter(function (s) {
-      return s.bn.indexOf(q) !== -1 || s.translit.toLowerCase().indexOf(q.toLowerCase()) !== -1;
-    });
-    if (nameHits.length === 1) { loadSura(nameHits[0].n); resultsEl.setAttribute("hidden", ""); return; }
+    /* sura by name (বাংলা, ইংরেজি ও ALIAS সহ) */
+    var sq = squash(q);
+    if (sq.length >= 3) {
+      var nameHits = index.suras.filter(function (s) {
+        var text = squash(s.bn + " " + s.translit + " " + s.name + " " + (ALIAS[s.n] || []).join(" "));
+        return matches(text, loose(text), sq);
+      });
+      if (nameHits.length === 1) { loadSura(nameHits[0].n); resultsEl.setAttribute("hidden", ""); return; }
+    }
 
     resultsEl.removeAttribute("hidden");
     var needle = q.toLowerCase();
@@ -630,6 +699,11 @@
     } else if (mode === "progress") {
       head = '<div class="q-empty" style="padding:4px 10px 8px">খোঁজা হচ্ছে… ' +
         bn(done) + ' / ' + bn(total) + ' সূরা · ' + bn(hits.length) + 'টি মিল</div>';
+      if (!hits.length && window.EadSkeleton) {
+        foot = '<div style="padding:4px 6px">' +
+          window.EadSkeleton.readerSkeleton({ cards: 2, head: false, rtl: true, label: "আয়াত খোঁজা হচ্ছে…" }) +
+          '</div>';
+      }
     } else {
       if (!hits.length) {
         resultsEl.innerHTML = '<div class="q-empty">কোনো আয়াত পাওয়া যায়নি — অন্য শব্দ দিয়ে চেষ্টা করুন, ' +

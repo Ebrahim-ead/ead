@@ -21,7 +21,7 @@
 <meta name="twitter:image" content="https://ebrahim-ead.github.io/ead/assets/og-cover.jpg">
 <meta name="twitter:title" content="হাদিস — সিহাহ সিত্তাহ ও মিশকাত | Ebrahim Ead">
 <meta name="twitter:description" content="সিহাহ সিত্তাহর ছয় কিতাব — সহীহ বুখারী, সহীহ মুসলিম, সুনানে নাসাঈ, সুনানে আবু দাউদ, জামে তিরমিজি ও সুনানে ইবনে মাজাহ — এবং সাথে মিশকাতুল মাসাবিহ; ৪০,৩৪৯টি হাদিস আরবি মূল, বাংলা অনুবাদ, হাদিসের মান ও তাহকীকসহ — কিতাব ও অধ্যায় ধরে পড়ুন।">
-<noscript></noscript>
+<script>(function(){try{var t=localStorage.getItem("ebrahim-ead-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})();</script>
 <noscript></noscript>
 <link rel="preload" href="/ead/assets/fonts/noto-sans-bengali-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/ead/assets/fonts/noto-sans-bengali-700.woff2" as="font" type="font/woff2" crossorigin>
@@ -32,10 +32,11 @@
 
 <link rel="stylesheet" href="assets/hadith/hadith.css">
 <link rel="stylesheet" href="assets/nav-motion.css">
-<link rel="stylesheet" href="assets/site-motion.css" media="print" onload="this.onload=null;this.media=\'all\'"><noscript><link rel="stylesheet" href="assets/site-motion.css"></noscript>
+<link rel="stylesheet" href="assets/site-motion.css" media="print" onload="this.onload=null;this.media='all'"><noscript><link rel="stylesheet" href="assets/site-motion.css"></noscript>
 <link rel="canonical" href="https://ebrahim-ead.github.io/ead/hadith.html">
 </head>
 <body>
+<a class="skip-link" href="#main-content">মূল কনটেন্টে যান</a>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
 <symbol id="book" viewBox="0 0 24 24"><path d="M2 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2zM22 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></symbol>
 <symbol id="help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></symbol>
@@ -72,7 +73,6 @@
   </div>
 </div></header><div class="nav-backdrop" aria-hidden="true"></div>
 
-<a class="skip-link" href="#main-content">মূল কনটেন্টে যান</a>
 <main id="main-content" tabindex="-1">
 <section class="h-intro"><div class="h-wrap">
   <span class="h-kicker">সিহাহ সিত্তাহ ও মিশকাত</span>
@@ -88,6 +88,43 @@
 </div></section>
 
 <div class="h-full">
+  <section class="dc-wrap" id="h-charts-wrap" aria-label="হাদিস সংগ্রহ ও মান বিশ্লেষণ">
+    <details class="dc-details" open>
+      <summary class="dc-summary">
+        <span class="dc-sum-l"><span class="dc-sum-dot" aria-hidden="true"></span><span>সাত কিতাব — হাদিস সংখ্যা ও মান বিশ্লেষণ</span></span>
+        <span class="dc-sum-r"><span id="h-chart-meta">লোড হচ্ছে…</span><span class="dc-sum-chev" aria-hidden="true">▾</span></span>
+      </summary>
+      <div class="dc-body">
+        <div class="dc-grid">
+          <div class="dc-card" id="h-chart-books" aria-busy="true">
+            <div class="dc-card-head"><h3>কিতাব অনুযায়ী হাদিস সংখ্যা</h3><span class="skel-bone skel-badge" style="width:68px;height:20px"></span></div>
+            <div class="skel-chart-hbar" aria-hidden="true">
+              <div class="skel-hbar-row"><span class="skel-bone skel-hbar-lbl"></span><span class="skel-hbar-track"><span class="skel-bone skel-hbar-fill" style="display:block;width:92%"></span></span><span class="skel-bone skel-hbar-val"></span></div>
+              <div class="skel-hbar-row"><span class="skel-bone skel-hbar-lbl"></span><span class="skel-hbar-track"><span class="skel-bone skel-hbar-fill" style="display:block;width:78%"></span></span><span class="skel-bone skel-hbar-val"></span></div>
+              <div class="skel-hbar-row"><span class="skel-bone skel-hbar-lbl"></span><span class="skel-hbar-track"><span class="skel-bone skel-hbar-fill" style="display:block;width:66%"></span></span><span class="skel-bone skel-hbar-val"></span></div>
+              <div class="skel-hbar-row"><span class="skel-bone skel-hbar-lbl"></span><span class="skel-hbar-track"><span class="skel-bone skel-hbar-fill" style="display:block;width:54%"></span></span><span class="skel-bone skel-hbar-val"></span></div>
+              <div class="skel-hbar-row"><span class="skel-bone skel-hbar-lbl"></span><span class="skel-hbar-track"><span class="skel-bone skel-hbar-fill" style="display:block;width:44%"></span></span><span class="skel-bone skel-hbar-val"></span></div>
+            </div>
+            <span class="sr-only">হাদিস চার্ট লোড হচ্ছে…</span>
+          </div>
+          <div class="dc-card" id="h-chart-grades" aria-busy="true">
+            <div class="dc-card-head"><h3>হাদিসের মান অনুপাত</h3><span class="skel-bone skel-badge" style="width:74px;height:20px"></span></div>
+            <div class="skel-chart-donut" aria-hidden="true">
+              <div class="skel-ring"><div class="skel-bone skel-ring-ring"></div><div class="skel-ring-mid"><span class="skel-bone skel-line w-70" style="height:15px"></span><span class="skel-bone skel-line skel-sm w-55"></span></div></div>
+              <div class="skel-leg">
+                <div class="skel-leg-row"><span class="skel-bone skel-dot"></span><span class="skel-bone skel-line w-70"></span><span class="skel-bone skel-line skel-sm w-20"></span></div>
+                <div class="skel-leg-row"><span class="skel-bone skel-dot"></span><span class="skel-bone skel-line w-55"></span><span class="skel-bone skel-line skel-sm w-20"></span></div>
+                <div class="skel-leg-row"><span class="skel-bone skel-dot"></span><span class="skel-bone skel-line w-85"></span><span class="skel-bone skel-line skel-sm w-20"></span></div>
+                <div class="skel-leg-row"><span class="skel-bone skel-dot"></span><span class="skel-bone skel-line w-40"></span><span class="skel-bone skel-line skel-sm w-20"></span></div>
+              </div>
+            </div>
+            <span class="sr-only">মান বিশ্লেষণ লোড হচ্ছে…</span>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+
   <div class="h-toolbar" role="toolbar" aria-label="পাঠের সেটিংস">
     <div class="h-search">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -115,18 +152,40 @@
       <div class="h-aside-head">
         <div><b>কিতাবসমূহ</b><br><small id="h-total">…</small></div>
       </div>
-      <div class="h-books" id="h-books" role="group" aria-label="সাতটি কিতাব"></div>
+      <div class="h-books" id="h-books" role="group" aria-label="সাতটি কিতাব">
+        <div class="skel-nav-row"><span class="skel-bone skel-line w-85"></span></div>
+        <div class="skel-nav-row"><span class="skel-bone skel-line w-70"></span></div>
+        <div class="skel-nav-row"><span class="skel-bone skel-line w-85"></span></div>
+        <div class="skel-nav-row"><span class="skel-bone skel-line w-55"></span></div>
+      </div>
       <div class="h-aside-filter">
         <input id="h-filter" type="search" autocomplete="off" placeholder="অধ্যায়ের নাম লিখুন…"
                aria-label="অধ্যায়ের নাম দিয়ে তালিকা ছাঁকুন">
       </div>
-      <div class="h-list" id="h-chapter-list"></div>
+      <div class="h-list" id="h-chapter-list">
+        <div class="skel-nav-list" aria-hidden="true">
+          <div class="skel-nav-row"><span class="skel-bone skel-nav-num"></span><span class="skel-nav-lines"><span class="skel-bone skel-line w-70"></span><span class="skel-bone skel-line skel-sm w-40"></span></span></div>
+          <div class="skel-nav-row"><span class="skel-bone skel-nav-num"></span><span class="skel-nav-lines"><span class="skel-bone skel-line w-85"></span><span class="skel-bone skel-line skel-sm w-40"></span></span></div>
+          <div class="skel-nav-row"><span class="skel-bone skel-nav-num"></span><span class="skel-nav-lines"><span class="skel-bone skel-line w-55"></span><span class="skel-bone skel-line skel-sm w-40"></span></span></div>
+          <div class="skel-nav-row"><span class="skel-bone skel-nav-num"></span><span class="skel-nav-lines"><span class="skel-bone skel-line w-95"></span><span class="skel-bone skel-line skel-sm w-40"></span></span></div>
+          <div class="skel-nav-row"><span class="skel-bone skel-nav-num"></span><span class="skel-nav-lines"><span class="skel-bone skel-line w-70"></span><span class="skel-bone skel-line skel-sm w-40"></span></span></div>
+        </div>
+      </div>
       <div class="h-empty" id="h-filter-none" hidden style="padding:10px 14px">এই নামে কোনো অধ্যায় নেই।</div>
     </aside>
     <div class="h-backdrop" id="h-backdrop"></div>
 
     <div class="h-main" id="h-main">
-      <div class="h-empty">হাদিসের তালিকা লোড হচ্ছে…</div>
+      <div class="skel-stack" role="status" aria-busy="true">
+        <span class="sr-only">হাদিসের তালিকা লোড হচ্ছে…</span>
+        <div class="skel-head" aria-hidden="true">
+          <div class="skel-card-top"><span class="skel-bone skel-line skel-lg w-55"></span><span class="skel-bone skel-badge" style="margin-inline-start:auto"></span></div>
+          <div class="skel-card-top"><span class="skel-bone skel-badge"></span><span class="skel-bone skel-badge" style="width:110px"></span></div>
+        </div>
+        <div class="skel-card" aria-hidden="true"><div class="skel-card-top"><span class="skel-bone skel-num"></span><span class="skel-bone skel-badge"></span></div><span class="skel-bone skel-line skel-rtl w-95"></span><span class="skel-bone skel-line w-85"></span><span class="skel-bone skel-line skel-sm w-55"></span></div>
+        <div class="skel-card" aria-hidden="true"><div class="skel-card-top"><span class="skel-bone skel-num"></span><span class="skel-bone skel-badge"></span></div><span class="skel-bone skel-line skel-rtl w-85"></span><span class="skel-bone skel-line w-95"></span><span class="skel-bone skel-line skel-sm w-70"></span></div>
+        <div class="skel-card" aria-hidden="true"><div class="skel-card-top"><span class="skel-bone skel-num"></span><span class="skel-bone skel-badge"></span></div><span class="skel-bone skel-line skel-rtl w-95"></span><span class="skel-bone skel-line w-70"></span><span class="skel-bone skel-line skel-sm w-40"></span></div>
+      </div>
     </div>
   </div>
 
@@ -186,6 +245,7 @@
 </script>
 <script src="assets/nav-motion.js" defer></script>
 <script src="assets/site-motion.js" defer></script>
+<script src="assets/skeleton-charts.js" defer></script>
 <script src="assets/hadith/hadith.js" defer></script>
 <script>
 (function(){

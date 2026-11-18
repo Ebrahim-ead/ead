@@ -66,6 +66,7 @@
   var bookSlug = "bukhari";
   var chapterId = 1;
   var cache = {};            /* "book/chapter" → payload */
+  var renderedKey = "";
   var bookmarks = store(LS.bm) || [];
   var searchHits = [];       /* [{book, chapter, id, ar, en, n}] */
 
@@ -122,6 +123,60 @@
   /* ---------------------------------------------------------- *
    * left column: six books + chapters of the open book
    * ---------------------------------------------------------- */
+  function renderCharts() {
+    var sk = window.EadSkeleton;
+    var metaEl = document.getElementById("h-chart-meta");
+    if (metaEl && index) {
+      metaEl.textContent = bn(index.books.length) + " কিতাব · " + bnNum(index.total) + " হাদিস";
+    }
+    if (!sk || !index || !index.books) return;
+
+    var booksEl = document.getElementById("h-chart-books");
+    if (booksEl) {
+      sk.renderHBarChart(booksEl, {
+        title: "কিতাব অনুযায়ী হাদিস সংখ্যা",
+        badge: "ক্লিকে খুলুন",
+        rows: index.books.map(function (b) {
+          return {
+            label: b.bn,
+            value: b.count,
+            meta: bnNum(b.count) + " হাদিস",
+            active: b.slug === bookSlug,
+            onClick: function () { loadBook(b.slug, 1); }
+          };
+        })
+      });
+    }
+
+    var gradesEl = document.getElementById("h-chart-grades");
+    if (gradesEl && index.grades) {
+      var okSum = 0, weakSum = 0, fakeSum = 0, otherSum = 0;
+      Object.keys(index.grades).forEach(function (k) {
+        var n = +index.grades[k] || 0;
+        if (/সহিহ|সহীহ|হাসান|বিশুদ্ধ/.test(k)) okSum += n;
+        else if (/জাল|মুনকার|বাতিল/.test(k)) fakeSum += n;
+        else if (/দুর্বল|মুরসাল|শায/.test(k)) weakSum += n;
+        else otherSum += n;
+      });
+      var setGrade = function (val) {
+        var sel = document.getElementById("h-grade");
+        if (sel) { sel.value = val; sel.dispatchEvent(new Event("change")); }
+      };
+      sk.renderDonut(gradesEl, {
+        title: "হাদিসের মান অনুপাত",
+        badge: "উৎস অনুযায়ী",
+        centerValue: bnNum(index.total),
+        centerLabel: "মোট হাদিস",
+        items: [
+          { label: "সহিহ / হাসান", value: okSum, color: "var(--chart-c3)", onClick: function () { setGrade("ok"); } },
+          { label: "তাহকীক / অন্যান্য", value: otherSum, color: "var(--chart-c4)", onClick: function () { setGrade("other"); } },
+          { label: "দুর্বল", value: weakSum, color: "var(--chart-c1)", onClick: function () { setGrade("weak"); } },
+          { label: "জাল / মুনকার", value: fakeSum, color: "var(--chart-c5)", onClick: function () { setGrade("fake"); } }
+        ].filter(function (x) { return x.value > 0; })
+      });
+    }
+  }
+
   function renderBooks() {
     var host = document.getElementById("h-books");
     if (!host) return;
@@ -133,6 +188,7 @@
     host.querySelectorAll("[data-book]").forEach(function (btn) {
       btn.addEventListener("click", function () { loadBook(btn.dataset.book, 1); });
     });
+    renderCharts();
   }
 
   function renderChapters() {
@@ -212,12 +268,15 @@
 
     var key = bookSlug + "/" + id;
     if (cache[key]) {
-      if (jumpTo && mainEl.querySelector('[data-i="' + jumpTo + '"]')) { scrollToItem(jumpTo); return; }
+      if (renderedKey === key && jumpTo && mainEl.querySelector('[data-i="' + jumpTo + '"]')) { scrollToItem(jumpTo); return; }
       paint(id, cache[key], jumpTo);
       return;
     }
 
-    mainEl.innerHTML = '<div class="h-empty">অধ্যায় লোড হচ্ছে…</div>';
+    renderedKey = "";
+    mainEl.innerHTML = window.EadSkeleton
+      ? window.EadSkeleton.readerSkeleton({ cards: 4, rtl: true, label: "অধ্যায় লোড হচ্ছে…" })
+      : '<div class="h-empty">অধ্যায় লোড হচ্ছে…</div>';
     fetch(DATA + bookSlug + "/" + id + ".json")
       .then(function (r) { return r.json(); })
       .then(function (d) { cache[key] = d; paint(id, d, jumpTo); })
@@ -227,7 +286,8 @@
       });
   }
 
-  function paint(id, d) {
+  function paint(id, d, jumpTo) {
+    renderedKey = bookSlug + "/" + id;
     var b = book();
     var c = chapter(id) || {};
     var name = c.bn || c.en || ("অধ্যায় " + bn(id));
@@ -262,16 +322,19 @@
     });
 
     bindGradeFilter();
+    applyGradeFilter();
     applySettings();
     store(LS.last, { b: bookSlug, c: id });
+    if (jumpTo) scrollToItem(jumpTo);
   }
 
   /* ---------------------------------------------------------- *
    * এক অধ্যায়ের ভেতরে পৃষ্ঠা-পৃষ্ঠা করে আঁকা
    * ---------------------------------------------------------- */
   function itemHTML(v, k) {
-    var ref = bookSlug + ":" + v.i;
-    var has = bookmarks.indexOf(ref) !== -1;
+    var ref = bookSlug + ":" + chapterId + ":" + v.i;
+    var oldRef = bookSlug + ":" + v.i;
+    var has = bookmarks.indexOf(ref) !== -1 || bookmarks.indexOf(oldRef) !== -1;
     var g = v.g ? '<span class="h-grade ' + esc(v.gc || "other") + '">' + esc(v.g) + '</span>' : "";
     /* উৎসে দুটি ভিন্ন হাদিস একই নম্বরে এলে দ্বিতীয়টিকে "সংস্করণ" বলা হয় */
     var label = esc(book().short || book().bn) + ' ' + bn(v.i) +
@@ -324,6 +387,7 @@
         setTimeout(step, 0);
       } else {
         bindItemTools(host);
+        applyGradeFilter();
         applySettings();
       }
     }
@@ -357,13 +421,38 @@
    * ---------------------------------------------------------- */
   function toggleBookmark(btn) {
     var ref = btn.dataset.bm;
+    var p = ref.split(":");
+    var oldRef = p.length === 3 ? (p[0] + ":" + p[2]) : null;
     var at = bookmarks.indexOf(ref);
-    if (at === -1) bookmarks.push(ref); else bookmarks.splice(at, 1);
+    var oldAt = oldRef ? bookmarks.indexOf(oldRef) : -1;
+    var adding = (at === -1 && oldAt === -1);
+    if (adding) {
+      bookmarks.push(ref);
+    } else {
+      if (at !== -1) bookmarks.splice(at, 1);
+      if (oldAt !== -1) {
+        var oi = bookmarks.indexOf(oldRef);
+        if (oi !== -1) bookmarks.splice(oi, 1);
+      }
+    }
     store(LS.bm, bookmarks);
-    btn.classList.toggle("on", at === -1);
+    btn.classList.toggle("on", adding);
     var item = btn.closest(".h-item");
-    if (item) item.classList.toggle("bm", at === -1);
+    if (item) item.classList.toggle("bm", adding);
     if (bmEl && !bmEl.hidden) renderBookmarks();
+  }
+
+  function findChapterForHadith(slug, hadNum) {
+    if (!index) return 1;
+    var bk = null;
+    for (var i = 0; i < index.books.length; i++) if (index.books[i].slug === slug) { bk = index.books[i]; break; }
+    if (!bk || !bk.chapters.length) return 1;
+    var n = +hadNum;
+    for (var j = 0; j < bk.chapters.length; j++) {
+      var c = bk.chapters[j];
+      if (c.from != null && c.to != null && n >= c.from && n <= c.to) return c.id;
+    }
+    return bk.chapters[0].id;
   }
 
   function renderBookmarks() {
@@ -375,14 +464,17 @@
     }
     bmEl.innerHTML = bookmarks.map(function (ref) {
       var parts = ref.split(":");
-      return '<button class="h-result" type="button" data-goto="' + esc(ref) + '">' +
-        '<span class="rn">' + esc(bookName(parts[0])) + ' ' + bn(parts[1]) + '</span>' +
-        '<span class="rt">হাদিস ' + bn(parts[1]) + '</span></button>';
+      var slug = parts[0];
+      var chNum = parts.length >= 3 ? +parts[1] : findChapterForHadith(slug, parts[1]);
+      var hadNum = parts.length >= 3 ? parts[2] : parts[1];
+      return '<button class="h-result" type="button" data-goto="' + esc(slug + ":" + chNum + ":" + hadNum) + '">' +
+        '<span class="rn">' + esc(bookName(slug)) + ' ' + bn(hadNum) + '</span>' +
+        '<span class="rt">অধ্যায় ' + bn(chNum) + ' · হাদিস ' + bn(hadNum) + '</span></button>';
     }).join("");
     bmEl.querySelectorAll("[data-goto]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var p = btn.dataset.goto.split(":");
-        if (p[0] !== bookSlug) { bookSlug = p[0]; renderBooks(); }
+        if (p[0] !== bookSlug) { bookSlug = p[0]; renderBooks(); renderChapters(); }
         loadChapter(+p[1], +p[2] || null);
       });
     });
@@ -458,20 +550,26 @@
   /* ---------------------------------------------------------- *
    * search across every book
    * ---------------------------------------------------------- */
-  var searchBox, onlyThisBook = false, gradeFilter = "";
+  var searchBox, onlyThisBook = false, gradeFilter = "", gradeBound = false;
+
+  function applyGradeFilter() {
+    if (!mainEl) return;
+    mainEl.querySelectorAll(".h-item").forEach(function (it) {
+      var g = it.querySelector(".h-grade");
+      var cls = g ? g.className.replace("h-grade ", "") : "";
+      it.hidden = !(!gradeFilter || cls === gradeFilter);
+    });
+  }
 
   /* গ্রেডের ছাঁকনি: শুধু দুর্বল বা শুধু জাল হাদিস দেখতে */
   function bindGradeFilter() {
+    if (gradeBound) return;
     var sel = document.getElementById("h-grade");
     if (!sel) return;
+    gradeBound = true;
     sel.addEventListener("change", function () {
       gradeFilter = sel.value;
-      mainEl.querySelectorAll(".h-item").forEach(function (it) {
-        var g = it.querySelector(".h-grade");
-        var cls = g ? g.className.replace("h-grade ", "") : "";
-        var show = !gradeFilter || cls === gradeFilter;
-        it.hidden = !show;
-      });
+      applyGradeFilter();
     });
   }
 
@@ -488,7 +586,7 @@
       var slug = guessBook(ref[1]);
       var ch = +ref[2], had = ref[3] ? +ref[3] : null;
       if (slug && ch >= 1) {
-        if (slug !== bookSlug) { bookSlug = slug; renderBooks(); }
+        if (slug !== bookSlug) { bookSlug = slug; renderBooks(); renderChapters(); }
         var c = chapter(ch);
         if (c) {
           loadChapter(ch, had && had >= c.from && had <= c.to ? had : null);
@@ -500,7 +598,10 @@
 
     resultsEl.hidden = false;
     resultsEl.innerHTML = '<div class="h-empty">খোঁজা হচ্ছে… (প্রথম বারে ' +
-      bnNum(index.total) + ' হাদিস সাজানো হয়, একবারই লাগে)</div>';
+      bnNum(index.total) + ' হাদিস সাজানো হয়, একবারই লাগে)</div>' +
+      (window.EadSkeleton ? '<div style="padding:0 8px 10px">' +
+        window.EadSkeleton.readerSkeleton({ cards: 2, head: false, rtl: true, label: "হাদিস খোঁজা হচ্ছে…" }) +
+      '</div>' : '');
 
     whenIndexed().then(function (all) {
       var needle = q.trim().toLowerCase();
@@ -528,7 +629,7 @@
       resultsEl.querySelectorAll("[data-goto]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           var p = btn.dataset.goto.split(":");
-          if (p[0] !== bookSlug) { bookSlug = p[0]; renderBooks(); }
+          if (p[0] !== bookSlug) { bookSlug = p[0]; renderBooks(); renderChapters(); }
           loadChapter(+p[1], +p[2]);
         });
       });
@@ -617,12 +718,19 @@
     var r = parseHash();
     if (!r) {
       var last = store(LS.last);
-      if (last && last.b) { bookSlug = last.b; }
+      if (last && last.b && index.books.some(function (b) { return b.slug === last.b; })) {
+        bookSlug = last.b;
+      }
+      renderBooks();
+      renderChapters();
       var b = book();
-      loadChapter((r && r.ch) || (b && b.chapters[0].id) || 1, null, replace);
+      var ch = (last && last.c && chapter(last.c)) ? last.c : ((b && b.chapters[0].id) || 1);
+      loadChapter(ch, null, replace);
       return;
     }
-    if (r.book !== bookSlug) { bookSlug = r.book; renderBooks(); }
+    bookSlug = r.book;
+    renderBooks();
+    renderChapters();
     loadChapter(r.ch || 1, r.had, replace);
   }
 

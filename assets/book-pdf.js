@@ -58,7 +58,32 @@
     if (!frame || !fallback || !url) return;
 
     if (INLINE_OK) {
-      // ডেস্কটপ: আগের মতোই ইনলাইন ভিউয়ার
+      // ডেস্কটপ: আগের মতোই ইনলাইন ভিউয়ার + PDF লোডিং শিমার স্কেলেটন
+      if (!box.querySelector('.skel-pdf')) {
+        var sk = document.createElement('div');
+        sk.className = 'skel-pdf';
+        sk.setAttribute('role', 'status');
+        sk.setAttribute('aria-live', 'polite');
+        sk.innerHTML =
+          '<span class="sr-only">PDF লোড হচ্ছে…</span>' +
+          '<div class="skel-card-top">' +
+            '<span class="skel-bone skel-badge"></span>' +
+            '<span class="skel-bone skel-line w-40"></span>' +
+          '</div>' +
+          '<span class="skel-bone skel-line skel-lg w-70"></span>' +
+          '<span class="skel-bone skel-line w-95"></span>' +
+          '<span class="skel-bone skel-line w-85"></span>' +
+          '<span class="skel-bone skel-line w-95"></span>' +
+          '<span class="skel-bone skel-line w-70"></span>' +
+          '<span class="skel-bone skel" style="flex:1;min-height:120px"></span>';
+        box.appendChild(sk);
+        var done = function () {
+          sk.classList.add('is-done');
+          setTimeout(function () { if (sk.parentNode) sk.parentNode.removeChild(sk); }, 320);
+        };
+        frame.addEventListener('load', done, { once: true });
+        setTimeout(done, 8000);
+      }
       frame.setAttribute('src', url);
       fallback.hidden = true;
     } else {
