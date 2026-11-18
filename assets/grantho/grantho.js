@@ -913,6 +913,12 @@
     var chs = index.chapters;
     var cardA = document.getElementById("g-chart-a");
     var cardB = document.getElementById("g-chart-b");
+    var scrollToReader = function () {
+      var target = document.querySelector(".g-toolbar") || document.getElementById("grantho-reader");
+      if (!target || !target.scrollIntoView) return;
+      var red = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({ behavior: red ? "auto" : "smooth", block: "start" });
+    };
 
     if (cardA) {
       if (chs.length <= 12) {
@@ -926,7 +932,7 @@
               shortVal: bn(c.count),
               title: c.bn + " — " + bnNum(c.count) + " " + VW,
               aria: c.bn + " খুলুন",
-              onClick: function () { grouped ? showBookView(c.id) : openChapter(c.id); }
+              onClick: function () { grouped ? showBookView(c.id) : openChapter(c.id); scrollToReader(); }
             };
           })
         });
@@ -944,7 +950,7 @@
             title: CW + " " + bn(first.id) + "–" + bn(last.id) + ": " + bnNum(sum) + " " + VW,
             aria: first.bn + " খুলুন",
             onClick: (function (cid) {
-              return function () { grouped ? showBookView(cid) : openChapter(cid); };
+              return function () { grouped ? showBookView(cid) : openChapter(cid); scrollToReader(); };
             })(first.id)
           });
         }
@@ -966,7 +972,7 @@
             label: c.bn,
             value: +c.count || 0,
             meta: bnNum(c.count) + " " + VW + (c.suktaCount ? " · " + bn(c.suktaCount) + " " + GW : ""),
-            onClick: function () { grouped ? showBookView(c.id) : openChapter(c.id); }
+            onClick: function () { grouped ? showBookView(c.id) : openChapter(c.id); scrollToReader(); }
           };
         })
       });

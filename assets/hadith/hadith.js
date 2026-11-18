@@ -131,6 +131,13 @@
     }
     if (!sk || !index || !index.books) return;
 
+    var scrollToReader = function () {
+      var target = document.querySelector(".h-toolbar") || document.getElementById("h-main");
+      if (!target || !target.scrollIntoView) return;
+      var red = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({ behavior: red ? "auto" : "smooth", block: "start" });
+    };
+
     var booksEl = document.getElementById("h-chart-books");
     if (booksEl) {
       sk.renderHBarChart(booksEl, {
@@ -142,7 +149,7 @@
             value: b.count,
             meta: bnNum(b.count) + " হাদিস",
             active: b.slug === bookSlug,
-            onClick: function () { loadBook(b.slug, 1); }
+            onClick: function () { loadBook(b.slug, 1); scrollToReader(); }
           };
         })
       });
@@ -161,6 +168,7 @@
       var setGrade = function (val) {
         var sel = document.getElementById("h-grade");
         if (sel) { sel.value = val; sel.dispatchEvent(new Event("change")); }
+        scrollToReader();
       };
       sk.renderDonut(gradesEl, {
         title: "হাদিসের মান অনুপাত",

@@ -14,6 +14,7 @@
 - `quran-science.html` — “কুরআন ও আধুনিক বিজ্ঞান” পূর্ণ প্রবন্ধ
 - `assets/ibrahim-iyad-portrait.jpeg`, `assets/ibrahim-iyad-window.jpg` — আপনার দেওয়া দুটি পোর্ট্রেট
 - `assets/ebrahim-ead-avatar.jpg` — হেডারের ছোট প্রোফাইল ছবি
+- `assets/img/founder.webp`, `assets/img/logo-avatar.webp` — প্রতিষ্ঠাতা ও লেখক Ebrahim Ead-এর ৪৮০×৪৮০ পোর্ট্রেট ও সাইট-জুড়ে ১২০×১২০ হেডার/ফুটার অ্যাভাটার
 - `assets/philosophy-dusk-background.jpg` — অন্ধকার নীল গোধূলির ল্যান্ডস্কেপ ব্যাকগ্রাউন্ড
 - `assets/philosophy-light-background.jpg` — লাইট থিমের জন্য কোমল সকালের লেক ও পাহাড়ের ব্যাকগ্রাউন্ড
 - `assets/og-cover.jpg` — সামাজিক মাধ্যমে শেয়ার প্রিভিউয়ের কভার ছবি

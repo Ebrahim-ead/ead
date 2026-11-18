@@ -214,6 +214,13 @@
       else { madaniSuras++; madaniAyat += +s.count || 0; }
     });
 
+    var scrollToReader = function () {
+      var target = document.querySelector(".q-toolbar") || document.getElementById("q-main");
+      if (!target || !target.scrollIntoView) return;
+      var red = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({ behavior: red ? "auto" : "smooth", block: "start" });
+    };
+
     var donutEl = document.getElementById("q-chart-donut");
     if (donutEl) {
       sk.renderDonut(donutEl, {
@@ -227,14 +234,14 @@
             value: makkiAyat,
             valueText: sk.bnNum(makkiAyat) + " আয়াত",
             color: "var(--chart-c1)",
-            onClick: function () { loadSura(1); }
+            onClick: function () { loadSura(1); scrollToReader(); }
           },
           {
             label: "মাদানী সূরা (" + bn(madaniSuras) + "টি)",
             value: madaniAyat,
             valueText: sk.bnNum(madaniAyat) + " আয়াত",
             color: "var(--chart-c2)",
-            onClick: function () { loadSura(2); }
+            onClick: function () { loadSura(2); scrollToReader(); }
           }
         ]
       });
@@ -253,7 +260,7 @@
             shortVal: bn(s.count),
             title: s.bn + " — " + bn(s.count) + " আয়াত",
             aria: s.bn + " (" + bn(s.count) + " আয়াত) খুলুন",
-            onClick: function () { loadSura(s.n); }
+            onClick: function () { loadSura(s.n); scrollToReader(); }
           };
         })
       });
