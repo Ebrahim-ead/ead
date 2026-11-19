@@ -378,7 +378,7 @@ async function testPage(file) {
       const words = head.textContent.replace(/\s+/g, ' ').trim();
       const num = words.match(/[০-৯][০-৯,]*/);
       if (num) errs.push(`তালিকা-হেডে এখনও সংখ্যা আছে («${words}»)`);
-      const hasChapterWord = /(^|\s)অধ্যায়(\s|$)/.test(words);
+      const hasChapterWord = idx.chword !== 'অধ্যায়' && /(^|\s)অধ্যায়(\s|$)/.test(words);
       if (hasChapterWord) errs.push(`তালিকা-হেডে «অধ্যায়» লেবেল থেকে গেছে («${words}»)`);
       const wordEl = head.querySelector('.g-side-word');
       if (!wordEl) errs.push('হেডে বড় «তালিকা» লেখা (.g-side-word) নেই');

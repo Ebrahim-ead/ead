@@ -197,6 +197,7 @@ GRANTH_LABELS = {
     "gita": "ভগবদ্গীতা",
     "bible": "বাইবেল",
     "rigveda": "ঋগ্বেদ",
+    "samaveda": "সামবেদ",
     "veda": "বেদ",
     "yajurveda-shukla": "শুক্ল যজুর্বেদ",
     "atharvaveda": "অথর্ববেদ",
@@ -206,6 +207,7 @@ GRANTH_LABELS = {
 GRANTH_PAGE = {
     "gita": "grantho/hindu/gita.html",
     "rigveda": "grantho/hindu/rigveda.html",
+    "samaveda": "grantho/hindu/samaveda.html",
     "veda": "grantho/hindu/veda.html",
     "yajurveda-shukla": "grantho/hindu/yajurveda-shukla.html",
     "atharvaveda": "grantho/hindu/atharvaveda.html",

@@ -1,5 +1,5 @@
 {
- "_commit": "24df43ca1867cfadce037284336cdb5bd828d366",
+ "_commit": "af1662cc4e79b9426c0353504fec8e4b88bfeaa0",
  "_note": "এটি ভালো-জানা ডেটার হিসাব; এর চেয়ে ১৫%-এর বেশি ছোট হলে guard_data.py ফিরিয়ে আনে।",
  "slugs": {
   "atharvaveda": {
@@ -21,6 +21,11 @@
    "total": 10456,
    "withBn": 10456,
    "chapters": 10
+  },
+  "samaveda": {
+   "total": 1875,
+   "withBn": 1875,
+   "chapters": 28
   },
   "yajurveda-shukla": {
    "total": 1791,
