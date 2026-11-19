@@ -137,7 +137,14 @@
         '<span class="meta">' + meta + '</span></span></button>';
     }).join("");
     listEl.querySelectorAll("[data-ch]").forEach(function (b) {
-      b.addEventListener("click", function () { openChapter(+b.dataset.ch); });
+      b.addEventListener("click", function () {
+        openChapter(+b.dataset.ch);
+        try {
+          if (window.matchMedia && window.matchMedia("(max-width: 980px)").matches) {
+            setFolded(true, false);
+          }
+        } catch (e) {}
+      });
     });
     if (totalEl) totalEl.textContent = "";
     /* g-total হেড থেকে সরানো হয়েছে — числа/গণনা আর দেখাই না */
@@ -199,13 +206,25 @@
     btn.setAttribute("aria-expanded", folded ? "false" : "true");
     var now = document.getElementById("g-side-now");
     if (now) {
-      var bk = bkOf();
-      /* ভাঁজ করা অবস্থায় হেডারে যতটা জায়গা আছে তাতে বইয়ের নামই সবচেয়ে
-         দরকারি — কোন অধ্যায়ে আছেন তা ঠিক নিচেই শিরোনামে দেখা যায়। */
+      var bk = grouped ? bkOf() : (bookById(chapterId) || {});
+      /* ভাঁজ করা অবস্থায় হেডারে যতটা জায়গা আছে তাতে বই/অধ্যায়ের নামই সবচেয়ে
+         দরকারি — কোন অংশে আছেন তা ঠিক নিচেই শিরোনামে দেখা যায়। */
       var cur = bk.bn || "";
       now.textContent = cur;
       now.hidden = !(folded && cur);
     }
+  }
+
+  function syncStickTop() {
+    if (!root) return;
+    var narrow = false;
+    try { narrow = window.matchMedia && window.matchMedia("(max-width: 980px)").matches; } catch (e) {}
+    if (narrow) { root.style.removeProperty("--g-stick-top"); return; }
+    var header = document.querySelector("header.top");
+    var bar = root.querySelector(".g-toolbar");
+    var hh = header ? header.getBoundingClientRect().height : 70;
+    var bh = bar ? bar.getBoundingClientRect().height : 62;
+    root.style.setProperty("--g-stick-top", Math.max(150, Math.ceil(hh + bh + 16)) + "px");
   }
 
   function setFolded(on, remember) {
@@ -780,10 +799,10 @@
     if (grouped) {
       renderChapterGrid();
       refreshCrumb();
-      syncFold();
     } else {
       renderChapters();
     }
+    syncFold();
     setPrevNext();
     bodyEl.innerHTML = window.EadSkeleton
       ? window.EadSkeleton.readerSkeleton({ cards: 4, head: false, label: "লোড হচ্ছে…" })
@@ -961,11 +980,23 @@
     buildLangBox();
     bind();
     bindFold();
-    /* ফোনে ডিফল্ট ভাঁজ (অধ্যায়-গ্রিড আগে দেখা যায়), ডেস্কটপে খোলা; পাঠক
-       নিজে খুললে/বন্ধ করলে সেটাই মনে রাখা হয়। */
+    syncStickTop();
+    window.addEventListener("resize", function () {
+      syncStickTop();
+      var narrowNow = false;
+      try { narrowNow = window.matchMedia && window.matchMedia("(max-width: 980px)").matches; } catch (e) {}
+      if (!narrowNow) setFolded(false, false);
+    });
+    if (window.ResizeObserver) {
+      var gBar = root.querySelector(".g-toolbar");
+      if (gBar) new ResizeObserver(syncStickTop).observe(gBar);
+    }
+    /* ফোনে ডিফল্ট ভাঁজ (মূল পাঠ আগে দেখা যায়), ডেস্কটপে খোলা; পাঠক
+       নিজে খুললে/বন্ধ করলে ফোনের অবস্থা মনে রাখা হয়। */
     var narrow = false;
-    try { narrow = window.matchMedia("(max-width: 980px)").matches; } catch (e) {}
-    if (grouped) setFolded(typeof st.fold === "boolean" ? st.fold : narrow, false);
+    try { narrow = window.matchMedia && window.matchMedia("(max-width: 980px)").matches; } catch (e) {}
+    if (narrow) setFolded(typeof st.fold === "boolean" ? st.fold : true, false);
+    else setFolded(false, false);
     var m = (location.hash || "").match(/^#ch(\d+)$/) || (location.hash || "").match(/^#b(\d+)c(\d+)$/);
     var startBook = null, startCh = null;
     if (location.hash && /^#b\d+c\d+$/.test(location.hash)) {

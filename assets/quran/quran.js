@@ -74,6 +74,42 @@
    * ---------------------------------------------------------- */
   var $ = function (sel) { return document.querySelector(sel); };
   var listEl, mainEl, searchEl, resultsEl, asideEl, backdropEl;
+  var drawerBtn, drawerCloseBtn, fabDrawerBtn, lastOpener = null;
+  function isDrawer() { return document.documentElement.classList.contains("q-drawer"); }
+  function syncStickTop() {
+    var full = document.querySelector(".q-full");
+    if (!full) return;
+    if (isDrawer()) { full.style.removeProperty("--q-stick-top"); return; }
+    var header = document.querySelector("header.top");
+    var bar = document.querySelector(".q-toolbar");
+    var hh = header ? header.getBoundingClientRect().height : 70;
+    var bh = bar ? bar.getBoundingClientRect().height : 62;
+    full.style.setProperty("--q-stick-top", Math.max(150, Math.ceil(hh + bh + 16)) + "px");
+  }
+  function syncFab() {
+    if (!fabDrawerBtn) return;
+    if (!isDrawer() || (asideEl && asideEl.classList.contains("open"))) {
+      fabDrawerBtn.hidden = true;
+      return;
+    }
+    var bar = document.querySelector(".q-toolbar");
+    var past = bar ? bar.getBoundingClientRect().bottom < 20 : false;
+    fabDrawerBtn.hidden = !past;
+  }
+  function openDrawer(opener) {
+    if (!isDrawer() || !asideEl) return;
+    lastOpener = opener || drawerBtn || document.activeElement;
+    asideEl.classList.add("open");
+    if (backdropEl) backdropEl.classList.add("on");
+    if (drawerBtn) drawerBtn.setAttribute("aria-expanded", "true");
+    if (fabDrawerBtn) fabDrawerBtn.setAttribute("aria-expanded", "true");
+    document.body.style.overflow = "hidden";
+    syncFab();
+    var target = drawerCloseBtn || document.getElementById("q-filter");
+    if (target && target.focus) {
+      setTimeout(function () { try { target.focus(); } catch (e) {} }, 20);
+    }
+  }
 
   /* ---------------------------------------------------------- *
    * boot
@@ -85,22 +121,33 @@
     resultsEl = $("#q-results");
     asideEl = $("#q-aside");
     backdropEl = $("#q-backdrop");
+    drawerBtn = $("#q-drawer-btn");
+    drawerCloseBtn = $("#q-drawer-close");
+    fabDrawerBtn = $("#q-fab-drawer");
     if (!listEl || !mainEl) return;
 
     /* Drawer mode is decided here, not left to a media query alone: on a
        laptop the sura list stays a plain column and can never float over
        the ayat. ?drawer=1 / ?drawer=0 force either layout for checking. */
     (function drawerMode() {
-      var mq = window.matchMedia("(max-width: 960px)");
+      var mq = window.matchMedia ? window.matchMedia("(max-width: 960px)") : { matches: false };
       var forced = /[?&]drawer=(0|1)/.exec(location.search);
       function sync() {
-        var narrow = forced ? forced[1] === "1" : mq.matches;
+        var narrow = forced ? forced[1] === "1" : !!mq.matches;
         document.documentElement.classList.toggle("q-drawer", narrow);
         if (!narrow) closeDrawer();
+        syncStickTop();
+        syncFab();
       }
       sync();
       if (mq.addEventListener) mq.addEventListener("change", sync);
       else if (mq.addListener) mq.addListener(sync);
+      window.addEventListener("resize", syncStickTop);
+      window.addEventListener("scroll", syncFab, { passive: true });
+      if (window.ResizeObserver) {
+        var barEl = document.querySelector(".q-toolbar");
+        if (barEl) new ResizeObserver(syncStickTop).observe(barEl);
+      }
     })();
 
     applySettings();
@@ -320,6 +367,7 @@
     var pager = '<div class="q-pager">' +
       (n > 1 ? '<button class="q-btn" type="button" data-sura="' + (n - 1) + '">← ' +
         bn(n - 1) + '. ' + esc(index.suras[n - 2].bn) + '</button>' : "<span></span>") +
+      '<button class="q-btn q-pager-drawer" type="button" data-open-drawer>☰ সূরাসমূহ</button>' +
       (n < 114 ? '<button class="q-btn" type="button" data-sura="' + (n + 1) + '">' +
         bn(n + 1) + '. ' + esc(index.suras[n].bn) + ' →</button>' : "<span></span>") +
       '</div>';
@@ -330,6 +378,9 @@
 
     mainEl.querySelectorAll("[data-sura]").forEach(function (b) {
       b.addEventListener("click", function () { loadSura(+b.dataset.sura); });
+    });
+    mainEl.querySelectorAll("[data-open-drawer]").forEach(function (b) {
+      b.addEventListener("click", function () { openDrawer(b); });
     });
     mainEl.querySelectorAll("[data-bm]").forEach(function (b) {
       b.addEventListener("click", function () { toggleBookmark(b); });
@@ -475,10 +526,12 @@
     });
 
     /* mobile drawer */
-    var dBtn = $("#q-drawer-btn");
-    if (dBtn) dBtn.addEventListener("click", function () {
-      asideEl.classList.add("open"); backdropEl.classList.add("on");
+    if (drawerBtn) drawerBtn.addEventListener("click", function () {
+      if (asideEl && asideEl.classList.contains("open")) closeDrawer();
+      else openDrawer(drawerBtn);
     });
+    if (fabDrawerBtn) fabDrawerBtn.addEventListener("click", function () { openDrawer(fabDrawerBtn); });
+    if (drawerCloseBtn) drawerCloseBtn.addEventListener("click", closeDrawer);
     if (backdropEl) backdropEl.addEventListener("click", closeDrawer);
 
     /* print */
@@ -486,12 +539,13 @@
     if (pBtn) pBtn.addEventListener("click", function () { window.print(); });
 
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") closeDrawer();
+      if (e.key === "Escape" && !document.documentElement.classList.contains("ss-open")) closeDrawer();
       var t = e.target;
       if (t && t.matches && t.matches("input,textarea,select,[contenteditable]")) return;
       if (e.key === "ArrowRight" && current < 114) loadSura(current + 1);
       if (e.key === "ArrowLeft" && current > 1) loadSura(current - 1);
     });
+    window.addEventListener("ead:overlay-open", closeDrawer);
 
     window.addEventListener("popstate", function () {
       var m = location.hash.match(/^#(\d+)(?::(\d+))?$/);
@@ -514,8 +568,18 @@
   }
 
   function closeDrawer() {
-    if (asideEl) asideEl.classList.remove("open");
+    if (!asideEl) return;
+    var wasOpen = asideEl.classList.contains("open");
+    var hadFocus = wasOpen && asideEl.contains(document.activeElement);
+    asideEl.classList.remove("open");
     if (backdropEl) backdropEl.classList.remove("on");
+    if (drawerBtn) drawerBtn.setAttribute("aria-expanded", "false");
+    if (fabDrawerBtn) fabDrawerBtn.setAttribute("aria-expanded", "false");
+    if (wasOpen) document.body.style.overflow = "";
+    syncFab();
+    if (hadFocus && lastOpener && lastOpener.focus && document.contains(lastOpener)) {
+      try { lastOpener.focus(); } catch (e) {}
+    }
   }
 
   /* ---------------------------------------------------------- *

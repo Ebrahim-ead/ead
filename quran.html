@@ -98,7 +98,7 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q-search" type="search" placeholder="খুঁজুন — বাংলা বা ইংরেজি শব্দ, অথবা ২:২৫৫" aria-label="আয়াত খুঁজুন" autocomplete="off">
     </div>
-    <button class="q-btn q-drawer-btn" id="q-drawer-btn" type="button">☰ সূরাসমূহ</button>
+    <button class="q-btn q-drawer-btn" id="q-drawer-btn" type="button" aria-expanded="false" aria-controls="q-aside">☰ সূরাসমূহ</button>
     <button class="q-btn" id="q-t-ar" type="button" aria-pressed="true">আরবি</button>
     <button class="q-btn" id="q-t-bn" type="button" aria-pressed="true">বাংলা</button>
     <button class="q-btn" id="q-t-en" type="button" aria-pressed="true">ইংরেজি</button>
@@ -120,6 +120,7 @@
     <aside class="q-aside" id="q-aside" aria-label="সূরার তালিকা">
       <div class="q-aside-head">
         <div><b>সূরাসমূহ</b><br><small id="q-total">…</small></div>
+        <button class="q-drawer-close" id="q-drawer-close" type="button" aria-label="তালিকা বন্ধ করুন" title="বন্ধ করুন">✕</button>
       </div>
       <div class="q-aside-filter">
         <input id="q-filter" type="search" autocomplete="off" placeholder="সূরার নাম লিখুন…"
@@ -156,6 +157,8 @@
   <div class="q-credit">
     <a href="#q-src-more">সূত্র ও সংস্করণের বিস্তারিত</a>
   </div>
+
+  <button class="q-fab-drawer" id="q-fab-drawer" type="button" aria-label="সূরাসমূহ খুলুন" aria-controls="q-aside" aria-expanded="false" hidden>☰ সূরাসমূহ</button>
 
 </div>
 </main>

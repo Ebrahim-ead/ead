@@ -165,7 +165,14 @@
         '<span class="meta">' + meta + "</span></span></button>";
     }).join("");
     box.querySelectorAll("[data-ch]").forEach(function (b) {
-      b.addEventListener("click", function () { showBookView(+b.dataset.ch); });
+      b.addEventListener("click", function () {
+        showBookView(+b.dataset.ch);
+        try {
+          if (window.matchMedia && window.matchMedia("(max-width: 980px)").matches) {
+            setFolded(true, false);
+          }
+        } catch (e) {}
+      });
     });
   }
 
@@ -660,6 +667,18 @@
     });
   }
 
+  function syncStickTop() {
+    if (!root) return;
+    var narrow = false;
+    try { narrow = window.matchMedia && window.matchMedia("(max-width: 980px)").matches; } catch (e) {}
+    if (narrow) { root.style.removeProperty("--g-stick-top"); return; }
+    var header = document.querySelector("header.top");
+    var bar = root.querySelector(".g-toolbar");
+    var hh = header ? header.getBoundingClientRect().height : 70;
+    var bh = bar ? bar.getBoundingClientRect().height : 62;
+    root.style.setProperty("--g-stick-top", Math.max(150, Math.ceil(hh + bh + 16)) + "px");
+  }
+
   /* ---------- শুরু ---------- */
   var st = saved();
   if (typeof st.bn === "boolean") state.bn = st.bn;
@@ -683,10 +702,22 @@
     buildLangBox();
     bind();
     bindFold();
-    /* ফোনে ডিফল্ট ভাঁজ, ডেস্কটপে খোলা; পাঠক নিজে বদলালে সেটাই মনে থাকে */
+    syncStickTop();
+    window.addEventListener("resize", function () {
+      syncStickTop();
+      var narrowNow = false;
+      try { narrowNow = window.matchMedia && window.matchMedia("(max-width: 980px)").matches; } catch (e) {}
+      if (!narrowNow) setFolded(false, false);
+    });
+    if (window.ResizeObserver) {
+      var bBar = root.querySelector(".g-toolbar");
+      if (bBar) new ResizeObserver(syncStickTop).observe(bBar);
+    }
+    /* ফোনে ডিফল্ট ভাঁজ, ডেস্কটপে খোলা; পাঠক নিজে বদলালে ফোনের অবস্থা মনে থাকে */
     var narrow = false;
-    try { narrow = window.matchMedia("(max-width: 980px)").matches; } catch (e) { }
-    setFolded(typeof st.fold === "boolean" ? st.fold : narrow, false);
+    try { narrow = window.matchMedia && window.matchMedia("(max-width: 980px)").matches; } catch (e) { }
+    if (narrow) setFolded(typeof st.fold === "boolean" ? st.fold : true, false);
+    else setFolded(false, false);
 
     var m = (location.hash || "").match(/^#ch(\d+)$/) || (location.hash || "").match(/^#b(\d+)c(\d+)$/);
     var startBook = null, startCh = null;
