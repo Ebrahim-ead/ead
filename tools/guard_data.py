@@ -25,16 +25,14 @@ TOL = 0.85          # ১৫%-এর বেশি কমলেই সন্দ�
 # সাইটে কেবল এই গ্রন্থগুলো থাকবে (ব্যবহারকারীর সিদ্ধান্ত)।
 ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "atharvaveda",
           "shvetashvatara", "prashna", "chandogya", "brihadaranyaka",
-          "mahabharata", "brahma-purana", "vishnu-purana", "bhavishya-purana",
-          "garuda-purana", "brahmanda-purana",
+          "mahabharata",
           "bible",
           "dhammapada", "digha-nikaya", "majjhima-nikaya", "samyutta-nikaya",
           "anguttara-nikaya", "vinaya-vibhanga")
 KEEP_PAGES = {"gita.html", "rigveda.html", "samaveda.html", "veda.html", "atharvaveda.html",
               "yajurveda-shukla.html", "shvetashvatara.html", "prashna.html",
               "chandogya.html", "brihadaranyaka.html",
-              "mahabharata.html", "purana.html", "brahma-purana.html", "vishnu-purana.html",
-              "bhavishya-purana.html", "garuda-purana.html", "brahmanda-purana.html",
+              "mahabharata.html",
               "bible.html", "english-bible.html",
               "dhammapada.html", "digha-nikaya.html", "majjhima-nikaya.html",
               "samyutta-nikaya.html", "anguttara-nikaya.html", "vinaya-vibhanga.html"}

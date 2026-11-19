@@ -125,5 +125,45 @@ console.log('\n৬. সাধারণ ট্যাবে হস্তক্ষ�
   dom.window.close();
 }
 
+/* ── ৭. SW আপডেট-বার (waiting worker-এ SKIP_WAITING, controller-এ নয়) ── */
+console.log('\n৭. SW আপডেট-বার');
+{
+  const {w,dom}=mk();
+  let waitingMsg=null, ctrlMsg=null;
+  const swListeners={};
+  const waitingWorker={postMessage:m=>{waitingMsg=m}};
+  const reg={
+    installing:null,
+    waiting:waitingWorker,
+    active:null,
+    addEventListener(){},
+    update(){return Promise.resolve()}
+  };
+  w.navigator.serviceWorker={
+    register:()=>Promise.resolve(reg),
+    ready:Promise.resolve(reg),
+    controller:{postMessage:m=>{ctrlMsg=m}},
+    addEventListener:(ev,fn)=>{(swListeners[ev]=swListeners[ev]||[]).push(fn)}
+  };
+  w.eval(js);
+  await new Promise(r=>setTimeout(r,80));
+  const bar=w.document.querySelector('.pwa-update-bar');
+  bar && bar.classList.contains('is-open') ? ok('reg.waiting থাকলে আপডেট-বার খোলে') : bad('আপডেট-বার খোলেনি');
+  !w.document.querySelector('.pwa-banner') && !w.document.querySelector('.pwa-btn')
+    ? ok('পুরোনো .pwa-banner/.pwa-btn ক্লাস ব্যবহৃত হয়নি') : bad('নিষিদ্ধ ক্লাস ব্যবহৃত হয়েছে');
+  const go=w.document.querySelector('.pwa-update-btn');
+  go && go.dispatchEvent(new w.MouseEvent('click',{bubbles:true}));
+  await new Promise(r=>setTimeout(r,30));
+  waitingMsg && waitingMsg.type==='SKIP_WAITING'
+    ? ok('waiting worker-এ SKIP_WAITING পাঠানো হয়েছে') : bad('waiting worker-এ মেসেজ যায়নি');
+  !ctrlMsg ? ok('পুরোনো controller-এ ভুল SKIP_WAITING পাঠানো হয়নি') : bad('পুরোনো controller-এ মেসেজ গেছে');
+  const cls=w.document.querySelector('.pwa-update-close');
+  cls && cls.dispatchEvent(new w.MouseEvent('click',{bubbles:true}));
+  await new Promise(r=>setTimeout(r,300));
+  !w.document.querySelector('.pwa-update-bar')
+    ? ok('✕ বোতামে আপডেট-বার বন্ধ ও অপসারিত হয়') : bad('আপডেট-বার বন্ধ হয়নি');
+  dom.window.close();
+}
+
 console.log(`\n${fail?'✗':'✓'} পাশ ${pass} · ফেল ${fail}\n`);
 process.exit(fail?1:0);

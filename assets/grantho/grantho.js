@@ -5,8 +5,8 @@
    প্রতিটি শ্লোকে সংস্কৃত (দেবনাগরী) + বাংলা অনুবাদ + বক্তা।
 
    নীতি: পাঠ কখনো বদলানো হয় না। শুধু দেখানো/লুকানো আর ক্রম।
-   একই ইঞ্জিন পরে বেদ, উপনিষদ, পুরাণের পাতাতেও চলবে — শুধু
-   ডেটা ফোল্ডার আলাদা হবে (data-granth অ্যাট্রিবিউট)।
+   একই ইঞ্জিন গীতা, বেদ, উপনিষদ ও ত্রিপিটকের পাতাতেও চলে — শুধু
+   ডেটা ফোল্ডার আলাদা হয় (data-granth অ্যাট্রিবিউট)।
    ============================================================ */
 (function () {
   "use strict";
@@ -46,17 +46,17 @@
   /* grouped = গ্রন্থে পুস্তক>অধ্যায়>পদ স্তর আছে কি না (বাইবেল) */
   var grouped = false, bookId = 0, testFilter = "all", gridMissing = false;
   var bnNoteEl = document.getElementById("g-bn-note");
-  /* গীতা/পুরাণে «শ্লোক», বেদ-উপনিষদে «মন্ত্র», বাইবেলে «পদ» — index.json-এর
+  /* গীতা-উপনিষদে «শ্লোক», বেদে «মন্ত্র», বাইবেলে «পদ» — index.json-এর
      verseWord থেকে। একইভাবে গ্রুপ-শব্দ (ঋগ্বেদে «সূক্ত», বাইবেলে «অধ্যায়») ও
      অধ্যায়-শব্দ (বাইবেলে «পুস্তক») ডেটা থেকেই নেওয়া হয়, হার্ডকোড নয়। */
   var VW = "শ্লোক", GW = "সূক্ত", CW = "অধ্যায়", RL = "sa", RW = "সংস্কৃত";
   var state = { bn: true, sk: true, q: "", onlyBn: false, lang: "both" };
-  /* ইংরেজি অনুবাদ (বাইবেল): অধ্যায়ভিত্তিক আলাদা ফাইল en/chN.json — বাংলা পাঠের
+  /* ইংরেজি অনুবাদ (বাইবেল ও উপনিষদ): অধ্যায়ভিত্তিক আলাদা ফাইল en/chN.json — বাংলা পাঠের
      ফাইলে হাত দেওয়া হয় না, তাই দুই উৎস স্বাধীনভাবে নামে ও হালনাগাদ হয়। */
   var chapterEn = null;
   /* ইংরেজি ডেটার আকার যাচাই: verses অবশ্যই অবজেক্ট (n→পাঠ); ভুল ফাইল লোড
      হলে (যেমন পদ-তালিকার অ্যারে) যেন প্রতি পদে আবর্জনা না বসে।
-     বিষ্ণু পুরাণে (hasEnSections) অধ্যায়ভিত্তিক গদ্য+পাদটীকা `sections`-এ। */
+     গদ্য+পাদটীকা থাকলে (hasEnSections) অধ্যায়ভিত্তিক `sections`-এ থাকে। */
   function enMap(e) {
     return (e && e.verses && typeof e.verses === "object" && !Array.isArray(e.verses)) ? e.verses : {};
   }
@@ -457,17 +457,28 @@
     if (b0) b0.addEventListener("click", function () { showBookView(bookId); });
   }
 
+  var searchRendered = false;
+  function clearSearch(keepInput) {
+    searchRendered = false;
+    if (!keepInput) {
+      state.q = "";
+      if (searchEl) searchEl.value = "";
+    }
+    var note = document.getElementById("g-hits");
+    if (note) note.textContent = "";
+  }
+
   /* বইয়ের দৃশ্য: উপরে অধ্যায়-গ্রিড, ক্লিক না হওয়া পর্যন্ত নিচে পাঠ নেই */
-  function showBookView(id) {
+  function showBookView(id, keepInput) {
     bookId = id;
     scope = "book"; chapter = null; chapterEn = null; chapterId = 0;
     paintToken++;
+    clearSearch(keepInput);
     if (bodyEl) bodyEl.innerHTML = '<p class="g-empty g-pick">উপরের তালিকা থেকে একটি ' +
       (GW || "অধ্যায়") + ' বেছে নিন — ' + (VW || "পদ") + 'গুলো নিচে দেখা যাবে।</p>';
     syncHead();
     if (bnNoteEl) bnNoteEl.hidden = true;
     if (langBox) langBox.hidden = true;
-    if (searchEl) { var note = document.getElementById("g-hits"); if (note) note.textContent = ""; }
     renderChapterGrid();
     refreshCrumb();
     enNote();
@@ -671,24 +682,31 @@
   var paintToken = 0;
 
   function renderVerses() {
-    if (!chapter) return;
+    if (!chapter && !(state.q && state.q.length >= 2)) {
+      if (searchRendered && grouped && scope === "book" && bookId) showBookView(bookId, true);
+      return;
+    }
 
     /* খোঁজার অবস্থায় থাকলে পুরো গ্রন্থের ফলাফল দেখাই */
     if (state.q && state.q.length >= 2) {
+      var qSnap = state.q;
+      searchRendered = true;
       if (bnNoteEl) bnNoteEl.hidden = true;
       bodyEl.innerHTML = window.EadSkeleton
         ? window.EadSkeleton.readerSkeleton({ cards: 3, head: false, label: "খোঁজা হচ্ছে…" })
         : '<p class="g-loading">খোঁজা হচ্ছে…</p>';
       loadAll().then(function () {
-        var r = searchHTML(state.q);
+        if (state.q !== qSnap) return;
+        var r = searchHTML(qSnap);
         bodyEl.innerHTML = r.html;
-        if (titleEl) titleEl.textContent = "খোঁজা: " + state.q;
+        if (titleEl) titleEl.textContent = "খোঁজা: " + qSnap;
         if (metaEl) metaEl.textContent = bn(r.total) + "টি " + VW;
         var note = document.getElementById("g-hits");
         if (note) note.textContent = r.total ? bn(r.total) + "টি " + VW + " পাওয়া গেছে" : "কিছু মেলেনি";
       });
       return;
     }
+    searchRendered = false;
 
     var all = chapter.verses;
     /* গ্রুপযুক্ত গ্রন্থে (বাইবেল/বেদ) গ্রিড-নির্বাচিত অংশের বাইরে থাকা পাঠ
@@ -717,7 +735,7 @@
     }
     var hasS = useLayout();
     var parts = [], curS = null, sMeta = {};
-    /* গ্রুপযুক্ত গ্রন্থ (বাইবেল/বেদ/পুরাণ): একবারে এক অধ্যায় — শিরোনাম + কেবল তার পদ।
+    /* গ্রুপযুক্ত গ্রন্থ (বাইবেল/বেদ): একবারে এক অধ্যায় — শিরোনাম + কেবল তার পদ।
        গ্রুপ-ভিত্তিক ক্রম ভাঙা থাকলে (উৎসে অধ্যায়-নম্বর এলোমেলো) কিছুই বাদ
        যায় না, পুরো বই-ই দেখানো হয়: পাঠ হারানো কখনোই গ্রহণযোগ্য নয়। */
     if (grouped && hasS) {
@@ -857,6 +875,7 @@
     chapterId = id;
     if (grouped) scope = "chapter";
     paintToken++;
+    clearSearch();
     save({ last: id, lastbook: bookId, scope: grouped ? "chapter" : "book" });
     if (grouped) {
       renderChapterGrid();

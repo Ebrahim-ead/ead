@@ -138,6 +138,20 @@ ok('«পরের» → John ২', d.getElementById('e-ch-title').textContent =
   d.getElementById('e-ch-title').textContent);
 ok('John ২-এ ২৫ পদ', d.querySelectorAll('.e-v').length === 25, d.querySelectorAll('.e-v').length);
 
+const es = d.getElementById('e-search');
+es.value = 'zzzznohit99';
+es.dispatchEvent(new w.Event('input', { bubbles: true }));
+await until(function () { return d.getElementById('e-hits').textContent === 'no match'; });
+ok('শূন্য-মিল খোঁজে ফাঁকা পর্দার বদলে বার্তা দেখায়',
+  /No matching verses/.test(d.getElementById('e-body').textContent));
+d.getElementById('e-next').dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+await until(function () {
+  return d.getElementById('e-ch-title').textContent === 'John 3' &&
+    d.querySelectorAll('.e-v').length > 0;
+});
+ok('পরের অধ্যায়ে গেলে পুরোনো খোঁজ পরিষ্কার হয়',
+  es.value === '' && d.querySelectorAll('.e-v').length > 20, d.querySelectorAll('.e-v').length);
+
 console.log('৩. পাতা');
 ok('canonical ঠিক', /rel="canonical" href="[^"]*christian\/english-bible\.html"/.test(html));
 const home = fs.readFileSync(HOME, 'utf8');

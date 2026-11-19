@@ -65,6 +65,7 @@
   var bookmarks = store(LS.bm) || [];
   var index = null;
   var current = 0;
+  var loadSeq = 0;
   var cache = {};
   var lastQuery = "";
   var fullRun = false;
@@ -303,6 +304,7 @@
     if (replace) history.replaceState(null, "", hash);
     else history.pushState(null, "", hash);
 
+    var seq = ++loadSeq;
     if (cache[n]) {
       if (jumpTo && wasSame && mainEl.querySelector("#v" + jumpTo)) {
         /* already rendered: just move to the ayah instead of repainting */
@@ -310,7 +312,7 @@
         store(LS.last, { s: n, v: jumpTo });
         return;
       }
-      paint(n, meta, cache[n], jumpTo);
+      paint(n, meta, cache[n], jumpTo, replace);
       return;
     }
 
@@ -319,8 +321,13 @@
       : '<div class="q-empty">সূরা লোড হচ্ছে…</div>';
     fetch(DATA + "suras/" + n + ".json")
       .then(function (r) { return r.json(); })
-      .then(function (d) { cache[n] = d; paint(n, meta, d, jumpTo); })
+      .then(function (d) {
+        if (seq !== loadSeq) return;
+        cache[n] = d;
+        paint(n, meta, d, jumpTo, replace);
+      })
       .catch(function () {
+        if (seq !== loadSeq) return;
         mainEl.innerHTML = '<div class="q-empty">এই সূরাটি লোড করা যায়নি। ' +
           'ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।</div>';
       });
@@ -330,7 +337,7 @@
      তাই আলাদা বাসমালা ব্লক ছাপালে একই কথা দুইবার দেখায়। সূরা ৯-এ নেই।
      ভবিষ্যতে বাসমালা আলাদা থাকা সংস্করণে এলে ব্লকটি নিজে থেকেই ফিরবে। */
   var BASMALA = /^\s*بِسْمِ/;
-  function paint(n, meta, d, jumpTo) {
+  function paint(n, meta, d, jumpTo, replace) {
     var first = (d.verses && d.verses[0] && d.verses[0].ar) || "";
     var basmala = n !== 9 && !BASMALA.test(first);
 
@@ -392,7 +399,14 @@
     applySettings();
     store(LS.last, { s: n, v: jumpTo || 1 });
     if (jumpTo) scrollToVerse(jumpTo);
-    else window.scrollTo({ top: mainEl.offsetTop - 120, behavior: "auto" });
+    else if (!replace && mainEl && mainEl.getBoundingClientRect) {
+      try {
+        window.scrollTo({
+          top: Math.max(0, mainEl.getBoundingClientRect().top + (window.pageYOffset || 0) - 90),
+          behavior: "auto"
+        });
+      } catch (e) {}
+    }
   }
 
   function scrollToVerse(v) {
@@ -722,9 +736,14 @@
     }
 
     var html = hits.slice(0, cap).map(function (h) {
+      var bnMatch = h.bn && h.bn.toLowerCase().indexOf(needle) !== -1;
+      var enMatch = !bnMatch && h.en && h.en.toLowerCase().indexOf(needle) !== -1;
+      var snippet = enMatch
+        ? hilite(h.en, needle) + (h.bn ? '<br><small style="opacity:.8">' + esc(h.bn.slice(0, 140)) + (h.bn.length > 140 ? '…' : '') + '</small>' : '')
+        : hilite(h.bn, needle);
       return '<button class="q-result" type="button" data-goto="' + h.s + ":" + h.v + '">' +
         '<span class="rn">' + bn(h.s) + ':' + bn(h.v) + '</span>' +
-        '<span class="rt">' + hilite(h.bn, needle) + '</span></button>';
+        '<span class="rt">' + snippet + '</span></button>';
     }).join("");
 
     resultsEl.innerHTML = head + html + foot;

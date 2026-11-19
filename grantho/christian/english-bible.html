@@ -33,7 +33,7 @@
 
 <link rel="stylesheet" href="../../assets/nav-motion.css">
 <link rel="stylesheet" href="../../assets/site-motion.css" media="print" onload="this.onload=null;this.media='all'"><noscript><link rel="stylesheet" href="../../assets/site-motion.css"></noscript>
-<link rel="stylesheet" href="../../assets/grantho/grantho.css?v=df282762"><link rel="canonical" href="https://ebrahim-ead.github.io/ead/grantho/christian/english-bible.html">
+<link rel="stylesheet" href="../../assets/grantho/grantho.css?v=07c4e83e"><link rel="canonical" href="https://ebrahim-ead.github.io/ead/grantho/christian/english-bible.html">
 </head>
 <body>
 <div class="motion-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -205,6 +205,8 @@
   var index = null, curBook = null, curCh = null, curChData = null;
   var cache = {};
   var q = "";
+  var loadToken = 0;
+  var timer = null;
   var st = { book: 1, ch: 1 };
 
   try {
@@ -311,6 +313,11 @@
   function openChapter(n) {
     if (!curBook) return;
     st.ch = n;
+    clearTimeout(timer);
+    q = "";
+    if (searchEl) searchEl.value = "";
+    if (hitsEl) hitsEl.textContent = "";
+    var tok = ++loadToken;
     save();
     renderChapters();
     titleEl.textContent = curBook.en + " " + n;
@@ -327,9 +334,11 @@
       ? window.EadSkeleton.readerSkeleton({ cards: 4, head: false, label: "Loading…" })
       : '<p class="g-loading">Loading…</p>';
     loadJSON(chFile(curBook.id, n)).then(function (d) {
+      if (tok !== loadToken) return;
       cache[key] = d;
       paint(d);
     }).catch(function () {
+      if (tok !== loadToken) return;
       bodyEl.innerHTML = '<p class="g-loading">এই অধ্যায়ের পাঠ লোড হয়নি।</p>';
     });
   }
@@ -360,9 +369,11 @@
     }
 
     var keys = Object.keys(d.verses || {}).sort(function (a, b) { return +a - +b; });
+    var shown = 0;
     keys.forEach(function (k) {
       var txt = d.verses[k];
       if (q && txt.toLowerCase().indexOf(q) < 0) return;
+      shown++;
       var ns = notesBy[k];
       html += '<p class="e-v" id="v' + k + '" lang="en" dir="ltr">' +
         '<span class="e-n">' + k + "</span>" +
@@ -375,12 +386,12 @@
     });
 
     if (!keys.length) html = '<p class="g-loading">কোনো পদ নেই।</p>';
+    else if (q && !shown) html += '<p class="g-empty">No matching verses in this chapter.</p>';
     bodyEl.innerHTML = html;
     bodyEl.classList.toggle("e-narrow", !!q);
   }
 
   /* ---------- খোঁজ ---------- */
-  var timer = null;
   searchEl.addEventListener("input", function () {
     clearTimeout(timer);
     timer = setTimeout(function () {
@@ -399,7 +410,9 @@
   nextBtn.addEventListener("click", function () { var nx = adjChapter(st.ch, 1); if (nx !== null) openChapter(nx); });
 
   document.addEventListener("keydown", function (e) {
-    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (document.documentElement.classList.contains("ss-open")) return;
+    var t = e.target;
+    if (t && (/INPUT|TEXTAREA|SELECT/.test(t.tagName) || t.isContentEditable)) return;
     if (e.key === "ArrowLeft") { var p = adjChapter(st.ch, -1); if (p !== null) openChapter(p); }
     if (e.key === "ArrowRight") { var nx = adjChapter(st.ch, 1); if (nx !== null) openChapter(nx); }
   });

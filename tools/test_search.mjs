@@ -133,6 +133,14 @@ marks.length > 0 ? ok(`${marks.length}টি মিল-অংশ <mark>-এ`) : 
 const markText = marks[0]?.textContent || '';
 markText.includes('সূরা') ? ok(`হাইলাইট-লেখা সঠিক «${markText}»`) : bad(`ভুল হাইলাইট «${markText}»`);
 
+w.SITE_SEARCH.push({ t: 'page', u: 'test.html', n: 'র\u200cয়\u09bcাল সূরা ইয়াসিন', d: 'পরীক্ষা' });
+const rShift = await run('ইয়াসিন');
+const shiftMark = [...d.querySelectorAll('.ss-results .ss-name mark')].map((m) => m.textContent).find((t) => /ইয়াসিন/.test(t));
+w.SITE_SEARCH.pop();
+shiftMark === 'ইয়াসিন'
+  ? ok(`নুকতা/ZWNJ-যুক্ত লেখায় হাইলাইট সরে যায় না («${shiftMark}»)`)
+  : bad(`নুকতা/ZWNJ-যুক্ত লেখায় হাইলাইট সরে গেছে («${shiftMark}»)`);
+
 /* ── ৪. নিরাপত্তা: ব্যবহারকারীর লেখা HTML হিসেবে ঢোকে না ── */
 console.log('\nনিরাপত্তা');
 const xs = await run('<img src=x onerror=alert(1)>');

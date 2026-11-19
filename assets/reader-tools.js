@@ -102,8 +102,14 @@
   var ticking = false;
   var current = -1;
 
+  var tocVisibleMq = window.matchMedia ? window.matchMedia("(min-width: 1400px)") : null;
+
   function follow() {
     ticking = false;
+    if (tocVisibleMq && !tocVisibleMq.matches) {
+      toc.classList.remove("on");
+      return;
+    }
     var y = window.pageYOffset;
     var h = doc.documentElement;
     var max = h.scrollHeight - h.clientHeight;

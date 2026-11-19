@@ -123,16 +123,7 @@ def build_pages() -> list[dict]:
             "d": "ধম্মপদ, দীর্ঘ-মধ্যম-সংযুক্ত-অঙ্গুত্তর নিকায়, বিনয় ও ৪১ খণ্ড বাংলা ত্রিপিটক PDF",
             "k": norm("বৌদ্ধ ত্রিপিটক ধম্মপদ নিকায় বিনয় অভিধর্ম সূত্তপিটক " + bbody[:400]),
         })
-    # হিন্দু পুরাণ হাব ও মহাভারত শীর্ষ পাতা
-    pur_hub = ROOT / "grantho" / "hindu" / "purana.html"
-    if pur_hub.exists():
-        rows.append({
-            "t": "page",
-            "u": "grantho/hindu/purana.html",
-            "n": "পুরাণ — ব্রহ্ম, বিষ্ণু, ভবিষ্য, গরুড় ও ব্রহ্মাণ্ড মহাপুরাণ",
-            "d": "৫টি মহাপুরাণ · ১,৪৩১ অধ্যায় · ৭৩,৪৭৪ সংস্কৃত শ্লোক (বিষ্ণু পুরাণে ইংরেজি অনুবাদসহ)",
-            "k": norm("পুরাণ মহাপুরাণ purana brahma vishnu bhavishya garuda brahmanda"),
-        })
+    # হিন্দু মহাভারত শীর্ষ পাতা
     mbh_page = ROOT / "grantho" / "hindu" / "mahabharata.html"
     if mbh_page.exists():
         rows.append({
@@ -237,11 +228,6 @@ GRANTH_LABELS = {
     "prashna": "প্রশ্ন উপনিষদ",
     "chandogya": "ছান্দোগ্য উপনিষদ",
     "brihadaranyaka": "বৃহদারণ্যক উপনিষদ",
-    "brahma-purana": "ব্রহ্ম পুরাণ",
-    "vishnu-purana": "বিষ্ণু পুরাণ",
-    "bhavishya-purana": "ভবিষ্য পুরাণ",
-    "garuda-purana": "গরুড় পুরাণ",
-    "brahmanda-purana": "ব্রহ্মাণ্ড পুরাণ",
     "mahabharata": "মহাভারত",
     "dhammapada": "ধম্মপদ",
     "digha-nikaya": "দীর্ঘ নিকায়",
@@ -263,11 +249,6 @@ GRANTH_PAGE = {
     "prashna": "grantho/hindu/prashna.html",
     "chandogya": "grantho/hindu/chandogya.html",
     "brihadaranyaka": "grantho/hindu/brihadaranyaka.html",
-    "brahma-purana": "grantho/hindu/brahma-purana.html",
-    "vishnu-purana": "grantho/hindu/vishnu-purana.html",
-    "bhavishya-purana": "grantho/hindu/bhavishya-purana.html",
-    "garuda-purana": "grantho/hindu/garuda-purana.html",
-    "brahmanda-purana": "grantho/hindu/brahmanda-purana.html",
     "mahabharata": "grantho/hindu/mahabharata.html",
     "bible": "grantho/christian/bible.html",
     "dhammapada": "grantho/buddhist/dhammapada.html",

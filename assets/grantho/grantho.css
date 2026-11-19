@@ -29,5 +29,5 @@ html[data-theme="light"] .g-mbh-upa-b{color:#7a4f00}
 .g-en-note-act button:hover{background:rgba(245,184,28,.22);border-color:rgba(245,184,28,.65)}
 html[data-theme="light"] .g-en-note-act button{color:#7a4f00}
 html[data-theme="light"] .g-en-note-act button:hover{background:rgba(245,184,28,.24);color:#5c3a00}
-@media(max-width:640px){.g-mbh-ed{width:100%;justify-content:space-between}.g-mbh-ed-btn{flex:1 1 auto;text-align:center;padding:8px 6px;min-height:36px;font-size:12px}}
+@media(max-width:640px){.g-mbh-ed{width:100%;justify-content:space-between}.g-mbh-ed-btn{flex:1 1 auto;text-align:center;padding:8px 6px;min-height:44px;font-size:12px}}
 

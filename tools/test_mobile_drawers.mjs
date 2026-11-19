@@ -98,9 +98,11 @@ console.log('\n১. CSS ও HTML স্ট্রাকচার');
 
   const gCss = fs.readFileSync(path.join(ROOT, 'assets/grantho/grantho.css'), 'utf8');
   const g980 = mediaBlock(gCss, '@media(max-width:980px)');
+  const g640 = mediaBlock(gCss, '@media(max-width:640px)');
   check('grantho.css: .g-toolbar মোবাইলে static (top:62px নেই)', /\.g-toolbar\{position:static/.test(g980) && !/top:62px/.test(g980));
   check('grantho.css: --g-stick-top ব্যবহৃত', /var\(--g-stick-top/.test(gCss));
   check('grantho.css: মোবাইলে 16px সার্চ', /\.g-search input\{font-size:16px\}/.test(g980));
+  check('grantho.css: .g-mbh-ed-btn মোবাইলে >=44px টাচ টার্গেট', /\.g-mbh-ed-btn\{[^}]*min-height:44px/.test(g640));
 
   const nCss = fs.readFileSync(path.join(ROOT, 'assets/nav-motion.css'), 'utf8');
   const n1080 = mediaBlock(nCss, '@media(max-width:1080px)');
@@ -152,6 +154,32 @@ console.log('\n২. হাদিস মোবাইল ড্রয়ার ও
   d.getElementById('h-drawer-btn').dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
   w.dispatchEvent(new w.CustomEvent('ead:overlay-open', { detail: 'search' }));
   check('সার্চ খুললে হাদিস-ড্রয়ার বন্ধ হয়', !d.getElementById('h-aside').classList.contains('open'));
+
+  // বুকমার্ক ও সার্চ প্যানেল [data-goto] ক্লিকে বন্ধ হওয়া + hl() এন্টিটি অক্ষত থাকা
+  const bmItem = d.querySelector('.h-item [data-bm]');
+  check('হাদিস বুকমার্ক বোতাম রেন্ডার হয়েছে', !!bmItem);
+  if (bmItem) bmItem.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+  d.getElementById('h-bm-btn').dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+  const bmGoto = d.querySelector('#h-bm-list [data-goto]');
+  check('বুকমার্ক তালিকায় [data-goto] তৈরি হয়েছে', !!bmGoto);
+  if (bmGoto) bmGoto.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+  await wait(30);
+  check('বুকমার্ক [data-goto] ক্লিকে #h-bm-panel বন্ধ হয়', d.getElementById('h-bm-panel').hidden);
+
+  const hs = d.getElementById('h-search');
+  hs.value = 'এবং';
+  hs.dispatchEvent(new w.Event('input', { bubbles: true }));
+  await wait(450);
+  const resEl = d.getElementById('h-results');
+  const firstHit = resEl.querySelector('[data-goto]');
+  check('হাদিস সার্চ ফল তৈরি হয়েছে', !!firstHit);
+  if (firstHit) {
+    firstHit.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+    await wait(20);
+    check('হাদিস সার্চ [data-goto] ক্লিকে #h-results বন্ধ হয়', resEl.hidden);
+  }
+  const hTestJs = fs.readFileSync(path.join(ROOT, 'assets/hadith/hadith.js'), 'utf8');
+  check('hadith.js: hl() এন্টিটি বিকৃত না করে <mark> বসায়', !/esc\(text\)[\s\S]{0,120}\.replace\(new RegExp/.test(hTestJs));
 }
 
 console.log('\n৩. কুরআন মোবাইল ড্রয়ার');
