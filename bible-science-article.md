@@ -1,10 +1,8 @@
 # বাইবেলে কতগুলো বৈজ্ঞানিক ভুল রয়েছে?
 
-![Universet ifølge Bibelen](https://images.openai.com/static-rsc-4/OI_CI7515sJERME458XpgmP3_qwisUGSgMhD7sOtJEtgaz0QVHcuKz-nepK9hLMbEYePqDs-6SIK5ilfooMvGeLL3hwVOeKO5mITEqb8R35ntrJVsycQ6o7TNifFIImHkYgRlz2RNg6AV8cCExbMe_v_ttQZTEYSqeHIzqW-uu0?purpose=inline)
+![প্রাচীন বাইবেলীয় বিশ্বদৃষ্টির চিত্রণ](https://images.openai.com/static-rsc-4/OI_CI7515sJERME458XpgmP3_qwisUGSgMhD7sOtJEtgaz0QVHcuKz-nepK9hLMbEYePqDs-6SIK5ilfooMvGeLL3hwVOeKO5mITEqb8R35ntrJVsycQ6o7TNifFIImHkYgRlz2RNg6AV8cCExbMe_v_ttQZTEYSqeHIzqW-uu0?purpose=inline)
 
-![Bible: The Creation. /Nwoodcut From Miles Coverdale'S Bible, 1535, Depicting The Six Days Of Creation From The Book Of Genesis. Poster Print by Granger Collection - Item # VARGRC0042780 - Posterazzi](https://images.openai.com/static-rsc-4/qRuA4NOKvSog07f1LyV09iHgDe8O585_l3_T0lrV9Or72_CPm_tBhPz9IqQqypnfupLZvtJpkNoF8x-J7UGx1APOrirK2G_2BjO26JnrA8HGAsQAA8yCkTxicruxwTS8vuYgvAXF8bRZ1XC6M_DNU1FBbDiy5PvJ-vi9D5Lj2-8?purpose=inline)
-
-8
+![১৫৩৫ সালের মাইলস কভারডেল বাইবেলের কাঠখোদাই চিত্রে সৃষ্টির ছয় দিন](https://images.openai.com/static-rsc-4/qRuA4NOKvSog07f1LyV09iHgDe8O585_l3_T0lrV9Or72_CPm_tBhPz9IqQqypnfupLZvtJpkNoF8x-J7UGx1APOrirK2G_2BjO26JnrA8HGAsQAA8yCkTxicruxwTS8vuYgvAXF8bRZ1XC6M_DNU1FBbDiy5PvJ-vi9D5Lj2-8?purpose=inline)
 
 ## ভূমিকা
 
@@ -29,9 +27,7 @@
 
 ## ১. প্রথম বৈজ্ঞানিক সমস্যা: আকাশের ওপরে পানি থাকার ধারণা
 
-![Why the ‘Vault of the Sky’ is so Important to Flat-Earthers | Jesus Without Baggage](https://images.openai.com/static-rsc-4/Y1sNDrHiDZOm0KO7LdRintkMwlEo5M-l0aSvH4iHETY6JYdLjNjwXvSU7FzBZOdTsyc0p5o1W8tqsvebALN9PrhY2gdtXJ8miUi0QUajp8TuOsgyzbCcDthTpUUE2mEG5KFxEutaydEGv-UARoeO34D9OiP0DLEB1rXHj7GfSrw?purpose=inline)
-
-[jesuswithoutbaggage.wordpress.com](http://jesuswithoutbaggage.wordpress.com)
+![প্রাচীন আকাশ-গম্বুজ (রাকিয়া) সম্পর্কিত চিত্রণ](https://images.openai.com/static-rsc-4/Y1sNDrHiDZOm0KO7LdRintkMwlEo5M-l0aSvH4iHETY6JYdLjNjwXvSU7FzBZOdTsyc0p5o1W8tqsvebALN9PrhY2gdtXJ8miUi0QUajp8TuOsgyzbCcDthTpUUE2mEG5KFxEutaydEGv-UARoeO34D9OiP0DLEB1rXHj7GfSrw?purpose=inline)
 
 বাইবেলের রেফারেন্স: আদিপুস্তক (Genesis) ১:৬–৮
 
@@ -57,7 +53,7 @@ Genesis 1:7 অনুযায়ী, ঈশ্বর আকাশের নি�
 
 বৈজ্ঞানিক মূল্যায়ন: আক্ষরিক অর্থে আকাশের ওপর বিশাল জলরাশি থাকার ধারণা আধুনিক বিজ্ঞানের সঙ্গে মেলে না। তবে কিছু খ্রিষ্টীয় ব্যাখ্যাকারী বলেন, এখানে আকাশের দৃশ্যমান মেঘ বা বায়ুমণ্ডলীয় পানির কথা বলা হয়েছে।
 
-তথ্যসূত্র: [St Andrews Encyclopaedia of Theology – Biblical Criticism and Modern Science](https://www.saet.ac.uk/Christianity/BiblicalCriticismandModernScience?utm_source=chatgpt.com)।
+তথ্যসূত্র: [St Andrews Encyclopaedia of Theology – Biblical Criticism and Modern Science](https://www.saet.ac.uk/Christianity/BiblicalCriticismandModernScience)।
 
 ## ২. সূর্যের আগে উদ্ভিদ সৃষ্টি
 
@@ -89,7 +85,7 @@ Genesis-এর সৃষ্টি বিবরণ অনুযায়ী:
 
 খ্রিষ্টীয় আক্ষরিক ব্যাখ্যাকারীরা বলেন, প্রথম দিনে আলোর উৎস সৃষ্টি হয়েছিল, তাই সূর্য ছাড়াও উদ্ভিদ আলো পেতে পারে। কিন্তু এটি আক্ষরিক পাঠের একটি ধর্মতাত্ত্বিক ব্যাখ্যা, আধুনিক উদ্ভিদবিজ্ঞানের আবিষ্কার নয়।
 
-রেফারেন্স: [A Fresh Look at Two Genesis Creation Accounts](https://www.andrews.edu/library/car/cardigital/Periodicals/AUSS/2011/2011_v49_n1.pdf?utm_source=chatgpt.com)।
+রেফারেন্স: [A Fresh Look at Two Genesis Creation Accounts](https://www.andrews.edu/library/car/cardigital/Periodicals/AUSS/2011/2011_v49_n1.pdf)।
 
 ## ৩. পৃথিবী সৃষ্টির ক্রম নিয়ে Genesis-এর দুটি বিবরণের পার্থক্য
 
@@ -126,13 +122,11 @@ Genesis 1-এ মানুষ সৃষ্টির আগে স্থলজ �
 
 বৈজ্ঞানিক মূল্যায়ন: এটিকে সরাসরি জীববিজ্ঞানের ভুল বলা অপেক্ষা দুটি বিবরণের সাহিত্যিক ও কালানুক্রমিক পার্থক্য বলা বেশি যথাযথ। আধুনিক বাইবেল গবেষণায় Genesis 1 ও Genesis 2-কে পৃথক সাহিত্যিক সৃষ্টি-বিবরণ হিসেবে বিশ্লেষণ করা হয়।
 
-রেফারেন্স: [National Center for Science Education – Genesis Knows Nothing of Scientific Creationism](https://ncse.ngo/genesis-knows-nothing-scientific-creationism?utm_source=chatgpt.com)।
+রেফারেন্স: [National Center for Science Education – Genesis Knows Nothing of Scientific Creationism](https://ncse.ngo/genesis-knows-nothing-scientific-creationism)।
 
 ## ৪. পৃথিবী কি সমতল বা স্তম্ভের ওপর দাঁড়িয়ে আছে?
 
-![Creacion de la tierra segun la biblia - 6 fotos e imágenes gratis - Imagui](https://images.openai.com/static-rsc-4/Cz3kKVtJ2elNMwz_2qPxpv0DAN2JDyve72xcvv1-ngtQ8DX97ajk1dn6sY63wgrnvtn8KLQ4x4ChCWybPC_TZs-isywfIRhx0SB_QOuuLjt8A8jsyurERMyAz4QXfuYQUXNgGIL2fqCKcCLZ78LonoL-xTh17GaPpe8igMEksSY?purpose=inline)
-
-[imagui.com](http://imagui.com)
+![প্রাচীন সৃষ্টিতত্ত্ব ও পৃথিবীর ভিত্তি সম্পর্কিত চিত্রণ](https://images.openai.com/static-rsc-4/Cz3kKVtJ2elNMwz_2qPxpv0DAN2JDyve72xcvv1-ngtQ8DX97ajk1dn6sY63wgrnvtn8KLQ4x4ChCWybPC_TZs-isywfIRhx0SB_QOuuLjt8A8jsyurERMyAz4QXfuYQUXNgGIL2fqCKcCLZ78LonoL-xTh17GaPpe8igMEksSY?purpose=inline)
 
 বাইবেলে পৃথিবীর ভিত্তি ও স্তম্ভ নিয়ে একাধিক বক্তব্য রয়েছে।
 
@@ -159,13 +153,11 @@ Genesis 1-এ মানুষ সৃষ্টির আগে স্থলজ �
 
 বৈজ্ঞানিক মূল্যায়ন: পৃথিবীর আক্ষরিক স্তম্ভ থাকার ধারণা বৈজ্ঞানিক নয়। তবে কবিতার ভাষায় স্তম্ভ বলতে পৃথিবীর স্থায়িত্ব বা ভিত্তি বোঝানো হতে পারে। সুতরাং এই পদগুলোকে সরাসরি বৈজ্ঞানিক দাবি হিসেবে ব্যবহার করা বিতর্কিত।
 
-রেফারেন্স: [Bible.org – Psalm 104](https://new.bible.org/seriespage/psalm-104?utm_source=chatgpt.com)।
+রেফারেন্স: [Bible.org – Psalm 104](https://new.bible.org/seriespage/psalm-104)।
 
 ## ৫. পৃথিবীর সব পর্বত কি একসময় পানির নিচে ছিল?
 
-![TEMA VANN: Noahs flom – Skaper](https://images.openai.com/static-rsc-4/wvf8-S72kR3JoCOI_oocF6AQE71iTkTdXvPL0ogi6kTvf6Nyi8v1RN7shQxwbB7lqVHIU9pvoBel64j8XIl619kZY5L3wuHStGz8qRwCcTeY0AQs4KRCWVTSe1IqBs99r4iHn8_goDIaeqQHc7A7yBRt82-1MVJcFVZeenuAUOs?purpose=inline)
-
-[skaper.no](http://skaper.no)
+![নূহের মহাপ্লাবন সম্পর্কিত চিত্রণ](https://images.openai.com/static-rsc-4/wvf8-S72kR3JoCOI_oocF6AQE71iTkTdXvPL0ogi6kTvf6Nyi8v1RN7shQxwbB7lqVHIU9pvoBel64j8XIl619kZY5L3wuHStGz8qRwCcTeY0AQs4KRCWVTSe1IqBs99r4iHn8_goDIaeqQHc7A7yBRt82-1MVJcFVZeenuAUOs?purpose=inline)
 
 বাইবেলের রেফারেন্স: Genesis 7:19–20
 
@@ -207,7 +199,7 @@ Genesis-এ নূহের মহাপ্লাবনের বর্ণনা
 
 এমনকি কিছু খ্রিষ্টীয় গবেষকও এই বিষয়টি নিয়ে আলোচনা করেছেন।
 
-সূত্র: [Geoscience Research Institute – Do Rabbits Chew the Cud?](https://www.grisda.org/origins-04102?utm_source=chatgpt.com)।
+সূত্র: [Geoscience Research Institute – Do Rabbits Chew the Cud?](https://www.grisda.org/origins-04102)।
 
 ## ৭. বাদুড়কে পাখির শ্রেণিতে রাখা হয়েছে কেন?
 
@@ -230,11 +222,11 @@ Genesis-এ নূহের মহাপ্লাবনের বর্ণনা
 
 তাই এটিকে আধুনিক প্রাণিবিজ্ঞানের সঙ্গে শ্রেণিবিন্যাসগত পার্থক্য বলা যথাযথ; অবশ্যই এটিকে লেখকের অজ্ঞতার চূড়ান্ত প্রমাণ বলা যায় না।
 
-সূত্র: [United Bible Societies – Leviticus 11 Translation Commentary](https://tips.translation.bible/tip_term/translation-commentary-on-leviticus-1113-1119/?utm_source=chatgpt.com)।
+সূত্র: [United Bible Societies – Leviticus 11 Translation Commentary](https://tips.translation.bible/tip_term/translation-commentary-on-leviticus-1113-1119/)।
 
 ## ৮. সূর্য কি পৃথিবীর চারপাশে ঘোরে, নাকি পৃথিবী সূর্যের চারপাশে ঘোরে?
 
-![3D Isometric Flat Vector Illustration of Geocentric And Heliocentric Earth Orbit](https://images.openai.com/static-rsc-4/JXjB654yX7TEjeq_dSJDd29jxRQ3eKpdqXwRgtukQ0B59u9oHgE_XLZ86FU11O9BsnIPOnXR9HlTcjgVgCrcRP-u3p2v0Jeql0QN_rAt7POwnrQ0HJyQZKvIiF70W8_6qZiMj4LgxaCIwHMECJ6viAINNTKiCU_BwoDz-9hwXz8XDGmFHx7aCl97o9mk9KsK?purpose=inline)
+![ভূকেন্দ্রিক বনাম সূর্যকেন্দ্রিক কক্ষপথের মডেল](https://images.openai.com/static-rsc-4/JXjB654yX7TEjeq_dSJDd29jxRQ3eKpdqXwRgtukQ0B59u9oHgE_XLZ86FU11O9BsnIPOnXR9HlTcjgVgCrcRP-u3p2v0Jeql0QN_rAt7POwnrQ0HJyQZKvIiF70W8_6qZiMj4LgxaCIwHMECJ6viAINNTKiCU_BwoDz-9hwXz8XDGmFHx7aCl97o9mk9KsK?purpose=inline)
 
 বাইবেলের রেফারেন্স: Joshua 10:12–13
 
@@ -256,7 +248,7 @@ Genesis-এ নূহের মহাপ্লাবনের বর্ণনা
 
 বৈজ্ঞানিক মূল্যায়ন: সূর্যকে থামানোর ঘটনাটি যদি পৃথিবীর আবর্তন বন্ধ হওয়ার অর্থে নেওয়া হয়, তাহলে তা স্বাভাবিক জ্যোতির্বিজ্ঞানের সঙ্গে সাংঘর্ষিক। তবে বাইবেলের এই ঘটনাকে অলৌকিক ঘটনা বা কাব্যিক ভাষা হিসেবে ব্যাখ্যা করেন অনেক খ্রিষ্টীয় ধর্মতাত্ত্বিক। তাই শুধু সূর্য থেমে যাওয়ার ভাষা ব্যবহার করাকে বৈজ্ঞানিক ভুল বলা যায় না।
 
-রেফারেন্স: [NET Bible – Joshua 10:12–14](https://classic.net.bible.org/passage.php/xml/xml/passage.php?passage=Jos+10:12-14&utm_source=chatgpt.com)।
+রেফারেন্স: [NET Bible – Joshua 10:12–14](https://classic.net.bible.org/passage.php/xml/xml/passage.php?passage=Jos+10:12-14)।
 
 ## ৯. নক্ষত্র কি পৃথিবীতে পড়ে যেতে পারে?
 
@@ -303,7 +295,7 @@ Revelation 6:13-এ বলা হয়েছে, আকাশের নক্�
 
 তবে বাইবেলের বর্ণনায় পরবর্তী Genesis 31:9–12-এ যাকোব তার পশুপালের বৃদ্ধিকে ঈশ্বরের হস্তক্ষেপের ফল হিসেবে ব্যাখ্যা করেন। তাই খ্রিষ্টীয় ব্যাখ্যাকারীরা ঘটনাটিকে অলৌকিক ঘটনা হিসেবেও দেখেন।
 
-সূত্র: [Jewish Bible Quarterly – Jacob and the Spotted Sheep](https://www.jewishbible.org/articles/jacob-and-the-spotted-sheep/?utm_source=chatgpt.com)।
+সূত্র: [Jewish Bible Quarterly – Jacob and the Spotted Sheep](https://www.jewishbible.org/articles/jacob-and-the-spotted-sheep/)।
 
 ## ১১. মানুষের সর্বোচ্চ আয়ু কি ১২০ বছর?
 
@@ -325,13 +317,11 @@ Revelation 6:13-এ বলা হয়েছে, আকাশের নক্�
 
 বৈজ্ঞানিক মূল্যায়ন: Genesis 6:3-কে মানুষের সর্বোচ্চ আয়ুর কঠোর সীমা হিসেবে নিলে তা ভুল। কিন্তু ইহুদি ব্যাখ্যার একটি গুরুত্বপূর্ণ ধারা অনুযায়ী, এখানে মহাপ্লাবনের আগে মানুষকে অনুতাপের জন্য দেওয়া ১২০ বছরের সময়সীমার কথা বলা হয়েছে। এই ব্যাখ্যা অনুযায়ী এটি মানুষের সর্বোচ্চ আয়ুর ঘোষণা নয়।
 
-সূত্র: [Chabad – Can We Live More Than 120 Years?](https://www.chabad.org/parshah/article_cdo/aid/1318467/jewish/Can-We-Live-More-Than-120-Years.htm?utm_source=chatgpt.com)।
+সূত্র: [Chabad – Can We Live More Than 120 Years?](https://www.chabad.org/parshah/article_cdo/aid/1318467/jewish/Can-We-Live-More-Than-120-Years.htm)।
 
 ## ১২. সরিষার বীজ কি পৃথিবীর সবচেয়ে ছোট বীজ?
 
-![THE WORLD'S SMALLEST FRUIT](https://images.openai.com/static-rsc-4/IRWynRiT3KWlhTqUBqTlqcd05fuWnI0zbCYKNhjUPDJwk0vQoyLTS6_VrHRkQQqueoZg6jpTfBqDhSDZIkxMeQO6FONK6HDIJXFmWL_eUDszBJLqw61g9qJCB5B8bF29Hkofv-zDlCtMHSvYOonNytaKgoPxlrTLKihAZwPXon8?purpose=inline)
-
-[waynesword.net](http://waynesword.net)
+![পৃথিবীর ক্ষুদ্রতম ফল ও ফুল — ওলফিয়া (Wolffia) (waynesword.net)](https://images.openai.com/static-rsc-4/IRWynRiT3KWlhTqUBqTlqcd05fuWnI0zbCYKNhjUPDJwk0vQoyLTS6_VrHRkQQqueoZg6jpTfBqDhSDZIkxMeQO6FONK6HDIJXFmWL_eUDszBJLqw61g9qJCB5B8bF29Hkofv-zDlCtMHSvYOonNytaKgoPxlrTLKihAZwPXon8?purpose=inline)
 
 বাইবেলের রেফারেন্স: Matthew 13:31–32 এবং Mark 4:30–32
 
@@ -353,7 +343,7 @@ Matthew 13:32-এ সরিষার বীজকে সব বীজের ম�
 
 বৈজ্ঞানিক মূল্যায়ন: পৃথিবীর সব বীজের মধ্যে সরিষার বীজ সবচেয়ে ছোট—এটি আক্ষরিকভাবে সঠিক নয়। তবে এটি একটি দৃষ্টান্তমূলক উপমা বা প্রচলিত কথ্য অভিব্যক্তি হতে পারে। যিশু এখানে উদ্ভিদবিজ্ঞানের পাঠ দিচ্ছিলেন না; ক্ষুদ্র থেকে বৃহৎ হওয়ার উপমা দিচ্ছিলেন।
 
-সূত্র: [IVP New Testament Commentary – The Kingdom Is Like a Mustard Seed](https://www.biblegateway.com/resources/ivp-nt/Kingdom-Is-like-Mustard-Seed?utm_source=chatgpt.com)।
+সূত্র: [IVP New Testament Commentary – The Kingdom Is Like a Mustard Seed](https://www.biblegateway.com/resources/ivp-nt/Kingdom-Is-like-Mustard-Seed)।
 
 ## ১৩. পৃথিবী কি কখনো নড়ে না?
 
@@ -404,57 +394,35 @@ Ecclesiastes 1:4-এ বলা হয়েছে, পৃথিবী চির�
 
 ## ১৬. কোনগুলো তুলনামূলকভাবে শক্তিশালী বৈজ্ঞানিক আপত্তি?
 
-গবেষণার সুবিধার জন্য বিষয়গুলোকে তিন ভাগে ভাগ করা যায়।
+গবেষণার সুবিধার জন্য বিষয়গুলোকে প্রধানত দুই ভাগে ভাগ করা যায়:
 
-শক্তিশালী আপত্তি
+### শক্তিশালী বৈজ্ঞানিক আপত্তি
 
-১. আকাশের ওপরে জলরাশি — Genesis 1:6–8
+১. আকাশের ওপরে জলরাশি — Genesis 1:6–8: আক্ষরিক প্রাচীন মহাজাগতিক ধারণা আধুনিক জ্যোতির্বিজ্ঞানের সঙ্গে মেলে না।
 
-আক্ষরিক প্রাচীন মহাজাগতিক ধারণা আধুনিক জ্যোতির্বিজ্ঞানের সঙ্গে মেলে না।
+২. উদ্ভিদের আগে সূর্য সৃষ্টি না হওয়া — Genesis 1:11–19: আক্ষরিক সৃষ্টিক্রম আধুনিক সৌরজগৎ ও জীববিজ্ঞানের ইতিহাসের সঙ্গে মেলে না।
 
-শক্তিশালী আপত্তি
+৩. পৃথিবীব্যাপী মহাপ্লাবন — Genesis 7:19–23: সাম্প্রতিক সময়ে সব পর্বত ডুবিয়ে দেওয়া বৈশ্বিক বন্যার পক্ষে ভূতাত্ত্বিক প্রমাণ নেই।
 
-২. উদ্ভিদের আগে সূর্য সৃষ্টি না হওয়া — Genesis 1:11–19
+### ব্যাখ্যাগত ও শ্রেণিবিন্যাসগত বিতর্ক
 
-আক্ষরিক সৃষ্টিক্রম আধুনিক সৌরজগত ও জীববিজ্ঞানের ইতিহাসের সঙ্গে মেলে না।
+৪. খরগোশের জাবর কাটা — Leviticus 11:6: আধুনিক প্রাণিবিজ্ঞানের সংজ্ঞার সঙ্গে প্রাচীন শ্রেণিবিন্যাসের পার্থক্য রয়েছে।
 
-শক্তিশালী আপত্তি
+৫. নক্ষত্রের পতন — Matthew 24:29: আক্ষরিক পাঠে জ্যোতির্বৈজ্ঞানিক সমস্যা, কিন্তু প্রলয়সংক্রান্ত প্রতীকী ভাষা হওয়ার সম্ভাবনা রয়েছে।
 
-৩. পৃথিবীব্যাপী মহাপ্লাবন — Genesis 7:19–23
-
-সাম্প্রতিক সময়ে সব পর্বত ডুবিয়ে দেওয়া বৈশ্বিক বন্যার পক্ষে ভূতাত্ত্বিক প্রমাণ নেই।
-
-ব্যাখ্যাগত বিতর্ক
-
-৪. খরগোশের জাবর কাটা — Leviticus 11:6
-
-আধুনিক প্রাণিবিজ্ঞানের সংজ্ঞার সঙ্গে প্রাচীন শ্রেণিবিন্যাসের পার্থক্য রয়েছে।
-
-ব্যাখ্যাগত বিতর্ক
-
-৫. নক্ষত্রের পতন — Matthew 24:29
-
-আক্ষরিক পাঠে জ্যোতির্বৈজ্ঞানিক সমস্যা, কিন্তু প্রলয়সংক্রান্ত প্রতীকী ভাষা হওয়ার সম্ভাবনা রয়েছে।
-
-ব্যাখ্যাগত বিতর্ক
-
-৬. সূর্য থেমে যাওয়া — Joshua 10:12–13
-
-অলৌকিক ঘটনা, কাব্যিক ভাষা অথবা আক্ষরিক জ্যোতির্বৈজ্ঞানিক ঘটনা—ব্যাখ্যা নিয়ে বিতর্ক রয়েছে।
+৬. সূর্য থেমে যাওয়া — Joshua 10:12–13: অলৌকিক ঘটনা, কাব্যিক ভাষা অথবা আক্ষরিক জ্যোতির্বৈজ্ঞানিক ঘটনা—ব্যাখ্যা নিয়ে বিতর্ক রয়েছে।
 
 ## ১৭. গবেষণার জন্য গুরুত্বপূর্ণ বই ও উৎস
 
 বাইবেলের বৈজ্ঞানিক বক্তব্য নিয়ে নির্ভরযোগ্য আলোচনা করতে শুধু নাস্তিকদের লেখা বা শুধু খ্রিষ্টীয় প্রতিরক্ষামূলক বই পড়লে হবে না। দুই পক্ষের গবেষণা এবং স্বাধীন একাডেমিক গবেষণা পড়া উচিত।
 
-[The Bible Unearthed: Archaeology's New Vision of Ancient Israel and the Origin of Its Sacred Texts, (Paperback) - Walmart.com](http://Walmart.com)
-
-১. The Bible Unearthed
+১. The Bible Unearthed: Archaeology's New Vision of Ancient Israel and the Origin of Its Sacred Texts
 
 লেখক: Israel Finkelstein ও Neil Asher Silberman।
 
 বাইবেলের ঐতিহাসিক বর্ণনা ও প্রত্নতাত্ত্বিক প্রমাণ নিয়ে গবেষণা।
 
-![The Lost World of Genesis One eBook by John H. Walton - EPUB | Rakuten Kobo United States](https://images.openai.com/static-rsc-4/wNUIO2nHsKIHaExOPOwjfJEP7biNk1gVj8xDkVEtfl3nw9I-2Mvvnk76mR4Hi7CoIc_MfNhKwwUX9vQ75bB4m2We99JNaCEgJHOrSm9D8W20oMvXXRSIYgJ9KZhC2ZgCmVJqR911HGnx9Lg_3nZl_JfILBMDnzxQtU27oMS8XpY?purpose=inline)
+![John H. Walton রচিত The Lost World of Genesis One গ্রন্থের প্রচ্ছদ](https://images.openai.com/static-rsc-4/wNUIO2nHsKIHaExOPOwjfJEP7biNk1gVj8xDkVEtfl3nw9I-2Mvvnk76mR4Hi7CoIc_MfNhKwwUX9vQ75bB4m2We99JNaCEgJHOrSm9D8W20oMvXXRSIYgJ9KZhC2ZgCmVJqR911HGnx9Lg_3nZl_JfILBMDnzxQtU27oMS8XpY?purpose=inline)
 
 ২. The Lost World of Genesis One
 
@@ -462,13 +430,11 @@ Ecclesiastes 1:4-এ বলা হয়েছে, পৃথিবী চির�
 
 Genesis-এর সৃষ্টি বিবরণ এবং প্রাচীন নিকটপ্রাচ্যের বিশ্বদৃষ্টি নিয়ে আলোচনা।
 
-![The Bible, the Qur'an, and Science | 9781879402980 | Dr Maurice Bucaille | Boeken | bol](https://images.openai.com/static-rsc-4/dj5XQrogXVzEd4hqg0sg7CO7GpwKCo0ShmJogS19xoQ44MTTytzc3-5D8TUL2plmLDNtdQotryPxQM9sS2ecAKVUnNvFOW9dySGEffduA9Um6oqlmSib7leAKoLy_IpxDytQczPHcufY3UAiKI5rki6tAjiGzgtN6f8L6hg1-Fw?purpose=inline)
-
 ৩. Biblical Criticism and Modern Science
 
 আধুনিক বিজ্ঞান ও বাইবেলের সম্পর্ক নিয়ে একাডেমিক গবেষণা।
 
-[অনলাইনে পড়ুন](https://www.saet.ac.uk/Christianity/BiblicalCriticismandModernScience?utm_source=chatgpt.com)
+[অনলাইনে পড়ুন](https://www.saet.ac.uk/Christianity/BiblicalCriticismandModernScience)
 
 ## ১৮. চূড়ান্ত সিদ্ধান্ত
 

@@ -1,5 +1,5 @@
 {
- "_commit": "987685475ccce7f9cc9a9adacd99d68b555f1aaa",
+ "_commit": "c8e3420fa94ab365e826628ce2cc5ae0a0b14a64",
  "_note": "এটি ভালো-জানা ডেটার হিসাব; এর চেয়ে ১৫%-এর বেশি ছোট হলে guard_data.py ফিরিয়ে আনে।",
  "slugs": {
   "anguttara-nikaya": {

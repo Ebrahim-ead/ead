@@ -290,6 +290,30 @@ def normalize(slug: str, html: str, sub: str = "hindu") -> str:
     # ২) site-extra.css (মোবাইল/সূত্র/কম্প্যাক্ট ফুটার) — নতুনরা এটা পায় না
     if "site-extra.css" not in html:
         html = html.replace("</head>", '<link rel="stylesheet" href="../../assets/site-extra.css">\n</head>', 1)
+    # ২.৫) PNG আইকন ও PWA manifest (data: SVG favicon সরিয়ে সব পাতায় সামঞ্জস্য)
+    html = re.sub(r'<link rel="icon" href="data:image/svg\+xml,[^"]*">\s*', "", html)
+    _pwa_add = ""
+    if 'favicon-32.png' not in html:
+        _pwa_add += (
+            '<link rel="icon" type="image/png" sizes="32x32" href="/ead/assets/img/favicon-32.png">'
+            '<link rel="icon" type="image/png" sizes="192x192" href="/ead/assets/img/icon-192.png">'
+            '<link rel="apple-touch-icon" sizes="180x180" href="/ead/assets/img/apple-touch-icon.png">'
+        )
+    if 'rel="manifest"' not in html:
+        _pwa_add += '<link rel="manifest" href="/ead/manifest.json">'
+    if 'apple-mobile-web-app-capable' not in html:
+        _pwa_add += (
+            '<meta name="apple-mobile-web-app-capable" content="yes">'
+            '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">'
+            '<meta name="apple-mobile-web-app-title" content="Ebrahim Ead">'
+            '<meta name="mobile-web-app-capable" content="yes">'
+        )
+    if _pwa_add:
+        _tc = re.search(r'<meta name="theme-color"[^>]*>\s*', html)
+        if _tc:
+            html = html[:_tc.end()] + _pwa_add + html[_tc.end():]
+        else:
+            html = html.replace("</head>", _pwa_add + "</head>", 1)
     # ৩) ফুটার — পুরোনো টেমপ্লেটের ফুটার বদলে আধুনিক (সংক্ষিপ্ত) ফুটার
     if FOOTER:
         m = re.search(r"<footer\b.*?</footer>", html, re.S)
@@ -896,7 +920,7 @@ def main():
     if hf.exists():
         h = json.loads(hf.read_text(encoding="utf-8"))
         isl += card("../hadith.html", "ইসলাম · হাদিস", "হাদিস",
-                    f'সিহাহ সিত্তাহ — {commas(h.get("total") or 0)} হাদিস')
+                    f'সিহাহ সিত্তাহ ও মিশকাত — {commas(h.get("total") or 0)} হাদিস')
     if isl:
         replace_grid("islam.html", isl, sub="")
         print("ইসলাম-হাব: কার্ড তৈরি")
