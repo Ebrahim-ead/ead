@@ -179,8 +179,28 @@
   var bodyEl = $("e-body"), titleEl = $("e-ch-title"), metaEl = $("e-ch-meta");
   var listEl = $("e-book-list"), chListEl = $("e-chapter-list"), crumbEl = $("e-crumb");
   var nowEl = $("e-side-now"), hitsEl = $("e-hits"), searchEl = $("e-search");
-  var sideBody = $("e-side-body"), sideToggle = $("e-side-toggle");
+  var sideEl = $("e-side"), sideBody = $("e-side-body"), sideToggle = $("e-side-toggle");
   var prevBtn = $("e-prev"), nextBtn = $("e-next");
+
+  function setFolded(on, remember) {
+    if (!sideEl || !sideToggle) return;
+    sideEl.classList.toggle("folded", !!on);
+    sideToggle.setAttribute("aria-expanded", on ? "false" : "true");
+    if (sideBody) sideBody.hidden = !!on;
+    if (nowEl) nowEl.hidden = !(on && nowEl.textContent.trim());
+    if (remember) save();
+  }
+  function syncStickTop() {
+    if (!root) return;
+    var narrow = false;
+    try { narrow = window.matchMedia && window.matchMedia("(max-width: 980px)").matches; } catch (e) {}
+    if (narrow) { root.style.removeProperty("--g-stick-top"); return; }
+    var header = document.querySelector("header.top");
+    var bar = root.querySelector(".g-toolbar");
+    var hh = header ? header.getBoundingClientRect().height : 70;
+    var bh = bar ? bar.getBoundingClientRect().height : 62;
+    root.style.setProperty("--g-stick-top", Math.max(150, Math.ceil(hh + bh + 16)) + "px");
+  }
 
   var index = null, curBook = null, curCh = null, curChData = null;
   var cache = {};
@@ -235,7 +255,14 @@
         '<span class="meta">' + bn(c.count) + " পদ" + notes + "</span></span></button>";
     }).join("");
     chListEl.querySelectorAll("[data-ch]").forEach(function (btn) {
-      btn.addEventListener("click", function () { openChapter(+btn.dataset.ch); });
+      btn.addEventListener("click", function () {
+        openChapter(+btn.dataset.ch);
+        try {
+          if (window.matchMedia && window.matchMedia("(max-width: 980px)").matches) {
+            setFolded(true, false);
+          }
+        } catch (e) {}
+      });
     });
   }
 
@@ -248,7 +275,7 @@
       ' <span class="g-bk-en" lang="en" dir="ltr">' + esc(curBook.en) + "</span></span>";
     var back = crumbEl.querySelector(".g-crumb-b");
     if (back) back.addEventListener("click", showIndex);
-    if (window.innerWidth < 900) chListEl.scrollIntoView({ block: "nearest" });
+    if (window.innerWidth < 900 && chListEl.scrollIntoView) chListEl.scrollIntoView({ block: "nearest" });
   }
 
   function showIndex() {
@@ -380,10 +407,22 @@
   /* ---------- পাশের তালিকা ভাঁজ ---------- */
   if (sideToggle) {
     sideToggle.addEventListener("click", function () {
-      var open = sideToggle.getAttribute("aria-expanded") === "true";
-      sideToggle.setAttribute("aria-expanded", open ? "false" : "true");
-      sideBody.hidden = open;
+      var willFold = !(sideEl && sideEl.classList.contains("folded"));
+      setFolded(willFold, false);
     });
+  }
+  syncStickTop();
+  window.addEventListener("resize", function () {
+    syncStickTop();
+    try {
+      if (window.matchMedia && !window.matchMedia("(max-width: 980px)").matches) {
+        setFolded(false, false);
+      }
+    } catch (e) {}
+  });
+  if (window.ResizeObserver) {
+    var eBar = root.querySelector(".g-toolbar");
+    if (eBar) new ResizeObserver(syncStickTop).observe(eBar);
   }
 
   /* ---------- শুরু ---------- */
@@ -392,6 +431,11 @@
     if (!index.chapters || !index.chapters.length) throw new Error("খালি সূচি");
     if (!index.chapters.some(function (b) { return b.id === st.book; })) st.book = index.chapters[0].id;
     openBook(st.book);
+    try {
+      if (window.matchMedia && window.matchMedia("(max-width: 980px)").matches) {
+        setFolded(true, false);
+      }
+    } catch (e) {}
   }).catch(function () {
     bodyEl.innerHTML = '<p class="g-loading">সূচি লোড হয়নি। ইন্টারনেট সংযোগ দেখুন।</p>';
   });

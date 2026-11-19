@@ -49,7 +49,7 @@
 /* শেল ও পাতা আলাদা সংস্করণ নম্বর পায় — শুধু শেল-তালিকা বদলালে
    ব্যবহারকারীর জমানো ডেটা (১৪২ MB পর্যন্ত) মুছে যাওয়া উচিত নয়।
    ডেটা বদলালেই (গঠন বা বিষয়বস্তু) DATA_VERSION বাড়াবেন। */
-var SHELL_VERSION = 'v20';
+var SHELL_VERSION = 'v21';
 var DATA_VERSION = 'v11';
 
 var SHELL_CACHE = 'ead-shell-' + SHELL_VERSION;
@@ -116,6 +116,9 @@ var PREFETCH = [
 
 /* ---- কোন পথে ডেটা (cache-first) ---- */
 function isData(url) {
+  if (/\.(css|js)$/i.test(url.pathname) && !/search-ayahs\.js$/.test(url.pathname)) {
+    return false;
+  }
   return /\/(assets\/(hadith|quran|grantho|filistin)\/|search-ayahs\.js$)/.test(url.pathname);
 }
 
@@ -174,6 +177,21 @@ self.addEventListener('activate', function (event) {
           }
         })
       );
+    }).then(function () {
+      /* পূর্বে ভুলবশত DATA_CACHE-এ জমা হওয়া CSS/JS এন্ট্রি সরাই — JSON ডেটা অটুট রেখে */
+      return caches.open(DATA_CACHE).then(function (cache) {
+        return cache.keys().then(function (keys) {
+          return Promise.all(
+            keys.map(function (k) {
+              var p = '';
+              try { p = new URL(k.url).pathname; } catch (e) {}
+              if (/\.(css|js)$/i.test(p) && !/search-ayahs\.js$/.test(p)) {
+                return cache.delete(k);
+              }
+            })
+          );
+        });
+      }).catch(function () {});
     }).then(function () {
       /* navigationPreload: ব্রাউজার নেটওয়ার্ক-অনুরোধ SW চালুর সাথে
          সাথেই شروع করে — SW ও নেটওয়ার্ক সমান্তরালে চলে, তাই প্রথম

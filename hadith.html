@@ -94,7 +94,7 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="h-search" type="search" placeholder="খুঁজুন — বাংলা শব্দ, অথবা বুখারী ১:৫" aria-label="হাদিস খুঁজুন" autocomplete="off">
     </div>
-    <button class="h-btn h-drawer-btn" id="h-drawer-btn" type="button" aria-expanded="false">☰ কিতাব</button>
+    <button class="h-btn h-drawer-btn" id="h-drawer-btn" type="button" aria-expanded="false" aria-controls="h-aside">☰ কিতাব</button>
     <button class="h-btn" id="h-t-ar" type="button" aria-pressed="true">আরবি</button>
     <button class="h-btn" id="h-t-bn" type="button" aria-pressed="true">বাংলা</button>
     <div class="h-select"><label for="h-size-ar">আরবি</label><input id="h-size-ar" type="range" min="18" max="40" step="1" value="25" aria-label="আরবি লেখার আকার"></div>
@@ -115,12 +115,19 @@
     <aside class="h-aside" id="h-aside" aria-label="কিতাব ও অধ্যায়ের তালিকা">
       <div class="h-aside-head">
         <div><b>কিতাবসমূহ</b><br><small id="h-total">…</small></div>
+        <button class="h-drawer-close" id="h-drawer-close" type="button" aria-label="তালিকা বন্ধ করুন" title="বন্ধ করুন">✕</button>
       </div>
-      <div class="h-books" id="h-books" role="group" aria-label="সাতটি কিতাব">
-        <div class="skel-nav-row"><span class="skel-bone skel-line w-85"></span></div>
-        <div class="skel-nav-row"><span class="skel-bone skel-line w-70"></span></div>
-        <div class="skel-nav-row"><span class="skel-bone skel-line w-85"></span></div>
-        <div class="skel-nav-row"><span class="skel-bone skel-line w-55"></span></div>
+      <div class="h-books-wrap" id="h-books-wrap">
+        <button class="h-books-toggle" id="h-books-toggle" type="button" aria-expanded="true" aria-controls="h-books">
+          <span class="h-books-now" id="h-book-now">কিতাব বেছে নিন</span>
+          <span class="h-books-hint">৭ কিতাব <span class="h-books-chev" aria-hidden="true">▾</span></span>
+        </button>
+        <div class="h-books" id="h-books" role="group" aria-label="সাতটি কিতাব">
+          <div class="skel-nav-row"><span class="skel-bone skel-line w-85"></span></div>
+          <div class="skel-nav-row"><span class="skel-bone skel-line w-70"></span></div>
+          <div class="skel-nav-row"><span class="skel-bone skel-line w-85"></span></div>
+          <div class="skel-nav-row"><span class="skel-bone skel-line w-55"></span></div>
+        </div>
       </div>
       <div class="h-aside-filter">
         <input id="h-filter" type="search" autocomplete="off" placeholder="অধ্যায়ের নাম লিখুন…"
@@ -156,6 +163,8 @@
   <div class="h-credit">
     <a href="#h-src-more">সূত্র ও অনুবাদের বিস্তারিত</a>
   </div>
+
+  <button class="h-fab-drawer" id="h-fab-drawer" type="button" aria-label="কিতাব ও অধ্যায়ের তালিকা খুলুন" aria-controls="h-aside" aria-expanded="false" hidden>☰ কিতাব ও অধ্যায়</button>
 
 </div>
 </main>

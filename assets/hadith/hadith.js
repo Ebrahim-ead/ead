@@ -100,24 +100,74 @@
   /* ---------------------------------------------------------- *
    * drawer (mobile book/chapter tree)
    * ---------------------------------------------------------- */
-  var asideEl, backdropEl, drawerBtn;
+  var asideEl, backdropEl, drawerBtn, drawerCloseBtn, fabDrawerBtn;
+  var booksWrapEl, booksToggleEl, bookNowEl, booksManual = null, lastOpener = null;
   function isDrawer() { return document.documentElement.classList.contains("h-drawer"); }
-  function openDrawer() {
-    if (!isDrawer()) return;
+  function setBooksCollapsed(collapsed, manual) {
+    if (manual) booksManual = !!collapsed;
+    if (!booksWrapEl) return;
+    booksWrapEl.classList.toggle("collapsed", !!collapsed);
+    if (booksToggleEl) booksToggleEl.setAttribute("aria-expanded", collapsed ? "false" : "true");
+  }
+  function syncStickTop() {
+    var full = document.querySelector(".h-full");
+    if (!full) return;
+    if (isDrawer()) { full.style.removeProperty("--h-stick-top"); return; }
+    var header = document.querySelector("header.top");
+    var bar = document.querySelector(".h-toolbar");
+    var hh = header ? header.getBoundingClientRect().height : 70;
+    var bh = bar ? bar.getBoundingClientRect().height : 62;
+    full.style.setProperty("--h-stick-top", Math.max(150, Math.ceil(hh + bh + 16)) + "px");
+  }
+  function syncFab() {
+    if (!fabDrawerBtn) return;
+    if (!isDrawer() || (asideEl && asideEl.classList.contains("open"))) {
+      fabDrawerBtn.hidden = true;
+      return;
+    }
+    var bar = document.querySelector(".h-toolbar");
+    var past = bar ? bar.getBoundingClientRect().bottom < 20 : false;
+    fabDrawerBtn.hidden = !past;
+  }
+  function openDrawer(opener) {
+    if (!isDrawer() || !asideEl) return;
+    lastOpener = opener || drawerBtn || document.activeElement;
     asideEl.classList.add("open");
-    backdropEl.classList.add("on");
+    if (backdropEl) backdropEl.classList.add("on");
     if (drawerBtn) drawerBtn.setAttribute("aria-expanded", "true");
+    if (fabDrawerBtn) fabDrawerBtn.setAttribute("aria-expanded", "true");
+    document.body.style.overflow = "hidden";
+    syncFab();
+    var target = drawerCloseBtn || document.getElementById("h-filter");
+    if (target && target.focus) {
+      setTimeout(function () { try { target.focus(); } catch (e) {} }, 20);
+    }
   }
   function closeDrawer() {
     if (!asideEl) return;
+    var wasOpen = asideEl.classList.contains("open");
+    var hadFocus = wasOpen && asideEl.contains(document.activeElement);
     asideEl.classList.remove("open");
     if (backdropEl) backdropEl.classList.remove("on");
     if (drawerBtn) drawerBtn.setAttribute("aria-expanded", "false");
+    if (fabDrawerBtn) fabDrawerBtn.setAttribute("aria-expanded", "false");
+    if (wasOpen) document.body.style.overflow = "";
+    syncFab();
+    if (hadFocus && lastOpener && lastOpener.focus && document.contains(lastOpener)) {
+      try { lastOpener.focus(); } catch (e) {}
+    }
   }
   function syncDrawerMode() {
-    var narrow = window.matchMedia("(max-width:960px)").matches;
-    document.documentElement.classList.toggle("h-drawer", narrow);
+    var narrow = false;
+    try { narrow = window.matchMedia && window.matchMedia("(max-width:960px)").matches; } catch (e) {}
+    document.documentElement.classList.toggle("h-drawer", !!narrow);
     if (!narrow) closeDrawer();
+    if (booksManual === null && booksWrapEl) {
+      var shortH = window.innerHeight && window.innerHeight <= 600;
+      setBooksCollapsed(!!shortH, false);
+    }
+    syncStickTop();
+    syncFab();
   }
 
   /* ---------------------------------------------------------- *
@@ -126,13 +176,29 @@
   function renderBooks() {
     var host = document.getElementById("h-books");
     if (!host) return;
+    var curBook = book();
+    if (bookNowEl && curBook) {
+      bookNowEl.textContent = curBook.bn + " · " + bn(curBook.chapters.length) + " অধ্যায়";
+    }
     host.innerHTML = index.books.map(function (b) {
       return '<button class="h-book' + (b.slug === bookSlug ? " on" : "") + '" type="button" ' +
         'data-book="' + esc(b.slug) + '"' + (b.slug === bookSlug ? ' aria-current="true"' : "") + '>' +
         '<b>' + esc(b.bn) + '</b><small>' + bnNum(b.count) + ' হাদিস</small></button>';
     }).join("");
     host.querySelectorAll("[data-book]").forEach(function (btn) {
-      btn.addEventListener("click", function () { loadBook(btn.dataset.book, 1); });
+      btn.addEventListener("click", function () {
+        var inOpenDrawer = isDrawer() && asideEl && asideEl.classList.contains("open");
+        var slug = btn.dataset.book;
+        if (inOpenDrawer) {
+          setBooksCollapsed(true, false);
+          if (slug !== bookSlug) loadBook(slug, 1, true);
+          if (listEl) listEl.scrollTop = 0;
+          var flt = document.getElementById("h-filter");
+          if (flt && flt.value) { flt.value = ""; flt.dispatchEvent(new Event("input")); }
+          return;
+        }
+        loadBook(slug, 1);
+      });
     });
   }
 
@@ -192,20 +258,20 @@
   /* ---------------------------------------------------------- *
    * load + render one chapter
    * ---------------------------------------------------------- */
-  function loadBook(slug, ch) {
+  function loadBook(slug, ch, keepDrawer) {
     bookSlug = slug;
     renderBooks();
     renderChapters();     // বই বদলালে নিশ্চিতভাবেই তালিকাও বদলাবে
-    loadChapter(ch || 1);
+    loadChapter(ch || 1, null, false, keepDrawer);
   }
 
-  function loadChapter(id, jumpTo, replace) {
+  function loadChapter(id, jumpTo, replace, keepDrawer) {
     var b = book();
     if (!b) return;
     if (!chapter(id)) id = b.chapters[0].id;
     chapterId = id;
     markActive();
-    closeDrawer();
+    if (!keepDrawer) closeDrawer();
 
     var hash = "#" + bookSlug + ":" + id + (jumpTo ? ":" + jumpTo : "");
     if (replace) history.replaceState(null, "", hash);
@@ -254,6 +320,7 @@
     var pager = '<div class="h-pager">' +
       (prev ? '<button class="h-btn" type="button" data-ch="' + prev.id + '">← ' +
         bn(prev.id) + '. ' + esc(prev.bn || prev.en) + '</button>' : "<span></span>") +
+      '<button class="h-btn h-pager-drawer" type="button" data-open-drawer>☰ কিতাব ও অধ্যায়</button>' +
       (next ? '<button class="h-btn" type="button" data-ch="' + next.id + '">' +
         bn(next.id) + '. ' + esc(next.bn || next.en) + ' →</button>' : "<span></span>") +
       '</div>';
@@ -264,6 +331,9 @@
     mainEl.appendChild(foot);
     foot.querySelectorAll("[data-ch]").forEach(function (btn) {
       btn.addEventListener("click", function () { loadChapter(+btn.dataset.ch); });
+    });
+    foot.querySelectorAll("[data-open-drawer]").forEach(function (btn) {
+      btn.addEventListener("click", function () { openDrawer(btn); });
     });
 
     bindGradeFilter();
@@ -638,7 +708,7 @@
    * ---------------------------------------------------------- */
   function bindKeys() {
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") closeDrawer();
+      if (e.key === "Escape" && !document.documentElement.classList.contains("ss-open")) closeDrawer();
       var t = e.target;
       if (t && t.matches && t.matches("input,textarea,select,[contenteditable]")) return;
       var b = book();
@@ -647,6 +717,7 @@
       if (e.key === "ArrowRight" && i > -1 && i < b.chapters.length - 1) loadChapter(b.chapters[i + 1].id);
       if (e.key === "ArrowLeft" && i > 0) loadChapter(b.chapters[i - 1].id);
     });
+    window.addEventListener("ead:overlay-open", closeDrawer);
   }
 
   function parseHash() {
@@ -691,15 +762,34 @@
     asideEl = document.getElementById("h-aside");
     backdropEl = document.getElementById("h-backdrop");
     drawerBtn = document.getElementById("h-drawer-btn");
+    drawerCloseBtn = document.getElementById("h-drawer-close");
+    fabDrawerBtn = document.getElementById("h-fab-drawer");
+    booksWrapEl = document.getElementById("h-books-wrap");
+    booksToggleEl = document.getElementById("h-books-toggle");
+    bookNowEl = document.getElementById("h-book-now");
 
     syncDrawerMode();
     window.addEventListener("resize", syncDrawerMode);
+    window.addEventListener("scroll", syncFab, { passive: true });
+    if (window.ResizeObserver) {
+      var barEl = document.querySelector(".h-toolbar");
+      if (barEl) new ResizeObserver(syncStickTop).observe(barEl);
+    }
     if (drawerBtn) {
       drawerBtn.addEventListener("click", function () {
-        if (asideEl.classList.contains("open")) closeDrawer(); else openDrawer();
+        if (asideEl.classList.contains("open")) closeDrawer(); else openDrawer(drawerBtn);
       });
     }
+    if (fabDrawerBtn) {
+      fabDrawerBtn.addEventListener("click", function () { openDrawer(fabDrawerBtn); });
+    }
+    if (drawerCloseBtn) drawerCloseBtn.addEventListener("click", closeDrawer);
     if (backdropEl) backdropEl.addEventListener("click", closeDrawer);
+    if (booksToggleEl && booksWrapEl) {
+      booksToggleEl.addEventListener("click", function () {
+        setBooksCollapsed(!booksWrapEl.classList.contains("collapsed"), true);
+      });
+    }
     buildIcons();
     bindControls();
     bindKeys();
