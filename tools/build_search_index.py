@@ -123,6 +123,25 @@ def build_pages() -> list[dict]:
             "d": "ধম্মপদ, দীর্ঘ-মধ্যম-সংযুক্ত-অঙ্গুত্তর নিকায়, বিনয় ও ৪১ খণ্ড বাংলা ত্রিপিটক PDF",
             "k": norm("বৌদ্ধ ত্রিপিটক ধম্মপদ নিকায় বিনয় অভিধর্ম সূত্তপিটক " + bbody[:400]),
         })
+    # হিন্দু পুরাণ হাব ও মহাভারত শীর্ষ পাতা
+    pur_hub = ROOT / "grantho" / "hindu" / "purana.html"
+    if pur_hub.exists():
+        rows.append({
+            "t": "page",
+            "u": "grantho/hindu/purana.html",
+            "n": "পুরাণ — ব্রহ্ম, বিষ্ণু, ভবিষ্য, গরুড় ও ব্রহ্মাণ্ড মহাপুরাণ",
+            "d": "৫টি মহাপুরাণ · ১,৪৩১ অধ্যায় · ৭৩,৪৭৪ সংস্কৃত শ্লোক (বিষ্ণু পুরাণে ইংরেজি অনুবাদসহ)",
+            "k": norm("পুরাণ মহাপুরাণ purana brahma vishnu bhavishya garuda brahmanda"),
+        })
+    mbh_page = ROOT / "grantho" / "hindu" / "mahabharata.html"
+    if mbh_page.exists():
+        rows.append({
+            "t": "page",
+            "u": "grantho/hindu/mahabharata.html",
+            "n": "মহাভারত — ১৮ পর্ব (বাংলা, ইংরেজি ও সংস্কৃত)",
+            "d": "১৮ পর্ব · ২,০৮৮ বাংলা অধ্যায় · ২,১০৮ ইংরেজি পরিচ্ছেদ · ৯৬,৮১২ সংস্কৃত শ্লোক",
+            "k": norm("মহাভারত মহাকাব্য ব্যাসদেব কালীপ্রসন্ন সিংহ গাঙ্গুলী mahabharata parva kali ganguli"),
+        })
     return rows
 
 
@@ -218,6 +237,12 @@ GRANTH_LABELS = {
     "prashna": "প্রশ্ন উপনিষদ",
     "chandogya": "ছান্দোগ্য উপনিষদ",
     "brihadaranyaka": "বৃহদারণ্যক উপনিষদ",
+    "brahma-purana": "ব্রহ্ম পুরাণ",
+    "vishnu-purana": "বিষ্ণু পুরাণ",
+    "bhavishya-purana": "ভবিষ্য পুরাণ",
+    "garuda-purana": "গরুড় পুরাণ",
+    "brahmanda-purana": "ব্রহ্মাণ্ড পুরাণ",
+    "mahabharata": "মহাভারত",
     "dhammapada": "ধম্মপদ",
     "digha-nikaya": "দীর্ঘ নিকায়",
     "majjhima-nikaya": "মধ্যম নিকায়",
@@ -238,6 +263,12 @@ GRANTH_PAGE = {
     "prashna": "grantho/hindu/prashna.html",
     "chandogya": "grantho/hindu/chandogya.html",
     "brihadaranyaka": "grantho/hindu/brihadaranyaka.html",
+    "brahma-purana": "grantho/hindu/brahma-purana.html",
+    "vishnu-purana": "grantho/hindu/vishnu-purana.html",
+    "bhavishya-purana": "grantho/hindu/bhavishya-purana.html",
+    "garuda-purana": "grantho/hindu/garuda-purana.html",
+    "brahmanda-purana": "grantho/hindu/brahmanda-purana.html",
+    "mahabharata": "grantho/hindu/mahabharata.html",
     "bible": "grantho/christian/bible.html",
     "dhammapada": "grantho/buddhist/dhammapada.html",
     "digha-nikaya": "grantho/buddhist/digha-nikaya.html",
@@ -277,6 +308,7 @@ def build_grantho() -> list[dict]:
             else:
                 sample = " ".join((v.get("bn") or "")[:36] for v in (d.get("verses") or [])[:2])
             unit = d.get("groupWord") or "অধ্যায়"
+            en_title = d.get("en") or ""
             out.append(
                 {
                     "t": "grantho",
@@ -284,9 +316,30 @@ def build_grantho() -> list[dict]:
                     "n": f"{glabel} — {cname}",
                     "d": f"{d.get('count', '?')}টি শ্লোক · {unit} {cid}"
                          + (f" · {testament}" if testament else ""),
-                    "k": norm(f"{glabel} {cname} {gslug} {cid} {testament} {sample}"),
+                    "k": norm(f"{glabel} {cname} {en_title} {gslug.replace('-', ' ')} {cid} {testament} {sample}"),
                 }
             )
+    # মহাভারত: ১৮টি পর্বের সরাসরি সার্চ এন্ট্রি
+    mbh_idx = base / "mahabharata" / "index.json"
+    if mbh_idx.exists():
+        try:
+            md = json.loads(mbh_idx.read_text(encoding="utf-8"))
+        except Exception:
+            md = {}
+        for pv in md.get("parvas") or []:
+            pid = pv.get("id")
+            pbn = pv.get("bn") or f"পর্ব {pid}"
+            pen = pv.get("en") or ""
+            ed = pv.get("editions") or {}
+            bn_n = int((ed.get("bn") or {}).get("chCount") or 0)
+            sa_n = int((ed.get("sa") or {}).get("shlokaCount") or 0)
+            out.append({
+                "t": "grantho",
+                "u": f"grantho/hindu/mahabharata.html#ch{pid}",
+                "n": f"মহাভারত — {pbn}",
+                "d": f"{sa_n}টি শ্লোক · পর্ব {pid} · {bn_n} বাংলা অধ্যায়",
+                "k": norm(f"মহাভারত {pbn} {pen} mahabharata parva {pid}"),
+            })
     return out
 
 

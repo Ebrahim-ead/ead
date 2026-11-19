@@ -18,7 +18,10 @@ OUT = ROOT / "grantho/hindu"
 
 # ---- সাইটে এখন কোন গ্রন্থ থাকবে -------------------------------------------
 ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "atharvaveda",
-          "shvetashvatara", "prashna", "chandogya", "brihadaranyaka", "bible",
+          "shvetashvatara", "prashna", "chandogya", "brihadaranyaka",
+          "mahabharata", "brahma-purana", "vishnu-purana", "bhavishya-purana",
+          "garuda-purana", "brahmanda-purana",
+          "bible",
           "dhammapada", "digha-nikaya", "majjhima-nikaya", "samyutta-nikaya",
           "anguttara-nikaya", "vinaya-vibhanga")
 
@@ -48,21 +51,45 @@ BOOKS = {
         src="বাংলা অনুবাদ ebanglalibrary.com থেকে (অনুবাদ: রমেশচন্দ্র দত্ত)।",
         excerpt="দেবতাদের স্তবসমূহ — রমেশচন্দ্র দত্তের বাংলা অনুবাদে ১০ মণ্ডলের ১০,৪৫৬ মন্ত্র।",
     ),
-    "garuda": dict(
-        kind="purana", title=("গরুড় পুরাণ", ""), hub="purana.html", hubname="পুরাণ",
-        kicker="হিন্দু · পুরাণ · গরুড়", crumb="গরুড় পুরাণ",
-        intro="গরুড় পুরাণের বাংলা অনুবাদ — অষ্টাদশ পুরাণ সমগ্র (পৃথ্বীরাজ সেন)।",
-        word="শ্লোক", chword="অধ্যায়",
-        src="বাংলা অনুবাদ ebanglalibrary.com থেকে (অষ্টাদশ পুরাণ সমগ্র, সম্পাদনা: পৃথ্বীরাজ সেন)। এই সংস্করণে সংস্কৃত শ্লোক দেবনাগরী লিপিতে ছাপা হয়নি — তাই কেবল বাংলা পাঠ দেওয়া হচ্ছে, অনুমান করে সংস্কৃত বসানো হয় না।",
-        excerpt="বিষ্ণুর বাহন গরুড়ের জন্ম, অমৃতাহরণ ও ভক্তির কাহিনি — পৃথ্বীরাজ সেন সম্পাদিত অনুবাদ।",
+    "brahma-purana": dict(
+        kind="purana", title=("ব্রহ্ম", "পুরাণ"), hub="purana.html", hubname="পুরাণ",
+        kicker="হিন্দু · পুরাণ · ব্রহ্ম", crumb="ব্রহ্ম পুরাণ",
+        intro="ব্রহ্ম মহাপুরাণ (আদিপুরাণ) — ৫ অংশ ও ২৪৬ অধ্যায়ের ১৩,৬৮০টি সম্পূর্ণ সংস্কৃত শ্লোক (দেবনাগরী মূল পাঠ ও বক্তা-নির্দেশসহ)।",
+        word="শ্লোক", chword="অংশ", groupword="অধ্যায়",
+        src="মূল সংস্কৃত পাঠ (দেবনাগরী ও বক্তা-নির্দেশ): মহাপুরাণ সংকলন (GRETIL / Sanskrtam, ৫ অংশ, ২৪৬ অধ্যায়, ১৩,৬৮০ শ্লোক)। প্রামাণ্য সম্পূর্ণ বাংলা বা ইংরেজি অনুবাদ যুক্ত না হওয়ায় অনুমান করে কিছু বসানো হয়নি।",
+        excerpt="৫ অংশ ও ২৪৬ অধ্যায়ে ১৩,৬৮০ সংস্কৃত শ্লোক।",
     ),
-    "bhabishya": dict(
-        kind="purana", title=("ভবিষ্য পুরাণ", ""), hub="purana.html", hubname="পুরাণ",
+    "vishnu-purana": dict(
+        kind="purana", title=("বিষ্ণু", "পুরাণ"), hub="purana.html", hubname="পুরাণ",
+        kicker="হিন্দু · পুরাণ · বিষ্ণু", crumb="বিষ্ণু পুরাণ",
+        intro="শ্রীবিষ্ণু মহাপুরাণ — ৬ অংশ ও ১২৬ অধ্যায়ের ৬,৩১৫টি সম্পূর্ণ সংস্কৃত শ্লোক (দেবনাগরী) এবং Manmatha Nath Dutt-এর (১৮৯৬) সম্পূর্ণ ইংরেজি গদ্য অনুবাদ ও ২৫৯টি পাদটীকাসহ।",
+        word="শ্লোক", chword="অংশ", groupword="অধ্যায়",
+        src="মূল সংস্কৃত পাঠ (দেবনাগরী): মহাপুরাণ সংকলন (৬ অংশ, ১২৬ অধ্যায়, ৬,৩১৫ শ্লোক)। সম্পূর্ণ ইংরেজি অনুবাদ ও ২৫৯টি পাদটীকা: Manmatha Nath Dutt, Prose English Translation of the Vishnupuranam (Calcutta, 1896; Project Gutenberg public domain)। প্রামাণ্য সম্পূর্ণ বাংলা অনুবাদ যুক্ত না হওয়ায় অনুমান করে কিছু বসানো হয়নি।",
+        excerpt="৬ অংশ ও ১২৬ অধ্যায়ে ৬,৩১৫ শ্লোক — সংস্কৃত মূল ও ইংরেজি অনুবাদসহ।",
+    ),
+    "bhavishya-purana": dict(
+        kind="purana", title=("ভবিষ্য", "পুরাণ"), hub="purana.html", hubname="পুরাণ",
         kicker="হিন্দু · পুরাণ · ভবিষ্য", crumb="ভবিষ্য পুরাণ",
-        intro="ভবিষ্য পুরাণের বাংলা অনুবাদ — অষ্টাদশ পুরাণ সমগ্র (পৃথ্বীরাজ সেন)।",
-        word="শ্লোক", chword="অধ্যায়",
-        src="বাংলা অনুবাদ ebanglalibrary.com থেকে (অষ্টাদশ পুরাণ সমগ্র, সম্পাদনা: পৃথ্বীরাজ সেন)। সংস্কৃত মূল দেবনাগরীতে ছাপা হয়নি — কেবল বাংলা পাঠ দেওয়া হচ্ছে।",
-        excerpt="ভবিষ্যৎ-কথা ও ব্রত-মাহাত্ম্যের পুরাণ — বাংলা অনুবাদসহ।",
+        intro="ভবিষ্য মহাপুরাণ — ব্রাহ্ম, মধ্যম, প্রতিসর্গ ও উত্তর পর্বের ১৩ খণ্ড এবং সম্পূর্ণ ৫৮৫ অধ্যায়ের ২৭,৭২২টি সংস্কৃত শ্লোক (দেবনাগরী) ও অধ্যায়-পুষ্পিকাসহ।",
+        word="শ্লোক", chword="খণ্ড", groupword="অধ্যায়",
+        src="মূল সংস্কৃত পাঠ (দেবনাগরী ও অধ্যায়-পুষ্পিকা): সংস্কৃত উইকিসংকলন (sa.wikisource.org — ভবিষ্যপুরাণম্, ৪ পর্ব / ১৩ খণ্ড, সম্পূর্ণ ৫৮৫ অধ্যায়, ২৭,৭২২ শ্লোক)। প্রামাণ্য সম্পূর্ণ বাংলা বা ইংরেজি অনুবাদ ডিজিটাল উৎসে না থাকায় অনুমান করে কিছু বসানো হয়নি।",
+        excerpt="১৩ খণ্ড ও ৫৮৫ অধ্যায়ে ২৭,৭২২ সংস্কৃত শ্লোক।",
+    ),
+    "garuda-purana": dict(
+        kind="purana", title=("গরুড়", "পুরাণ"), hub="purana.html", hubname="পুরাণ",
+        kicker="হিন্দু · পুরাণ · গরুড়", crumb="গরুড় পুরাণ",
+        intro="গরুড় মহাপুরাণ — আচারখণ্ড, প্রেতকল্প ও ব্রহ্মকাণ্ড মিলিয়ে ৪ খণ্ড ও ৩১৮ অধ্যায়ের ১১,৯৭১টি সম্পূর্ণ সংস্কৃত শ্লোক (দেবনাগরী) ও বক্তা-নির্দেশসহ।",
+        word="শ্লোক", chword="খণ্ড", groupword="অধ্যায়",
+        src="মূল সংস্কৃত পাঠ (দেবনাগরী ও বক্তা-নির্দেশ): মহাপুরাণ সংকলন (পূর্বখণ্ড, প্রেতকল্প ও ব্রহ্মকাণ্ড — ৩১৮ অধ্যায়, ১১,৯৭১ শ্লোক)। প্রামাণ্য সম্পূর্ণ বাংলা বা ইংরেজি অনুবাদ যুক্ত না হওয়ায় অনুমান করে কিছু বসানো হয়নি।",
+        excerpt="৪ খণ্ড ও ৩১৮ অধ্যায়ে ১১,৯৭১ সংস্কৃত শ্লোক।",
+    ),
+    "brahmanda-purana": dict(
+        kind="purana", title=("ব্রহ্মাণ্ড", "পুরাণ"), hub="purana.html", hubname="পুরাণ",
+        kicker="হিন্দু · পুরাণ · ব্রহ্মাণ্ড", crumb="ব্রহ্মাণ্ড পুরাণ",
+        intro="ব্রহ্মাণ্ড মহাপুরাণ — পূর্ব, মধ্য ও উত্তরভাগের ৩ ভাগ এবং ১৫৬ অধ্যায়ের ১৩,৭৮৬টি সম্পূর্ণ সংস্কৃত শ্লোক (দেবনাগরী) ও বক্তা-নির্দেশসহ।",
+        word="শ্লোক", chword="ভাগ", groupword="অধ্যায়",
+        src="মূল সংস্কৃত পাঠ (দেবনাগরী ও বক্তা-নির্দেশ): মহাপুরাণ সংকলন (৩ ভাগ, ১৫৬ অধ্যায়, ১৩,৭৮৬ শ্লোক)। প্রামাণ্য সম্পূর্ণ বাংলা বা ইংরেজি অনুবাদ যুক্ত না হওয়ায় অনুমান করে কিছু বসানো হয়নি।",
+        excerpt="৩ ভাগ ও ১৫৬ অধ্যায়ে ১৩,৭৮৬ সংস্কৃত শ্লোক।",
     ),
 }
 
@@ -449,12 +476,14 @@ def make_page(slug, idx, meta):
         facts += f'<span class="g-fact"><b>{commas(nshl)}</b> শ্লোক</span>'
     # ইংরেজি অনুবাদ (বাইবেল / অথর্ববেদ / ত্রিপিটক): কত পদে/মন্ত্রে মিলেছে তা ডেটা থেকেই
     enj = OUT / slug / "en" / "joined.json"
-    en_n = int(idx.get("withEn") or 0)
+    en_n = int(idx.get("withEn") or idx.get("enSections") or 0)
     if not en_n and enj.exists():
         en_n = json.loads(enj.read_text(encoding="utf-8")).get("enVerses", 0)
     if en_n:
         if meta.get("kind") == "tripitaka":
             facts += '<span class="g-fact">পালি · বাংলা · ইংরেজি</span>'
+        elif idx.get("hasEnProse") or idx.get("hasEnSections"):
+            facts += f'<span class="g-fact"><b>{commas(en_n)}</b> {meta.get("groupword", "অধ্যায়")}ে ইংরেজি</span>'
         else:
             facts += f'<span class="g-fact"><b>{commas(en_n)}</b> {meta["word"]}ে ইংরেজি</span>'
     h = re.sub(r'<div class="g-facts">.*?</div>', '<div class="g-facts">' + facts + '</div>',
@@ -465,7 +494,7 @@ def make_page(slug, idx, meta):
     wloc = meta["word"] + ("য়" if meta["word"].endswith("া") else "ে")
     ph = f'{wloc} খুঁজুন'
     if not withbn and withsk:
-        ph += f" ({rw})"
+        ph += " (সংস্কৃত বা ইংরেজি)" if en_n else f" ({rw})"
     elif withsk:
         ph += f" ({rw} বা বাংলা)"
     elif withsk == 0:
@@ -484,10 +513,10 @@ def make_page(slug, idx, meta):
     else:
         h = re.sub(r'(<button[^>]*id="g-sk-btn"[^>]*>)[^<]*(</button>)',
                    lambda m: m.group(1) + rw + m.group(2), h, count=1)
-    # সব খণ্ডেই বাংলা অনুবাদ থাকলে «কেবল যেগুলোর অনুবাদ আছে» ছাঁকনিটি অকেজো —
-    # অথচ বোতামটি দেখলে মনে হয় কিছু পাঠ বাদ পড়ছে। তাই তখন মার্কআপই বাদ দেওয়া হয়
-    # (grantho.js-ও রানটাইমে একই কাজ করে, যাতে পুরোনো পাতাতেও ঠিক থাকে)।
-    if withbn and withbn >= total:
+    if not withbn:
+        h = re.sub(r'<button([^>]*id="g-bn-btn"[^>]*)>', lambda m: m.group(0) if ' hidden' in m.group(1) else f'<button{m.group(1)} hidden>', h, count=1)
+    # সব খণ্ডেই বাংলা অনুবাদ থাকলে বা কোনো বাংলাই না থাকলে «কেবল যেগুলোর অনুবাদ আছে» ছাঁকনিটি অকেজো
+    if (withbn and withbn >= total) or not withbn:
         h = re.sub(r'\s*<label[^>]*>\s*<input[^>]*id="g-only-bn"[^>]*>[^<]*</label>',
                    '', h, count=1, flags=re.S)
     elif 'id="g-only-bn"' not in h:
@@ -590,7 +619,7 @@ def make_page(slug, idx, meta):
         src += (f' সংস্কৃত মূল পাঠ আংশিক — {commas(total)}টি {meta["word"]}ের মধ্যে কেবল {commas(withsk)}টিতে'
                 f' উৎসে সংস্কৃত পাওয়া গেছে, সেগুলোতেই তা ছাপা হয়েছে; বাকিগুলোতে কেবল বাংলা অনুবাদ আছে।'
                 ' কোনো অনুমানভিত্তিক সংস্কৃত পাঠ বসানো হয় না।')
-    if withbn < total:
+    if withbn and withbn < total:
         src += (f' {commas(total - withbn)}টি {meta["word"]}র বাংলা পাঠ উৎসে পাওয়া যায়নি'
                 # ⚠ বাক্যটা «।» দিয়ে শেষ করতে হয় — নইলে পরের (ডেটার) নোট
                 #   জুড়ে গিয়ে জোড়া-বাক্য দাঁড়ায় («…পাঠ বসানো হয়নি বাংলা বাইবেল — …»)।
@@ -635,6 +664,8 @@ def make_page(slug, idx, meta):
                     f"স্বামী গম্ভীরানন্দের বাংলা সরলার্থ ও F. Max Müller / Robert E. Hume-এর ইংরেজি অনুবাদসহ।")
     elif meta.get("kind") == "tripitaka":
         fulldesc = meta["intro"]
+    elif not withbn:
+        fulldesc = meta["intro"]
     else:
         fulldesc = f'{label}-র {commas(withbn)}টি {meta["word"]} বাংলা অনুবাদসহ — ebanglalibrary.com।'
     # সতর্কতা: দশার-অভাবে হঠাৎ বড় পতন (যেমন ৯২২২ → ২১ শ্লোক) সাইটে বসিয়ে দেব না।
@@ -645,17 +676,24 @@ def make_page(slug, idx, meta):
                       old_html)
         if m:
             prev = int(m.group(1).replace(",", "").translate(BN_MAP))
-            if prev and withbn < prev * 0.85:
-                raise Shrink(f"{slug}: পুরনো পাতায় {prev}, নতুন ডেটায় {withbn} — "
+            cmp_cur = withbn if withbn else total
+            if prev and cmp_cur < prev * 0.85:
+                raise Shrink(f"{slug}: পুরনো পাতায় {prev}, নতুন ডেটায় {cmp_cur} — "
                              f"হঠাৎ বড় পতন")
 
-    h = re.sub(r'<title>[^<]*</title>', f'<title>{label} — {commas(withbn)} {meta["word"]}, বাংলা অনুবাদসহ | Ebrahim Ead</title>', h, count=1)
+    if not withbn:
+        page_title = (f'{label} — {commas(total)} {meta["word"]}, সংস্কৃত ও ইংরেজি | Ebrahim Ead'
+                      if en_n else f'{label} — {commas(total)} {meta["word"]}, সংস্কৃত মূল পাঠ | Ebrahim Ead')
+        tw_title = f'{label} — {commas(total)} {meta["word"]}'
+    else:
+        page_title = f'{label} — {commas(withbn)} {meta["word"]}, বাংলা অনুবাদসহ | Ebrahim Ead'
+        tw_title = f'{label} — {commas(withbn)} {meta["word"]}'
+
+    h = re.sub(r'<title>[^<]*</title>', f'<title>{page_title}</title>', h, count=1)
     for pat, val in ((r'(<meta name="description" content=")[^"]*(")', fulldesc),
-                     (r'(<meta property="og:title" content=")[^"]*(")',
-                      f'{label} — {commas(withbn)} {meta["word"]}, বাংলা অনুবাদসহ | Ebrahim Ead'),
+                     (r'(<meta property="og:title" content=")[^"]*(")', page_title),
                      (r'(<meta property="og:description" content=")[^"]*(")', fulldesc),
-                     (r'(<meta name="twitter:title" content=")[^"]*(")',
-                      f'{label} — {commas(withbn)} {meta["word"]}'),
+                     (r'(<meta name="twitter:title" content=")[^"]*(")', tw_title),
                      (r'(<meta name="twitter:description" content=")[^"]*(")', fulldesc)):
         h = re.sub(pat, lambda m, v=val: m.group(1) + v + m.group(2), h, count=1)
 
@@ -671,7 +709,88 @@ def make_page(slug, idx, meta):
     outdir.mkdir(parents=True, exist_ok=True)
     (outdir / f"{slug}.html").write_text(
         normalize(slug, h, meta.get("dir", "hindu")), encoding="utf-8")
-    return dict(slug=slug, total=total, withbn=withbn, nch=nch)
+    return dict(slug=slug, total=total, withbn=withbn, nch=nch, nsuk=nsuk, with_en=en_n)
+
+
+def make_mahabharata_page(idx):
+    """মহাভারত (১৮ পর্ব × বাংলা/ইংরেজি/সংস্কৃত) — নিজস্ব mahabharata-reader.js সহ।"""
+    ed = idx.get("editions", {})
+    n_parvas = len(idx.get("parvas") or [])
+    bn_chs = int(idx.get("bnChTotal") or ed.get("bn", {}).get("chapters") or 0)
+    bn_upas = int(idx.get("bnUpaTotal") or ed.get("bn", {}).get("upakhyanas") or 0)
+    en_secs = int(idx.get("enSecTotal") or ed.get("en", {}).get("sections") or 0)
+    sa_chs = int(idx.get("saChTotal") or ed.get("sa", {}).get("chapters") or 0)
+    sa_shl = int(idx.get("saShlokaTotal") or ed.get("sa", {}).get("shlokas") or 0)
+
+    h = TEMPLATE
+    h = re.sub(r'data-granth="[^"]*"', 'data-granth="mahabharata"', h, count=1)
+    h = re.sub(r'data-base="[^"]*"', 'data-base="../../assets/grantho/data/mahabharata/"', h, count=1)
+    h = re.sub(r'(<span class="g-kicker2?">)[^<]*(</span>)',
+               lambda m: m.group(1) + 'হিন্দু · মহাকাব্য · মহাভারত' + m.group(2), h)
+    h = re.sub(r'(<h1[^>]*>).*?(</h1>)',
+               lambda m: m.group(1) + 'মহাভারত' + m.group(2), h, count=1, flags=re.S)
+    h = re.sub(r'(<p class="g-crumb">).*?(</p>)',
+               lambda m: m.group(1) + '<a href="../../grantho.html">ধর্মীয় গ্রন্থ</a><span>›</span><a href="../hindu.html">হিন্দু</a><span>›</span>মহাভারত' + m.group(2),
+               h, count=1, flags=re.S)
+
+    intro = (f"ব্যাসদেব রচিত মহাভারতের {commas(n_parvas)}টি পর্ব — কালীপ্রসন্ন সিংহের বাংলা গদ্যানুবাদ "
+             f"({commas(bn_chs)} অধ্যায়, {commas(bn_upas)} উপাখ্যান), কিশোরীমোহন গাঙ্গুলীর ইংরেজি অনুবাদ "
+             f"({commas(en_secs)} পরিচ্ছেদ ও পাদটীকা) এবং পূর্ণাঙ্গ দেবনাগরী সংস্কৃত মূল পাঠ "
+             f"({commas(sa_chs)} অধ্যায়, {commas(sa_shl)} শ্লোক) একত্রে।")
+    h = re.sub(r'(<div class="g-intro">.*?<p>)[^<]*(</p>)',
+               lambda m: m.group(1) + intro + m.group(2), h, count=1, flags=re.S)
+
+    facts = (f'<span class="g-fact"><b>{commas(n_parvas)}</b> পর্ব</span>'
+             f'<span class="g-fact"><b>{commas(bn_chs)}</b> বাংলা অধ্যায়</span>'
+             f'<span class="g-fact"><b>{commas(en_secs)}</b> ইংরেজি পরিচ্ছেদ</span>'
+             f'<span class="g-fact"><b>{commas(sa_shl)}</b> সংস্কৃত শ্লোক</span>')
+    h = re.sub(r'<div class="g-facts">.*?</div>', '<div class="g-facts">' + facts + '</div>',
+               h, count=1, flags=re.S)
+
+    h = re.sub(r'(<input id="g-search"[^>]*placeholder=")[^"]*(")',
+               lambda m: m.group(1) + 'এই পর্বে খুঁজুন (বাংলা / ইংরেজি / সংস্কৃত)' + m.group(2), h, count=1)
+    h = re.sub(r'(<input id="g-search"[^>]*aria-label=")[^"]*(")',
+               lambda m: m.group(1) + 'পর্বে খুঁজুন' + m.group(2), h, count=1)
+    h = re.sub(r'<button[^>]*id="g-bn-btn"[^>]*>.*?</button>',
+               '<div id="g-mbh-ed" class="g-mbh-ed" role="group" aria-label="সংস্করণ বেছে নিন"></div>',
+               h, count=1, flags=re.S)
+    h = re.sub(r'(<b id="g-side-title">)[^<]*(</b>)',
+               lambda m: m.group(1) + 'পর্ব' + m.group(2), h, count=1)
+    h = re.sub(r'(<div id="g-chapter-grid"[^>]*aria-label=")[^"]*(")',
+               lambda m: m.group(1) + 'অধ্যায় ও পরিচ্ছেদ' + m.group(2), h, count=1)
+    if 'id="g-en-note"' not in h and '<div id="g-bn-note"' in h:
+        h = h.replace('<div id="g-bn-note"',
+                      '<div id="g-en-note" class="g-en-note" hidden></div>\n        <div id="g-bn-note"', 1)
+    h = h.replace('<span class="sr-only">মন্ত্র লোড হচ্ছে…</span>',
+                  '<span class="sr-only">অধ্যায় লোড হচ্ছে…</span>')
+
+    src = (f'বাংলা গদ্যানুবাদ: কালীপ্রসন্ন সিংহ ({commas(n_parvas)} পর্ব, {commas(bn_chs)} অধ্যায়, '
+           f'{commas(bn_upas)} উপাখ্যান; ডিজিটাল বাংলা উৎসে আদিপর্ব অধ্যায় ১৫৪, উদ্যোগপর্ব অধ্যায় ৯৩ ও ১৮৬ '
+           f'এবং শল্যপর্ব অধ্যায় ৪৬–৬৫ অনুপস্থিত — অনুমান করে কোনো পাঠ বসানো হয়নি)। '
+           f'ইংরেজি অনুবাদ: Kisari Mohan Ganguli (sacred-texts.com — {commas(en_secs)} পরিচ্ছেদ, '
+           f'মূল ভূমিকা ও পাদটীকাসহ)। মূল সংস্কৃত (দেবনাগরী): কুম্ভকোণম্ ও মহাপ্রস্থানিক সংকলন '
+           f'({commas(sa_chs)} অধ্যায়, {commas(sa_shl)} শ্লোক — উইকিসংকলন ও কুম্ভকোণম্ থেকে অনুপস্থিত '
+           f'অধ্যায় ও শ্লোক মিলিয়ে সম্পূর্ণ)।')
+    h = re.sub(r'<div class="g-src"><b>পাঠ সম্পর্কে।</b>.*?</div>',
+               f'<div class="g-src"><b>পাঠ সম্পর্কে।</b> {src}</div>', h, count=1, flags=re.S)
+
+    page_title = f'মহাভারত — {commas(n_parvas)} পর্ব · বাংলা, ইংরেজি ও {commas(sa_shl)} সংস্কৃত শ্লোক | Ebrahim Ead'
+    tw_title = f'মহাভারত — {commas(n_parvas)} পর্ব · {commas(sa_shl)} শ্লোক'
+    fulldesc = intro
+    h = re.sub(r'<title>[^<]*</title>', f'<title>{page_title}</title>', h, count=1)
+    for pat, val in ((r'(<meta name="description" content=")[^"]*(")', fulldesc),
+                     (r'(<meta property="og:title" content=")[^"]*(")', page_title),
+                     (r'(<meta property="og:description" content=")[^"]*(")', fulldesc),
+                     (r'(<meta name="twitter:title" content=")[^"]*(")', tw_title),
+                     (r'(<meta name="twitter:description" content=")[^"]*(")', fulldesc)):
+        h = re.sub(pat, lambda m, v=val: m.group(1) + v + m.group(2), h, count=1)
+
+    h = h.replace('<script src="../../assets/grantho/grantho.js" defer></script>',
+                  '<script src="../../assets/grantho/mahabharata-reader.js" defer></script>')
+
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "mahabharata.html").write_text(normalize("mahabharata", h, "hindu"), encoding="utf-8")
+    return dict(slug="mahabharata", nch=n_parvas, bn_chs=bn_chs, en_secs=en_secs, sa_chs=sa_chs, sa_shl=sa_shl)
 
 
 def refresh_sitemap(entries):
@@ -797,26 +916,36 @@ def main():
 
     # ---- পুরাণ
     puranas = []
-    for slug in (x for x in ("garuda", "bhabishya", "brahma") if x in ACTIVE):
+    for slug in (x for x in ("brahma-purana", "vishnu-purana", "bhavishya-purana",
+                             "garuda-purana", "brahmanda-purana") if x in ACTIVE):
         meta = BOOKS[slug]
         idx = load(slug)
         if not idx:
             continue
-        if not idx.get("withBn"):
-            print(f"{slug}: বাংলা নেই — বাদ")
-            continue
         r = make_page(slug, idx, meta)
+        made.append(r)
         puranas.append((slug, r, meta))
-        print(f"{slug}: {r['withbn']}/{r['total']}")
+        print(f"{slug}: {r['total']} শ্লোক · {r['nsuk']} অধ্যায় (en={r['with_en']})")
     pg = ""
     for slug, r, m in puranas:
-        name = m["title"][0]
-        pg += card(f"{slug}.html", f'পুরাণ · {name.replace(" পুরাণ","")}', name,
-                   f'{commas(r["withbn"])} শ্লোক বাংলাসহ', m["excerpt"])
-    pg += card("", "পুরাণ · ১৮ মহাপুরাণ", "বাকি পুরাণ",
-               "ব্রহ্ম · পদ্ম · বিষ্ণু · শিব…", "বাকি পুরাণগুলোর পাঠ ও অনুবাদ ধাপে ধাপে যোগ হবে।", soon=True)
+        name = " ".join(x for x in m["title"] if x)
+        sub_txt = f'{commas(r["total"])} শ্লোক · {commas(r["nsuk"])} অধ্যায়'
+        if r["with_en"]:
+            sub_txt += " · ইংরেজিসহ"
+        pg += card(f"{slug}.html", f'পুরাণ · {name.replace(" পুরাণ", "")}', name,
+                   sub_txt, m["excerpt"])
     if puranas:
         replace_grid("purana.html", pg)
+
+    # ---- মহাভারত
+    mbh_info = None
+    if "mahabharata" in ACTIVE and (DATA / "mahabharata" / "index.json").exists():
+        mbh_idx = json.loads((DATA / "mahabharata" / "index.json").read_text(encoding="utf-8"))
+        if mbh_idx.get("parvas"):
+            mbh_info = make_mahabharata_page(mbh_idx)
+            made.append({"slug": "mahabharata"})
+            print(f"mahabharata: {mbh_info['nch']} পর্ব · bn={mbh_info['bn_chs']} · "
+                  f"en={mbh_info['en_secs']} · sa={mbh_info['sa_shl']}")
 
     # ---- উপনিষদ
     upa_cards, upa_total = "", 0
@@ -902,10 +1031,19 @@ def main():
                 up_m = BOOKS[up_slug]
                 hp_cards += card(f"hindu/{up_slug}.html", f"হিন্দু · উপনিষদ", up_name,
                                  f'{commas(up_r["withbn"])} মন্ত্র · {commas(up_r["nch"])} {up_m["chword"]}')
+        if mbh_info:
+            hp_cards += card("hindu/mahabharata.html", "হিন্দু · মহাকাব্য", "মহাভারত",
+                             f'{commas(mbh_info["nch"])} পর্ব · {commas(mbh_info["sa_shl"])} সংস্কৃত শ্লোক')
+        for slug, r, m in puranas:
+            name = " ".join(x for x in m["title"] if x)
+            sub_txt = f'{commas(r["total"])} শ্লোক · {commas(r["nsuk"])} অধ্যায়'
+            if r["with_en"]:
+                sub_txt += " · ইংরেজিসহ"
+            hp_cards += card(f"hindu/{slug}.html", "হিন্দু · পুরাণ", name, sub_txt)
         if hp_cards:
             replace_grid("hindu.html", hp_cards, sub="")
         print("হিন্দু-হাব:", sum(r["withbn"] for _, r, _ in vedas), "/",
-              sum(r["withbn"] for _, r, _ in puranas))
+              sum(r["total"] for _, r, _ in puranas))
 
     # ---- ইসলাম-হাব: কুরআন ও হাদিসের কার্ড (হাতে লেখা নয়)
     #   সংখ্যা ডেটা থেকেই — পাঠ বাড়লে/কমলে কার্ড নিজেই ঠিক হয়।
@@ -949,7 +1087,7 @@ def main():
         replace_grid("buddhist.html", bud_cards, sub="")
 
     # ---- খ্রিস্টান: বাংলা বাইবেল
-    built = [(r["slug"], "hindu") for r in made] + bud_built
+    built = [(r["slug"], "hindu") for r in made] + ([("purana", "hindu")] if puranas else []) + bud_built
     if "bible" in ACTIVE:
         idx = load("bible")
         meta = BOOKS.get("bible")
