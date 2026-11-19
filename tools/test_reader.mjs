@@ -10,6 +10,7 @@
  * বিল্ডি:   jsdom (npm i jsdom)
  */
 import { JSDOM } from 'jsdom';
+import crypto from 'node:crypto';
 import fs from 'fs';
 import path from 'path';
 
@@ -801,9 +802,59 @@ async function testMahabharata() {
   return errs.length === 0;
 }
 
+function testGranthoAssetsAndCss() {
+  const errs = [];
+  const cssPath = path.join(ROOT, 'assets/grantho/grantho.css');
+  const css = fs.readFileSync(cssPath, 'utf8');
+  for (const [label, rx] of [
+    ['.g-mbh-ed', /\.g-mbh-ed\{[^}]*display:inline-flex/],
+    ['.g-mbh-ed-btn (border:0 + transparent)', /\.g-mbh-ed-btn\{[^}]*border:0;[^}]*background:transparent;[^}]*color:var\(--muted\)/],
+    ['.g-mbh-ed-btn.on', /\.g-mbh-ed-btn\.on\{[^}]*background:/],
+    ['light .g-mbh-ed-btn', /html\[data-theme="light"\] \.g-mbh-ed-btn\{[^}]*color:#/],
+    ['light .g-mbh-ed-btn:hover', /html\[data-theme="light"\] \.g-mbh-ed-btn:hover\{/],
+    ['.g-en-note-act button', /\.g-en-note-act button\{[^}]*background:/],
+    ['.g-prose-en', /\.g-prose-en\{/],
+    ['.g-v-co', /\.g-v-co\{/],
+  ]) {
+    if (!rx.test(css)) errs.push(`grantho.css-এ ${label} নিয়ম নেই বা ভেঙে গেছে`);
+  }
+
+  const assets = ['grantho.css', 'grantho.js', 'bible-reader.js', 'mahabharata-reader.js'];
+  const hashes = Object.fromEntries(
+    assets.map((f) => [
+      f,
+      crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, 'assets/grantho', f))).digest('hex').slice(0, 8),
+    ]),
+  );
+  const walkHtml = (dir, out = []) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, e.name);
+      if (e.isDirectory()) walkHtml(p, out);
+      else if (e.name.endsWith('.html')) out.push(p);
+    }
+    return out;
+  };
+  for (const fp of walkHtml(path.join(ROOT, 'grantho'))) {
+    const html = fs.readFileSync(fp, 'utf8');
+    const rel = path.relative(ROOT, fp);
+    for (const name of assets) {
+      const re = new RegExp(`assets/grantho/${name.replace('.', '\\.')}(?:\\?v=([0-9a-f]+))?"`, 'g');
+      let m;
+      while ((m = re.exec(html))) {
+        if (!m[1]) errs.push(`${rel}: ${name}-এ ?v= ক্যাশ-সংস্করণ নেই`);
+        else if (m[1] !== hashes[name]) errs.push(`${rel}: ${name}?v=${m[1]} পুরোনো (বর্তমান ${hashes[name]})`);
+      }
+    }
+  }
+  console.log(`${errs.length ? '✗' : '✓'} grantho CSS/JS ক্যাশ-সংস্করণ ও বোতাম-স্টাইল`);
+  for (const e of errs) console.log(`   ! ${e}`);
+  return errs.length === 0;
+}
+
 let ok = true;
 for (const f of pages()) ok = (await testPage(f)) && ok;
 ok = (await testMahabharata()) && ok;
+ok = testGranthoAssetsAndCss() && ok;
 for (const f of hubPages()) ok = (await testHub(f)) && ok;
 for (const f of essayPages()) ok = testReaderTools(f) && ok;
 for (const f of allEssays()) ok = testEssayQuality(f) && ok;

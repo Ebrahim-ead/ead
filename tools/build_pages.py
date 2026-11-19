@@ -1,4 +1,5 @@
 import datetime
+import hashlib
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """assets/grantho/data/<slug>/index.json → grantho/hindu/<slug>.html + হাব-কার্ড।
@@ -346,6 +347,26 @@ def normalize(slug: str, html: str, sub: str = "hindu") -> str:
         m = re.search(r"<footer\b.*?</footer>", html, re.S)
         if m and m.group(0) != FOOTER:
             html = html[:m.start()] + FOOTER + html[m.end():]
+    return stamp_grantho_assets(html)
+
+
+GRANTHO_ASSETS = (
+    "assets/grantho/grantho.css",
+    "assets/grantho/grantho.js",
+    "assets/grantho/bible-reader.js",
+    "assets/grantho/mahabharata-reader.js",
+)
+
+
+def stamp_grantho_assets(html: str) -> str:
+    """গ্রন্থ CSS/JS লিংকে ফাইল-হ্যাশ (?v=…) বসানো — পুরোনো SW/HTTP ক্যাশ এড়াতে।"""
+    for rel in GRANTHO_ASSETS:
+        p = ROOT / rel
+        if not p.exists():
+            continue
+        h8 = hashlib.sha256(p.read_bytes()).hexdigest()[:8]
+        pat = re.compile(r'((?:href|src)="[^"]*?' + re.escape(rel) + r')(?:\?v=[0-9a-f]+)?"')
+        html = pat.sub(rf'\1?v={h8}"', html)
     return html
 
 
@@ -703,8 +724,11 @@ def make_page(slug, idx, meta):
     # বদলে দেওয়া হয় — নইলে প্রতি রাতের rebuild-এ পাতা আবার পুরোনো ইঞ্জিনে
     # ফিরে যেত (২০২৬-১১-১৬-এ ঠিক এমনটাই হয়েছিল)।
     if meta.get("kind") == "bible":
-        h = h.replace('<script src="../../assets/grantho/grantho.js" defer></script>',
-                      '<script src="../../assets/grantho/bible-reader.js" defer></script>')
+        h = re.sub(
+            r'<script src="\.\./\.\./assets/grantho/grantho\.js(?:\?v=[0-9a-f]+)?" defer></script>',
+            '<script src="../../assets/grantho/bible-reader.js" defer></script>',
+            h,
+        )
 
     outdir.mkdir(parents=True, exist_ok=True)
     (outdir / f"{slug}.html").write_text(
@@ -785,8 +809,11 @@ def make_mahabharata_page(idx):
                      (r'(<meta name="twitter:description" content=")[^"]*(")', fulldesc)):
         h = re.sub(pat, lambda m, v=val: m.group(1) + v + m.group(2), h, count=1)
 
-    h = h.replace('<script src="../../assets/grantho/grantho.js" defer></script>',
-                  '<script src="../../assets/grantho/mahabharata-reader.js" defer></script>')
+    h = re.sub(
+        r'<script src="\.\./\.\./assets/grantho/grantho\.js(?:\?v=[0-9a-f]+)?" defer></script>',
+        '<script src="../../assets/grantho/mahabharata-reader.js" defer></script>',
+        h,
+    )
 
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "mahabharata.html").write_text(normalize("mahabharata", h, "hindu"), encoding="utf-8")
@@ -1116,6 +1143,15 @@ def main():
                                   "বাংলা বাইবেল", sub, meta["excerpt"]) + en_card, sub="")
                 print(f"bible: {r['withbn']}/{r['total']} · {r['nch']} পুস্তক · "
                       f"{idx.get('suktaTotal') or sum(c.get('suktaCount', 0) for c in chs)} অধ্যায়")
+    stamped = 0
+    for hp in sorted((ROOT / "grantho").rglob("*.html")):
+        raw = hp.read_text(encoding="utf-8")
+        upd = stamp_grantho_assets(raw)
+        if upd != raw:
+            hp.write_text(upd, encoding="utf-8")
+            stamped += 1
+    if stamped:
+        print(f"গ্রন্থ-অ্যাসেট সংস্করণ (?v=): {stamped}টি পাতা হালনাগাদ")
     refresh_sitemap(built)
     return 0
 

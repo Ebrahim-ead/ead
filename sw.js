@@ -49,7 +49,7 @@
 /* শেল ও পাতা আলাদা সংস্করণ নম্বর পায় — শুধু শেল-তালিকা বদলালে
    ব্যবহারকারীর জমানো ডেটা (১৪২ MB পর্যন্ত) মুছে যাওয়া উচিত নয়।
    ডেটা বদলালেই (গঠন বা বিষয়বস্তু) DATA_VERSION বাড়াবেন। */
-var SHELL_VERSION = 'v22';
+var SHELL_VERSION = 'v23';
 var DATA_VERSION = 'v12';
 
 var SHELL_CACHE = 'ead-shell-' + SHELL_VERSION;
@@ -250,20 +250,23 @@ self.addEventListener('fetch', function (event) {
   if (isShellAsset(url)) {
     event.respondWith(
       caches.match(req).then(function (hit) {
-        return (
-          hit ||
-          fetch(req).then(function (res) {
-            if (res && res.ok) {
-              var copy = res.clone();
-              caches.open(SHELL_CACHE).then(function (c) {
-                c.put(req, copy).then(function () { trimCache(SHELL_CACHE); });
-              });
-            }
-            return res;
-          }).catch(function () {
-            return new Response('', { status: 504, statusText: 'offline' });
-          })
-        );
+        if (hit) return hit;
+        /* CSS/JS মিস হলে ব্রাউজারের HTTP ক্যাশ এড়াই — নইলে পুরোনো HTTP ক্যাশ থেকে
+           আসা স্টাইল/স্ক্রিপ্ট নতুন SHELL_CACHE-এ ঢুকে আটকে যেতে পারে। */
+        var reqFetch = /\.(css|js)$/i.test(url.pathname)
+          ? fetch(req, { cache: 'no-cache' })
+          : fetch(req);
+        return reqFetch.then(function (res) {
+          if (res && res.ok) {
+            var copy = res.clone();
+            caches.open(SHELL_CACHE).then(function (c) {
+              c.put(req, copy).then(function () { trimCache(SHELL_CACHE); });
+            });
+          }
+          return res;
+        }).catch(function () {
+          return new Response('', { status: 504, statusText: 'offline' });
+        });
       })
     );
     return;

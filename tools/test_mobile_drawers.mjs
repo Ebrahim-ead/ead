@@ -233,11 +233,16 @@ console.log('\n৬. সার্ভিস ওয়ার্কার ক্যা�
     delete: async (n) => cachesMap.delete(n),
   };
   const listeners = {};
+  const fetchCalls = [];
   const ctx = vm.createContext({
     caches: fakeCaches,
     Promise,
     URL,
     console,
+    fetch: async (req, opts) => {
+      fetchCalls.push({ url: typeof req === 'string' ? req : req.url, opts });
+      return { ok: true, clone: () => ({ ok: true }) };
+    },
     Request: function (u) { this.url = u; },
     Response: function () {},
     self: {
@@ -249,14 +254,28 @@ console.log('\n৬. সার্ভিস ওয়ার্কার ক্যা�
     },
   });
   vm.runInContext(swSrc, ctx);
+  fakeCaches.match = async (req) => {
+    const k = typeof req === 'string' ? req : req.url;
+    for (const c of cachesMap.values()) { if (c.m.has(k)) return c.m.get(k); }
+    return undefined;
+  };
 
   const isData = ctx.isData;
   const isShell = ctx.isShellAsset;
   const u = (p) => new URL('https://ebrahim-ead.github.io' + p);
   check('isData: hadith.css/js ডেটা-ক্যাশে যায় না', !isData(u('/ead/assets/hadith/hadith.css')) && !isData(u('/ead/assets/hadith/hadith.js')));
   check('isData: quran/grantho JS/CSS ডেটা-ক্যাশে যায় না', !isData(u('/ead/assets/quran/quran.js')) && !isData(u('/ead/assets/grantho/grantho.css')) && !isData(u('/ead/assets/grantho/bible-reader.js')));
-  check('isShellAsset: reader CSS/JS শেল-ক্যাশে যায়', isShell(u('/ead/assets/hadith/hadith.css')) && isShell(u('/ead/assets/grantho/grantho.js')));
+  check('isShellAsset: reader CSS/JS (ও ?v= সহ) শেল-ক্যাশে যায়', isShell(u('/ead/assets/hadith/hadith.css')) && isShell(u('/ead/assets/grantho/grantho.js')) && isShell(u('/ead/assets/grantho/grantho.css?v=df282762')));
   check('isData: JSON ডেটা ও search-ayahs.js ডেটা-ক্যাশে থাকে', isData(u('/ead/assets/hadith/data/index.json')) && isData(u('/ead/assets/search-ayahs.js')));
+
+  let cssResP;
+  listeners.fetch({
+    request: { method: 'GET', mode: 'no-cors', url: 'https://ebrahim-ead.github.io/ead/assets/grantho/grantho.css?v=df282762' },
+    respondWith: (p) => { cssResP = p; },
+  });
+  await cssResP;
+  const cssFetch = fetchCalls.find((c) => c.url.includes('grantho.css?v=df282762'));
+  check('fetch: CSS মিস হলে cache:no-cache দিয়ে নেট থেকে আসে', !!cssFetch && cssFetch.opts && cssFetch.opts.cache === 'no-cache');
 
   // সিমুলেটেড activate: ead-shell-v20 মুছবে, ead-data-v11-এর ভেতরের পুরোনো CSS/JS মুছবে, কিন্তু JSON অটুট থাকবে
   const oldShell = await fakeCaches.open('ead-shell-v20');
