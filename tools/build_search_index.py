@@ -107,7 +107,7 @@ def build_pages() -> list[dict]:
                 "u": path.name,
                 "n": title or PAGE_NAMES.get(path.name, path.stem),
                 "d": (desc or body)[:150],
-                "k": norm(" ".join([title, desc, body[:2100]])),
+                "k": norm(" ".join([title, desc, body[:1800]])),
             }
         )
     return rows
@@ -201,6 +201,10 @@ GRANTH_LABELS = {
     "veda": "বেদ",
     "yajurveda-shukla": "শুক্ল যজুর্বেদ",
     "atharvaveda": "অথর্ববেদ",
+    "shvetashvatara": "শ্বেতাশ্বতর উপনিষদ",
+    "prashna": "প্রশ্ন উপনিষদ",
+    "chandogya": "ছান্দোগ্য উপনিষদ",
+    "brihadaranyaka": "বৃহদারণ্যক উপনিষদ",
 }
 
 # কোন গ্রন্থ-পাতা কোন ফোল্ডারে — grantho.js `data-granth` পড়ে `#ch<N>` hash-এ
@@ -211,6 +215,10 @@ GRANTH_PAGE = {
     "veda": "grantho/hindu/veda.html",
     "yajurveda-shukla": "grantho/hindu/yajurveda-shukla.html",
     "atharvaveda": "grantho/hindu/atharvaveda.html",
+    "shvetashvatara": "grantho/hindu/shvetashvatara.html",
+    "prashna": "grantho/hindu/prashna.html",
+    "chandogya": "grantho/hindu/chandogya.html",
+    "brihadaranyaka": "grantho/hindu/brihadaranyaka.html",
     "bible": "grantho/christian/bible.html",
 }
 
@@ -235,7 +243,7 @@ def build_grantho() -> list[dict]:
             cname = d.get("bn") or f"অধ্যায় {cid}"
             testament = d.get("testament") or ""
             # খোঁজার জন্য প্রথম কয়েক শ্লোকের লেখাও কী-তে রাখি (ভারসাম্যরক্ষা)
-            sample = " ".join((v.get("bn") or "")[:95] for v in (d.get("verses") or [])[:2])
+            sample = " ".join((v.get("bn") or "")[:65] for v in (d.get("verses") or [])[:2])
             unit = d.get("groupWord") or "অধ্যায়"
             out.append(
                 {

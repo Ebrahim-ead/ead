@@ -17,7 +17,8 @@ DATA = ROOT / "assets/grantho/data"
 OUT = ROOT / "grantho/hindu"
 
 # ---- সাইটে এখন কোন গ্রন্থ থাকবে -------------------------------------------
-ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "atharvaveda", "bible")
+ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "atharvaveda",
+          "shvetashvatara", "prashna", "chandogya", "brihadaranyaka", "bible")
 
 BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
 BN_MAP = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
@@ -107,6 +108,34 @@ BOOKS["atharvaveda"] = dict(
     word="মন্ত্র", chword="কাণ্ড", groupword="সূক্ত",
     src="মূল সস্বর সংস্কৃত পাঠ vishvAsa/vedAH (শৌনক সংহিতা) থেকে; ইংরেজি অনুবাদ R.T.H. Griffith (১৮৯৫–৯৬) ও W.D. Whitney (১৯০৫); বাংলা অনুবাদ ebanglalibrary.com থেকে।",
     excerpt="শৌনক শাখার অথর্ববেদ — ২০ কাণ্ডের ৫,৯৭৬ মন্ত্র মূল সংস্কৃত, ইংরেজি ও বাংলা অনুবাদসহ।")
+BOOKS["shvetashvatara"] = dict(
+    kind="upanishad", title=("শ্বেতাশ্বতর", "উপনিষদ"), hub="../hindu.html", hubname="হিন্দু",
+    kicker="হিন্দু · উপনিষদ · শ্বেতাশ্বতর", crumb="শ্বেতাশ্বতর উপনিষদ",
+    intro="ষড়ধ্যায় শ্বেতাশ্বতর উপনিষদ — ৬ অধ্যায়ের ১১৩ মন্ত্র পাঁচ-সূত্র নিরীক্ষিত দেবনাগরী সংস্কৃত মূল পাঠ, স্বামী লোকেশ্বরানন্দের বাংলা সরলার্থ এবং F. Max Müller-এর ইংরেজি অনুবাদসহ।",
+    word="মন্ত্র", chword="অধ্যায়",
+    src="মূল সংস্কৃত পাঠ পাঁচটি প্রামাণ্য সংস্করণ মিলিয়ে নিরীক্ষিত; বাংলা সরলার্থ — স্বামী লোকেশ্বরানন্দ (ebanglalibrary.com); ইংরেজি অনুবাদ — F. Max Müller (Sacred Books of the East, Vol. 15, 1884)।",
+    excerpt="৬ অধ্যায়ের ১১৩ মন্ত্র — মূল সংস্কৃত, বাংলা সরলার্থ ও ইংরেজি অনুবাদসহ।")
+BOOKS["prashna"] = dict(
+    kind="upanishad", title=("প্রশ্ন", "উপনিষদ"), hub="../hindu.html", hubname="হিন্দু",
+    kicker="হিন্দু · উপনিষদ · প্রশ্ন", crumb="প্রশ্ন উপনিষদ",
+    intro="ষড়ধ্যায় প্রশ্ন উপনিষদ — ৬ প্রশ্নের ৬৭ মন্ত্র চার-সূত্র নিরীক্ষিত দেবনাগরী সংস্কৃত মূল পাঠ, স্বামী লোকেশ্বরানন্দের বাংলা সরলার্থ এবং F. Max Müller-এর ইংরেজি অনুবাদসহ।",
+    word="মন্ত্র", chword="প্রশ্ন",
+    src="মূল সংস্কৃত পাঠ চারটি প্রামাণ্য সংস্করণ মিলিয়ে নিরীক্ষিত; বাংলা সরলার্থ — স্বামী লোকেশ্বরানন্দ (ebanglalibrary.com); ইংরেজি অনুবাদ — F. Max Müller (Sacred Books of the East, Vol. 15, 1884)।",
+    excerpt="৬ প্রশ্নের ৬৭ মন্ত্র — মূল সংস্কৃত, বাংলা সরলার্থ ও ইংরেজি অনুবাদসহ।")
+BOOKS["chandogya"] = dict(
+    kind="upanishad", title=("ছান্দোগ্য", "উপনিষদ"), hub="../hindu.html", hubname="হিন্দু",
+    kicker="হিন্দু · উপনিষদ · ছান্দোগ্য", crumb="ছান্দোগ্য উপনিষদ",
+    intro="অষ্টাধ্যায় ছান্দোগ্য উপনিষদ — ৮ অধ্যায় ও ১৫৪ খণ্ডের ৬২৮ মন্ত্র বহুমূল নিরীক্ষিত দেবনাগরী সংস্কৃত মূল পাঠ, বাংলা সরলার্থ এবং F. Max Müller-এর ইংরেজি অনুবাদসহ।",
+    word="মন্ত্র", chword="অধ্যায়", groupword="খণ্ড",
+    src="মূল সংস্কৃত পাঠ GRETIL ও sanskritdocuments.org মিলিয়ে নিরীক্ষিত; বাংলা সরলার্থ — ebanglalibrary.com; ইংরেজি অনুবাদ — F. Max Müller (Sacred Books of the East, Vol. 1, 1879)।",
+    excerpt="৮ অধ্যায় ও ১৫৪ খণ্ডের ৬২৮ মন্ত্র — মূল সংস্কৃত, বাংলা সরলার্থ ও ইংরেজি অনুবাদসহ।")
+BOOKS["brihadaranyaka"] = dict(
+    kind="upanishad", title=("বৃহদারণ্যক", "উপনিষদ"), hub="../hindu.html", hubname="হিন্দু",
+    kicker="হিন্দু · উপনিষদ · বৃহদারণ্যক", crumb="বৃহদারণ্যক উপনিষদ",
+    intro="কাণ্বশাখীয় বৃহদারণ্যক উপনিষদ — ৬ অধ্যায় ও ৪৭ ব্রাহ্মণের ৪৩৫ মন্ত্র বহুমূল নিরীক্ষিত দেবনাগরী সংস্কৃত মূল পাঠ, স্বামী গম্ভীরানন্দের বাংলা সরলার্থ এবং F. Max Müller ও Robert E. Hume-এর ইংরেজি অনুবাদসহ।",
+    word="মন্ত্র", chword="অধ্যায়", groupword="ব্রাহ্মণ",
+    src="মূল সংস্কৃত পাঠ GRETIL ও প্রামাণ্য দেবনাগরী সংস্করণ মিলিয়ে নিরীক্ষিত; বাংলা সরলার্থ — স্বামী গম্ভীরানন্দ (উদ্বোধন কার্যালয়); ইংরেজি অনুবাদ — F. Max Müller (SBE Vol. 15, 1884) ও Robert E. Hume (1921, VI.4)।",
+    excerpt="৬ অধ্যায় ও ৪৭ ব্রাহ্মণের ৪৩৫ মন্ত্র — মূল সংস্কৃত, বাংলা সরলার্থ ও ইংরেজি অনুবাদসহ।")
 BOOKS["brahma"] = dict(
     kind="purana", title=("ব্রহ্ম পুরাণ", ""), hub="purana.html", hubname="পুরাণ",
     kicker="হিন্দু · পুরাণ · ব্রহ্ম", crumb="ব্রহ্ম পুরাণ",
@@ -175,6 +204,7 @@ def normalize(slug: str, html: str, sub: str = "hindu") -> str:
     # ১) SEO ট্যাগ — আগে থাকলে হালনাগাদ, না থাকলে যোগ (canonical বারবার যোগ হয় না)
     if 'property="og:image"' in html:
         html = re.sub(r'(<meta property="og:image" content=")[^"]*(")', lambda m: m.group(1) + OG_CARD + m.group(2), html, count=1)
+        html = re.sub(r'(<meta property="og:url" content=")[^"]*(")', lambda m: m.group(1) + href + m.group(2), html, count=1)
         html = re.sub(r'(<link rel="canonical" href=")[^"]*(")', lambda m: m.group(1) + href + m.group(2), html, count=1)
         if 'rel="canonical"' not in html:
             html = html.replace("</head>", f'<link rel="canonical" href="{href}">\n</head>', 1)
@@ -273,24 +303,27 @@ def _apply_identity(h, slug, meta, main, sub):
     # ব্রেডক্রাম্ব: «ধর্মীয় গ্রন্থ › হিন্দু ›» অংশ অটুট রেখে হাব-লিংক ও গ্রন্থের নাম বদলানো
     cm = re.search(r'(<p class="g-crumb">)(.*?)(</p>)', h, re.S)
     if cm:
-        mid = cm.group(2)
-        anchors = list(re.finditer(r'<a href="[^"]*"[^>]*>.*?</a>', mid, re.S))
-        if anchors:
-            last = anchors[-1]
-            hub = f'<a href="{meta["hub"]}">{meta["hubname"]}</a>'
-            mid = mid[:last.start()] + hub + mid[last.end():]
-        if meta.get("crumbDrop"):
-            # টেমপ্লেট হিন্দু পাতার, তাই ক্রাম্বে «হিন্দু» অ্যাংকর থেকে যায় —
-            # অন্য ধর্মের পাতায় সেটি ভুল পরিচয়, তাই অ্যাংকর+বিভাজকসহ বাদ।
-            for a in list(re.finditer(r'<a href="[^"]*"[^>]*>.*?</a>\s*(?:<span>›</span>)?',
-                                      mid, re.S)):
-                if meta["crumbDrop"] in a.group(0):
-                    mid = mid[:a.start()] + mid[a.end():]
-                    break
-        sep = '<span>›</span>'
-        k = mid.rfind(sep)
-        if k >= 0:
-            mid = mid[:k + len(sep)] + crumb
+        if meta.get("hub") == "../hindu.html":
+            mid = f'<a href="../../grantho.html">ধর্মীয় গ্রন্থ</a><span>›</span><a href="../hindu.html">হিন্দু</a><span>›</span>{crumb}'
+        else:
+            mid = cm.group(2)
+            anchors = list(re.finditer(r'<a href="[^"]*"[^>]*>.*?</a>', mid, re.S))
+            if anchors:
+                last = anchors[-1]
+                hub = f'<a href="{meta["hub"]}">{meta["hubname"]}</a>'
+                mid = mid[:last.start()] + hub + mid[last.end():]
+            if meta.get("crumbDrop"):
+                # টেমপ্লেট হিন্দু পাতার, তাই ক্রাম্বে «হিন্দু» অ্যাংকর থেকে যায় —
+                # অন্য ধর্মের পাতায় সেটি ভুল পরিচয়, তাই অ্যাংকর+বিভাজকসহ বাদ।
+                for a in list(re.finditer(r'<a href="[^"]*"[^>]*>.*?</a>\s*(?:<span>›</span>)?',
+                                          mid, re.S)):
+                    if meta["crumbDrop"] in a.group(0):
+                        mid = mid[:a.start()] + mid[a.end():]
+                        break
+            sep = '<span>›</span>'
+            k = mid.rfind(sep)
+            if k >= 0:
+                mid = mid[:k + len(sep)] + crumb
         h = h[:cm.start()] + cm.group(1) + mid + cm.group(3) + h[cm.end():]
     # টেমপ্লেটের অন্য গ্রন্থের নাম শিরোনাম-জুড়ে ছড়িয়ে থাকলে তাও বদলানো
     h = h.replace("সামবেদ সংহিতা", label).replace("ঋগ্বেদ সংহিতা", label)
@@ -396,6 +429,22 @@ def make_page(slug, idx, meta):
     _cw = meta.get("chword") or "অধ্যায়"
     h = re.sub(r'(<b id="g-side-title">)[^<]*(</b>)',
                lambda m: m.group(1) + _cw + m.group(2), h, count=1)
+    if not nsuk and meta.get("kind") != "bible":
+        # একক-স্তরের গ্রন্থে (যেমন যজুর্বেদ, শ্বেতাশ্বতর) অধ্যায়-তালিকা শুরু থেকেই দৃশ্যমান,
+        # পুস্তক-তালিকা ও সূক্ত-গ্রিড দরকার নেই।
+        h = re.sub(
+            r'<div id="g-book-list">(.*?)</div>\s*<div id="g-chapter-list" hidden></div>',
+            lambda m: f'<div id="g-book-list" hidden></div>\n          <div id="g-chapter-list">{m.group(1)}</div>',
+            h, count=1, flags=re.S,
+        )
+        h = h.replace('<div id="g-crumb2" class="g-crumb2" hidden></div>', '')
+        h = re.sub(r'<div id="g-chapter-grid"[^>]*></div>', '', h, count=1)
+    elif nsuk and meta.get("groupword"):
+        h = re.sub(
+            r'(<div id="g-chapter-grid"[^>]*aria-label=")[^"]*(")',
+            lambda m: m.group(1) + meta["groupword"] + m.group(2),
+            h, count=1,
+        )
     if meta.get("kind") == "bible":
         # প্যানেলের id — ভাঁজ-নিয়ন্ত্রণ ও স্ক্রলযোগ্য বডি এর ওপরেই দাঁড়িয়ে
         h = h.replace('<aside class="g-side">', '<aside class="g-side" id="g-side">', 1)
@@ -491,6 +540,18 @@ def make_page(slug, idx, meta):
     elif slug == "samaveda":
         fulldesc = (f"{label} — {commas(nch)} অধ্যায়, {commas(total)} মন্ত্র সস্বর সংস্কৃত মূল পাঠ, "
                     f"{commas(withbn)} মন্ত্রে বাংলা ও {commas(en_n)} মন্ত্রে ইংরেজি অনুবাদসহ।")
+    elif slug == "shvetashvatara":
+        fulldesc = (f"{label} — {commas(nch)} অধ্যায়, {commas(total)} মন্ত্র মূল সংস্কৃত পাঠ, "
+                    f"স্বামী লোকেশ্বরানন্দের বাংলা সরলার্থ ও F. Max Müller-এর ইংরেজি অনুবাদসহ।")
+    elif slug == "prashna":
+        fulldesc = (f"{label} — {commas(nch)} প্রশ্ন, {commas(total)} মন্ত্র মূল সংস্কৃত পাঠ, "
+                    f"স্বামী লোকেশ্বরানন্দের বাংলা সরলার্থ ও F. Max Müller-এর ইংরেজি অনুবাদসহ।")
+    elif slug == "chandogya":
+        fulldesc = (f"{label} — {commas(nch)} অধ্যায়, {commas(nsuk)} খণ্ড ও {commas(total)} মন্ত্র মূল সংস্কৃত পাঠ, "
+                    f"বাংলা সরলার্থ ও F. Max Müller-এর ইংরেজি অনুবাদসহ।")
+    elif slug == "brihadaranyaka":
+        fulldesc = (f"{label} — {commas(nch)} অধ্যায়, {commas(nsuk)} ব্রাহ্মণ ও {commas(total)} মন্ত্র মূল সংস্কৃত পাঠ, "
+                    f"স্বামী গম্ভীরানন্দের বাংলা সরলার্থ ও F. Max Müller / Robert E. Hume-এর ইংরেজি অনুবাদসহ।")
     else:
         fulldesc = f'{label}-র {commas(withbn)}টি {meta["word"]} বাংলা অনুবাদসহ — ebanglalibrary.com।'
     # সতর্কতা: দশার-অভাবে হঠাৎ বড় পতন (যেমন ৯২২২ → ২১ শ্লোক) সাইটে বসিয়ে দেব না।
@@ -711,6 +772,16 @@ def main():
                           "উৎসে যেগুলো পূর্ণ পাওয়া যায়নি সেগুলো পরে যোগ হবে।", soon=True))
     print("উপনিষদ মোট:", upa_total)
 
+    # ---- প্রধান উপনিষদসমূহ
+    for up_slug in ("shvetashvatara", "prashna", "chandogya", "brihadaranyaka"):
+        if up_slug in ACTIVE:
+            s_idx = load(up_slug)
+            s_meta = BOOKS.get(up_slug)
+            if s_idx and s_meta:
+                r = make_page(up_slug, s_idx, s_meta)
+                made.append(r)
+                print(f"{up_slug}: {r['withbn']}/{r['total']} · {r['nch']}")
+
     # ---- হিন্দু-হাব: কার্ডগুলো ডেটা থেকেই বানাই
     #   আগে এই পাতা হাতে লেখা কার্ড ধরে সংখ্যা আপডেট করত, ফলে কার্ডের
     #   গঠন (বড় বিবরণ/বাটন) বদলাতে গেলে হাতে-এডিট ছাড়া উপায় ছিল না —
@@ -737,6 +808,17 @@ def main():
         if av:
             hp_cards += card("hindu/atharvaveda.html", "হিন্দু · বেদ", "অথর্ববেদ সংহিতা",
                              f'{commas(av["total"])} মন্ত্র · {commas(av["nch"])} কাণ্ড')
+        for up_slug, up_name in (
+            ("shvetashvatara", "শ্বেতাশ্বতর উপনিষদ"),
+            ("prashna", "প্রশ্ন উপনিষদ"),
+            ("chandogya", "ছান্দোগ্য উপনিষদ"),
+            ("brihadaranyaka", "বৃহদারণ্যক উপনিষদ"),
+        ):
+            up_r = next((r for r in made if r["slug"] == up_slug), None)
+            if up_r:
+                up_m = BOOKS[up_slug]
+                hp_cards += card(f"hindu/{up_slug}.html", f"হিন্দু · উপনিষদ", up_name,
+                                 f'{commas(up_r["withbn"])} মন্ত্র · {commas(up_r["nch"])} {up_m["chword"]}')
         if hp_cards:
             replace_grid("hindu.html", hp_cards, sub="")
         print("হিন্দু-হাব:", sum(r["withbn"] for _, r, _ in vedas), "/",
