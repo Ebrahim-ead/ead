@@ -17,12 +17,7 @@ DATA = ROOT / "assets/grantho/data"
 OUT = ROOT / "grantho/hindu"
 
 # ---- সাইটে এখন কোন গ্রন্থ থাকবে -------------------------------------------
-# ব্যবহারকারীর সিদ্ধান্ত (২০২৬-১১-০৫): «শুধুমাত্র ভগবত গীতা আর চারটা বেদের
-# ভিতর শুধুমাত্র ঋগ্বেদ রাখো; বাকি সবগুলো বাদ দাও।» তাই ডেটা/কার্ড কেবল
-# এই দুটিরই তৈরি হয় — অন্য কোনো index.json পড়া হয় না।
-# ⚠ ২০২৬-১১-১০: ব্যবহারকারী বলেছেন «সামবেদ বাদ দিয়ে দাও, এটা রাখবো না»।
-#   তাই samaveda ACTIVE থেকে বাদ — ডেটা, পাতা, কার্ড কোথাও আর তৈরি/পড়া হয় না।
-ACTIVE = ("gita", "rigveda", "yajurveda-shukla", "atharvaveda", "bible")
+ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "atharvaveda", "bible")
 
 BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
 BN_MAP = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
@@ -98,6 +93,13 @@ BOOKS["yajurveda-krishna"] = dict(
     word="মন্ত্র", chword="অধ্যায়",
     src="বাংলা অনুবাদ ebanglalibrary.com থেকে সংগৃহীত।",
     excerpt="যজ্ঞের বিধি ও মন্ত্রের বেদ — কৃষ্ণ শাখার বাংলা অনুবাদসহ।")
+BOOKS["samaveda"] = dict(
+    kind="veda", title=("সামবেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
+    kicker="হিন্দু · বেদ · সামবেদ", crumb="সামবেদ সংহিতা",
+    intro="কৌথুমী শাখার সামবেদ সংহিতা — পূর্বার্চিক, আরণ্যক, মহানাম্নী ও উত্তরার্চিকের ২৮ অধ্যায় ও ৪৭০ সূক্ত/দশতির ১,৮৭৫ মন্ত্র সস্বর সংস্কৃত মূল পাঠ, দুর্গাদাস লাহিড়ীর পূর্ণ বাংলা অনুবাদ এবং R.T.H. Griffith-এর ইংরেজি অনুবাদসহ।",
+    word="মন্ত্র", chword="অধ্যায়", groupword="সূক্ত",
+    src="মূল সস্বর সংস্কৃত পাঠ sanchaya (সস্বরা কৌথুমীয়া সংহিতা) থেকে; বাংলা অনুবাদ দুর্গাদাস লাহিড়ী (ebanglalibrary.com); ইংরেজি অনুবাদ Ralph T.H. Griffith (১৮৯৩)।",
+    excerpt="কৌথুমী শাখার সামবেদ — ২৮ অধ্যায়ের ১,৮৭৫ মন্ত্র মূল সস্বর সংস্কৃত, পূর্ণ বাংলা ও ইংরেজি অনুবাদসহ।")
 BOOKS["atharvaveda"] = dict(
     kind="veda", title=("অথর্ববেদ", "সংহিতা"), hub="veda.html", hubname="বেদ",
     kicker="হিন্দু · বেদ · অথর্ববেদ", crumb="অথর্ববেদ সংহিতা",
@@ -486,6 +488,9 @@ def make_page(slug, idx, meta):
     elif slug == "atharvaveda":
         fulldesc = (f"{label} — {commas(nch)} কাণ্ড, {commas(total)} মন্ত্র সংস্কৃত মূল পাঠ, "
                     f"{commas(en_n)} মন্ত্রে ইংরেজি ও {commas(withbn)} মন্ত্রে বাংলা অনুবাদসহ।")
+    elif slug == "samaveda":
+        fulldesc = (f"{label} — {commas(nch)} অধ্যায়, {commas(total)} মন্ত্র সস্বর সংস্কৃত মূল পাঠ, "
+                    f"{commas(withbn)} মন্ত্রে বাংলা ও {commas(en_n)} মন্ত্রে ইংরেজি অনুবাদসহ।")
     else:
         fulldesc = f'{label}-র {commas(withbn)}টি {meta["word"]} বাংলা অনুবাদসহ — ebanglalibrary.com।'
     # সতর্কতা: দশার-অভাবে হঠাৎ বড় পতন (যেমন ৯২২২ → ২১ শ্লোক) সাইটে বসিয়ে দেব না।
@@ -612,7 +617,7 @@ def main():
         refresh_rigveda_layout()
     # ---- বেদ
     vedas = []
-    for slug in [x for x in ("rigveda", "yajurveda-shukla", "atharvaveda",
+    for slug in [x for x in ("rigveda", "samaveda", "yajurveda-shukla", "atharvaveda",
                              "yajurveda-krishna") if x in ACTIVE]:
         meta = BOOKS.get(slug)
         idx = load(slug)
@@ -624,9 +629,10 @@ def main():
         print(f"{slug}: {r['withbn']}/{r['total']} · {r['nch']}")
 
     grid = ""
-    order = ["rigveda", "yajurveda-shukla", "atharvaveda", "yajurveda-krishna"]
+    order = ["rigveda", "samaveda", "yajurveda-shukla", "atharvaveda", "yajurveda-krishna"]
     byslug = {s: (r, m) for s, r, m in vedas}
     labels = {"rigveda": ("বেদ · ঋগ্বেদ", "ঋগ্বেদ"),
+              "samaveda": ("বেদ · সামবেদ", "সামবেদ"),
               "yajurveda-shukla": ("বেদ · শুক্ল যজুর্বেদ", "শুক্ল যজুর্বেদ"),
               "atharvaveda": ("বেদ · অথর্ববেদ", "অথর্ববেদ"),
               "yajurveda-krishna": ("বেদ · কৃষ্ণ যজুর্বেদ", "কৃষ্ণ যজুর্বেদ")}
@@ -719,6 +725,10 @@ def main():
         if rv:
             hp_cards += card("hindu/rigveda.html", "হিন্দু · বেদ", "ঋগ্বেদ সংহিতা",
                              f'{commas(rv["withbn"])} মন্ত্র · {commas(rv["nch"])} মণ্ডল')
+        sv = next((r for sl, r, _ in vedas if sl == "samaveda"), None)
+        if sv:
+            hp_cards += card("hindu/samaveda.html", "হিন্দু · বেদ", "সামবেদ সংহিতা",
+                             f'{commas(sv["withbn"])} মন্ত্র · {commas(sv["nch"])} অধ্যায়')
         yv = next((r for sl, r, _ in vedas if sl == "yajurveda-shukla"), None)
         if yv:
             hp_cards += card("hindu/yajurveda-shukla.html", "হিন্দু · বেদ", "শুক্ল যজুর্বেদ সংহিতা",
