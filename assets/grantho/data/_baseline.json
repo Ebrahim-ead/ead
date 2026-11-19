@@ -1,5 +1,5 @@
 {
- "_commit": "af1662cc4e79b9426c0353504fec8e4b88bfeaa0",
+ "_commit": "a7cd5259fcdd6b6803cb5bb4851176927ccb2f53",
  "_note": "এটি ভালো-জানা ডেটার হিসাব; এর চেয়ে ১৫%-এর বেশি ছোট হলে guard_data.py ফিরিয়ে আনে।",
  "slugs": {
   "atharvaveda": {
@@ -12,10 +12,25 @@
    "withBn": 30782,
    "chapters": 66
   },
+  "brihadaranyaka": {
+   "total": 435,
+   "withBn": 435,
+   "chapters": 6
+  },
+  "chandogya": {
+   "total": 628,
+   "withBn": 628,
+   "chapters": 8
+  },
   "gita": {
    "total": 701,
    "withBn": 700,
    "chapters": 18
+  },
+  "prashna": {
+   "total": 67,
+   "withBn": 67,
+   "chapters": 6
   },
   "rigveda": {
    "total": 10456,
@@ -26,6 +41,11 @@
    "total": 1875,
    "withBn": 1875,
    "chapters": 28
+  },
+  "shvetashvatara": {
+   "total": 113,
+   "withBn": 113,
+   "chapters": 6
   },
   "yajurveda-shukla": {
    "total": 1791,

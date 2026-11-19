@@ -1,0 +1,72 @@
+{
+ "slug": "prashna",
+ "bn": "প্রশ্ন উপনিষদ",
+ "en": "Prashna Upanishad",
+ "total": 67,
+ "withBn": 67,
+ "withSk": 67,
+ "withEn": 67,
+ "verseWord": "মন্ত্র",
+ "chword": "প্রশ্ন",
+ "skSrc": "মূল সংস্কৃত পাঠ — চার-সূত্র নিরীক্ষিত (smarana_v2, sanskritdocuments.org prashna.itx, divine-books ও ebanglalibrary.com)",
+ "bnSrc": "বাংলা সরলার্থ — স্বামী লোকেশ্বরানন্দ (ebanglalibrary.com)",
+ "enSrc": "ইংরেজি অনুবাদ — F. Max Müller (Sacred Books of the East, Vol. 15, 1884)",
+ "note": "শুরুতে মঙ্গলাচরণ ও ভূমিকা আলাদা ব্লকে (মন্ত্র-গণনার বাইরে) রাখা হয়েছে।",
+ "chapters": [
+  {
+   "id": 1,
+   "bn": "প্রথম প্রশ্ন · কবন্ধীর প্রশ্ন (রয়ি ও প্রাণ)",
+   "count": 16,
+   "from": 1,
+   "to": 16,
+   "withBn": 16,
+   "aligned": 16,
+   "prefaceCount": 1
+  },
+  {
+   "id": 2,
+   "bn": "দ্বিতীয় প্রশ্ন · ভার্গবের প্রশ্ন (মুখ্য প্রাণ)",
+   "count": 13,
+   "from": 1,
+   "to": 13,
+   "withBn": 13,
+   "aligned": 13
+  },
+  {
+   "id": 3,
+   "bn": "তৃতীয় প্রশ্ন · কৌসল্যের প্রশ্ন (প্রাণতত্ত্ব)",
+   "count": 12,
+   "from": 1,
+   "to": 12,
+   "withBn": 12,
+   "aligned": 12
+  },
+  {
+   "id": 4,
+   "bn": "চতুর্থ প্রশ্ন · গার্গ্যের প্রশ্ন (স্বপ্ন ও সুষুপ্তি)",
+   "count": 11,
+   "from": 1,
+   "to": 11,
+   "withBn": 11,
+   "aligned": 11
+  },
+  {
+   "id": 5,
+   "bn": "পঞ্চম প্রশ্ন · সত্যকামের প্রশ্ন (ওঙ্কার-ধ্যান)",
+   "count": 7,
+   "from": 1,
+   "to": 7,
+   "withBn": 7,
+   "aligned": 7
+  },
+  {
+   "id": 6,
+   "bn": "ষষ্ঠ প্রশ্ন · সুকেশার প্রশ্ন (ষোড়শকল পুরুষ)",
+   "count": 8,
+   "from": 1,
+   "to": 8,
+   "withBn": 8,
+   "aligned": 8
+  }
+ ]
+}

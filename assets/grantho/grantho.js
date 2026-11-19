@@ -120,6 +120,10 @@
   /* একক-স্তরের তালিকা (গীতা/বেদ): নম্বর + নাম + পদ-গণনা — আগের আচরণ অটুট */
   function renderChapters() {
     if (!listEl || !index) return;
+    var bkBox = document.getElementById("g-book-list");
+    if (bkBox) bkBox.hidden = true;
+    listEl.hidden = false;
+    if (gridEl) gridEl.hidden = true;
     listEl.innerHTML = index.chapters.map(function (c) {
       var on = c.id === chapterId;
       var meta = bn(c.count) + " " + VW;
@@ -135,12 +139,16 @@
     listEl.querySelectorAll("[data-ch]").forEach(function (b) {
       b.addEventListener("click", function () { openChapter(+b.dataset.ch); });
     });
+    if (totalEl) totalEl.textContent = "";
     /* g-total হেড থেকে সরানো হয়েছে — числа/গণনা আর দেখাই না */
   }
 
   function renderBooks() {
     var box = document.getElementById("g-book-list");
     if (!box || !index) return;
+    box.hidden = false;
+    if (listEl) listEl.hidden = true;
+    if (gridEl) gridEl.hidden = false;
     box.innerHTML = index.chapters.map(function (c) {
       var on = c.id === bookId;
       var meta = bn(c.count) + " " + VW;
@@ -427,7 +435,8 @@
   function setPrevNext() {
     if (!index) return;
     var bs = index.chapters, i = -1;
-    for (var k = 0; k < bs.length; k++) if (bs[k].id === bookId) i = k;
+    var curId = grouped ? bookId : chapterId;
+    for (var k = 0; k < bs.length; k++) if (bs[k].id === curId) i = k;
     if (!grouped) {
       if (prevBtn) { prevBtn.disabled = !(i > 0); prevBtn.textContent = "‹ আগের"; }
       if (nextBtn) { nextBtn.disabled = !(i >= 0 && i < bs.length - 1); nextBtn.textContent = "পরের ›"; }
@@ -442,9 +451,9 @@
     while (bk && prv >= 1 && !hasChapter(bk, prv)) prv--;
     var pTxt = "‹ আগের", nTxt = "পরের ›";
     if (atCh && prv >= 1) pTxt = "‹ " + GW + " " + bn(prv);
-    else if (i > 0) pTxt = "‹ " + esc(bs[i - 1].bn);
+    else if (i > 0) pTxt = "‹ " + bs[i - 1].bn;
     if (atCh && nxt <= nch) nTxt = GW + " " + bn(nxt) + " ›";
-    else if (i >= 0 && i < bs.length - 1) nTxt = esc(bs[i + 1].bn) + " ›";
+    else if (i >= 0 && i < bs.length - 1) nTxt = bs[i + 1].bn + " ›";
     var canPrev = (atCh && prv >= 1) || i > 0;
     var canNext = (atCh && nxt <= nch) || (i >= 0 && i < bs.length - 1);
     if (prevBtn) { prevBtn.disabled = !canPrev; prevBtn.textContent = canPrev ? pTxt : "‹ আগের"; }
@@ -825,7 +834,8 @@
   function step(d) {
     if (!index) return;
     var bs = index.chapters, pos = -1;
-    for (var k = 0; k < bs.length; k++) if (bs[k].id === bookId) pos = k;
+    var curId = grouped ? bookId : chapterId;
+    for (var k = 0; k < bs.length; k++) if (bs[k].id === curId) pos = k;
     if (pos < 0) return;
     if (grouped) {
       var bk = bs[pos], nch = chapterIds(bk).length;

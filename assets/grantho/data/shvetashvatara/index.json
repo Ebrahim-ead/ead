@@ -1,0 +1,72 @@
+{
+ "slug": "shvetashvatara",
+ "bn": "শ্বেতাশ্বতর উপনিষদ",
+ "en": "Shvetashvatara Upanishad",
+ "total": 113,
+ "withBn": 113,
+ "withSk": 113,
+ "withEn": 113,
+ "verseWord": "মন্ত্র",
+ "chword": "অধ্যায়",
+ "skSrc": "মূল সংস্কৃত পাঠ — পাঁচ-সূত্র নিরীক্ষিত (संस्कृत विकिस्रोत, sanskritdocuments.org, smarana_v2, divine-books ও ebanglalibrary.com)",
+ "bnSrc": "বাংলা সরলার্থ — স্বামী লোকেশ্বরানন্দ (ebanglalibrary.com)",
+ "enSrc": "ইংরেজি অনুবাদ — F. Max Müller (Sacred Books of the East, Vol. 15, 1884)",
+ "note": "শুরুতে শান্তিপাঠ, মঙ্গলাচরণ ও ভূমিকা আলাদা ব্লকে (মন্ত্র-গণনার বাইরে) রাখা হয়েছে।",
+ "chapters": [
+  {
+   "id": 1,
+   "bn": "প্রথম অধ্যায় · ব্রহ্মজিজ্ঞাসা",
+   "count": 16,
+   "from": 1,
+   "to": 16,
+   "withBn": 16,
+   "aligned": 16,
+   "prefaceCount": 1
+  },
+  {
+   "id": 2,
+   "bn": "দ্বিতীয় অধ্যায় · যোগাভ্যাস",
+   "count": 17,
+   "from": 1,
+   "to": 17,
+   "withBn": 17,
+   "aligned": 17
+  },
+  {
+   "id": 3,
+   "bn": "তৃতীয় অধ্যায় · রুদ্র ও পরমপুরুষ",
+   "count": 21,
+   "from": 1,
+   "to": 21,
+   "withBn": 21,
+   "aligned": 21
+  },
+  {
+   "id": 4,
+   "bn": "চতুর্থ অধ্যায় · মায়া ও জীবাত্মা",
+   "count": 22,
+   "from": 1,
+   "to": 22,
+   "withBn": 22,
+   "aligned": 22
+  },
+  {
+   "id": 5,
+   "bn": "পঞ্চম অধ্যায় · বিদ্যা ও অবিদ্যা",
+   "count": 14,
+   "from": 1,
+   "to": 14,
+   "withBn": 14,
+   "aligned": 14
+  },
+  {
+   "id": 6,
+   "bn": "ষষ্ঠ অধ্যায় · ঈশ্বর ও মুক্তি",
+   "count": 23,
+   "from": 1,
+   "to": 23,
+   "withBn": 23,
+   "aligned": 23
+  }
+ ]
+}

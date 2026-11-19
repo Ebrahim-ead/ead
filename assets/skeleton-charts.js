@@ -362,9 +362,13 @@
       safeFetchJSON(prefix + "assets/grantho/data/samaveda/index.json"),
       safeFetchJSON(prefix + "assets/grantho/data/atharvaveda/index.json"),
       safeFetchJSON(prefix + "assets/grantho/data/yajurveda-shukla/index.json"),
-      safeFetchJSON(prefix + "assets/grantho/data/gita/index.json")
+      safeFetchJSON(prefix + "assets/grantho/data/gita/index.json"),
+      safeFetchJSON(prefix + "assets/grantho/data/shvetashvatara/index.json"),
+      safeFetchJSON(prefix + "assets/grantho/data/prashna/index.json"),
+      safeFetchJSON(prefix + "assets/grantho/data/chandogya/index.json"),
+      safeFetchJSON(prefix + "assets/grantho/data/brihadaranyaka/index.json")
     ]).then(function (res) {
-      var quran = res[0], hadith = res[1], bnBible = res[2], enBible = res[3], rig = res[4], sama = res[5], ath = res[6], yaj = res[7], gita = res[8];
+      var quran = res[0], hadith = res[1], bnBible = res[2], enBible = res[3], rig = res[4], sama = res[5], ath = res[6], yaj = res[7], gita = res[8], shv = res[9], pra = res[10], cha = res[11], bri = res[12];
       var items = [
         { label: "হাদিস (৭ কিতাব)", value: (hadith && hadith.total) || 0, unit: "হাদিস", group: "islam", href: prefix + "hadith.html", color: "var(--chart-c1)" },
         { label: "English Bible (NAB)", value: (enBible && enBible.total) || 0, unit: "পদ", group: "christian", href: prefix + "grantho/christian/english-bible.html", color: "var(--chart-c2)" },
@@ -374,7 +378,11 @@
         { label: "অথর্ববেদ সংহিতা", value: (ath && ath.total) || 0, unit: "মন্ত্র", group: "hindu", href: prefix + "grantho/hindu/atharvaveda.html", color: "var(--chart-c3)" },
         { label: "সামবেদ সংহিতা", value: (sama && sama.total) || 0, unit: "মন্ত্র", group: "hindu", href: prefix + "grantho/hindu/samaveda.html", color: "var(--chart-c3)" },
         { label: "শুক্ল যজুর্বেদ", value: (yaj && yaj.total) || 0, unit: "মন্ত্র", group: "hindu", href: prefix + "grantho/hindu/yajurveda-shukla.html", color: "var(--chart-c3)" },
-        { label: "শ্রীমদ্ভগবদ্গীতা", value: (gita && gita.total) || 0, unit: "শ্লোক", group: "hindu", href: prefix + "grantho/hindu/gita.html", color: "var(--chart-c3)" }
+        { label: "শ্রীমদ্ভগবদ্গীতা", value: (gita && gita.total) || 0, unit: "শ্লোক", group: "hindu", href: prefix + "grantho/hindu/gita.html", color: "var(--chart-c3)" },
+        { label: "ছান্দোগ্য উপনিষদ", value: (cha && cha.total) || 0, unit: "মন্ত্র", group: "hindu", href: prefix + "grantho/hindu/chandogya.html", color: "var(--chart-c3)" },
+        { label: "বৃহদারণ্যক উপনিষদ", value: (bri && bri.total) || 0, unit: "মন্ত্র", group: "hindu", href: prefix + "grantho/hindu/brihadaranyaka.html", color: "var(--chart-c3)" },
+        { label: "শ্বেতাশ্বতর উপনিষদ", value: (shv && shv.total) || 0, unit: "মন্ত্র", group: "hindu", href: prefix + "grantho/hindu/shvetashvatara.html", color: "var(--chart-c3)" },
+        { label: "প্রশ্ন উপনিষদ", value: (pra && pra.total) || 0, unit: "মন্ত্র", group: "hindu", href: prefix + "grantho/hindu/prashna.html", color: "var(--chart-c3)" }
       ].filter(function (x) { return x.value > 0; });
 
       if (!items.length) return;
@@ -409,7 +417,7 @@
           items: [
             { label: "খ্রিস্টান (বাইবেল বাংলা+ইংরেজি)", value: chrisSum, href: prefix + "grantho/christian.html", color: "var(--chart-c2)" },
             { label: "ইসলাম (কুরআন ও হাদিস)", value: islamSum, href: prefix + "grantho/islam.html", color: "var(--chart-c1)" },
-            { label: "হিন্দু (গীতা ও বেদ)", value: hinduSum, href: prefix + "grantho/hindu.html", color: "var(--chart-c3)" }
+            { label: "হিন্দু (গীতা, বেদ ও উপনিষদ)", value: hinduSum, href: prefix + "grantho/hindu.html", color: "var(--chart-c3)" }
           ].filter(function (x) { return x.value > 0; })
         });
       }

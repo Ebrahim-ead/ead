@@ -1,0 +1,124 @@
+{
+ "slug": "chandogya",
+ "bn": "ছান্দোগ্য উপনিষদ",
+ "en": "Chandogya Upanishad",
+ "total": 628,
+ "withBn": 628,
+ "withSk": 628,
+ "withEn": 628,
+ "suktaTotal": 154,
+ "verseWord": "মন্ত্র",
+ "groupWord": "খণ্ড",
+ "chword": "অধ্যায়",
+ "skSrc": "মূল সংস্কৃত পাঠ — বহুমূল নিরীক্ষিত (sanskritdocuments.org chhaandogya.itx, GRETIL ও dharma-granth দেবনাগরী)",
+ "bnSrc": "বাংলা সরলার্থ — ebanglalibrary.com («ছান্দোগ্য উপনিষদ»)",
+ "enSrc": "ইংরেজি অনুবাদ — F. Max Müller (Sacred Books of the East, Vol. 1, 1879)",
+ "note": "৮ অধ্যায় ও ১৫৪ খণ্ডের সম্পূর্ণ ৬২৮ মন্ত্র মূল সংস্কৃত, বাংলা সরলার্থ ও ইংরেজি অনুবাদসহ; শুরুতে শান্তিপাঠ ও সূচনা আলাদা ব্লকে রাখা হয়েছে।",
+ "chapters": [
+  {
+   "id": 1,
+   "bn": "প্রথম অধ্যায় · ওঙ্কার ও উদ্‌গীথ-উপাসনা",
+   "count": 104,
+   "from": 1,
+   "to": 104,
+   "withBn": 104,
+   "suktaCount": 13,
+   "aligned": 13,
+   "grid": {
+    "count": 13
+   },
+   "prefaceCount": 1
+  },
+  {
+   "id": 2,
+   "bn": "দ্বিতীয় অধ্যায় · সামোপাসনা ও ওঙ্কার-মহিমা",
+   "count": 82,
+   "from": 1,
+   "to": 82,
+   "withBn": 82,
+   "suktaCount": 24,
+   "aligned": 24,
+   "grid": {
+    "count": 24
+   }
+  },
+  {
+   "id": 3,
+   "bn": "তৃতীয় অধ্যায় · মধুবিদ্যা ও শাণ্ডিল্য-বিদ্যা",
+   "count": 94,
+   "from": 1,
+   "to": 94,
+   "withBn": 94,
+   "suktaCount": 19,
+   "aligned": 19,
+   "grid": {
+    "count": 19
+   }
+  },
+  {
+   "id": 4,
+   "bn": "চতুর্থ অধ্যায় · সংবর্গ-বিদ্যা ও সত্যকাম-কথা",
+   "count": 78,
+   "from": 1,
+   "to": 78,
+   "withBn": 78,
+   "suktaCount": 17,
+   "aligned": 17,
+   "grid": {
+    "count": 17
+   }
+  },
+  {
+   "id": 5,
+   "bn": "পঞ্চম অধ্যায় · প্রাণ-সংবাদ ও পঞ্চাগ্নি-বিদ্যা",
+   "count": 88,
+   "from": 1,
+   "to": 88,
+   "withBn": 88,
+   "suktaCount": 24,
+   "aligned": 24,
+   "grid": {
+    "count": 24
+   }
+  },
+  {
+   "id": 6,
+   "bn": "ষষ্ঠ অধ্যায় · সৎ-বিদ্যা ও «তৎ ত্বম্ অসি»",
+   "count": 69,
+   "from": 1,
+   "to": 69,
+   "withBn": 69,
+   "suktaCount": 16,
+   "aligned": 16,
+   "grid": {
+    "count": 16
+   }
+  },
+  {
+   "id": 7,
+   "bn": "সপ্তম অধ্যায় · নারদ-সনৎকুমার সংবাদ ও ভূমা-বিদ্যা",
+   "count": 51,
+   "from": 1,
+   "to": 51,
+   "withBn": 51,
+   "suktaCount": 26,
+   "aligned": 26,
+   "grid": {
+    "count": 26
+   }
+  },
+  {
+   "id": 8,
+   "bn": "অষ্টম অধ্যায় · দহর-বিদ্যা ও প্রজাপতি-ইন্দ্র সংবাদ",
+   "count": 62,
+   "from": 1,
+   "to": 62,
+   "withBn": 62,
+   "suktaCount": 15,
+   "aligned": 15,
+   "grid": {
+    "count": 15
+   }
+  }
+ ]
+}

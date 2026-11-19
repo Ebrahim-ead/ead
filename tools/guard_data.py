@@ -23,9 +23,11 @@ BASE_FILE = DATA / "_baseline.json"
 TOL = 0.85          # ১৫%-এর বেশি কমলেই সন্দেহ
 
 # সাইটে কেবল এই গ্রন্থগুলো থাকবে (ব্যবহারকারীর সিদ্ধান্ত)।
-ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "atharvaveda", "bible")
+ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "atharvaveda",
+          "shvetashvatara", "prashna", "chandogya", "brihadaranyaka", "bible")
 KEEP_PAGES = {"gita.html", "rigveda.html", "samaveda.html", "veda.html", "atharvaveda.html",
-              "yajurveda-shukla.html", "bible.html", "english-bible.html"}
+              "yajurveda-shukla.html", "shvetashvatara.html", "prashna.html",
+              "chandogya.html", "brihadaranyaka.html", "bible.html", "english-bible.html"}
 
 
 def load_json(p, default=None):
