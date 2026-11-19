@@ -332,16 +332,26 @@
     if (b0) b0.addEventListener("click", function () { showBookView(bookId); });
   }
 
+  var searchRendered = false;
+  function clearSearch(keepInput) {
+    searchRendered = false;
+    if (!keepInput) {
+      state.q = "";
+      if (searchEl) searchEl.value = "";
+    }
+    if (hitsEl) hitsEl.textContent = "";
+  }
+
   /* ---------- দৃশ্য: পুস্তক (অধ্যায়-গ্রিড) ---------- */
-  function showBookView(id) {
+  function showBookView(id, keepInput) {
     bookId = id;
     scope = "book"; chapter = null; chapterEn = null; chapterId = 0;
     paintToken++;
+    clearSearch(keepInput);
     if (bodyEl) bodyEl.innerHTML = '<p class="g-empty g-pick">উপরের তালিকা থেকে একটি অধ্যায় বেছে নিন — পদগুলো নিচে দেখা যাবে।</p>';
     syncHead();
     if (bnNoteEl) bnNoteEl.hidden = true;
     if (langBox) langBox.hidden = true;
-    if (hitsEl) hitsEl.textContent = "";
     renderChapterGrid();
     refreshCrumb();
     enNote();
@@ -366,9 +376,9 @@
     while (bk && prv >= 1 && !hasChapter(bk, prv)) prv--;
     var pTxt = "‹ আগের", nTxt = "পরের ›";
     if (atCh && prv >= 1) pTxt = "‹ " + GW + " " + bn(prv);
-    else if (i > 0) pTxt = "‹ " + esc(bs[i - 1].bn);
+    else if (i > 0) pTxt = "‹ " + bs[i - 1].bn;
     if (atCh && nxt <= nch) nTxt = GW + " " + bn(nxt) + " ›";
-    else if (i >= 0 && i < bs.length - 1) nTxt = esc(bs[i + 1].bn) + " ›";
+    else if (i >= 0 && i < bs.length - 1) nTxt = bs[i + 1].bn + " ›";
     var canPrev = (atCh && prv >= 1) || i > 0;
     var canNext = (atCh && nxt <= nch) || (i >= 0 && i < bs.length - 1);
     if (prevBtn) { prevBtn.disabled = !canPrev; prevBtn.textContent = canPrev ? pTxt : "‹ আগের"; }
@@ -464,25 +474,31 @@
 
   function renderVerses() {
     /* পুস্তক-দৃশ্যে (কোনো অধ্যায় খোলা নেই) সার্চ তবুও চলবে — নইলে পাঠক
-       তালিকায় থেমে সার্চ লিখে কিছুই পান না। অধ্যায় খোলা থাকলে নিচের
-       স্বাভাবিক পথেই যায়। */
-    if (!chapter && !(state.q && state.q.length >= 2)) return;
+       তালিকায় থেমে সার্চ লিখে কিছুই পান না। সার্চ মুছে ফেললে পুস্তক-দৃশ্য ফিরবে। */
+    if (!chapter && !(state.q && state.q.length >= 2)) {
+      if (searchRendered && scope === "book" && bookId) showBookView(bookId, true);
+      return;
+    }
 
     /* খোঁজার অবস্থায় থাকলে পুরো বাইবেলের ফলাফল */
     if (state.q && state.q.length >= 2) {
+      var qSnap = state.q;
+      searchRendered = true;
       if (bnNoteEl) bnNoteEl.hidden = true;
       bodyEl.innerHTML = window.EadSkeleton
         ? window.EadSkeleton.readerSkeleton({ cards: 3, head: false, label: "খোঁজা হচ্ছে…" })
         : '<p class="g-loading">খোঁজা হচ্ছে…</p>';
       loadAll().then(function () {
-        var r = searchHTML(state.q);
+        if (state.q !== qSnap) return;
+        var r = searchHTML(qSnap);
         bodyEl.innerHTML = r.html;
-        if (titleEl) titleEl.textContent = "খোঁজা: " + state.q;
+        if (titleEl) titleEl.textContent = "খোঁজা: " + qSnap;
         if (metaEl) metaEl.textContent = bn(r.total) + "টি " + VW;
         if (hitsEl) hitsEl.textContent = r.total ? bn(r.total) + "টি " + VW + " পাওয়া গেছে" : "কিছু মেলেনি";
       });
       return;
     }
+    searchRendered = false;
 
     var all = chapter.verses;
     if (state.onlyBn) all = all.filter(function (v) { return v.bn; });
@@ -573,6 +589,7 @@
     chapterId = id;
     scope = "chapter";
     paintToken++;
+    clearSearch();
     save({ last: id, lastbook: bookId, scope: "chapter" });
     renderChapterGrid();
     refreshCrumb();

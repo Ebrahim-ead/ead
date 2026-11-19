@@ -1,5 +1,5 @@
 {
- "_commit": "e06a146e0bc1d8362800258fc3af59ecdb278383",
+ "_commit": "38e2c29159081901d80817abe1c70945d9b20cb6",
  "_note": "এটি ভালো-জানা ডেটার হিসাব; এর চেয়ে ১৫%-এর বেশি ছোট হলে guard_data.py ফিরিয়ে আনে।",
  "slugs": {
   "anguttara-nikaya": {
@@ -12,25 +12,10 @@
    "withBn": 1913,
    "chapters": 20
   },
-  "bhavishya-purana": {
-   "total": 27722,
-   "withBn": 0,
-   "chapters": 13
-  },
   "bible": {
    "total": 31130,
    "withBn": 30782,
    "chapters": 66
-  },
-  "brahma-purana": {
-   "total": 13680,
-   "withBn": 0,
-   "chapters": 5
-  },
-  "brahmanda-purana": {
-   "total": 13786,
-   "withBn": 0,
-   "chapters": 3
   },
   "brihadaranyaka": {
    "total": 435,
@@ -51,11 +36,6 @@
    "total": 34,
    "withBn": 34,
    "chapters": 3
-  },
-  "garuda-purana": {
-   "total": 11971,
-   "withBn": 0,
-   "chapters": 4
   },
   "gita": {
    "total": 701,
@@ -101,11 +81,6 @@
    "total": 49,
    "withBn": 49,
    "chapters": 4
-  },
-  "vishnu-purana": {
-   "total": 6315,
-   "withBn": 0,
-   "chapters": 6
   },
   "yajurveda-shukla": {
    "total": 1791,

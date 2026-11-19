@@ -237,7 +237,7 @@ async function testPage(file) {
     if (frontEl && !ch.preface) errs.push('ভূমিকা নেই অথচ ব্লক রেন্ডার হয়েছে');
     if (frontEl && frontEl.open) errs.push('ভূমিকা-ব্লক খোলা অবস্থায় আছে (কল্যাপ্স থাকার কথা)');
 
-    // ইংরেজি অনুবাদ (বাইবেল / উপনিষদ / বিষ্ণু পুরাণ): ডেটা থাকলে রেন্ডার, টগল ও নম্বর-মিল যাচাই
+    // ইংরেজি অনুবাদ (বাইবেল ও উপনিষদ): ডেটা থাকলে রেন্ডার, টগল ও নম্বর-মিল যাচাই
     const enPath = path.join(dataDir, 'en', `ch${idx.chapters[0].id}.json`);
     if (fs.existsSync(enPath)) {
       const en = JSON.parse(fs.readFileSync(enPath, 'utf8'));
@@ -788,13 +788,24 @@ async function testMahabharata() {
   await clickEd('sa');
   if (!doc.querySelector('#g-body .g-v-sk')) errs.push('সংস্কৃত শ্লোক রেন্ডার হয়নি');
   await clickEd('bn');
-  // শল্যপর্ব (পর্ব ৯) বাংলায় খুলে অনুপস্থিত-বার্তা যাচাই
+  // পর্বে সার্চ → অন্য পর্বে গেলে পুরোনো সার্চ মুছে গ্রিড/শিরোনাম ফিরে আসা
+  const mbhSearch = doc.getElementById('g-search');
+  if (mbhSearch) {
+    mbhSearch.value = 'যুধিষ্ঠির';
+    mbhSearch.dispatchEvent(new window.Event('input', { bubbles: true }));
+    await wait(600);
+    if (!doc.querySelector('#g-body .g-v.hit, #g-body .g-hit-head')) errs.push('মহাভারত সার্চে ফলাফল আসেনি');
+  }
+  // শল্যপর্ব (পর্ব ৯) বাংলায় খুলে অনুপস্থিত-বার্তা যাচাই ও সার্চ রিসেট যাচাই
   const p9 = doc.querySelector('#g-book-list [data-ch="9"]');
   if (p9) {
     p9.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
     await wait(700);
     const note = doc.getElementById('g-en-note');
     if (!note || note.hidden) errs.push('শল্যপর্বে বাংলা অনুপস্থিত অধ্যায় ৪৬–৬৫-এর সতর্কবার্তা দেখা যায়নি');
+    if (note && note.querySelector('[data-sw="bn"]')) errs.push('বাংলা সংস্করণে নিজেকেই বেছে নেওয়ার বাড়তি বাটন দেখাচ্ছে');
+    if (mbhSearch && mbhSearch.value !== '') errs.push('পর্ব বদলালেও পুরোনো সার্চ লেখা থেকে গেছে');
+    if (!doc.querySelector('#g-body .g-pick')) errs.push('পর্ব বদলালে পর্ব-ভিউ বার্তা ফেরেনি');
   }
   console.log(`${errs.length ? '✗' : '✓'} ${rel} (১৮ পর্ব · বাংলা/ইংরেজি/সংস্কৃত)`);
   for (const e of errs) console.log(`   ! ${e}`);
@@ -851,9 +862,55 @@ function testGranthoAssetsAndCss() {
   return errs.length === 0;
 }
 
+async function testBookViewSearch() {
+  for (const rel of ['grantho/hindu/samaveda.html', 'grantho/christian/bible.html']) {
+    const file = path.join(ROOT, rel);
+    const html = fs.readFileSync(file, 'utf8');
+    const slug = path.basename(file, '.html');
+    const dataDir = path.join(ROOT, 'assets/grantho/data', slug);
+    const errs = [];
+    const dom = new JSDOM(html, {
+      runScripts: 'dangerously', pretendToBeVisual: true,
+      url: `https://example.invalid/ead/${rel}`,
+    });
+    const { window } = dom;
+    window.scrollTo = () => {};
+    window.fetch = async (u) => {
+      const su = String(u);
+      const name = su.split('/').pop().split('?')[0];
+      const fp = su.includes('/en/') ? path.join(dataDir, 'en', name) : path.join(dataDir, name);
+      const ok = fs.existsSync(fp);
+      return { ok, status: ok ? 200 : 404, json: async () => (ok ? JSON.parse(fs.readFileSync(fp, 'utf8')) : null) };
+    };
+    const engine = /bible-reader\.js/.test(html) ? 'bible-reader.js' : 'grantho.js';
+    window.eval(fs.readFileSync(path.join(ROOT, 'assets/grantho', engine), 'utf8'));
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    await wait(500);
+    const doc = window.document;
+    const gs = doc.getElementById('g-search');
+    if (!doc.querySelector('#g-body .g-pick')) errs.push('শুরুতে বই-ভিউ (.g-pick) আসেনি');
+    if (gs) {
+      gs.value = slug === 'bible' ? 'ঈশ্বর' : 'অগ্নি';
+      gs.dispatchEvent(new window.Event('input', { bubbles: true }));
+      await wait(700);
+      if (!doc.querySelector('#g-body .g-v.hit')) errs.push('বই-ভিউ অবস্থায় সার্চ কাজ করেনি');
+      gs.value = '';
+      gs.dispatchEvent(new window.Event('input', { bubbles: true }));
+      await wait(100);
+      if (!doc.querySelector('#g-body .g-pick')) errs.push('সার্চ মুছলেও বই-ভিউ (.g-pick) ফেরেনি');
+    }
+    console.log(`${errs.length ? '✗' : '✓'} ${rel} — বই-ভিউ সার্চ ও রিসেট`);
+    for (const e of errs) console.log(`   ! ${e}`);
+    window.close();
+    if (errs.length) return false;
+  }
+  return true;
+}
+
 let ok = true;
 for (const f of pages()) ok = (await testPage(f)) && ok;
 ok = (await testMahabharata()) && ok;
+ok = (await testBookViewSearch()) && ok;
 ok = testGranthoAssetsAndCss() && ok;
 for (const f of hubPages()) ok = (await testHub(f)) && ok;
 for (const f of essayPages()) ok = testReaderTools(f) && ok;

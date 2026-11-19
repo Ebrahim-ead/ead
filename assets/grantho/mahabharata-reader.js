@@ -82,7 +82,19 @@
   var scope = "book";   // "book" | "chapter"
   var edition = "bn";   // "bn" | "en" | "sa"
   var query = "";
+  var inSearch = false;
+  var searchTimer = 0;
   var loadToken = 0;
+
+  function clearSearch(keepInput) {
+    clearTimeout(searchTimer);
+    inSearch = false;
+    if (!keepInput) {
+      query = "";
+      if (searchEl) searchEl.value = "";
+    }
+    if (hitsEl) hitsEl.textContent = "";
+  }
 
   function parvaById(id) {
     if (!index || !index.parvas) return null;
@@ -210,9 +222,12 @@
     var pv = parvaById(parvaId);
     if (!pv) return;
     if (scope === "chapter") {
+      if (query.length >= 2) { runSearch(); return; }
       var ids = allChapterIds(pv, edition);
       var target = ids.indexOf(chapterId) > -1 ? chapterId : (ids[0] || 1);
       openChapter(target);
+    } else if (query.length >= 2) {
+      runSearch();
     } else {
       showParvaView(parvaId);
     }
@@ -287,11 +302,12 @@
     var em = edMeta(pv, edition);
     if (em && em.note) {
       noteEl.hidden = false;
+      var btns = [];
+      if (edition !== "en") btns.push('<button type="button" data-sw="en">English (Ganguli)-তে পড়ুন</button>');
+      if (edition !== "sa") btns.push('<button type="button" data-sw="sa">সংস্কৃত মূলে পড়ুন</button>');
+      if (edition !== "bn") btns.push('<button type="button" data-sw="bn">বাংলায় (কালীপ্রসন্ন) পড়ুন</button>');
       noteEl.innerHTML = '<b>উৎস-তথ্য।</b> ' + esc(em.note) +
-        '<div class="g-en-note-act">' +
-        '<button type="button" data-sw="en">English (Ganguli)-তে পড়ুন</button>' +
-        '<button type="button" data-sw="sa">সংস্কৃত মূলে পড়ুন</button>' +
-        '</div>';
+        (btns.length ? '<div class="g-en-note-act">' + btns.join("") + '</div>' : "");
       noteEl.querySelectorAll("[data-sw]").forEach(function (btn) {
         btn.addEventListener("click", function () { switchEdition(btn.dataset.sw); });
       });
@@ -454,11 +470,12 @@
   }
 
   /* ---------- পর্বের দৃশ্য ও অধ্যায় খোলা ---------- */
-  function showParvaView(id) {
+  function showParvaView(id, keepInput) {
     parvaId = id;
     scope = "book";
     chapterId = 0;
     loadToken++;
+    clearSearch(keepInput);
     save({ parva: id, scope: "book", ed: edition });
     renderParvas();
     renderGrid();
@@ -467,17 +484,18 @@
     syncHead(null);
     setPrevNext();
     syncFold();
-    if (bodyEl && query.length < 2) {
+    if (bodyEl) {
       bodyEl.innerHTML = '<p class="g-empty g-pick">উপরের গ্রিড থেকে একটি ' +
         (edition === "en" ? "পরিচ্ছেদ" : "অধ্যায়") + ' বেছে নিন — সম্পূর্ণ পাঠ নিচে খুলবে।</p>';
     }
   }
 
-  function openChapter(id) {
+  function openChapter(id, keepInput) {
     var pv = parvaById(parvaId);
     if (!pv) return;
     chapterId = +id;
     scope = "chapter";
+    clearSearch(keepInput);
     var tok = ++loadToken;
     save({ parva: parvaId, ch: chapterId, scope: "chapter", ed: edition });
     renderParvas();
@@ -542,6 +560,7 @@
     var tok = ++loadToken;
     var q = query;
     var low = q.toLowerCase();
+    inSearch = true;
     bodyEl.innerHTML = window.EadSkeleton
       ? window.EadSkeleton.readerSkeleton({ cards: 3, head: false, label: "খোঁজা হচ্ছে…" })
       : '<p class="g-loading">খোঁজা হচ্ছে…</p>';
@@ -631,17 +650,18 @@
     }
     if (prevBtn) prevBtn.addEventListener("click", function () { step(-1); });
     if (nextBtn) nextBtn.addEventListener("click", function () { step(1); });
-    var timer = 0;
     if (searchEl) {
       searchEl.addEventListener("input", function () {
         query = searchEl.value.trim();
-        clearTimeout(timer);
+        clearTimeout(searchTimer);
         if (query.length >= 2) {
-          timer = setTimeout(runSearch, 180);
+          searchTimer = setTimeout(runSearch, 180);
         } else {
           if (hitsEl) hitsEl.textContent = "";
-          if (scope === "chapter") openChapter(chapterId);
-          else showParvaView(parvaId);
+          if (inSearch) {
+            if (scope === "chapter") openChapter(chapterId, true);
+            else showParvaView(parvaId, true);
+          }
         }
       });
     }

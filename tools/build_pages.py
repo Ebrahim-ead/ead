@@ -20,8 +20,7 @@ OUT = ROOT / "grantho/hindu"
 # ---- সাইটে এখন কোন গ্রন্থ থাকবে -------------------------------------------
 ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "atharvaveda",
           "shvetashvatara", "prashna", "chandogya", "brihadaranyaka",
-          "mahabharata", "brahma-purana", "vishnu-purana", "bhavishya-purana",
-          "garuda-purana", "brahmanda-purana",
+          "mahabharata",
           "bible",
           "dhammapada", "digha-nikaya", "majjhima-nikaya", "samyutta-nikaya",
           "anguttara-nikaya", "vinaya-vibhanga")
@@ -51,46 +50,6 @@ BOOKS = {
         word="মন্ত্র", chword="মণ্ডল",
         src="বাংলা অনুবাদ ebanglalibrary.com থেকে (অনুবাদ: রমেশচন্দ্র দত্ত)।",
         excerpt="দেবতাদের স্তবসমূহ — রমেশচন্দ্র দত্তের বাংলা অনুবাদে ১০ মণ্ডলের ১০,৪৫৬ মন্ত্র।",
-    ),
-    "brahma-purana": dict(
-        kind="purana", title=("ব্রহ্ম", "পুরাণ"), hub="purana.html", hubname="পুরাণ",
-        kicker="হিন্দু · পুরাণ · ব্রহ্ম", crumb="ব্রহ্ম পুরাণ",
-        intro="ব্রহ্ম মহাপুরাণ (আদিপুরাণ) — ৫ অংশ ও ২৪৬ অধ্যায়ের ১৩,৬৮০টি সম্পূর্ণ সংস্কৃত শ্লোক (দেবনাগরী মূল পাঠ ও বক্তা-নির্দেশসহ)।",
-        word="শ্লোক", chword="অংশ", groupword="অধ্যায়",
-        src="মূল সংস্কৃত পাঠ (দেবনাগরী ও বক্তা-নির্দেশ): মহাপুরাণ সংকলন (GRETIL / Sanskrtam, ৫ অংশ, ২৪৬ অধ্যায়, ১৩,৬৮০ শ্লোক)। প্রামাণ্য সম্পূর্ণ বাংলা বা ইংরেজি অনুবাদ যুক্ত না হওয়ায় অনুমান করে কিছু বসানো হয়নি।",
-        excerpt="৫ অংশ ও ২৪৬ অধ্যায়ে ১৩,৬৮০ সংস্কৃত শ্লোক।",
-    ),
-    "vishnu-purana": dict(
-        kind="purana", title=("বিষ্ণু", "পুরাণ"), hub="purana.html", hubname="পুরাণ",
-        kicker="হিন্দু · পুরাণ · বিষ্ণু", crumb="বিষ্ণু পুরাণ",
-        intro="শ্রীবিষ্ণু মহাপুরাণ — ৬ অংশ ও ১২৬ অধ্যায়ের ৬,৩১৫টি সম্পূর্ণ সংস্কৃত শ্লোক (দেবনাগরী) এবং Manmatha Nath Dutt-এর (১৮৯৬) সম্পূর্ণ ইংরেজি গদ্য অনুবাদ ও ২৫৯টি পাদটীকাসহ।",
-        word="শ্লোক", chword="অংশ", groupword="অধ্যায়",
-        src="মূল সংস্কৃত পাঠ (দেবনাগরী): মহাপুরাণ সংকলন (৬ অংশ, ১২৬ অধ্যায়, ৬,৩১৫ শ্লোক)। সম্পূর্ণ ইংরেজি অনুবাদ ও ২৫৯টি পাদটীকা: Manmatha Nath Dutt, Prose English Translation of the Vishnupuranam (Calcutta, 1896; Project Gutenberg public domain)। প্রামাণ্য সম্পূর্ণ বাংলা অনুবাদ যুক্ত না হওয়ায় অনুমান করে কিছু বসানো হয়নি।",
-        excerpt="৬ অংশ ও ১২৬ অধ্যায়ে ৬,৩১৫ শ্লোক — সংস্কৃত মূল ও ইংরেজি অনুবাদসহ।",
-    ),
-    "bhavishya-purana": dict(
-        kind="purana", title=("ভবিষ্য", "পুরাণ"), hub="purana.html", hubname="পুরাণ",
-        kicker="হিন্দু · পুরাণ · ভবিষ্য", crumb="ভবিষ্য পুরাণ",
-        intro="ভবিষ্য মহাপুরাণ — ব্রাহ্ম, মধ্যম, প্রতিসর্গ ও উত্তর পর্বের ১৩ খণ্ড এবং সম্পূর্ণ ৫৮৫ অধ্যায়ের ২৭,৭২২টি সংস্কৃত শ্লোক (দেবনাগরী) ও অধ্যায়-পুষ্পিকাসহ।",
-        word="শ্লোক", chword="খণ্ড", groupword="অধ্যায়",
-        src="মূল সংস্কৃত পাঠ (দেবনাগরী ও অধ্যায়-পুষ্পিকা): সংস্কৃত উইকিসংকলন (sa.wikisource.org — ভবিষ্যপুরাণম্, ৪ পর্ব / ১৩ খণ্ড, সম্পূর্ণ ৫৮৫ অধ্যায়, ২৭,৭২২ শ্লোক)। প্রামাণ্য সম্পূর্ণ বাংলা বা ইংরেজি অনুবাদ ডিজিটাল উৎসে না থাকায় অনুমান করে কিছু বসানো হয়নি।",
-        excerpt="১৩ খণ্ড ও ৫৮৫ অধ্যায়ে ২৭,৭২২ সংস্কৃত শ্লোক।",
-    ),
-    "garuda-purana": dict(
-        kind="purana", title=("গরুড়", "পুরাণ"), hub="purana.html", hubname="পুরাণ",
-        kicker="হিন্দু · পুরাণ · গরুড়", crumb="গরুড় পুরাণ",
-        intro="গরুড় মহাপুরাণ — আচারখণ্ড, প্রেতকল্প ও ব্রহ্মকাণ্ড মিলিয়ে ৪ খণ্ড ও ৩১৮ অধ্যায়ের ১১,৯৭১টি সম্পূর্ণ সংস্কৃত শ্লোক (দেবনাগরী) ও বক্তা-নির্দেশসহ।",
-        word="শ্লোক", chword="খণ্ড", groupword="অধ্যায়",
-        src="মূল সংস্কৃত পাঠ (দেবনাগরী ও বক্তা-নির্দেশ): মহাপুরাণ সংকলন (পূর্বখণ্ড, প্রেতকল্প ও ব্রহ্মকাণ্ড — ৩১৮ অধ্যায়, ১১,৯৭১ শ্লোক)। প্রামাণ্য সম্পূর্ণ বাংলা বা ইংরেজি অনুবাদ যুক্ত না হওয়ায় অনুমান করে কিছু বসানো হয়নি।",
-        excerpt="৪ খণ্ড ও ৩১৮ অধ্যায়ে ১১,৯৭১ সংস্কৃত শ্লোক।",
-    ),
-    "brahmanda-purana": dict(
-        kind="purana", title=("ব্রহ্মাণ্ড", "পুরাণ"), hub="purana.html", hubname="পুরাণ",
-        kicker="হিন্দু · পুরাণ · ব্রহ্মাণ্ড", crumb="ব্রহ্মাণ্ড পুরাণ",
-        intro="ব্রহ্মাণ্ড মহাপুরাণ — পূর্ব, মধ্য ও উত্তরভাগের ৩ ভাগ এবং ১৫৬ অধ্যায়ের ১৩,৭৮৬টি সম্পূর্ণ সংস্কৃত শ্লোক (দেবনাগরী) ও বক্তা-নির্দেশসহ।",
-        word="শ্লোক", chword="ভাগ", groupword="অধ্যায়",
-        src="মূল সংস্কৃত পাঠ (দেবনাগরী ও বক্তা-নির্দেশ): মহাপুরাণ সংকলন (৩ ভাগ, ১৫৬ অধ্যায়, ১৩,৭৮৬ শ্লোক)। প্রামাণ্য সম্পূর্ণ বাংলা বা ইংরেজি অনুবাদ যুক্ত না হওয়ায় অনুমান করে কিছু বসানো হয়নি।",
-        excerpt="৩ ভাগ ও ১৫৬ অধ্যায়ে ১৩,৭৮৬ সংস্কৃত শ্লোক।",
     ),
 }
 
@@ -166,13 +125,6 @@ BOOKS["brihadaranyaka"] = dict(
     word="মন্ত্র", chword="অধ্যায়", groupword="ব্রাহ্মণ",
     src="মূল সংস্কৃত পাঠ GRETIL ও প্রামাণ্য দেবনাগরী সংস্করণ মিলিয়ে নিরীক্ষিত; বাংলা সরলার্থ — স্বামী গম্ভীরানন্দ (উদ্বোধন কার্যালয়); ইংরেজি অনুবাদ — F. Max Müller (SBE Vol. 15, 1884) ও Robert E. Hume (1921, VI.4)।",
     excerpt="৬ অধ্যায় ও ৪৭ ব্রাহ্মণের ৪৩৫ মন্ত্র — মূল সংস্কৃত, বাংলা সরলার্থ ও ইংরেজি অনুবাদসহ।")
-BOOKS["brahma"] = dict(
-    kind="purana", title=("ব্রহ্ম পুরাণ", ""), hub="purana.html", hubname="পুরাণ",
-    kicker="হিন্দু · পুরাণ · ব্রহ্ম", crumb="ব্রহ্ম পুরাণ",
-    intro="ব্রহ্ম পুরাণের বাংলা অনুবাদ — অষ্টাদশ পুরাণ সমগ্র (পৃথ্বীরাজ সেন)।",
-    word="শ্লোক", chword="অধ্যায়",
-    src="বাংলা অনুবাদ ebanglalibrary.com থেকে (অষ্টাদশ পুরাণ সমগ্র, সম্পাদনা: পৃথ্বীরাজ সেন)।",
-    excerpt="সৃষ্টি, ব্রহ্মাণ্ড ও তীর্থ-মাহাত্ম্যের পুরাণ — বাংলা অনুবাদসহ।")
 
 # ---- বৌদ্ধ ধর্মগ্রন্থ (ত্রিপিটক) ------------------------------------------
 BOOKS["dhammapada"] = dict(
@@ -941,29 +893,6 @@ def main():
                          "যজ্ঞের বিধি ও মন্ত্রের বেদ — উৎস থেকে পাঠ নামানো হচ্ছে।", soon=True)
     replace_grid("veda.html", grid)
 
-    # ---- পুরাণ
-    puranas = []
-    for slug in (x for x in ("brahma-purana", "vishnu-purana", "bhavishya-purana",
-                             "garuda-purana", "brahmanda-purana") if x in ACTIVE):
-        meta = BOOKS[slug]
-        idx = load(slug)
-        if not idx:
-            continue
-        r = make_page(slug, idx, meta)
-        made.append(r)
-        puranas.append((slug, r, meta))
-        print(f"{slug}: {r['total']} শ্লোক · {r['nsuk']} অধ্যায় (en={r['with_en']})")
-    pg = ""
-    for slug, r, m in puranas:
-        name = " ".join(x for x in m["title"] if x)
-        sub_txt = f'{commas(r["total"])} শ্লোক · {commas(r["nsuk"])} অধ্যায়'
-        if r["with_en"]:
-            sub_txt += " · ইংরেজিসহ"
-        pg += card(f"{slug}.html", f'পুরাণ · {name.replace(" পুরাণ", "")}', name,
-                   sub_txt, m["excerpt"])
-    if puranas:
-        replace_grid("purana.html", pg)
-
     # ---- মহাভারত
     mbh_info = None
     if "mahabharata" in ACTIVE and (DATA / "mahabharata" / "index.json").exists():
@@ -1025,7 +954,7 @@ def main():
     #   আগে এই পাতা হাতে লেখা কার্ড ধরে সংখ্যা আপডেট করত, ফলে কার্ডের
     #   গঠন (বড় বিবরণ/বাটন) বদলাতে গেলে হাতে-এডিট ছাড়া উপায় ছিল না —
     #   রি-বিল্ডে সেটা ফিরেও যেত। এখন বেদের মতোই replace_grid দিয়ে তৈরি।
-    if made or puranas or upa_cards:
+    if made or upa_cards:
         hp_cards = ""
         g = load("gita")
         if g:
@@ -1061,16 +990,9 @@ def main():
         if mbh_info:
             hp_cards += card("hindu/mahabharata.html", "হিন্দু · মহাকাব্য", "মহাভারত",
                              f'{commas(mbh_info["nch"])} পর্ব · {commas(mbh_info["sa_shl"])} সংস্কৃত শ্লোক')
-        for slug, r, m in puranas:
-            name = " ".join(x for x in m["title"] if x)
-            sub_txt = f'{commas(r["total"])} শ্লোক · {commas(r["nsuk"])} অধ্যায়'
-            if r["with_en"]:
-                sub_txt += " · ইংরেজিসহ"
-            hp_cards += card(f"hindu/{slug}.html", "হিন্দু · পুরাণ", name, sub_txt)
         if hp_cards:
             replace_grid("hindu.html", hp_cards, sub="")
-        print("হিন্দু-হাব:", sum(r["withbn"] for _, r, _ in vedas), "/",
-              sum(r["total"] for _, r, _ in puranas))
+        print("হিন্দু-হাব:", sum(r["withbn"] for _, r, _ in vedas))
 
     # ---- ইসলাম-হাব: কুরআন ও হাদিসের কার্ড (হাতে লেখা নয়)
     #   সংখ্যা ডেটা থেকেই — পাঠ বাড়লে/কমলে কার্ড নিজেই ঠিক হয়।
@@ -1114,7 +1036,7 @@ def main():
         replace_grid("buddhist.html", bud_cards, sub="")
 
     # ---- খ্রিস্টান: বাংলা বাইবেল
-    built = [(r["slug"], "hindu") for r in made] + ([("purana", "hindu")] if puranas else []) + bud_built
+    built = [(r["slug"], "hindu") for r in made] + bud_built
     if "bible" in ACTIVE:
         idx = load("bible")
         meta = BOOKS.get("bible")

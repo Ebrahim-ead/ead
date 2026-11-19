@@ -67,6 +67,7 @@
   var chapterId = 1;
   var cache = {};            /* "book/chapter" → payload */
   var renderedKey = "";
+  var loadSeq = 0;
   var bookmarks = store(LS.bm) || [];
   var searchHits = [];       /* [{book, chapter, id, ar, en, n}] */
 
@@ -278,9 +279,10 @@
     else history.pushState(null, "", hash);
 
     var key = bookSlug + "/" + id;
+    var seq = ++loadSeq;
     if (cache[key]) {
       if (renderedKey === key && jumpTo && mainEl.querySelector('[data-i="' + jumpTo + '"]')) { scrollToItem(jumpTo); return; }
-      paint(id, cache[key], jumpTo);
+      paint(id, cache[key], jumpTo, replace);
       return;
     }
 
@@ -290,14 +292,19 @@
       : '<div class="h-empty">অধ্যায় লোড হচ্ছে…</div>';
     fetch(DATA + bookSlug + "/" + id + ".json")
       .then(function (r) { return r.json(); })
-      .then(function (d) { cache[key] = d; paint(id, d, jumpTo); })
+      .then(function (d) {
+        if (seq !== loadSeq) return;
+        cache[key] = d;
+        paint(id, d, jumpTo, replace);
+      })
       .catch(function () {
+        if (seq !== loadSeq) return;
         mainEl.innerHTML = '<div class="h-empty">এই অধ্যায়টি লোড করা যায়নি। ' +
           'ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।</div>';
       });
   }
 
-  function paint(id, d, jumpTo) {
+  function paint(id, d, jumpTo, replace) {
     renderedKey = bookSlug + "/" + id;
     var b = book();
     var c = chapter(id) || {};
@@ -341,6 +348,14 @@
     applySettings();
     store(LS.last, { b: bookSlug, c: id });
     if (jumpTo) scrollToItem(jumpTo);
+    else if (!replace && mainEl && mainEl.getBoundingClientRect) {
+      try {
+        window.scrollTo({
+          top: Math.max(0, mainEl.getBoundingClientRect().top + (window.pageYOffset || 0) - 90),
+          behavior: "auto"
+        });
+      } catch (e) {}
+    }
   }
 
   /* ---------------------------------------------------------- *
@@ -401,21 +416,11 @@
       if (at < items.length) {
         setTimeout(step, 0);
       } else {
-        bindItemTools(host);
         applyGradeFilter();
         applySettings();
       }
     }
     step();
-  }
-
-  function bindItemTools(host) {
-    host.querySelectorAll("[data-bm]").forEach(function (btn) {
-      btn.addEventListener("click", function () { toggleBookmark(btn); });
-    });
-    host.querySelectorAll("[data-copy]").forEach(function (btn) {
-      btn.addEventListener("click", function () { copyItem(btn); });
-    });
   }
 
   function scrollToItem(num, tries) {
@@ -490,6 +495,10 @@
       btn.addEventListener("click", function () {
         var p = btn.dataset.goto.split(":");
         if (p[0] !== bookSlug) { bookSlug = p[0]; renderBooks(); renderChapters(); }
+        var bmPanel = document.getElementById("h-bm-panel");
+        var bmBtn = document.getElementById("h-bm-btn");
+        if (bmPanel) bmPanel.hidden = true;
+        if (bmBtn) { bmBtn.classList.remove("on"); bmBtn.setAttribute("aria-expanded", "false"); }
         loadChapter(+p[1], +p[2] || null);
       });
     });
@@ -645,6 +654,7 @@
         btn.addEventListener("click", function () {
           var p = btn.dataset.goto.split(":");
           if (p[0] !== bookSlug) { bookSlug = p[0]; renderBooks(); renderChapters(); }
+          resultsEl.hidden = true;
           loadChapter(+p[1], +p[2]);
         });
       });
@@ -652,11 +662,20 @@
   }
 
   function hl(text, q) {
-    var t = esc(text);
+    var s = String(text || "");
+    var needle = String(q || "").trim();
+    if (!needle) return esc(s);
     try {
-      var safe = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      return t.replace(new RegExp("(" + safe + ")", "gi"), "<mark>$1</mark>");
-    } catch (e) { return t; }
+      var safe = needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      var re = new RegExp(safe, "gi");
+      var out = "", last = 0, m;
+      while ((m = re.exec(s)) !== null) {
+        if (!m[0]) break;
+        out += esc(s.slice(last, m.index)) + "<mark>" + esc(m[0]) + "</mark>";
+        last = m.index + m[0].length;
+      }
+      return out + esc(s.slice(last));
+    } catch (e) { return esc(s); }
   }
 
   function guessBook(name) {
@@ -788,6 +807,14 @@
     if (booksToggleEl && booksWrapEl) {
       booksToggleEl.addEventListener("click", function () {
         setBooksCollapsed(!booksWrapEl.classList.contains("collapsed"), true);
+      });
+    }
+    if (mainEl) {
+      mainEl.addEventListener("click", function (e) {
+        var bmBtn = e.target.closest && e.target.closest("[data-bm]");
+        if (bmBtn) { toggleBookmark(bmBtn); return; }
+        var cpBtn = e.target.closest && e.target.closest("[data-copy]");
+        if (cpBtn) { copyItem(cpBtn); }
       });
     }
     buildIcons();
