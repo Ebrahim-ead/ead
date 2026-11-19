@@ -427,9 +427,9 @@
 
 গবেষণার সূত্র:
 
-- [University of Birmingham – What is the Birmingham Qur'an?](https://www.birmingham.ac.uk/facilities/cadbury/birmingham-quran-mingana-collection/birmingham-quran/what-is?utm_source=chatgpt.com)
-- [University of Birmingham – Frequently Asked Questions](https://www.birmingham.ac.uk/facilities/cadbury/birmingham-quran-mingana-collection/birmingham-quran/faqs?utm_source=chatgpt.com)
-- [University of Birmingham – Conservation and Research](https://www.birmingham.ac.uk/facilities/cadbury/birmingham-quran-mingana-collection/birmingham-quran/research-and-conservation?utm_source=chatgpt.com)
+- [University of Birmingham – What is the Birmingham Qur'an?](https://www.birmingham.ac.uk/facilities/cadbury/birmingham-quran-mingana-collection/birmingham-quran/what-is)
+- [University of Birmingham – Frequently Asked Questions](https://www.birmingham.ac.uk/facilities/cadbury/birmingham-quran-mingana-collection/birmingham-quran/faqs)
+- [University of Birmingham – Conservation and Research](https://www.birmingham.ac.uk/facilities/cadbury/birmingham-quran-mingana-collection/birmingham-quran/research-and-conservation)
 
 ### খ. সানআ কুরআন পাণ্ডুলিপি
 
@@ -576,10 +576,10 @@ Palimpsest বলতে এমন পাণ্ডুলিপিকে বোঝ
 
 মূল হাদিসগুলো সরাসরি পড়ার লিংক:
 
-- [সহিহ বুখারি ৪৯৮৬ — আবু বকর (রা.)-এর সময় কুরআন সংকলন](https://sunnah.com/bukhari/66/8?utm_source=chatgpt.com)
-- [সহিহ বুখারি ৪৯৮৭ — উসমান (রা.)-এর সময় কুরআনের মুসহাফ প্রস্তুত](https://sunnah.com/bukhari/66/9?utm_source=chatgpt.com)
-- [সহিহ বুখারি ৩ — প্রথম ওহি](https://sunnah.com/bukhari/1/3?utm_source=chatgpt.com)
-- [সহিহ বুখারি ৬ — জিবরীলের সঙ্গে কুরআন পর্যালোচনা](https://sunnah.com/bukhari:6?utm_source=chatgpt.com)
+- [সহিহ বুখারি ৪৯৮৬ — আবু বকর (রা.)-এর সময় কুরআন সংকলন](https://sunnah.com/bukhari/66/8)
+- [সহিহ বুখারি ৪৯৮৭ — উসমান (রা.)-এর সময় কুরআনের মুসহাফ প্রস্তুত](https://sunnah.com/bukhari/66/9)
+- [সহিহ বুখারি ৩ — প্রথম ওহি](https://sunnah.com/bukhari/1/3)
+- [সহিহ বুখারি ৬ — জিবরীলের সঙ্গে কুরআন পর্যালোচনা](https://sunnah.com/bukhari:6)
 
 ## ১৫. উপসংহার: তাহলে কুরআন কে লিখেছেন?
 

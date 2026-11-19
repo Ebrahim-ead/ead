@@ -629,7 +629,7 @@ Acts 1:11
 ### অনলাইনে মূল পাঠ
 
 - [কুরআন — সূরা আন-নিসা ৪:১৭১](https://quran.com/4/171)
-- [কুরআনে ঈসা (আ.) সম্পর্কে বিস্তারিত](https://quran.com/explore/jesus-in-the-quran-who-is-jesus-and-what-does-the-quran-actually-say?utm_source=chatgpt.com)
+- [কুরআনে ঈসা (আ.) সম্পর্কে বিস্তারিত](https://quran.com/explore/jesus-in-the-quran-who-is-jesus-and-what-does-the-quran-actually-say)
 - [বাইবেল — John 1](https://www.biblegateway.com/passage/?search=John%201%3A1-14&version=NIV)
 - [বাইবেল — Matthew 1 ও যীশুর জন্ম](https://www.biblegateway.com/passage/?search=Matthew%201&version=NIV)
-- [যীশুর পুনরুত্থান — ধর্মতাত্ত্বিক আলোচনা](https://religionmediacentre.org.uk/factsheets/easter-resurrection-events-and-theology/?utm_source=chatgpt.com)
+- [যীশুর পুনরুত্থান — ধর্মতাত্ত্বিক আলোচনা](https://religionmediacentre.org.uk/factsheets/easter-resurrection-events-and-theology/)

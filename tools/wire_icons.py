@@ -22,6 +22,13 @@ ICONS = (
     f'<link rel="icon" type="image/png" sizes="192x192" href="{PREFIX}assets/img/icon-192.png">'
     f'<link rel="apple-touch-icon" sizes="180x180" href="{PREFIX}assets/img/apple-touch-icon.png">'
 )
+MANIFEST_TAG = f'<link rel="manifest" href="{PREFIX}manifest.json">'
+IOS_TAGS = (
+    '<meta name="apple-mobile-web-app-capable" content="yes">'
+    '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">'
+    '<meta name="apple-mobile-web-app-title" content="Ebrahim Ead">'
+    '<meta name="mobile-web-app-capable" content="yes">'
+)
 
 # পুরোনো data: favicon (এক লাইন, খুব লম্বা)
 OLD_ICON_RE = re.compile(r'<link rel="icon" href="data:image/svg\+xml,[^"]*">\s*')
@@ -33,18 +40,29 @@ def wire(path: Path) -> str:
     s = path.read_text(encoding="utf-8")
     before = s
 
-    if 'favicon-32.png' in s:
+    has_icon = 'favicon-32.png' in s
+    has_manifest = 'rel="manifest"' in s
+    has_ios = 'apple-mobile-web-app-capable' in s
+    if has_icon and has_manifest and has_ios:
         return "already"
 
     s = OLD_ICON_RE.sub("", s)
+
+    add = ""
+    if not has_icon:
+        add += ICONS
+    if not has_manifest:
+        add += MANIFEST_TAG
+    if not has_ios:
+        add += IOS_TAGS
 
     # og:image বা theme-color-এর পরে বসাই; না পেলে </head>-এর আগে
     anchor = re.search(r'<meta name="theme-color"[^>]*>\s*', s)
     if anchor:
         i = anchor.end()
-        s = s[:i] + ICONS + s[i:]
+        s = s[:i] + add + s[i:]
     else:
-        s = s.replace("</head>", ICONS + "</head>", 1)
+        s = s.replace("</head>", add + "</head>", 1)
 
     if s == before:
         return "skip"
@@ -55,9 +73,14 @@ def wire(path: Path) -> str:
 def main() -> int:
     check = "--check" in sys.argv
     ok = already = skipped = 0
-    for p in sorted(ROOT.glob("*.html")):
-        if re.fullmatch(r"google[0-9a-f]+\.html", p.name, re.I):
-            continue
+    targets = [
+        p for p in sorted(ROOT.rglob("*.html"))
+        if not any(part in ("node_modules", ".git", "_debug") for part in p.parts)
+        and not re.fullmatch(r"google[0-9a-f]+\.html", p.name, re.I)
+        and p.name != "atheism-2.html"
+    ]
+    for p in targets:
+        rel = p.relative_to(ROOT).as_posix()
         res = wire(p)
         if res == "ok":
             ok += 1
@@ -65,9 +88,9 @@ def main() -> int:
             already += 1
         else:
             skipped += 1
-            print(f"  ⚠ {p.name}: {res}")
+            print(f"  ⚠ {rel}: {res}")
         if check:
-            print(f"{p.name:34} {res}")
+            print(f"{rel:42} {res}")
     verb = "যাচাই" if check else "সংযুক্ত"
     print(f"\n{verb}: {ok} · আগেই ছিল {already} · বাদ {skipped}")
     return 0
