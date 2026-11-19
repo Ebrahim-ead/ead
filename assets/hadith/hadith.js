@@ -123,68 +123,6 @@
   /* ---------------------------------------------------------- *
    * left column: six books + chapters of the open book
    * ---------------------------------------------------------- */
-  function renderCharts() {
-    var sk = window.EadSkeleton;
-    var metaEl = document.getElementById("h-chart-meta");
-    if (metaEl && index) {
-      metaEl.textContent = bn(index.books.length) + " কিতাব · " + bnNum(index.total) + " হাদিস";
-    }
-    if (!sk || !index || !index.books) return;
-
-    var scrollToReader = function () {
-      var target = document.querySelector(".h-toolbar") || document.getElementById("h-main");
-      if (!target || !target.scrollIntoView) return;
-      var red = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      target.scrollIntoView({ behavior: red ? "auto" : "smooth", block: "start" });
-    };
-
-    var booksEl = document.getElementById("h-chart-books");
-    if (booksEl) {
-      sk.renderHBarChart(booksEl, {
-        title: "কিতাব অনুযায়ী হাদিস সংখ্যা",
-        badge: "ক্লিকে খুলুন",
-        rows: index.books.map(function (b) {
-          return {
-            label: b.bn,
-            value: b.count,
-            meta: bnNum(b.count) + " হাদিস",
-            active: b.slug === bookSlug,
-            onClick: function () { loadBook(b.slug, 1); scrollToReader(); }
-          };
-        })
-      });
-    }
-
-    var gradesEl = document.getElementById("h-chart-grades");
-    if (gradesEl && index.grades) {
-      var okSum = 0, weakSum = 0, fakeSum = 0, otherSum = 0;
-      Object.keys(index.grades).forEach(function (k) {
-        var n = +index.grades[k] || 0;
-        if (/সহিহ|সহীহ|হাসান|বিশুদ্ধ/.test(k)) okSum += n;
-        else if (/জাল|মুনকার|বাতিল/.test(k)) fakeSum += n;
-        else if (/দুর্বল|মুরসাল|শায/.test(k)) weakSum += n;
-        else otherSum += n;
-      });
-      var setGrade = function (val) {
-        var sel = document.getElementById("h-grade");
-        if (sel) { sel.value = val; sel.dispatchEvent(new Event("change")); }
-        scrollToReader();
-      };
-      sk.renderDonut(gradesEl, {
-        title: "হাদিসের মান অনুপাত",
-        badge: "উৎস অনুযায়ী",
-        centerValue: bnNum(index.total),
-        centerLabel: "মোট হাদিস",
-        items: [
-          { label: "সহিহ / হাসান", value: okSum, color: "var(--chart-c3)", onClick: function () { setGrade("ok"); } },
-          { label: "তাহকীক / অন্যান্য", value: otherSum, color: "var(--chart-c4)", onClick: function () { setGrade("other"); } },
-          { label: "দুর্বল", value: weakSum, color: "var(--chart-c1)", onClick: function () { setGrade("weak"); } },
-          { label: "জাল / মুনকার", value: fakeSum, color: "var(--chart-c5)", onClick: function () { setGrade("fake"); } }
-        ].filter(function (x) { return x.value > 0; })
-      });
-    }
-  }
-
   function renderBooks() {
     var host = document.getElementById("h-books");
     if (!host) return;
@@ -196,7 +134,6 @@
     host.querySelectorAll("[data-book]").forEach(function (btn) {
       btn.addEventListener("click", function () { loadBook(btn.dataset.book, 1); });
     });
-    renderCharts();
   }
 
   function renderChapters() {

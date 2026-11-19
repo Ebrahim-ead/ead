@@ -670,80 +670,11 @@
   var onlyBn0 = document.getElementById("g-only-bn");
   if (onlyBn0) onlyBn0.checked = state.onlyBn;
 
-  function renderBibleCharts() {
-    var sk = window.EadSkeleton;
-    var metaC = document.getElementById("g-chart-meta");
-    if (metaC && index) {
-      metaC.textContent = bn(index.chapters.length) + " " + CW + " · " + bnNum(index.total) + " " + VW;
-    }
-    if (!sk || !index || !index.chapters || !index.chapters.length) return;
-
-    var oldBooks = 0, newBooks = 0, oldVerses = 0, newVerses = 0;
-    index.chapters.forEach(function (c) {
-      if (bookTestament(c) === "old") { oldBooks++; oldVerses += +c.count || 0; }
-      else { newBooks++; newVerses += +c.count || 0; }
-    });
-
-    var scrollToReader = function () {
-      var target = document.querySelector(".g-toolbar") || document.getElementById("grantho-reader");
-      if (!target || !target.scrollIntoView) return;
-      var red = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      target.scrollIntoView({ behavior: red ? "auto" : "smooth", block: "start" });
-    };
-
-    var cardA = document.getElementById("g-chart-a");
-    if (cardA) {
-      var pickT = function (t) {
-        testFilter = t;
-        var cur = bookById(bookId);
-        var match = null;
-        if (!cur || bookTestament(cur) !== t) {
-          for (var i = 0; i < index.chapters.length; i++) {
-            if (bookTestament(index.chapters[i]) === t) { match = index.chapters[i]; break; }
-          }
-        }
-        if (match) showBookView(match.id);
-        else renderTestaments();
-        scrollToReader();
-      };
-      sk.renderDonut(cardA, {
-        title: "পুরাতন ও নতুন নিয়ম অনুপাত",
-        badge: bn(index.chapters.length) + " " + CW,
-        centerValue: bnNum(index.total),
-        centerLabel: "মোট " + VW,
-        items: [
-          { label: "পুরাতন নিয়ম (" + bn(oldBooks) + " পুস্তক)", value: oldVerses, color: "var(--chart-c1)", onClick: function () { pickT("old"); } },
-          { label: "নতুন নিয়ম (" + bn(newBooks) + " পুস্তক)", value: newVerses, color: "var(--chart-c2)", onClick: function () { pickT("new"); } }
-        ]
-      });
-    }
-
-    var cardB = document.getElementById("g-chart-b");
-    if (cardB) {
-      var top8 = index.chapters.slice().sort(function (a, b) { return (+b.count || 0) - (+a.count || 0); }).slice(0, 8);
-      sk.renderBarChart(cardB, {
-        title: "বৃহত্তম ৮ পুস্তক (" + VW + ")",
-        badge: "ক্লিকে খুলুন",
-        bars: top8.map(function (c) {
-          return {
-            label: c.bn.length > 7 ? c.bn.slice(0, 6) + "…" : c.bn,
-            value: +c.count || 0,
-            shortVal: bn(c.count),
-            title: c.bn + " — " + bnNum(c.count) + " " + VW,
-            aria: c.bn + " খুলুন",
-            onClick: function () { showBookView(c.id); scrollToReader(); }
-          };
-        })
-      });
-    }
-  }
-
   loadJSON(BASE + "index.json").then(function (d) {
     index = d;
     if (d.verseWord) VW = d.verseWord;
     if (d.groupWord) GW = d.groupWord;
     if (d.chword) CW = d.chword;
-    renderBibleCharts();
     /* সব পুস্তকে বাংলা থাকলে এই ছাঁকনি অকেজো — লুকিয়ে রাখি */
     if (onlyBn0 && d.total && d.withBn === d.total) {
       var lab = onlyBn0.closest ? onlyBn0.closest("label") : onlyBn0.parentNode;

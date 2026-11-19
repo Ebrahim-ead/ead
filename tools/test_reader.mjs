@@ -18,8 +18,8 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 function pages() {
   const args = process.argv.slice(2);
   if (args.length) return args.map((a) => path.resolve(ROOT, a));
-  // হিন্দু ও খ্রিস্টান — দুই ফোল্ডারের গ্রন্থ-পাতাই পরীক্ষা হয় (বাইবেল খ্রিস্টানে)
-  const dirs = ['hindu', 'christian'].map((d) => path.join(ROOT, 'grantho', d));
+  // হিন্দু, খ্রিস্টান ও বৌদ্ধ — তিন ফোল্ডারের গ্রন্থ-পাতাই পরীক্ষা হয়
+  const dirs = ['hindu', 'christian', 'buddhist'].map((d) => path.join(ROOT, 'grantho', d));
   return dirs.filter((d) => fs.existsSync(d))
     .flatMap((dir) => fs.readdirSync(dir)
       .filter((f) => f.endsWith('.html'))
@@ -283,8 +283,9 @@ async function testPage(file) {
 
     const strip = (x) => String(x || '').replace(/\s+/g, ' ').trim();
     const firstBn = strip(vs[0] && vs[0].bn).slice(0, 60);
-    const shown = [...doc.querySelectorAll('.g-v .g-v-bn')]
-      .map((e) => strip(e.textContent)).filter(Boolean);
+    const shown = [...doc.querySelectorAll('.g-v')]
+      .map((card) => strip([...card.querySelectorAll('.g-v-bn')].map((e) => e.textContent).join(' ')))
+      .filter(Boolean);
     if (firstBn && !shown.some((t) => t.slice(0, 40) === firstBn.slice(0, 40))) {
       errs.push('রেন্ডার হওয়া পাঠ এই গ্রন্থের চ্যাপ্টার-ফাইলের সাথে মিলছে না '
                 + '(অন্য গ্রন্থের ডেটা লোড হয়েছে?)');
@@ -442,7 +443,7 @@ function hubPages() {
   /* হোমপাতাও যাচাই হয়: নেভ সাইট-ব্যাপী একই, আর index.html-এ
      ড্রপডাউন/বর্তমান-দাগ হারালে সেটাই সবচেয়ে বেশি চোখে পড়ে। */
   const out = [path.join(ROOT, 'grantho.html'), path.join(ROOT, 'index.html')];
-  for (const d of ['grantho', path.join('grantho', 'hindu'), path.join('grantho', 'christian')]) {
+  for (const d of ['grantho', path.join('grantho', 'hindu'), path.join('grantho', 'christian'), path.join('grantho', 'buddhist')]) {
     const dir = path.join(ROOT, d);
     if (!fs.existsSync(dir)) continue;
     for (const f of fs.readdirSync(dir)) if (f.endsWith('.html')) out.push(path.join(dir, f));

@@ -200,73 +200,6 @@
       '</button>';
   }
 
-  function renderCharts() {
-    var sk = window.EadSkeleton;
-    var metaEl = document.getElementById("q-chart-meta");
-    if (metaEl && index) {
-      metaEl.textContent = bn(index.suras.length) + " সূরা · " + bn(String(index.total).replace(/\B(?=(\d{3})+(?!\d))/g, ",")) + " আয়াত";
-    }
-    if (!sk || !index || !index.suras) return;
-
-    var makkiSuras = 0, madaniSuras = 0, makkiAyat = 0, madaniAyat = 0;
-    index.suras.forEach(function (s) {
-      if (s.type === "makki") { makkiSuras++; makkiAyat += +s.count || 0; }
-      else { madaniSuras++; madaniAyat += +s.count || 0; }
-    });
-
-    var scrollToReader = function () {
-      var target = document.querySelector(".q-toolbar") || document.getElementById("q-main");
-      if (!target || !target.scrollIntoView) return;
-      var red = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      target.scrollIntoView({ behavior: red ? "auto" : "smooth", block: "start" });
-    };
-
-    var donutEl = document.getElementById("q-chart-donut");
-    if (donutEl) {
-      sk.renderDonut(donutEl, {
-        title: "অবতরণ অনুযায়ী অনুপাত",
-        badge: bn(index.suras.length) + " সূরা",
-        centerValue: bn(index.suras.length),
-        centerLabel: "মোট সূরা",
-        items: [
-          {
-            label: "মক্কী সূরা (" + bn(makkiSuras) + "টি)",
-            value: makkiAyat,
-            valueText: sk.bnNum(makkiAyat) + " আয়াত",
-            color: "var(--chart-c1)",
-            onClick: function () { loadSura(1); scrollToReader(); }
-          },
-          {
-            label: "মাদানী সূরা (" + bn(madaniSuras) + "টি)",
-            value: madaniAyat,
-            valueText: sk.bnNum(madaniAyat) + " আয়াত",
-            color: "var(--chart-c2)",
-            onClick: function () { loadSura(2); scrollToReader(); }
-          }
-        ]
-      });
-    }
-
-    var barsEl = document.getElementById("q-chart-bars");
-    if (barsEl) {
-      var top10 = index.suras.slice().sort(function (a, b) { return b.count - a.count; }).slice(0, 10);
-      sk.renderBarChart(barsEl, {
-        title: "দীর্ঘতম ১০ সূরা (আয়াত)",
-        badge: "ক্লিকে খুলুন",
-        bars: top10.map(function (s) {
-          return {
-            label: bn(s.n) + ".",
-            value: s.count,
-            shortVal: bn(s.count),
-            title: s.bn + " — " + bn(s.count) + " আয়াত",
-            aria: s.bn + " (" + bn(s.count) + " আয়াত) খুলুন",
-            onClick: function () { loadSura(s.n); scrollToReader(); }
-          };
-        })
-      });
-    }
-  }
-
   function renderList() {
     /* one straight 1–114 list: no grouping, just the order of the mushaf */
     listEl.innerHTML = index.suras.map(suraButton).join("");
@@ -280,7 +213,6 @@
 
     $("#q-total").textContent = bn(index.total) + " আয়াত · " + bn(114) + " সূরা";
     bindFilter();
-    renderCharts();
   }
 
   /* 114 names are a lot: give the reader a box instead of a hunt */

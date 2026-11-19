@@ -49,7 +49,7 @@
   /* গীতা/পুরাণে «শ্লোক», বেদ-উপনিষদে «মন্ত্র», বাইবেলে «পদ» — index.json-এর
      verseWord থেকে। একইভাবে গ্রুপ-শব্দ (ঋগ্বেদে «সূক্ত», বাইবেলে «অধ্যায়») ও
      অধ্যায়-শব্দ (বাইবেলে «পুস্তক») ডেটা থেকেই নেওয়া হয়, হার্ডকোড নয়। */
-  var VW = "শ্লোক", GW = "সূক্ত", CW = "অধ্যায়";
+  var VW = "শ্লোক", GW = "সূক্ত", CW = "অধ্যায়", RL = "sa", RW = "সংস্কৃত";
   var state = { bn: true, sk: true, q: "", onlyBn: false, lang: "both" };
   /* ইংরেজি অনুবাদ (বাইবেল): অধ্যায়ভিত্তিক আলাদা ফাইল en/chN.json — বাংলা পাঠের
      ফাইলে হাত দেওয়া হয় না, তাই দুই উৎস স্বাধীনভাবে নামে ও হালনাগাদ হয়। */
@@ -299,9 +299,11 @@
          গ্রিড আঁকার সময় ওই মণ্ডলের ch ডেটা লোড করা হয়ে গেছে এমন নয়। */
       var su = null;
       var djs = bk.deityHar || {};
+      var tms = bk.titleMap || {};
       if (djs[String(i)]) su = { deity: djs[String(i)] };
       var dj = su && su.deity ? su.deity : "";
-      var tip = have ? (dj ? GW + " " + bn(i) + " · " + dj : "") : "উৎসে পাওয়া যায়নি";
+      var tm = tms[String(i)] || "";
+      var tip = have ? (dj ? GW + " " + bn(i) + " · " + dj : (tm ? GW + " " + bn(i) + " · " + tm : "")) : "উৎসে পাওয়া যায়নি";
       return '<button class="g-cg' + (on ? " on" : "") + (have ? "" : " off") + (dj ? " has-dj" : "") +
         '" type="button" data-c="' + i + '"' + (on ? ' aria-current="true"' : "") +
         (have ? "" : ' aria-label="' + bn(i) + ' — পাঠ নেই" title="উৎসে পাওয়া যায়নি"') +
@@ -342,7 +344,8 @@
       var gmN = gm ? (+gm.verse || +gm.mantra || (gm.to - gm.from + 1)) : 0;
       if (gm && gm.shloka) gmN += "";
       if (metaEl) metaEl.textContent = gm
-        ? bn(gmN) + " " + VW + (gm.shloka ? " · " + bn(gm.shloka) + " শ্লোক" : "") +
+        ? (gm.title ? gm.title : (bn(gmN) + " " + VW)) +
+          (gm.shloka ? " · " + bn(gm.shloka) + " শ্লোক" : "") +
           (gm.deity ? " · দেবতা: " + gm.deity : "")
         : "উৎসে পাওয়া যায়নি";
     } else {
@@ -496,7 +499,15 @@
            '<div class="g-v-body">';
     if (v.hd) out += '<p class="g-v-hd">' + esc(v.hd) + '</p>';
     if (v.spk && state.sk) out += '<p class="g-v-spk">' + esc(v.spk) + '</p>';
-    if (state.sk && sk) out += '<p class="g-v-sk" lang="sa">' + sk + '</p>';
+    if (state.sk && sk) {
+      if (RL === "pi" && String(v.sk || "").indexOf("\n\n") > -1) {
+        out += String(v.sk || "").split(/\n\n+/).map(function (p) {
+          return '<p class="g-v-sk" lang="pi">' + esc(p).replace(/\n+/g, "<br>") + "</p>";
+        }).join("");
+      } else {
+        out += '<p class="g-v-sk" lang="' + RL + '">' + sk + "</p>";
+      }
+    }
     if (parts) {
       out += '<div class="g-v-padas">';
       out += parts.map(function (x, i) {
@@ -513,7 +524,7 @@
       out += '<p class="g-v-empty">এই পদ-নম্বরটি উৎসে আছে, কিন্তু উৎস-পাতায় এর পাঠ দেওয়া হয়নি।</p>';
     }
     if (en && state.lang !== "bn") {
-      out += '<p class="g-v-en" lang="en">' + esc(en) + '</p>';
+      out += '<p class="g-v-en" lang="en">' + esc(en).replace(/\n\n+/g, "<br><br>").replace(/\n/g, "<br>") + '</p>';
     }
     /* উৎস-কৃতিত্ব গ্রন্থের শুরুতে একবারই — প্রতি মন্ত্রে পুনরাবৃত্তি নয় */
     out += '</div></article>';
@@ -549,6 +560,14 @@
     }).then(function () { return allLoaded; });
   }
 
+  function clipMatch(txt, low) {
+    if (!txt || txt.length <= 420) return txt || "";
+    var i = txt.toLowerCase().indexOf(low);
+    if (i < 0) return txt.slice(0, 320) + "…";
+    var a = Math.max(0, i - 140), b = Math.min(txt.length, i + 260);
+    return (a > 0 ? "…" : "") + txt.slice(a, b) + (b < txt.length ? "…" : "");
+  }
+
   function searchHTML(q) {
     var low = q.toLowerCase(), rows = [], total = 0;
     allLoaded.forEach(function (c) {
@@ -564,10 +583,12 @@
       rows.push(hit.map(function (v) {
         var out = '<article class="g-v hit" id="v' + c.id + '-' + v.n + '">';
         out += '<div class="g-v-num">' + bn(v.n) + '</div><div class="g-v-body">';
+        if (v.hd) out += '<p class="g-v-hd">' + esc(v.hd) + '</p>';
         if (v.spk) out += '<p class="g-v-spk">' + esc(v.spk) + '</p>';
-        if (v.sk) out += '<p class="g-v-sk" lang="sa">' + esc(v.sk).replace(/\n+/g, "<br>") + '</p>';
-        if (v.bn) out += '<p class="g-v-bn">' + esc(v.bn) + '</p>';
-        if (enm[String(v.n)]) out += '<p class="g-v-en" lang="en">' + esc(enm[String(v.n)]) + '</p>';
+        if (v.sk) out += '<p class="g-v-sk" lang="' + RL + '">' + esc(clipMatch(v.sk, low)).replace(/\n+/g, "<br>") + '</p>';
+        if (v.bn) out += '<p class="g-v-bn">' + esc(clipMatch(v.bn, low)) + '</p>';
+        var ev = enm[String(v.n)];
+        if (ev) out += '<p class="g-v-en" lang="en">' + esc(clipMatch(ev, low)) + '</p>';
         return out + "</div></article>";
       }).join(""));
     });
@@ -656,10 +677,10 @@
           ? allRaw.filter(function (v) { return v.n > pick.to; })
           : [];
         parts.push('<h3 class="g-sukta-h g-chap-h" id="sukta' + pick.id + '">' +
-          '<span class="g-sukta-n">' + GW + " " + bn(pick.id) + '</span>' +
-          '<span class="g-sukta-m">' + VW + " " +
-          bn(pick.vfrom || pick.from) + "–" + bn(pick.vto || pick.to) +
-          (pick.shloka ? " · " + bn(pick.shloka) + " শ্লোক" : "") + "</span></h3>");
+          '<span class="g-sukta-n">' + GW + " " + bn(pick.id) + (pick.title ? " · " + esc(pick.title) : "") + '</span>' +
+          '<span class="g-sukta-m">' + (pick.title && +pick.from === +pick.to ? "পূর্ণ পাঠ · পালি, বাংলা ও ইংরেজি"
+            : (VW + " " + bn(pick.vfrom || pick.from) + "–" + bn(pick.vto || pick.to) +
+               (pick.shloka ? " · " + bn(pick.shloka) + " শ্লোক" : ""))) + "</span></h3>");
         inR.forEach(function (v) { parts.push(verseHTML(v)); });
         if (!inR.length) {
           parts.push('<p class="g-empty g-miss"><b>' + GW + " " + bn(pick.id) +
@@ -912,89 +933,16 @@
   if (bnBtn0) { bnBtn0.classList.toggle("on", state.bn); bnBtn0.setAttribute("aria-pressed", state.bn ? "true" : "false"); }
   if (onlyBnEl) onlyBnEl.checked = state.onlyBn;
 
-  function renderGranthoCharts() {
-    var sk = window.EadSkeleton;
-    var metaC = document.getElementById("g-chart-meta");
-    if (metaC && index) {
-      metaC.textContent = bn(index.chapters.length) + " " + CW + " · " + bnNum(index.total) + " " + VW;
-    }
-    if (!sk || !index || !index.chapters || !index.chapters.length) return;
-
-    var chs = index.chapters;
-    var cardA = document.getElementById("g-chart-a");
-    var cardB = document.getElementById("g-chart-b");
-    var scrollToReader = function () {
-      var target = document.querySelector(".g-toolbar") || document.getElementById("grantho-reader");
-      if (!target || !target.scrollIntoView) return;
-      var red = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      target.scrollIntoView({ behavior: red ? "auto" : "smooth", block: "start" });
-    };
-
-    if (cardA) {
-      if (chs.length <= 12) {
-        sk.renderBarChart(cardA, {
-          title: CW + " অনুযায়ী " + VW + " বিন্যাস",
-          badge: bn(chs.length) + " " + CW,
-          bars: chs.map(function (c) {
-            return {
-              label: bn(c.id),
-              value: +c.count || 0,
-              shortVal: bn(c.count),
-              title: c.bn + " — " + bnNum(c.count) + " " + VW,
-              aria: c.bn + " খুলুন",
-              onClick: function () { grouped ? showBookView(c.id) : openChapter(c.id); scrollToReader(); }
-            };
-          })
-        });
-      } else {
-        var bucketSize = Math.ceil(chs.length / 10);
-        var buckets = [];
-        for (var i = 0; i < chs.length; i += bucketSize) {
-          var sl = chs.slice(i, i + bucketSize);
-          var sum = sl.reduce(function (acc, x) { return acc + (+x.count || 0); }, 0);
-          var first = sl[0], last = sl[sl.length - 1];
-          buckets.push({
-            label: first.id === last.id ? bn(first.id) : bn(first.id) + "–" + bn(last.id),
-            value: sum,
-            shortVal: bn(sum),
-            title: CW + " " + bn(first.id) + "–" + bn(last.id) + ": " + bnNum(sum) + " " + VW,
-            aria: first.bn + " খুলুন",
-            onClick: (function (cid) {
-              return function () { grouped ? showBookView(cid) : openChapter(cid); scrollToReader(); };
-            })(first.id)
-          });
-        }
-        sk.renderBarChart(cardA, {
-          title: CW + " অনুযায়ী " + VW + " বিস্তৃতি",
-          badge: bn(chs.length) + " " + CW,
-          bars: buckets
-        });
-      }
-    }
-
-    if (cardB) {
-      var top5 = chs.slice().sort(function (a, b) { return (+b.count || 0) - (+a.count || 0); }).slice(0, 5);
-      sk.renderHBarChart(cardB, {
-        title: "বৃহত্তম ৫ " + CW,
-        badge: "ক্লিকে খুলুন",
-        rows: top5.map(function (c) {
-          return {
-            label: c.bn,
-            value: +c.count || 0,
-            meta: bnNum(c.count) + " " + VW + (c.suktaCount ? " · " + bn(c.suktaCount) + " " + GW : ""),
-            onClick: function () { grouped ? showBookView(c.id) : openChapter(c.id); scrollToReader(); }
-          };
-        })
-      });
-    }
-  }
-
   loadJSON(BASE + "index.json").then(function (d) {
     index = d;
     if (d.verseWord) VW = d.verseWord;
     if (d.groupWord) GW = d.groupWord;
     if (d.chword) CW = d.chword;
-    renderGranthoCharts();
+    if (d.rootLang) RL = d.rootLang;
+    if (d.rootWord) {
+      RW = d.rootWord;
+      if (skBtn0) skBtn0.textContent = RW;
+    }
     /* সব খণ্ডেই বাংলা থাকলে এই ছাঁকনি অকেজো — অথচ বোতামটি থেকে গেলে মনে হয়
        কিছু বাদ পড়ছে। তাই তখন লুকিয়ে রাখি (সংস্কৃত-টগলের মতোই)। */
     if (onlyBnEl && d.total && d.withBn === d.total) {

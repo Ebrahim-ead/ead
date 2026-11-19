@@ -24,10 +24,14 @@ TOL = 0.85          # ১৫%-এর বেশি কমলেই সন্দ�
 
 # সাইটে কেবল এই গ্রন্থগুলো থাকবে (ব্যবহারকারীর সিদ্ধান্ত)।
 ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "atharvaveda",
-          "shvetashvatara", "prashna", "chandogya", "brihadaranyaka", "bible")
+          "shvetashvatara", "prashna", "chandogya", "brihadaranyaka", "bible",
+          "dhammapada", "digha-nikaya", "majjhima-nikaya", "samyutta-nikaya",
+          "anguttara-nikaya", "vinaya-vibhanga")
 KEEP_PAGES = {"gita.html", "rigveda.html", "samaveda.html", "veda.html", "atharvaveda.html",
               "yajurveda-shukla.html", "shvetashvatara.html", "prashna.html",
-              "chandogya.html", "brihadaranyaka.html", "bible.html", "english-bible.html"}
+              "chandogya.html", "brihadaranyaka.html", "bible.html", "english-bible.html",
+              "dhammapada.html", "digha-nikaya.html", "majjhima-nikaya.html",
+              "samyutta-nikaya.html", "anguttara-nikaya.html", "vinaya-vibhanga.html"}
 
 
 def load_json(p, default=None):
@@ -99,9 +103,8 @@ def main():
             import shutil
             shutil.rmtree(d)
             removed.append(d.name)
-    # হিন্দু ও খ্রিস্টান — দুই ফোল্ডারের পাতাই পরিধির বাইরে গেলে সরানো হয়
-    # (বাইবেলের পাতা grantho/christian/-এ, তাই শুধু hindu দেখলে চলত না)
-    for sub in ("hindu", "christian"):
+    # হিন্দু, খ্রিস্টান ও বৌদ্ধ — তিন ফোল্ডারের পাতাই পরিধির বাইরে গেলে সরানো হয়
+    for sub in ("hindu", "christian", "buddhist"):
         d = ROOT / "grantho" / sub
         if not d.is_dir():
             continue
