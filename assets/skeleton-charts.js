@@ -359,16 +359,18 @@
       safeFetchJSON(prefix + "assets/grantho/data/bible/index.json"),
       safeFetchJSON(prefix + "assets/grantho/data/bible/english/index.json"),
       safeFetchJSON(prefix + "assets/grantho/data/rigveda/index.json"),
+      safeFetchJSON(prefix + "assets/grantho/data/atharvaveda/index.json"),
       safeFetchJSON(prefix + "assets/grantho/data/yajurveda-shukla/index.json"),
       safeFetchJSON(prefix + "assets/grantho/data/gita/index.json")
     ]).then(function (res) {
-      var quran = res[0], hadith = res[1], bnBible = res[2], enBible = res[3], rig = res[4], yaj = res[5], gita = res[6];
+      var quran = res[0], hadith = res[1], bnBible = res[2], enBible = res[3], rig = res[4], ath = res[5], yaj = res[6], gita = res[7];
       var items = [
         { label: "হাদিস (৭ কিতাব)", value: (hadith && hadith.total) || 0, unit: "হাদিস", group: "islam", href: prefix + "hadith.html", color: "var(--chart-c1)" },
         { label: "English Bible (NAB)", value: (enBible && enBible.total) || 0, unit: "পদ", group: "christian", href: prefix + "grantho/christian/english-bible.html", color: "var(--chart-c2)" },
         { label: "বাংলা বাইবেল", value: (bnBible && bnBible.total) || 0, unit: "পদ", group: "christian", href: prefix + "grantho/christian/bible.html", color: "var(--chart-c2)" },
         { label: "ঋগ্বেদ সংহিতা", value: (rig && rig.total) || 0, unit: "মন্ত্র", group: "hindu", href: prefix + "grantho/hindu/rigveda.html", color: "var(--chart-c3)" },
         { label: "আল-কুরআনুল কারীম", value: (quran && quran.total) || 0, unit: "আয়াত", group: "islam", href: prefix + "quran.html", color: "var(--chart-c1)" },
+        { label: "অথর্ববেদ সংহিতা", value: (ath && ath.total) || 0, unit: "মন্ত্র", group: "hindu", href: prefix + "grantho/hindu/atharvaveda.html", color: "var(--chart-c3)" },
         { label: "শুক্ল যজুর্বেদ", value: (yaj && yaj.total) || 0, unit: "মন্ত্র", group: "hindu", href: prefix + "grantho/hindu/yajurveda-shukla.html", color: "var(--chart-c3)" },
         { label: "শ্রীমদ্ভগবদ্গীতা", value: (gita && gita.total) || 0, unit: "শ্লোক", group: "hindu", href: prefix + "grantho/hindu/gita.html", color: "var(--chart-c3)" }
       ].filter(function (x) { return x.value > 0; });
