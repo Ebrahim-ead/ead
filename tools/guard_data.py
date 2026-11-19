@@ -24,12 +24,18 @@ TOL = 0.85          # ১৫%-এর বেশি কমলেই সন্দ�
 
 # সাইটে কেবল এই গ্রন্থগুলো থাকবে (ব্যবহারকারীর সিদ্ধান্ত)।
 ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "atharvaveda",
-          "shvetashvatara", "prashna", "chandogya", "brihadaranyaka", "bible",
+          "shvetashvatara", "prashna", "chandogya", "brihadaranyaka",
+          "mahabharata", "brahma-purana", "vishnu-purana", "bhavishya-purana",
+          "garuda-purana", "brahmanda-purana",
+          "bible",
           "dhammapada", "digha-nikaya", "majjhima-nikaya", "samyutta-nikaya",
           "anguttara-nikaya", "vinaya-vibhanga")
 KEEP_PAGES = {"gita.html", "rigveda.html", "samaveda.html", "veda.html", "atharvaveda.html",
               "yajurveda-shukla.html", "shvetashvatara.html", "prashna.html",
-              "chandogya.html", "brihadaranyaka.html", "bible.html", "english-bible.html",
+              "chandogya.html", "brihadaranyaka.html",
+              "mahabharata.html", "purana.html", "brahma-purana.html", "vishnu-purana.html",
+              "bhavishya-purana.html", "garuda-purana.html", "brahmanda-purana.html",
+              "bible.html", "english-bible.html",
               "dhammapada.html", "digha-nikaya.html", "majjhima-nikaya.html",
               "samyutta-nikaya.html", "anguttara-nikaya.html", "vinaya-vibhanga.html"}
 
@@ -47,6 +53,9 @@ def site_total(idx):
     index.json-এর `total` কেবল শেষ রানে যা নামানো হলো তার হিসাব হতে পারে
     (মণ্ডল ১০ যোগ হওয়ার পরেও total পুরনো ৯ মণ্ডলের সংখ্যা দেখাচ্ছিল)।
     """
+    if idx.get("parvas"):
+        return int(idx.get("saShlokaTotal") or idx.get("total")
+                   or (idx.get("editions") or {}).get("sa", {}).get("shlokas") or 0)
     chs = idx.get("chapters") or []
     s = sum(int(c.get("count") or 0) for c in chs)
     return s or int(idx.get("total") or 0)
@@ -55,7 +64,7 @@ def site_total(idx):
 def indices():
     for p in sorted(DATA.glob("*/index.json")):
         idx = load_json(p)
-        if idx and idx.get("chapters"):
+        if idx and (idx.get("chapters") or idx.get("parvas")):
             yield p.parent.name, idx
 
 
@@ -75,9 +84,13 @@ def set_baseline():
     base = {"_commit": sha, "_note": "এটি ভালো-জানা ডেটার হিসাব; এর চেয়ে "
             "১৫%-এর বেশি ছোট হলে guard_data.py ফিরিয়ে আনে।", "slugs": {}}
     for slug, idx in indices():
+        groups = idx.get("chapters") or idx.get("parvas") or []
+        wbn = (int(idx.get("bnChTotal") or idx.get("withBn")
+                   or (idx.get("editions") or {}).get("bn", {}).get("chapters") or 0)
+               if idx.get("parvas") else idx.get("withBn", 0))
         base["slugs"][slug] = {"total": site_total(idx),
-                               "withBn": idx.get("withBn", 0),
-                               "chapters": len(idx["chapters"])}
+                               "withBn": wbn,
+                               "chapters": len(groups)}
     BASE_FILE.write_text(json.dumps(base, ensure_ascii=False, indent=1) + "\n",
                          encoding="utf-8")
     print(f"বেসলাইন লেখা হলো ({len(base['slugs'])} গ্রন্থ, কমিট {sha[:8]})")

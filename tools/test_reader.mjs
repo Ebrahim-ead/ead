@@ -236,35 +236,46 @@ async function testPage(file) {
     if (frontEl && !ch.preface) errs.push('ভূমিকা নেই অথচ ব্লক রেন্ডার হয়েছে');
     if (frontEl && frontEl.open) errs.push('ভূমিকা-ব্লক খোলা অবস্থায় আছে (কল্যাপ্স থাকার কথা)');
 
-    // ইংরেজি অনুবাদ (বাইবেল): ডেটা থাকলে রেন্ডার, টগল ও নম্বর-মিল যাচাই
+    // ইংরেজি অনুবাদ (বাইবেল / উপনিষদ / বিষ্ণু পুরাণ): ডেটা থাকলে রেন্ডার, টগল ও নম্বর-মিল যাচাই
     const enPath = path.join(dataDir, 'en', `ch${idx.chapters[0].id}.json`);
     if (fs.existsSync(enPath)) {
       const en = JSON.parse(fs.readFileSync(enPath, 'utf8'));
-      const enAll = en.verses || {};
-      const enWant = twoLevel
-        ? Object.keys(enAll).filter((k) => vs.some((v) => String(v.n) === k)).length
-        : Object.keys(enAll).length;
-      const enGot = doc.querySelectorAll('.g-v-en').length;
-      if (enWant && enGot !== enWant) errs.push(`ইংরেজি লাইন ${enGot} ≠ ডেটার ${enWant}`);
       const lb = doc.querySelector('.g-lang');
       if (!lb || lb.hidden) errs.push('ইংরেজি ডেটা আছে, তবু ভাষা-টগল দেখা যায়নি');
-      const ns = new Set(chFile.verses.map((v) => String(v.n)));
-      const stray = Object.keys(enAll).filter((k) => !ns.has(k));
-      if (stray.length) errs.push(`ইংরেজি-কী পদের বাইরে: ${stray.slice(0, 3).join(',')}`);
-      const se = vs.filter((v) => v.srcEmpty).length;
-      if (se && doc.querySelectorAll('.g-v-empty').length < se) {
-        errs.push(`উৎস-ফাঁকা নোট ${doc.querySelectorAll('.g-v-empty').length} < ডেটার ${se}`);
-      }
       const click = (mode) => {
         const b = [...doc.querySelectorAll('.g-lang-btn')].find((x) => x.getAttribute('data-lang') === mode);
         if (b) b.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
       };
-      click('en'); await wait(900);
-      if (doc.querySelectorAll('.g-v-bn').length) errs.push('«শুধু ইংরেজি» মোডে বাংলা থেকে গেছে');
-      if (enWant && !doc.querySelectorAll('.g-v-en').length) errs.push('«শুধু ইংরেজি» মোডে ইংরেজি নেই');
-      click('bn'); await wait(900);
-      if (doc.querySelectorAll('.g-v-en').length) errs.push('«শুধু বাংলা» মোডে ইংরেজি থেকে গেছে');
-      click('both'); await wait(900);
+      if (en.sections) {
+        if (!doc.querySelector('.g-prose-en')) errs.push('ইংরেজি গদ্য-ব্লক (.g-prose-en) রেন্ডার হয়নি');
+        click('en'); await wait(900);
+        if (doc.querySelectorAll('.g-v-sk').length) errs.push('«শুধু ইংরেজি» মোডে সংস্কৃত থেকে গেছে');
+        if (!doc.querySelector('.g-prose-en')) errs.push('«শুধু ইংরেজি» মোডে ইংরেজি গদ্য নেই');
+        click('bn'); await wait(900);
+        if (doc.querySelector('.g-prose-en')) errs.push('«শুধু সংস্কৃত» মোডে ইংরেজি গদ্য থেকে গেছে');
+        if (!doc.querySelectorAll('.g-v-sk').length) errs.push('«শুধু সংস্কৃত» মোডে সংস্কৃত শ্লোক নেই');
+        click('both'); await wait(900);
+      } else {
+        const enAll = en.verses || {};
+        const enWant = twoLevel
+          ? Object.keys(enAll).filter((k) => vs.some((v) => String(v.n) === k)).length
+          : Object.keys(enAll).length;
+        const enGot = doc.querySelectorAll('.g-v-en').length;
+        if (enWant && enGot !== enWant) errs.push(`ইংরেজি লাইন ${enGot} ≠ ডেটার ${enWant}`);
+        const ns = new Set(chFile.verses.map((v) => String(v.n)));
+        const stray = Object.keys(enAll).filter((k) => !ns.has(k));
+        if (stray.length) errs.push(`ইংরেজি-কী পদের বাইরে: ${stray.slice(0, 3).join(',')}`);
+        const se = vs.filter((v) => v.srcEmpty).length;
+        if (se && doc.querySelectorAll('.g-v-empty').length < se) {
+          errs.push(`উৎস-ফাঁকা নোট ${doc.querySelectorAll('.g-v-empty').length} < ডেটার ${se}`);
+        }
+        click('en'); await wait(900);
+        if (doc.querySelectorAll('.g-v-bn').length) errs.push('«শুধু ইংরেজি» মোডে বাংলা থেকে গেছে');
+        if (enWant && !doc.querySelectorAll('.g-v-en').length) errs.push('«শুধু ইংরেজি» মোডে ইংরেজি নেই');
+        click('bn'); await wait(900);
+        if (doc.querySelectorAll('.g-v-en').length) errs.push('«শুধু বাংলা» মোডে ইংরেজি থেকে গেছে');
+        click('both'); await wait(900);
+      }
     }
 
     // সব খণ্ডে বাংলা থাকলে অকেজো ছাঁকনি দেখানো যাবে না
@@ -724,8 +735,75 @@ function allEssays() {
     .filter((f) => /class="[^"]*\barticle-body\b/.test(fs.readFileSync(f, 'utf8')));
 }
 
+async function testMahabharata() {
+  const file = path.join(ROOT, 'grantho/hindu/mahabharata.html');
+  if (!fs.existsSync(file)) return true;
+  const rel = path.relative(ROOT, file);
+  const html = fs.readFileSync(file, 'utf8');
+  const dataDir = path.join(ROOT, 'assets/grantho/data/mahabharata');
+  const errs = [];
+  const dom = new JSDOM(html, {
+    runScripts: 'dangerously', pretendToBeVisual: true,
+    url: 'https://example.invalid/ead/grantho/hindu/mahabharata.html',
+  });
+  const { window } = dom;
+  window.scrollTo = () => {};
+  window.fetch = async (u) => {
+    const clean = String(u).split('?')[0];
+    const relPath = clean.replace(/^.*\/data\/mahabharata\//, '');
+    const fp = path.join(dataDir, relPath);
+    const ok = fs.existsSync(fp);
+    return {
+      ok,
+      status: ok ? 200 : 404,
+      json: async () => (ok ? JSON.parse(fs.readFileSync(fp, 'utf8')) : null),
+      text: async () => (ok ? fs.readFileSync(fp, 'utf8') : ''),
+    };
+  };
+  try {
+    window.eval(fs.readFileSync(path.join(ROOT, 'assets/grantho/mahabharata-reader.js'), 'utf8'));
+  } catch (e) {
+    errs.push(`mahabharata-reader.js চালানো যায়নি: ${e.message}`);
+  }
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  await wait(800);
+  const doc = window.document;
+  const pBtns = doc.querySelectorAll('#g-book-list [data-ch]');
+  if (pBtns.length !== 18) errs.push(`মহাভারত পর্ব-বাটন ${pBtns.length} ≠ ১৮`);
+  // দুই-স্তর: আগে পর্ব-গ্রিড থেকে অধ্যায় ১ খোলা
+  const g1 = doc.querySelector('#g-chapter-grid [data-c="1"]');
+  if (!g1) errs.push('আদিপর্ব গ্রিডে অধ্যায় ১ নেই');
+  else g1.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+  await wait(800);
+  if (!doc.querySelector('#g-body .g-mbh-p, #g-body .g-mbh-upa')) errs.push('বাংলা প্রথম অধ্যায় রেন্ডার হয়নি');
+  const clickEd = async (ed) => {
+    const b = doc.querySelector(`#g-mbh-ed [data-ed="${ed}"]`);
+    if (!b) errs.push(`সংস্করণ বাটন ${ed} নেই`);
+    else b.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    await wait(700);
+  };
+  await clickEd('en');
+  if (!doc.querySelector('#g-body .g-prose-en')) errs.push('ইংরেজি সংস্করণ রেন্ডার হয়নি');
+  await clickEd('sa');
+  if (!doc.querySelector('#g-body .g-v-sk')) errs.push('সংস্কৃত শ্লোক রেন্ডার হয়নি');
+  await clickEd('bn');
+  // শল্যপর্ব (পর্ব ৯) বাংলায় খুলে অনুপস্থিত-বার্তা যাচাই
+  const p9 = doc.querySelector('#g-book-list [data-ch="9"]');
+  if (p9) {
+    p9.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    await wait(700);
+    const note = doc.getElementById('g-en-note');
+    if (!note || note.hidden) errs.push('শল্যপর্বে বাংলা অনুপস্থিত অধ্যায় ৪৬–৬৫-এর সতর্কবার্তা দেখা যায়নি');
+  }
+  console.log(`${errs.length ? '✗' : '✓'} ${rel} (১৮ পর্ব · বাংলা/ইংরেজি/সংস্কৃত)`);
+  for (const e of errs) console.log(`   ! ${e}`);
+  window.close();
+  return errs.length === 0;
+}
+
 let ok = true;
 for (const f of pages()) ok = (await testPage(f)) && ok;
+ok = (await testMahabharata()) && ok;
 for (const f of hubPages()) ok = (await testHub(f)) && ok;
 for (const f of essayPages()) ok = testReaderTools(f) && ok;
 for (const f of allEssays()) ok = testEssayQuality(f) && ok;
