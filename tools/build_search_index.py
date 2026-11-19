@@ -107,9 +107,22 @@ def build_pages() -> list[dict]:
                 "u": path.name,
                 "n": title or PAGE_NAMES.get(path.name, path.stem),
                 "d": (desc or body)[:150],
-                "k": norm(" ".join([title, desc, body[:1800]])),
+                "k": norm(" ".join([title, desc, body[:800]])),
             }
         )
+    # বৌদ্ধ গ্রন্থ হাব পাতা (PDF ও ডিজিটাল ত্রিপিটক)
+    bud_hub = ROOT / "grantho" / "buddhist.html"
+    if bud_hub.exists():
+        braw = bud_hub.read_text(encoding="utf-8", errors="ignore")
+        bm = MAIN_RE.search(braw)
+        bbody = clean_html(bm.group(1) if bm else braw)
+        rows.append({
+            "t": "page",
+            "u": "grantho/buddhist.html",
+            "n": "বৌদ্ধ গ্রন্থ — ত্রিপিটক ও ধম্মপদ",
+            "d": "ধম্মপদ, দীর্ঘ-মধ্যম-সংযুক্ত-অঙ্গুত্তর নিকায়, বিনয় ও ৪১ খণ্ড বাংলা ত্রিপিটক PDF",
+            "k": norm("বৌদ্ধ ত্রিপিটক ধম্মপদ নিকায় বিনয় অভিধর্ম সূত্তপিটক " + bbody[:400]),
+        })
     return rows
 
 
@@ -205,6 +218,12 @@ GRANTH_LABELS = {
     "prashna": "প্রশ্ন উপনিষদ",
     "chandogya": "ছান্দোগ্য উপনিষদ",
     "brihadaranyaka": "বৃহদারণ্যক উপনিষদ",
+    "dhammapada": "ধম্মপদ",
+    "digha-nikaya": "দীর্ঘ নিকায়",
+    "majjhima-nikaya": "মধ্যম নিকায়",
+    "samyutta-nikaya": "সংযুক্ত নিকায়",
+    "anguttara-nikaya": "অঙ্গুত্তর নিকায়",
+    "vinaya-vibhanga": "ভিক্ষু বিভঙ্গ",
 }
 
 # কোন গ্রন্থ-পাতা কোন ফোল্ডারে — grantho.js `data-granth` পড়ে `#ch<N>` hash-এ
@@ -220,7 +239,16 @@ GRANTH_PAGE = {
     "chandogya": "grantho/hindu/chandogya.html",
     "brihadaranyaka": "grantho/hindu/brihadaranyaka.html",
     "bible": "grantho/christian/bible.html",
+    "dhammapada": "grantho/buddhist/dhammapada.html",
+    "digha-nikaya": "grantho/buddhist/digha-nikaya.html",
+    "majjhima-nikaya": "grantho/buddhist/majjhima-nikaya.html",
+    "samyutta-nikaya": "grantho/buddhist/samyutta-nikaya.html",
+    "anguttara-nikaya": "grantho/buddhist/anguttara-nikaya.html",
+    "vinaya-vibhanga": "grantho/buddhist/vinaya-vibhanga.html",
 }
+
+BUDDHIST_SLUGS = {"dhammapada", "digha-nikaya", "majjhima-nikaya",
+                  "samyutta-nikaya", "anguttara-nikaya", "vinaya-vibhanga"}
 
 
 def build_grantho() -> list[dict]:
@@ -242,8 +270,12 @@ def build_grantho() -> list[dict]:
             cid = d.get("id") or f.stem.replace("ch", "")
             cname = d.get("bn") or f"অধ্যায় {cid}"
             testament = d.get("testament") or ""
-            # খোঁজার জন্য প্রথম কয়েক শ্লোকের লেখাও কী-তে রাখি (ভারসাম্যরক্ষা)
-            sample = " ".join((v.get("bn") or "")[:65] for v in (d.get("verses") or [])[:2])
+            # বৌদ্ধ সূত্রে শুরুর প্রথাবদ্ধ «আমি এইরূপ শ্রবণ করিয়াছি» বাদ দিয়ে সূত্র-শিরোনাম রাখি
+            if gslug in BUDDHIST_SLUGS:
+                sutta_titles = " ".join((s.get("title") or "") for s in (d.get("suktas") or [])[:12])
+                sample = (sutta_titles or (d.get("verses") or [{}])[0].get("bn", "")[:45])[:140]
+            else:
+                sample = " ".join((v.get("bn") or "")[:36] for v in (d.get("verses") or [])[:2])
             unit = d.get("groupWord") or "অধ্যায়"
             out.append(
                 {

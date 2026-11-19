@@ -1,7 +1,12 @@
 {
- "_commit": "a7cd5259fcdd6b6803cb5bb4851176927ccb2f53",
+ "_commit": "987685475ccce7f9cc9a9adacd99d68b555f1aaa",
  "_note": "এটি ভালো-জানা ডেটার হিসাব; এর চেয়ে ১৫%-এর বেশি ছোট হলে guard_data.py ফিরিয়ে আনে।",
  "slugs": {
+  "anguttara-nikaya": {
+   "total": 1408,
+   "withBn": 1408,
+   "chapters": 11
+  },
   "atharvaveda": {
    "total": 5976,
    "withBn": 1913,
@@ -22,10 +27,25 @@
    "withBn": 628,
    "chapters": 8
   },
+  "dhammapada": {
+   "total": 405,
+   "withBn": 405,
+   "chapters": 26
+  },
+  "digha-nikaya": {
+   "total": 34,
+   "withBn": 34,
+   "chapters": 3
+  },
   "gita": {
    "total": 701,
    "withBn": 700,
    "chapters": 18
+  },
+  "majjhima-nikaya": {
+   "total": 152,
+   "withBn": 152,
+   "chapters": 15
   },
   "prashna": {
    "total": 67,
@@ -42,10 +62,20 @@
    "withBn": 1875,
    "chapters": 28
   },
+  "samyutta-nikaya": {
+   "total": 1819,
+   "withBn": 1819,
+   "chapters": 56
+  },
   "shvetashvatara": {
    "total": 113,
    "withBn": 113,
    "chapters": 6
+  },
+  "vinaya-vibhanga": {
+   "total": 49,
+   "withBn": 49,
+   "chapters": 4
   },
   "yajurveda-shukla": {
    "total": 1791,

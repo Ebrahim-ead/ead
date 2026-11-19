@@ -18,7 +18,9 @@ OUT = ROOT / "grantho/hindu"
 
 # ---- সাইটে এখন কোন গ্রন্থ থাকবে -------------------------------------------
 ACTIVE = ("gita", "rigveda", "samaveda", "yajurveda-shukla", "atharvaveda",
-          "shvetashvatara", "prashna", "chandogya", "brihadaranyaka", "bible")
+          "shvetashvatara", "prashna", "chandogya", "brihadaranyaka", "bible",
+          "dhammapada", "digha-nikaya", "majjhima-nikaya", "samyutta-nikaya",
+          "anguttara-nikaya", "vinaya-vibhanga")
 
 BN = str.maketrans("0123456789", "০১২৩৪৫৬৭৮৯")
 BN_MAP = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
@@ -144,6 +146,56 @@ BOOKS["brahma"] = dict(
     src="বাংলা অনুবাদ ebanglalibrary.com থেকে (অষ্টাদশ পুরাণ সমগ্র, সম্পাদনা: পৃথ্বীরাজ সেন)।",
     excerpt="সৃষ্টি, ব্রহ্মাণ্ড ও তীর্থ-মাহাত্ম্যের পুরাণ — বাংলা অনুবাদসহ।")
 
+# ---- বৌদ্ধ ধর্মগ্রন্থ (ত্রিপিটক) ------------------------------------------
+BOOKS["dhammapada"] = dict(
+    kind="tripitaka", dir="buddhist", title=("ধম্মপদ", ""),
+    hub="../buddhist.html", hubname="বৌদ্ধ", crumbDrop="হিন্দু",
+    kicker="বৌদ্ধ · ত্রিপিটক · খুদ্দক নিকায়", crumb="ধম্মপদ",
+    intro="খুদ্দক নিকায়ের ধম্মপদ — ২৬টি বর্গে ৪২৩টি মূল পালি গাথা, সতীশচন্দ্র মিত্রের প্রামাণ্য বাংলা পদ্যানুবাদ (১৯০৫, পাবলিক ডোমেইন) ও ভিক্ষু সুজাতোর ইংরেজি অনুবাদসহ।",
+    word="গাথা", chword="বর্গ", rootword="পালি",
+    src="বাংলা পদ্যানুবাদ — সতীশচন্দ্র মিত্র (১৯০৫, পাবলিক ডোমেইন; বাংলা উইকিসংকলন)। মূল পালি (মহাসঙ্গীতি) ও ইংরেজি অনুবাদ (ভিক্ষু সুজাতো) — SuttaCentral/bilara-data (CC0)। ১৬ স্থানে দুটি বা তিনটি গাথা একত্রে অনূদিত হওয়ায় ৪০৫টি অনুচ্ছেদে ৪২৩ গাথাই অটুট রাখা হয়েছে।",
+    excerpt="২৬ বর্গে ৪২৩ মূল গাথা — সতীশচন্দ্র মিত্রের পদ্যানুবাদ, পালি ও ইংরেজিসহ।")
+BOOKS["digha-nikaya"] = dict(
+    kind="tripitaka", dir="buddhist", title=("দীর্ঘ", "নিকায়"),
+    hub="../buddhist.html", hubname="বৌদ্ধ", crumbDrop="হিন্দু",
+    kicker="বৌদ্ধ · সুত্ত পিটক · দীর্ঘ নিকায়", crumb="দীর্ঘ নিকায়",
+    intro="সুত্ত পিটকের দীর্ঘ নিকায় — ৩টি বর্গে সম্পূর্ণ ৩৪টি সূত্র, ভিক্ষু শীলভদ্রের বাংলা অনুবাদ, মহাসঙ্গীতি পালি মূল ও ভিক্ষু সুজাতোর ইংরেজি অনুবাদসহ।",
+    word="সূত্র", chword="বর্গ", groupword="সূত্র", rootword="পালি",
+    src="বাংলা অনুবাদ — ভিক্ষু শীলভদ্র (মৃত্যু ১৯৫৭, পাবলিক ডোমেইন; ত্রিপিটক পাবলিশিং সোসাইটি / SuttaCentral)। মূল পালি ও ইংরেজি (ভিক্ষু সুজাতো) — SuttaCentral/bilara-data (CC0)।",
+    excerpt="৩ বর্গে সম্পূর্ণ ৩৪ সূত্র — ভিক্ষু শীলভদ্রের বাংলা অনুবাদ, পালি ও ইংরেজিসহ।")
+BOOKS["majjhima-nikaya"] = dict(
+    kind="tripitaka", dir="buddhist", title=("মধ্যম", "নিকায়"),
+    hub="../buddhist.html", hubname="বৌদ্ধ", crumbDrop="হিন্দু",
+    kicker="বৌদ্ধ · সুত্ত পিটক · মধ্যম নিকায়", crumb="মধ্যম নিকায়",
+    intro="সুত্ত পিটকের মধ্যম নিকায় — ১৫টি বর্গে সম্পূর্ণ ১৫২টি সূত্র, ড. বেণীমাধব বড়ুয়া, ধর্মাধার মহাস্থবির ও বিনয়েন্দ্রনাথ চৌধুরীর বাংলা অনুবাদ, মূল পালি ও ইংরেজিসহ।",
+    word="সূত্র", chword="বর্গ", groupword="সূত্র", rootword="পালি",
+    src="বাংলা অনুবাদ — ড. বেণীমাধব বড়ুয়া (১–৫০), ধর্মাধার মহাস্থবির (৫১–১০০) ও বিনয়েন্দ্রনাথ চৌধুরী (১০১–১৫২); SuttaCentral। মূল পালি ও ইংরেজি (ভিক্ষু সুজাতো) — SuttaCentral/bilara-data (CC0)।",
+    excerpt="১৫ বর্গে ১৫২ সূত্র — পালি মূল, বাংলা ও ইংরেজি অনুবাদসহ।")
+BOOKS["samyutta-nikaya"] = dict(
+    kind="tripitaka", dir="buddhist", title=("সংযুক্ত", "নিকায়"),
+    hub="../buddhist.html", hubname="বৌদ্ধ", crumbDrop="হিন্দু",
+    kicker="বৌদ্ধ · সুত্ত পিটক · সংযুক্ত নিকায়", crumb="সংযুক্ত নিকায়",
+    intro="সুত্ত পিটকের সংযুক্ত নিকায় — ৫৬টি সংযুক্তে সম্পূর্ণ ১,৮১৯টি সূত্র, বাংলা অনুবাদকদল (২০১৮), মহাসঙ্গীতি পালি মূল ও ভিক্ষু সুজাতোর ইংরেজি অনুবাদসহ।",
+    word="সূত্র", chword="সংযুক্ত", groupword="সূত্র", rootword="পালি",
+    src="বাংলা অনুবাদ — ইন্দ্রগুপ্ত ভিক্ষু, বঙ্গীস ভিক্ষু, অজিত ভিক্ষু, প্রজ্ঞাদর্শী ভিক্ষু, জ্ঞানেন্দ্রিয় ভিক্ষু প্রমুখ (২০১৮), SuttaCentral। মূল পালি ও ইংরেজি (ভিক্ষু সুজাতো) — SuttaCentral/bilara-data (CC0)।",
+    excerpt="৫৬ সংযুক্তে ১,৮১৯ সূত্র — পালি, বাংলা ও ইংরেজিসহ।")
+BOOKS["anguttara-nikaya"] = dict(
+    kind="tripitaka", dir="buddhist", title=("অঙ্গুত্তর", "নিকায়"),
+    hub="../buddhist.html", hubname="বৌদ্ধ", crumbDrop="হিন্দু",
+    kicker="বৌদ্ধ · সুত্ত পিটক · অঙ্গুত্তর নিকায়", crumb="অঙ্গুত্তর নিকায়",
+    intro="সুত্ত পিটকের অঙ্গুত্তর নিকায় — ১১টি নিপাতে ১,৪০৮টি সূত্র ও বর্গ-পাঠ, বাংলা অনুবাদ, মহাসঙ্গীতি পালি মূল ও ভিক্ষু সুজাতোর ইংরেজি অনুবাদসহ।",
+    word="পাঠ", chword="নিপাত", groupword="সূত্র", rootword="পালি",
+    src="বাংলা অনুবাদ — সুমঙ্গল বড়ুয়া, প্রজ্ঞাদর্শী ভিক্ষু ও অনুবাদকমণ্ডলী (২০১৮), SuttaCentral। মূল পালি ও ইংরেজি (ভিক্ষু সুজাতো) — SuttaCentral/bilara-data (CC0)।",
+    excerpt="১১ নিপাতে ১,৪০৮ পাঠ — পালি, বাংলা ও ইংরেজিসহ।")
+BOOKS["vinaya-vibhanga"] = dict(
+    kind="tripitaka", dir="buddhist", title=("ভিক্ষু", "বিভঙ্গ"),
+    hub="../buddhist.html", hubname="বৌদ্ধ", crumbDrop="হিন্দু",
+    kicker="বৌদ্ধ · বিনয় পিটক · ভিক্ষু বিভঙ্গ", crumb="ভিক্ষু বিভঙ্গ",
+    intro="বিনয় পিটকের ভিক্ষু বিভঙ্গ — বাংলা অনূদিত ৪টি অধ্যায়ের ৪৯টি শিক্ষাপদ (পারাজিকা ৪, সঙ্ঘাদিসেস ১৩, অনিয়ত ২ ও নিস্সগ্গিয় পাচিত্তিয় ৩০) মূল পালি ও ভিক্ষু ব্রহ্মালীর ইংরেজি অনুবাদসহ।",
+    word="শিক্ষাপদ", chword="অধ্যায়", groupword="শিক্ষাপদ", rootword="পালি",
+    src="বাংলা অনুবাদ — ভদন্ত বুদ্ধবংশ ভিক্ষু (SuttaCentral); মূল পালি ও ইংরেজি অনুবাদ (ভিক্ষু ব্রহ্মালী) — SuttaCentral/bilara-data (CC0)। অবশিষ্ট পাচিত্তিয়-সেখিয়া অংশ বাংলা ডিজিটাল উৎসে অনুপস্থিত থাকায় অনুমান করে বসানো হয়নি।",
+    excerpt="৪ অধ্যায়ে ৪৯ শিক্ষাপদ — পালি, বাংলা ও ইংরেজিসহ।")
+
 UPA = {
     "upanishad-aitareya": ("ঐতরেয় উপনিষদ", "জগৎসৃষ্টি, আত্মার প্রবেশ ও «প্রজ্ঞানং ব্রহ্ম» — ঐতরেয় আরণ্যকের উপনিষদ।"),
     "upanishad-brihadaranyaka": ("বৃহদারণ্যক উপনিষদ", "«অহং ব্রহ্মাস্মি» — বৃহত্তম প্রধান উপনিষদ, যাজ্ঞবল্ক্য-মৈত্রেয়ীর সংলাপ।"),
@@ -265,7 +317,8 @@ DEVANAGARI_LETTERS = re.compile(r"[\u0904-\u0939\u093D\u0950\u0958-\u0961\u0972-
 
 
 def count_with_sk(slug: str, idx: dict) -> int:
-    """কতটি শ্লোক/মন্ত্রে আসলেই সংস্কৃত (দেবনাগরী) পাঠ আছে — পাতার দাবি যেন ডেটার সাথে মেলে।"""
+    """কতটি শ্লোক/মন্ত্রে আসলেই সংস্কৃত (দেবনাগরী) বা পালি পাঠ আছে — পাতার দাবি যেন ডেটার সাথে মেলে।"""
+    is_pali = idx.get("rootLang") == "pi"
     n = 0
     for c in idx.get("chapters", []):
         fp = DATA / slug / f"ch{c['id']}.json"
@@ -275,7 +328,10 @@ def count_with_sk(slug: str, idx: dict) -> int:
             d = json.loads(fp.read_text(encoding="utf-8"))
         except Exception:
             continue
-        n += sum(1 for v in d.get("verses", []) if DEVANAGARI_LETTERS.search(str(v.get("sk") or "")))
+        if is_pali:
+            n += sum(1 for v in d.get("verses", []) if str(v.get("sk") or "").strip())
+        else:
+            n += sum(1 for v in d.get("verses", []) if DEVANAGARI_LETTERS.search(str(v.get("sk") or "")))
     return n
 
 
@@ -327,14 +383,6 @@ def _apply_identity(h, slug, meta, main, sub):
         h = h[:cm.start()] + cm.group(1) + mid + cm.group(3) + h[cm.end():]
     # টেমপ্লেটের অন্য গ্রন্থের নাম শিরোনাম-জুড়ে ছড়িয়ে থাকলে তাও বদলানো
     h = h.replace("সামবেদ সংহিতা", label).replace("ঋগ্বেদ সংহিতা", label)
-    cw = meta.get("chword") or "অধ্যায়"
-    w = meta.get("word") or "শ্লোক"
-    if cw != "মণ্ডল" or w != "মন্ত্র":
-        h = (h.replace("মণ্ডল ও মন্ত্র বিন্যাস", f"{cw} ও {w} বিন্যাস")
-              .replace("মণ্ডল অনুযায়ী মন্ত্র-বিস্তৃতি", f"{cw} অনুযায়ী {w}-বিস্তৃতি")
-              .replace("বৃহত্তম ৫ মণ্ডল", f"বৃহত্তম ৫ {cw}")
-              .replace("মণ্ডল চার্ট", f"{cw} চার্ট")
-              .replace("শীর্ষ মণ্ডল", f"শীর্ষ {cw}"))
     return h
 
 
@@ -361,48 +409,57 @@ def make_page(slug, idx, meta):
         # ⚠ «সংস্কৃত মূল পাঠ» চিপ কেবল বেদ-জাতীয় গ্রন্থে — বাইবেলে সংস্কৃত
         #   পাঠের প্রশ্নই নেই। আগে এখানে শর্তহীন যোগ হতো, ফলে বাংলা বাইবেলের
         #   অননুবাদিত পদগুলোকে ভুলভাবে «সংস্কৃত মূল পাঠ» বলা হচ্ছিল।
-        if meta.get("kind") != "bible":
+        if meta.get("kind") not in ("bible", "tripitaka"):
             facts += '<span class="g-fact">সংস্কৃত মূল পাঠ</span>'
+    if idx.get("gathaTotal"):
+        facts += f'<span class="g-fact"><b>{commas(idx["gathaTotal"])}</b> মূল গাথা</span>'
     facts += f'<span class="g-fact"><b>{commas(nch)}</b> {meta["chword"]}</span>'
     nsuk = idx.get("suktaTotal") or sum(c.get("suktaCount", 0) for c in idx["chapters"])
     nshl = idx.get("shlokaTotal") or sum(c.get("shlokaCount", 0) for c in idx["chapters"])
     if nsuk:
         # ঋগ্বেদে «সূক্ত», বাইবেলে «অধ্যায়» — ডেটার groupWord থেকে
         gw = idx.get("groupWord") or meta.get("groupword") or "সূক্ত"
-        facts += f'<span class="g-fact"><b>{commas(nsuk)}</b> {gw}</span>'
+        if gw != meta["word"]:
+            facts += f'<span class="g-fact"><b>{commas(nsuk)}</b> {gw}</span>'
     if nshl:
         facts += f'<span class="g-fact"><b>{commas(nshl)}</b> শ্লোক</span>'
-    # ইংরেজি অনুবাদ (বাইবেল / অথর্ববেদ): কত পদে/মন্ত্রে মিলেছে তা ডেটা থেকেই
+    # ইংরেজি অনুবাদ (বাইবেল / অথর্ববেদ / ত্রিপিটক): কত পদে/মন্ত্রে মিলেছে তা ডেটা থেকেই
     enj = OUT / slug / "en" / "joined.json"
     en_n = int(idx.get("withEn") or 0)
     if not en_n and enj.exists():
         en_n = json.loads(enj.read_text(encoding="utf-8")).get("enVerses", 0)
     if en_n:
-        facts += f'<span class="g-fact"><b>{commas(en_n)}</b> {meta["word"]}ে ইংরেজি</span>'
+        if meta.get("kind") == "tripitaka":
+            facts += '<span class="g-fact">পালি · বাংলা · ইংরেজি</span>'
+        else:
+            facts += f'<span class="g-fact"><b>{commas(en_n)}</b> {meta["word"]}ে ইংরেজি</span>'
     h = re.sub(r'<div class="g-facts">.*?</div>', '<div class="g-facts">' + facts + '</div>',
                h, count=1, flags=re.S)
 
     # সার্চ-বাক্স: টেমপ্লেটের লেবেল অন্য গ্রন্থে ভুল হতো, আর সংস্কৃত না থাকলে "(সংস্কৃত)" বিভ্রান্তিকর
-    ph = f'{meta["word"]}ে খুঁজুন'
+    rw = meta.get("rootword") or "সংস্কৃত"
+    wloc = meta["word"] + ("য়" if meta["word"].endswith("া") else "ে")
+    ph = f'{wloc} খুঁজুন'
     if not withbn and withsk:
-        ph += " (সংস্কৃত)"
-    elif withsk and withsk < total:
-        ph += " (সংস্কৃত বা বাংলা)"
-    elif withsk and withsk == total:
-        ph += " (সংস্কৃত বা বাংলা)"
+        ph += f" ({rw})"
+    elif withsk:
+        ph += f" ({rw} বা বাংলা)"
     elif withsk == 0:
         ph += " (বাংলা)"
     h = re.sub(r'(<input id="g-search"[^>]*placeholder=")[^"]*(")', lambda m: m.group(1) + ph + m.group(2), h, count=1)
     h = re.sub(r'(<input id="g-search"[^>]*aria-label=")[^"]*(")',
-               lambda m: m.group(1) + f'{meta["word"]}ে খুঁজুন' + m.group(2), h, count=1)
+               lambda m: m.group(1) + f'{wloc} খুঁজুন' + m.group(2), h, count=1)
     if withsk == 0:
         h = re.sub(r'\s*<button[^>]*id="g-sk-btn".*?</button>', '', h, count=1, flags=re.S)
     elif 'id="g-sk-btn"' not in h:
         h = re.sub(
             r'(<button[^>]*id="g-bn-btn")',
-            r'<button class="g-btn on" id="g-sk-btn" type="button" aria-pressed="true">সংস্কৃত</button>\n      \1',
+            rf'<button class="g-btn on" id="g-sk-btn" type="button" aria-pressed="true">{rw}</button>\n      \1',
             h, count=1,
         )
+    else:
+        h = re.sub(r'(<button[^>]*id="g-sk-btn"[^>]*>)[^<]*(</button>)',
+                   lambda m: m.group(1) + rw + m.group(2), h, count=1)
     # সব খণ্ডেই বাংলা অনুবাদ থাকলে «কেবল যেগুলোর অনুবাদ আছে» ছাঁকনিটি অকেজো —
     # অথচ বোতামটি দেখলে মনে হয় কিছু পাঠ বাদ পড়ছে। তাই তখন মার্কআপই বাদ দেওয়া হয়
     # (grantho.js-ও রানটাইমে একই কাজ করে, যাতে পুরোনো পাতাতেও ঠিক থাকে)।
@@ -500,7 +557,7 @@ def make_page(slug, idx, meta):
     src = meta["src"]
     # সংস্কৃত পাঠের প্রাপ্যতা — আগে হার্ডকোডেড দাবি ছিল যা ডেটার সাথে মিলত না।
     # বাইবেলের ক্ষেত্রে এই টীকা অর্থহীন (সেখানে সংস্কৃতের প্রশ্নই নেই)।
-    if meta.get("kind") == "bible":
+    if meta.get("kind") in ("bible", "tripitaka"):
         pass
     elif withsk == 0:
         src += (f' এই সংস্করণে সংস্কৃত মূল পাঠ ছাপা হয়নি, তাই {meta["word"]}ে কেবল বাংলা অনুবাদ আছে'
@@ -552,6 +609,8 @@ def make_page(slug, idx, meta):
     elif slug == "brihadaranyaka":
         fulldesc = (f"{label} — {commas(nch)} অধ্যায়, {commas(nsuk)} ব্রাহ্মণ ও {commas(total)} মন্ত্র মূল সংস্কৃত পাঠ, "
                     f"স্বামী গম্ভীরানন্দের বাংলা সরলার্থ ও F. Max Müller / Robert E. Hume-এর ইংরেজি অনুবাদসহ।")
+    elif meta.get("kind") == "tripitaka":
+        fulldesc = meta["intro"]
     else:
         fulldesc = f'{label}-র {commas(withbn)}টি {meta["word"]} বাংলা অনুবাদসহ — ebanglalibrary.com।'
     # সতর্কতা: দশার-অভাবে হঠাৎ বড় পতন (যেমন ৯২২২ → ২১ শ্লোক) সাইটে বসিয়ে দেব না।
@@ -842,13 +901,31 @@ def main():
         replace_grid("islam.html", isl, sub="")
         print("ইসলাম-হাব: কার্ড তৈরি")
 
-    # ---- বৌদ্ধ-হাব: পাঠ এখনো নেই, তবু কার্ডটাও একই ছোট গঠনে
-    replace_grid("buddhist.html",
-                 card("", "বৌদ্ধ · গ্রন্থ", "ত্রিপিটক ও বৌদ্ধ সাহিত্য",
-                      "ধাপে ধাপে যোগ হচ্ছে", soon=True), sub="")
+    # ---- বৌদ্ধ-হাব: ডিজিটাল পাঠক (ধম্মপদ, চার নিকায় ও বিনয়)
+    bud_cards = ""
+    bud_built = []
+    for bslug in ("dhammapada", "digha-nikaya", "majjhima-nikaya",
+                  "samyutta-nikaya", "anguttara-nikaya", "vinaya-vibhanga"):
+        if bslug not in ACTIVE:
+            continue
+        bidx = load(bslug)
+        bmeta = BOOKS.get(bslug)
+        if not bidx or not bmeta:
+            continue
+        br = make_page(bslug, bidx, bmeta)
+        bud_built.append((bslug, "buddhist"))
+        print(f"{bslug}: {br['withbn']}/{br['total']} · {br['nch']}")
+        title_str = " ".join(x for x in bmeta["title"] if x)
+        if bslug == "dhammapada":
+            sub_str = f'{commas(bidx.get("gathaTotal") or br["total"])} গাথা · {commas(br["nch"])} {bmeta["chword"]}'
+        else:
+            sub_str = f'{commas(br["total"])} {bmeta["word"]} · {commas(br["nch"])} {bmeta["chword"]}'
+        bud_cards += card(f"buddhist/{bslug}.html", bmeta["kicker"], title_str, sub_str)
+    if bud_cards:
+        replace_grid("buddhist.html", bud_cards, sub="")
 
     # ---- খ্রিস্টান: বাংলা বাইবেল
-    built = [(r["slug"], "hindu") for r in made]
+    built = [(r["slug"], "hindu") for r in made] + bud_built
     if "bible" in ACTIVE:
         idx = load("bible")
         meta = BOOKS.get("bible")

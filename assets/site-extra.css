@@ -76,9 +76,6 @@ html[data-theme="light"] .founder-link{color:#7a4f00;background:rgba(155,101,0,.
 html[data-theme="light"] .founder-link:hover{background:rgba(155,101,0,.15)}
 @media (max-width:600px){.founder-card{flex-direction:column;align-items:flex-start;padding:18px;gap:15px}.founder-avatar{width:88px;height:88px}}
 
-/* গ্রন্থ পাঠক পাতায় লেখার নিচে ও ফুটারের উপরে পরিসংখ্যান চার্টের পরিচ্ছন্ন ফাঁকা জায়গা */
-.h-full>.dc-wrap:last-child,.q-full>.dc-wrap:last-child,#grantho-reader>.dc-wrap:last-child,#en-reader>.dc-wrap:last-child{margin:20px 0 36px}
-.q-credit:has(+.dc-wrap){margin-bottom:16px}
 
 
 

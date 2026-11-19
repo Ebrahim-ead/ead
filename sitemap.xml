@@ -27,20 +27,26 @@
   <url><loc>https://ebrahim-ead.github.io/ead/quran-science.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/quran.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/topics.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/buddhist/anguttara-nikaya.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/buddhist/dhammapada.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/buddhist/digha-nikaya.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/buddhist/majjhima-nikaya.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/buddhist/samyutta-nikaya.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/buddhist/vinaya-vibhanga.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/grantho/buddhist.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/grantho/christian/bible.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/grantho/christian/english-bible.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/grantho/christian.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/atharvaveda.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/brihadaranyaka.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/chandogya.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/gita.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/prashna.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/rigveda.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/samaveda.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/shvetashvatara.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/veda.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/yajurveda-shukla.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/grantho/islam.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/atharvaveda.html</loc><lastmod>2026-11-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/samaveda.html</loc><lastmod>2026-11-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/shvetashvatara.html</loc><lastmod>2026-11-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/prashna.html</loc><lastmod>2026-11-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/chandogya.html</loc><lastmod>2026-11-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://ebrahim-ead.github.io/ead/grantho/hindu/brihadaranyaka.html</loc><lastmod>2026-11-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>
