@@ -1,0 +1,34 @@
+toc-10।০১ | https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০।০১/ | OK len=336803 | links=503
+     · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০।০১০/
+     · https://www.ebanglalibrary.com/lessons/ঋগ্বেদ-প্রথম-মণ্ডল/
+     · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০১/
+     · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০২/
+toc-10।01 | https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০।01/ | FAIL | links=0
+toc-10 | https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০/ | OK len=332733 | links=503
+     · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-১০।০০১/
+     · https://www.ebanglalibrary.com/lessons/ঋগ্বেদ-প্রথম-মণ্ডল/
+     · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০১/
+     · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০২/
+toc-09।০১ | https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০৯।০১/ | OK len=332726 | links=503
+     · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০৯।০১০/
+     · https://www.ebanglalibrary.com/lessons/ঋগ্বেদ-প্রথম-মণ্ডল/
+     · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০১/
+     · https://www.ebanglalibrary.com/topics/ঋগ্বেদ-০১।০০২/
+home | https://www.ebanglalibrary.com/ | OK len=154350 | links=0
+সাইটম্যাপে ঋগ্বেদ: 1033 · সব URL: 30731
+মণ্ডল ১০ (সাইটম্যাপ): 191 · মণ্ডল ৯ (সাইটম্যাপ): 0
+সূচি ঋগ্বেদ-10।০১/: লিংক 0, মণ্ডল-১০-মিল 0
+সূচি ঋগ্বেদ-10/: লিংক 0, মণ্ডল-১০-মিল 0
+mandala_links(10) → 191
+regex(পূর্ণ) মিলেছে: 191/191
+   ঋগ্বেদ-১০।০৮২ | regex=OK | ordinal=10082
+   ঋগ্বেদ-১০।০৮১ | regex=OK | ordinal=10081
+   ঋগ্বেদ-১০।০৮৩ | regex=OK | ordinal=10083
+   ঋগ্বেদ-১০।০৮৪ | regex=OK | ordinal=10084
+   ঋগ্বেদ-১০।০৮৫ | regex=OK | ordinal=10085
+   ঋগ্বেদ-১০।০৮৬ | regex=OK | ordinal=10086
+   ঋগ্বেদ-১০।১৮৯ | regex=OK | ordinal=10189
+   ঋগ্বেদ-১০।১৯০ | regex=OK | ordinal=10190
+   ঋগ্বেদ-১০।১৯১ | regex=OK | ordinal=10191
+প্রথম লিংকের repr: 'ঋগ্বেদ-১০।০৮২'
+সাইট-ব্যর্থতা গণনা: 0
