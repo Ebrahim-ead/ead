@@ -304,6 +304,7 @@ def normalize(slug: str, html: str, sub: str = "hindu") -> str:
 
 GRANTHO_ASSETS = (
     "assets/grantho/grantho.css",
+    "assets/grantho/grantho-common.js",
     "assets/grantho/grantho.js",
     "assets/grantho/bible-reader.js",
     "assets/grantho/mahabharata-reader.js",
@@ -312,6 +313,13 @@ GRANTHO_ASSETS = (
 
 def stamp_grantho_assets(html: str) -> str:
     """গ্রন্থ CSS/JS লিংকে ফাইল-হ্যাশ (?v=…) বসানো — পুরোনো SW/HTTP ক্যাশ এড়াতে।"""
+    if "assets/grantho/grantho-common.js" not in html:
+        html = re.sub(
+            r'([ \t]*)(<script src="([^"]*?)assets/grantho/(?:grantho|bible-reader|mahabharata-reader)\.js[^"]*"[^>]*></script>)',
+            r'\1<script src="\3assets/grantho/grantho-common.js" defer></script>\n\1\2',
+            html,
+            count=1,
+        )
     for rel in GRANTHO_ASSETS:
         p = ROOT / rel
         if not p.exists():
@@ -1065,10 +1073,17 @@ def main():
                                   "বাংলা বাইবেল", sub, meta["excerpt"]) + en_card, sub="")
                 print(f"bible: {r['withbn']}/{r['total']} · {r['nch']} পুস্তক · "
                       f"{idx.get('suktaTotal') or sum(c.get('suktaCount', 0) for c in chs)} অধ্যায়")
+    try:
+        sys.path.insert(0, str(ROOT / "tools"))
+        import seo as _seo
+    except Exception:
+        _seo = None
     stamped = 0
     for hp in sorted((ROOT / "grantho").rglob("*.html")):
         raw = hp.read_text(encoding="utf-8")
         upd = stamp_grantho_assets(raw)
+        if _seo is not None:
+            upd, _ = _seo.add_meta(upd, _seo.DEFAULT_BASE, hp)
         if upd != raw:
             hp.write_text(upd, encoding="utf-8")
             stamped += 1

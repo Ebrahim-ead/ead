@@ -94,6 +94,8 @@ function localFetch(url) {
 }
 Object.defineProperty(w, 'fetch', { configurable: true, writable: true, value: localFetch });
 
+const gc = path.join(ROOT, 'assets/grantho/grantho-common.js');
+if (fs.existsSync(gc)) w.eval(fs.readFileSync(gc, 'utf8'));
 const i = html.indexOf('English Bible reader');
 w.eval(html.slice(html.lastIndexOf('<script>', i) + 8, html.indexOf('</script>', i)));
 
@@ -151,6 +153,12 @@ await until(function () {
 });
 ok('পরের অধ্যায়ে গেলে পুরোনো খোঁজ পরিষ্কার হয়',
   es.value === '' && d.querySelectorAll('.e-v').length > 20, d.querySelectorAll('.e-v').length);
+ok('ফন্ট-আকার ও বুকমার্ক নিয়ন্ত্রণ যুক্ত',
+  !!d.querySelector('.g-fs') && !!d.getElementById('g-bm-btn'));
+const ebBm = d.querySelector('.e-v [data-bm]');
+if (ebBm) ebBm.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+ok('ইংরেজি বাইবেলের বুকমার্ক কাজ করে',
+  !!ebBm && ebBm.closest('.e-v').classList.contains('bm') && !!(d.querySelector('#g-bm-btn .g-bm-cnt') || {}).textContent.trim());
 
 console.log('৩. পাতা');
 ok('canonical ঠিক', /rel="canonical" href="[^"]*christian\/english-bible\.html"/.test(html));

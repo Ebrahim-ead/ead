@@ -25,6 +25,8 @@
   var BASE = root.dataset.base || autoBase();
   var KEY = "grantho." + SLUG + ".v1";
   var BN_DIGITS = "০১২৩৪৫৬৭৮৯";
+  var GC = window.GranthoCommon || null;
+  var bmMgr = null;
 
   function bn(n) {
     return String(n).replace(/[0-9]/g, function (d) { return BN_DIGITS[+d]; });
@@ -418,8 +420,11 @@
       '</span></h3>';
 
     if (edition === "bn") {
-      out += chObj.u.map(function (u) {
-        var blk = '<article class="g-mbh-upa">';
+      out += chObj.u.map(function (u, ui) {
+        var bmId = "bn:" + parvaId + ":" + chObj.c + ":" + (ui + 1);
+        var isBm = !!(bmMgr && bmMgr.has(bmId));
+        var blk = '<article class="g-mbh-upa' + (isBm ? " bm" : "") + '" id="v' + (ui + 1) + '" data-bm-ref="' + esc(bmId) + '">';
+        if (bmMgr) blk += bmMgr.iconHTML(bmId, isBm);
         if (u.b) blk += '<h4 class="g-mbh-upa-b">' + esc(u.b) + '</h4>';
         blk += u.p.map(function (p) {
           return '<p class="g-mbh-p">' + esc(p).replace(/\n+/g, "<br>") + '</p>';
@@ -432,7 +437,10 @@
     }
 
     if (edition === "en") {
-      var prose = '<section class="g-prose-en" lang="en" dir="ltr">';
+      var enBmId = "en:" + parvaId + ":" + chObj.c + ":1";
+      var enIsBm = !!(bmMgr && bmMgr.has(enBmId));
+      var prose = '<section class="g-prose-en' + (enIsBm ? " bm" : "") + '" id="v1" data-bm-ref="' + esc(enBmId) + '" lang="en" dir="ltr">';
+      if (bmMgr) prose += bmMgr.iconHTML(enBmId, enIsBm);
       prose += '<h4 class="g-prose-en-h">' + esc(chObj.t || ("Section " + chObj.c)) + '</h4>';
       if (chObj.s) prose += '<p class="g-prose-en-sub">' + esc(chObj.s) + '</p>';
       if (chObj.n) prose += '<div class="g-en-note"><b>Editorial Note:</b> ' + esc(chObj.n) + '</div>';
@@ -451,9 +459,12 @@
 
     /* সংস্কৃত (sa) */
     var cards = chObj.v.map(function (v) {
-      return '<article class="g-v" id="v' + v.vn + '">' +
+      var saBmId = "sa:" + parvaId + ":" + chObj.c + ":" + v.vn;
+      var saIsBm = !!(bmMgr && bmMgr.has(saBmId));
+      return '<article class="g-v' + (saIsBm ? " bm" : "") + '" id="v' + v.vn + '" data-bm-ref="' + esc(saBmId) + '">' +
         '<div class="g-v-num" aria-hidden="true">' + bn(v.vn) + '</div>' +
         '<div class="g-v-body">' +
+        (bmMgr ? bmMgr.iconHTML(saBmId, saIsBm) : "") +
         (v.spk ? '<p class="g-v-spk">' + esc(v.spk) + '</p>' : "") +
         '<p class="g-v-sk" lang="sa">' + esc(v.sk).replace(/\n+/g, "<br>") + '</p>' +
         '</div></article>';
@@ -490,7 +501,7 @@
     }
   }
 
-  function openChapter(id, keepInput) {
+  function openChapter(id, keepInput, jumpVerse) {
     var pv = parvaById(parvaId);
     if (!pv) return;
     chapterId = +id;
@@ -498,6 +509,12 @@
     clearSearch(keepInput);
     var tok = ++loadToken;
     save({ parva: parvaId, ch: chapterId, scope: "chapter", ed: edition });
+    try {
+      if (history && history.replaceState) {
+        var nh = "#p" + parvaId + "c" + chapterId + (jumpVerse ? ":" + jumpVerse : "") + (edition !== "bn" ? "&ed=" + edition : "");
+        history.replaceState(null, "", nh);
+      }
+    } catch (e) {}
     renderParvas();
     renderGrid();
     renderNote();
@@ -536,7 +553,18 @@
       }
       syncHead(chObj);
       renderChapterContent(chObj);
-      try { window.scrollTo({ top: (gridEl || root).offsetTop - 90, behavior: "smooth" }); } catch (e) {}
+      if (jumpVerse) {
+        setTimeout(function () {
+          var el = document.getElementById("v" + jumpVerse);
+          if (el) {
+            el.scrollIntoView({ block: "center" });
+            el.classList.add("hit");
+            setTimeout(function () { el.classList.remove("hit"); }, 1700);
+          }
+        }, 50);
+      } else {
+        try { window.scrollTo({ top: (gridEl || root).offsetTop - 90, behavior: "smooth" }); } catch (e) {}
+      }
     }).catch(function () {
       if (tok === loadToken && bodyEl) {
         bodyEl.innerHTML = '<p class="g-empty">অধ্যায়টি লোড করা গেল না। পুনরায় চেষ্টা করুন।</p>';
@@ -650,6 +678,47 @@
     }
     if (prevBtn) prevBtn.addEventListener("click", function () { step(-1); });
     if (nextBtn) nextBtn.addEventListener("click", function () { step(1); });
+    if (GC) GC.bindArrowNav(step);
+    if (bodyEl && GC) {
+      bodyEl.addEventListener("click", function (e) {
+        var bmBtn = e.target.closest && e.target.closest("[data-bm]");
+        if (bmBtn && bmMgr) {
+          var card = bmBtn.closest(".g-mbh-upa, .g-prose-en, .g-v");
+          var rawId = bmBtn.getAttribute("data-bm");
+          var p = rawId.split(":");
+          var ed0 = p[0], pv0 = +p[1], ch0 = +p[2], v0 = +p[3];
+          var pvObj = parvaById(pv0) || {};
+          var hEl = card && card.querySelector(".g-mbh-upa-b, .g-prose-en-h");
+          var txtEl = card && card.querySelector(".g-mbh-p, .g-prose-p, .g-v-sk");
+          var refTxt = (pvObj.bn || "মহাভারত") + " · অধ্যায় " + bn(ch0) + (ed0 === "sa" ? " · শ্লোক " + bn(v0) : ed0 === "bn" ? " · অংশ " + bn(v0) : " (EN)");
+          bmMgr.toggle({
+            id: rawId,
+            ed: ed0,
+            parva: pv0,
+            ch: ch0,
+            v: v0,
+            ref: refTxt,
+            label: refTxt,
+            snippet: ((hEl ? hEl.textContent.trim() + " — " : "") + (txtEl ? txtEl.textContent.trim() : "")).slice(0, 72),
+            url: "grantho/hindu/mahabharata.html#p" + pv0 + "c" + ch0 + ":" + v0 + (ed0 !== "bn" ? "&ed=" + ed0 : "")
+          });
+          return;
+        }
+        var cpBtn = e.target.closest && e.target.closest("[data-copy]");
+        if (cpBtn) {
+          var card2 = cpBtn.closest(".g-mbh-upa, .g-prose-en, .g-v");
+          if (!card2) return;
+          var pvObj2 = parvaById(parvaId) || {};
+          var lines = [];
+          card2.querySelectorAll(".g-mbh-upa-b, .g-mbh-p, .g-prose-en-h, .g-prose-p, .g-v-spk, .g-v-sk").forEach(function (el) {
+            var t = el.textContent.trim();
+            if (t) lines.push(t);
+          });
+          lines.push("— মহাভারত · " + (pvObj2.bn || "") + " · অধ্যায় " + bn(chapterId));
+          GC.copyText(lines.join("\n\n"), cpBtn);
+        }
+      });
+    }
     if (searchEl) {
       searchEl.addEventListener("input", function () {
         query = searchEl.value.trim();
@@ -677,6 +746,26 @@
     if (hmEd) edition = hmEd[1];
 
     buildEditions();
+    if (GC) {
+      var barEl = root.querySelector(".g-toolbar");
+      GC.initFontSize(root, barEl);
+      bmMgr = GC.initBookmarks({
+        root: root,
+        bar: barEl,
+        slug: SLUG,
+        onOpen: function (entry) {
+          if (entry.ed && entry.ed !== edition) {
+            edition = entry.ed;
+            save({ ed: edition });
+            syncEditions();
+          }
+          if (entry.parva != null && parvaById(entry.parva)) {
+            showParvaView(entry.parva);
+            if (entry.ch != null) openChapter(entry.ch, false, entry.v);
+          }
+        }
+      });
+    }
     bind();
     syncStickTop();
     window.addEventListener("resize", function () {
@@ -694,11 +783,11 @@
     if (narrow) setFolded(typeof st.fold === "boolean" ? st.fold : true, false);
     else setFolded(false, false);
 
-    var mPC = h.match(/^#p(\d+)c(\d+)/);
+    var mPC = h.match(/^#p(\d+)c(\d+)(?::(\d+))?/);
     var mP  = h.match(/^#ch(\d+)/) || h.match(/^#p(\d+)$/);
     if (mPC && parvaById(+mPC[1])) {
       showParvaView(+mPC[1]);
-      openChapter(+mPC[2]);
+      openChapter(+mPC[2], false, mPC[3] ? +mPC[3] : null);
     } else if (mP && parvaById(+mP[1])) {
       showParvaView(+mP[1]);
     } else if (st.parva && parvaById(st.parva)) {

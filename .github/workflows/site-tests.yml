@@ -10,23 +10,25 @@ on:
   push:
     branches: [main]
     paths:
-      - 'tools/build_pages.py'
-      - 'tools/clean_yajurveda.py'
-      - 'tools/audit_site.mjs'
-      - 'tools/test_reader.mjs'
-      - 'tools/check_perf.mjs'
-      - 'tools/check_mobile.mjs'
-      - 'tools/test_pdf.mjs'
-      - 'assets/book-pdf.js'
-      - 'assets/*.css'
-      - 'assets/*.js'
-      - 'assets/grantho/**'
+      - 'tools/**'
+      - 'assets/**'
       - 'grantho/**'
       - '*.html'            # প্রবন্ধ-পাতা যোগ/সম্পাদনা হলেও অডিট চলবে
-      - 'assets/site-extra.css'
+      - 'sw.js'
+      - 'manifest.json'
       - '.github/workflows/site-tests.yml'
     # ci-diagnostics/ ইচ্ছে করেই বাদ — ব্যর্থতার ডায়াগনস্টিক সেখানে প্রকাশ হয়,
     # তাই সেটি ট্রিগারে থাকলে নিজেরই আবার রান হতো (লুপ)।
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/**'
+      - 'assets/**'
+      - 'grantho/**'
+      - '*.html'
+      - 'sw.js'
+      - 'manifest.json'
+      - '.github/workflows/site-tests.yml'
   workflow_dispatch:
 
 permissions:
@@ -86,10 +88,36 @@ jobs:
         run: |
           node tools/test_pdf.mjs 2>&1 | tee /tmp/pdf.txt
 
+      # সার্চ, ইংরেজি বাইবেল, ড্রয়ার, PWA, ক্যাশ-সংস্করণ, আইকন, ফন্ট ও কনটেন্ট যাচাই
+      - name: সার্চ, বাইবেল, ড্রয়ার ও PWA স্যুট
+        run: |
+          set -o pipefail
+          {
+            node tools/test_search.mjs
+            python3 -m http.server 8778 --bind 127.0.0.1 >/dev/null 2>&1 &
+            SRV=$!
+            trap "kill $SRV 2>/dev/null || true" EXIT
+            sleep 1
+            node tools/test_ayahs.mjs
+            kill $SRV 2>/dev/null || true
+            trap - EXIT
+            node tools/test_english_bible.mjs
+            node tools/test_mobile_drawers.mjs
+            node tools/test_pwa.mjs
+            node tools/test_pwa_ui.mjs
+            node tools/test_sw_limits.mjs
+            node tools/test_sw_appmode.mjs
+            node tools/test_cache_version.mjs
+            node tools/test_icons.mjs
+            node tools/test_fonts.mjs
+            node tools/test_content.mjs
+            node tools/test_bible.mjs
+          } 2>&1 | tee /tmp/extra.txt
+
       # ব্যর্থ হলে কারণ জানা দরকার — Actions-এর লগ বাইরে থেকে পড়া যায় না,
       # তাই আউটপুট রিপোতেই প্রকাশ (নিশ্চিত করা আছে যে এতে লুপ হবে না)।
       - name: ব্যর্থ হলে ডায়াগনস্টিক প্রকাশ
-        if: failure()
+        if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -112,6 +140,9 @@ jobs:
             echo ""
             echo "--- PDF-যাচাই আউটপুট ---"
             cat /tmp/pdf.txt 2>/dev/null || echo '(PDF-চেক চলেইনি)'
+            echo ""
+            echo "--- সার্চ/PWA/অতিরিক্ত স্যুট ---"
+            cat /tmp/extra.txt 2>/dev/null || echo '(অতিরিক্ত স্যুট চলেইনি)'
           } > ci-diagnostics/site-tests.txt
           git config user.name  "grantho-bot"
           git config user.email "bot@users.noreply.github.com"

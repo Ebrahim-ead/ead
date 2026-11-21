@@ -14,6 +14,8 @@
 from __future__ import annotations
 
 import argparse
+import html as _html
+import json
 import subprocess
 import glob
 import pathlib
@@ -49,12 +51,131 @@ def url_of(p: pathlib.Path, base: str) -> str:
     return base if rel == "index.html" else base + rel
 
 
+def _extract_title_desc(s: str, rel: str) -> tuple[str, str]:
+    tm = re.search(r"<title>(.*?)</title>", s, re.S | re.I)
+    title = _html.unescape(re.sub(r"<[^>]+>", "", tm.group(1)).strip()) if tm else rel
+    dm = re.search(r'<meta\s+name="description"\s+content="([^"]*)"', s, re.I)
+    desc = _html.unescape(dm.group(1).strip()) if dm else title
+    return title, desc
+
+
+def _breadcrumbs(rel: str, title: str, base: str) -> list[dict]:
+    items = [{"@type": "ListItem", "position": 1, "name": "হোম", "item": base}]
+    parts = rel.split("/")
+    if rel == "index.html":
+        return items
+    if parts[0] == "grantho" and len(parts) >= 2:
+        items.append({"@type": "ListItem", "position": 2, "name": "ধর্মীয় গ্রন্থ", "item": base + "grantho.html"})
+        hub_names = {
+            "hindu": ("হিন্দু ধর্মগ্রন্থ", "grantho/hindu.html"),
+            "christian": ("খ্রিস্টান ধর্মগ্রন্থ", "grantho/christian.html"),
+            "buddhist": ("বৌদ্ধ ধর্মগ্রন্থ", "grantho/buddhist.html"),
+            "islam": ("ইসলাম ধর্মগ্রন্থ", "grantho/islam.html"),
+        }
+        sub = parts[1].replace(".html", "")
+        if len(parts) == 3 and sub in hub_names:
+            hname, hurl = hub_names[sub]
+            items.append({"@type": "ListItem", "position": 3, "name": hname, "item": base + hurl})
+            items.append({"@type": "ListItem", "position": 4, "name": title.split("—")[0].strip(), "item": base + rel})
+        else:
+            items.append({"@type": "ListItem", "position": 3, "name": title.split("—")[0].strip(), "item": base + rel})
+        return items
+    items.append({"@type": "ListItem", "position": 2, "name": title.split("—")[0].strip(), "item": base + rel})
+    return items
+
+
+def build_jsonld(s: str, base: str, p: pathlib.Path) -> str:
+    rel = p.relative_to(ROOT).as_posix()
+    title, desc = _extract_title_desc(s, rel)
+    url = url_of(p, base)
+    og = base + "assets/og-cover.jpg"
+    author = {
+        "@type": "Person",
+        "name": "Ebrahim Ead",
+        "url": base,
+    }
+    graph: list[dict] = []
+    if rel == "index.html":
+        graph.append({
+            "@type": "WebSite",
+            "name": "Ebrahim Ead",
+            "url": base,
+            "inLanguage": "bn",
+            "description": desc,
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": base + "?q={search_term_string}",
+                "query-input": "required name=search_term_string",
+            },
+        })
+        graph.append({
+            "@type": "Person",
+            "name": "Ebrahim Ead",
+            "url": base,
+            "image": og,
+            "sameAs": [
+                "https://www.facebook.com/ebrahim.rahul",
+                "https://www.instagram.com/ead2212/",
+                "https://www.threads.com/@ead2212",
+                "https://www.reddit.com/user/Zealousideal_Dig2819/",
+                "https://x.com/ebrahimn23o",
+            ],
+        })
+    else:
+        if re.search(r'class="[^"]*\barticle-body\b', s):
+            graph.append({
+                "@type": "Article",
+                "headline": title.split("|")[0].strip(),
+                "description": desc,
+                "url": url,
+                "inLanguage": "bn",
+                "image": og,
+                "author": author,
+                "publisher": author,
+            })
+        elif rel in ("quran.html", "hadith.html") or rel.startswith("book-") or (
+            rel.startswith("grantho/") and rel.count("/") == 2 and rel != "grantho/hindu/veda.html"
+        ):
+            lang = "en" if rel == "grantho/christian/english-bible.html" else "bn"
+            graph.append({
+                "@type": "Book",
+                "name": title.split("|")[0].strip(),
+                "description": desc,
+                "url": url,
+                "inLanguage": lang,
+                "image": og,
+            })
+        elif rel in ("books.html", "topics.html", "atheism.html", "grantho.html") or rel.startswith("grantho/"):
+            graph.append({
+                "@type": "CollectionPage",
+                "name": title.split("|")[0].strip(),
+                "description": desc,
+                "url": url,
+                "inLanguage": "bn",
+            })
+        else:
+            graph.append({
+                "@type": "WebPage",
+                "name": title.split("|")[0].strip(),
+                "description": desc,
+                "url": url,
+                "inLanguage": "bn",
+            })
+        graph.append({
+            "@type": "BreadcrumbList",
+            "itemListElement": _breadcrumbs(rel, title, base),
+        })
+
+    payload = json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, separators=(",", ":"))
+    return f'<script type="application/ld+json" id="ead-schema">{payload}</script>'
+
+
 def add_meta(s: str, base: str, p: pathlib.Path) -> tuple[str, list[str]]:
     notes = []
     # 404 আর offline পাতা ইচ্ছে করেই noindex ও canonical-হীন (audit_site.mjs
     # সেটিই আশা করে); আগে seo.py এখানে canonical বসিয়ে দিত, ফলে অডিট ❌ হতো।
     # offline.html সার্ভিস-ওয়ার্কার-নির্দিষ্ট, কোনো URL-এর প্রতিনিধি নয়।
-    if p.name in ("404.html", "offline.html"):
+    if p.name in ("404.html", "offline.html") or 'content="noindex' in s[:4000]:
         return s, notes
     og = base + "assets/og-cover.jpg"
     if 'property="og:image"' not in s:
@@ -95,6 +216,16 @@ def add_meta(s: str, base: str, p: pathlib.Path) -> tuple[str, list[str]]:
     if 'rel="canonical"' not in s:
         s = s.replace("</head>", f'<link rel="canonical" href="{url_of(p, base)}">\n</head>', 1)
         notes.append("canonical")
+
+    ld_tag = build_jsonld(s, base, p)
+    existing_ld = re.search(r'<script type="application/ld\+json" id="ead-schema">[\s\S]*?</script>', s)
+    if existing_ld:
+        if existing_ld.group(0) != ld_tag:
+            s = s[:existing_ld.start()] + ld_tag + s[existing_ld.end():]
+            notes.append("json-ld")
+    else:
+        s = s.replace("</head>", ld_tag + "\n</head>", 1)
+        notes.append("json-ld")
     return s, notes
 
 
