@@ -71,9 +71,18 @@ for(const f of files){
   if(!/property="og:image"/.test(html)) errs.push('no og:image');
   // 404.html আর offline.html — দুটোই সার্চে যাওয়ার যোগ্য নয়: noindex থাকবে,
   // canonical থাকবে না (canonical থাকলে সার্চ-ইঞ্জিন ওদের আলাদা পাতা ভাবতে পারে)।
+  // পাশাপাশি যেকোনো গভীর URL-এ (/ead/grantho/...) রেন্ডার হতে পারে বলে এদের
+  // সব লোকাল href/src অবশ্যই '/ead/' দিয়ে শুরু হওয়া দরকার।
   if(path.basename(f)==='404.html'||path.basename(f)==='offline.html'){
     if(!/name="robots"[^>]*noindex/.test(html)) errs.push(path.basename(f)+' should be noindex');
     if(/rel="canonical"/.test(html)) errs.push(path.basename(f)+' should not have canonical');
+    for(const el of [...doc.querySelectorAll('[href],[src]')]){
+      for(const attr of ['href','src']){
+        const v=(el.getAttribute(attr)||'').trim();
+        if(!v || /^(https?:|mailto:|tel:|javascript:|data:|#|\/ead\/)/.test(v)) continue;
+        errs.push(path.basename(f)+' relative '+attr+' (should start with /ead/): '+v);
+      }
+    }
   } else if(!/rel="canonical"/.test(html)) errs.push('no canonical');
   // গ্রন্থ-পাতার পরিচয়: data-granth/data-base যেন পাতার নিজের slug-এর ডেটা-ফোল্ডার
   // দেখায়। build_pages.py টেমপ্লেট হিসেবে অন্য গ্রন্থের পাতা ব্যবহার করে, আর আগে
