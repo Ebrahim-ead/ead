@@ -88,6 +88,8 @@ async function testPage(file) {
   /* কোন ইঞ্জিন? পাতায় যে স্ক্রিপ্ট-ট্যাগ আছে সেটাই সত্য — হার্ডকোড নয়। */
   const engine = /bible-reader\.js/.test(html) ? 'bible-reader.js' : 'grantho.js';
   try {
+    const commonJs = path.join(ROOT, 'assets/grantho/grantho-common.js');
+    if (fs.existsSync(commonJs)) window.eval(fs.readFileSync(commonJs, 'utf8'));
     window.eval(fs.readFileSync(path.join(ROOT, 'assets/grantho', engine), 'utf8'));
   } catch (e) {
     errs.push(`${engine} চালানো যায়নি: ${e.message}`);
@@ -298,6 +300,24 @@ async function testPage(file) {
     const shown = [...doc.querySelectorAll('.g-v')]
       .map((card) => strip([...card.querySelectorAll('.g-v-bn')].map((e) => e.textContent).join(' ')))
       .filter(Boolean);
+    if (!doc.querySelector('.g-fs')) errs.push('ফন্ট-আকার নিয়ন্ত্রণ (.g-fs) তৈরি হয়নি');
+    else {
+      const plus = doc.querySelector('.g-fs-btn[data-fs="0.1"]');
+      if (plus) {
+        plus.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+        const sc = doc.querySelector('[data-granth]')?.style.getPropertyValue('--g-scale');
+        if (!sc || parseFloat(sc) <= 1) errs.push(`ফন্ট বড় করা ব্যর্থ (--g-scale=${sc})`);
+      }
+    }
+    const bmBtn = doc.querySelector('#g-body .g-v [data-bm]');
+    if (!bmBtn) errs.push('শ্লোকে বুকমার্ক বোতাম ([data-bm]) নেই');
+    else {
+      bmBtn.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+      const card = bmBtn.closest('.g-v');
+      if (!card || !card.classList.contains('bm')) errs.push('বুকমার্ক ক্লিকে .bm সক্রিয় হয়নি');
+      const cnt = doc.querySelector('#g-bm-btn .g-bm-cnt');
+      if (!cnt || !cnt.textContent.trim()) errs.push('বুকমার্ক কাউন্টার আপডেট হয়নি');
+    }
     if (firstBn && !shown.some((t) => t.slice(0, 40) === firstBn.slice(0, 40))) {
       errs.push('রেন্ডার হওয়া পাঠ এই গ্রন্থের চ্যাপ্টার-ফাইলের সাথে মিলছে না '
                 + '(অন্য গ্রন্থের ডেটা লোড হয়েছে?)');
@@ -762,6 +782,8 @@ async function testMahabharata() {
     };
   };
   try {
+    const commonJs = path.join(ROOT, 'assets/grantho/grantho-common.js');
+    if (fs.existsSync(commonJs)) window.eval(fs.readFileSync(commonJs, 'utf8'));
     window.eval(fs.readFileSync(path.join(ROOT, 'assets/grantho/mahabharata-reader.js'), 'utf8'));
   } catch (e) {
     errs.push(`mahabharata-reader.js চালানো যায়নি: ${e.message}`);
@@ -830,7 +852,7 @@ function testGranthoAssetsAndCss() {
     if (!rx.test(css)) errs.push(`grantho.css-এ ${label} নিয়ম নেই বা ভেঙে গেছে`);
   }
 
-  const assets = ['grantho.css', 'grantho.js', 'bible-reader.js', 'mahabharata-reader.js'];
+  const assets = ['grantho.css', 'grantho-common.js', 'grantho.js', 'bible-reader.js', 'mahabharata-reader.js'];
   const hashes = Object.fromEntries(
     assets.map((f) => [
       f,
@@ -883,6 +905,8 @@ async function testBookViewSearch() {
       return { ok, status: ok ? 200 : 404, json: async () => (ok ? JSON.parse(fs.readFileSync(fp, 'utf8')) : null) };
     };
     const engine = /bible-reader\.js/.test(html) ? 'bible-reader.js' : 'grantho.js';
+    const commonJs = path.join(ROOT, 'assets/grantho/grantho-common.js');
+    if (fs.existsSync(commonJs)) window.eval(fs.readFileSync(commonJs, 'utf8'));
     window.eval(fs.readFileSync(path.join(ROOT, 'assets/grantho', engine), 'utf8'));
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     await wait(500);

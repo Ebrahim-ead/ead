@@ -49,7 +49,7 @@
 /* শেল ও পাতা আলাদা সংস্করণ নম্বর পায় — শুধু শেল-তালিকা বদলালে
    ব্যবহারকারীর জমানো ডেটা (১৪২ MB পর্যন্ত) মুছে যাওয়া উচিত নয়।
    ডেটা বদলালেই (গঠন বা বিষয়বস্তু) DATA_VERSION বাড়াবেন। */
-var SHELL_VERSION = 'v24';
+var SHELL_VERSION = 'v25';
 var DATA_VERSION = 'v13';
 
 var SHELL_CACHE = 'ead-shell-' + SHELL_VERSION;
@@ -77,6 +77,7 @@ var SHELL = [
   '/ead/assets/nav-motion.css',
   '/ead/assets/site-motion.css',
   '/ead/assets/nav-motion.js',
+  '/ead/assets/site-shell.js',
   '/ead/assets/site-motion.js',
   '/ead/assets/skeleton-charts.js',
   '/ead/assets/site-search.js',
@@ -104,6 +105,8 @@ var PREFETCH = [
   '/ead/assets/fonts/noto-sans-bengali-800.woff2',
   '/ead/assets/search-index.js',
   '/ead/assets/reader-tools.js',
+  '/ead/assets/grantho/grantho-common.js',
+  '/ead/assets/inventions-nav.js',
   '/ead/assets/book-pdf.js',
   '/ead/assets/article-pages.js',
   '/ead/assets/img/icon-512.png',
@@ -116,10 +119,10 @@ var PREFETCH = [
 
 /* ---- কোন পথে ডেটা (cache-first) ---- */
 function isData(url) {
-  if (/\.(css|js)$/i.test(url.pathname) && !/search-ayahs\.js$/.test(url.pathname)) {
+  if (/\.(css|js)$/i.test(url.pathname) && !/search-(?:ayahs|grantho)\.js$/.test(url.pathname)) {
     return false;
   }
-  return /\/(assets\/(hadith|quran|grantho|filistin)\/|search-ayahs\.js$)/.test(url.pathname);
+  return /\/(assets\/(hadith|quran|grantho|filistin)\/|search-(?:ayahs|grantho)\.js$)/.test(url.pathname);
 }
 
 /* ---- কোন পথে শেল-ফাইল (cache-first, দ্রুত) ---- */

@@ -47,8 +47,14 @@ for(const f of files){
     const t=fs.readFileSync(fp,'utf8');
     return Promise.resolve({ok:true,status:200,json:()=>Promise.resolve(JSON.parse(t)),text:()=>Promise.resolve(t)});
   }catch(e){return Promise.reject(e)}};
-  // inline scripts (pages keep JS inline)
+  // inline scripts (skip JSON-LD / non-JS script blocks, validate JSON-LD separately)
   for(const s of [...doc.querySelectorAll('script:not([src])')]){
+    const tp=(s.getAttribute('type')||'').trim().toLowerCase();
+    if(tp==='application/ld+json'){
+      try{ JSON.parse(s.textContent); }catch(e){ errs.push('invalid JSON-LD: '+e.message); }
+      continue;
+    }
+    if(tp && !/(?:java|ecma)script|module/i.test(tp)) continue;
     try{ new window.Function(s.textContent).call(window); }catch(e){ errs.push('inline JS: '+e.message); }
   }
   for(const s of [...doc.querySelectorAll('script[src]')]){

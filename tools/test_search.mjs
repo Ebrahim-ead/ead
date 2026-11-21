@@ -124,6 +124,26 @@ for (const q of ['মথি', 'আদিপুস্তক', 'যোহন']) {
   const hit = r.some((x) => x.href && x.href.startsWith('grantho/christian/bible.html'));
   hit ? ok(`«${q}» → বাইবেলের বই মিলেছে`) : bad(`«${q}» → বাইবেলের বই মেলেনি`);
 }
+const enBooks = grantho.filter((r) => r.u.startsWith('grantho/christian/english-bible.html'));
+enBooks.length === 73 ? ok(`English Bible-এর ৭৩টি বই সূচিতে`) : bad(`English Bible বই কম/ভুল: ${enBooks.length}`);
+const hubCheck = ['grantho/islam.html', 'grantho/hindu.html', 'grantho/christian.html', 'grantho/hindu/veda.html'];
+hubCheck.every((u) => DATA.some((r) => r.u === u)) ? ok('সব ধর্মগ্রন্থ হাব-পাতা সূচিতে') : bad('কোনো হাব-পাতা সূচিতে নেই');
+
+/* ── ৩ক১. গীতা/ধম্মপদ শ্লোক ও সংরক্ষিত পাঠ ── */
+const gvSrc = fs.readFileSync(path.join(ROOT, 'assets/search-grantho.js'), 'utf8');
+const gvEl = d.createElement('script');
+gvEl.textContent = gvSrc;
+d.body.appendChild(gvEl);
+w.localStorage.setItem('grantho.bm.v1.gita', JSON.stringify([{ id: '2:47', ref: '২:৪৭', label: 'গীতা ২:৪৭', url: 'grantho/hindu/gita.html#ch2:47' }]));
+const inp0 = d.querySelector('.ss-input');
+inp0.value = '';
+inp0.dispatchEvent(new w.Event('input'));
+await new Promise((r) => setTimeout(r, 140));
+d.querySelector('.ss-saved-item') ? ok('খালি সার্চে সংরক্ষিত পাঠ প্রিভিউ দেখায়') : bad('সংরক্ষিত পাঠ প্রিভিউ নেই');
+const rgv = await run('অর্জুন');
+rgv.some((x) => x.href && x.href.startsWith('grantho/hindu/gita.html#ch'))
+  ? ok('গীতার শ্লোক সরাসরি সার্চে মেলে')
+  : bad('গীতার শ্লোক সার্চে মেলেনি');
 
 /* ── ৩খ. হাইলাইট ── */
 console.log('\nহাইলাইট');

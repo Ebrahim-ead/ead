@@ -106,10 +106,32 @@ def build_pages() -> list[dict]:
                 "t": "page",
                 "u": path.name,
                 "n": title or PAGE_NAMES.get(path.name, path.stem),
-                "d": (desc or body)[:150],
-                "k": norm(" ".join([title, desc, body[:800]])),
+                "d": (desc or body)[:140],
+                "k": norm(body[:480]),
             }
         )
+    # গ্রন্থ হাব ও বিশেষ গ্রন্থ-পাতা (যেগুলো রুট ফোল্ডারের বাইরে grantho/-এ)
+    extra_pages = [
+        ("grantho/islam.html", "ইসলাম ধর্মগ্রন্থ — কুরআন ও হাদিস", "ইসলামি ধর্মগ্রন্থ, আল-কুরআন ও সিহাহ সিত্তাহ হাদিস সংকলনের প্রবেশদ্বার।", "ইসলাম কুরআন হাদিস সিহাহ সিত্তাহ"),
+        ("grantho/hindu.html", "হিন্দু ধর্মগ্রন্থ — গীতা, বেদ, উপনিষদ ও মহাভারত", "ভগবদ্গীতা, চার বেদ, উপনিষদ ও ১৮ পর্বের মহাভারত — মূল সংস্কৃত, বাংলা ও ইংরেজি অনুবাদ।", "হিন্দু সনাতন ধর্ম গীতা বেদ উপনিষদ মহাভারত"),
+        ("grantho/hindu/veda.html", "চার বেদ — ঋগ্বেদ, সামবেদ, যজুর্বেদ, অথর্ববেদ", "ঋগ্বেদ, সামবেদ, শুক্ল যজুর্বেদ ও অথর্ববেদ — বাংলা, ইংরেজি ও সংস্কৃত পাঠ।", "বেদ চতুর্বেদ ঋক সাম যজুঃ অথর্ব"),
+        ("grantho/christian.html", "খ্রিস্টান ধর্মগ্রন্থ — বাংলা ও English বাইবেল", "পুরাতন ও নতুন নিয়মের সম্পূর্ণ বাংলা বাইবেল এবং ৭৩ পুস্তকের English Bible (NABRE)।", "খ্রিস্টান বাইবেল bible old new testament"),
+        ("grantho/christian/english-bible.html", "English Bible — The New American Bible (73 Books)", "৭৩ পুস্তক · ১,৩৩৪ অধ্যায় · ৩৫,৪৬৬ পদ · Old & New Testament, NABRE টীকাসহ।", "english bible nabre catholic old testament new testament genesis psalms matthew revelation"),
+    ]
+    for u, n_txt, d_txt, k_extra in extra_pages:
+        fp = ROOT / u
+        if not fp.exists():
+            continue
+        raw = fp.read_text(encoding="utf-8", errors="ignore")
+        m = MAIN_RE.search(raw)
+        bbody = clean_html(m.group(1) if m else raw)
+        rows.append({
+            "t": "page",
+            "u": u,
+            "n": n_txt,
+            "d": d_txt,
+            "k": norm(f"{k_extra} {bbody[:320]}"),
+        })
     # বৌদ্ধ গ্রন্থ হাব পাতা (PDF ও ডিজিটাল ত্রিপিটক)
     bud_hub = ROOT / "grantho" / "buddhist.html"
     if bud_hub.exists():
@@ -121,7 +143,7 @@ def build_pages() -> list[dict]:
             "u": "grantho/buddhist.html",
             "n": "বৌদ্ধ গ্রন্থ — ত্রিপিটক ও ধম্মপদ",
             "d": "ধম্মপদ, দীর্ঘ-মধ্যম-সংযুক্ত-অঙ্গুত্তর নিকায়, বিনয় ও ৪১ খণ্ড বাংলা ত্রিপিটক PDF",
-            "k": norm("বৌদ্ধ ত্রিপিটক ধম্মপদ নিকায় বিনয় অভিধর্ম সূত্তপিটক " + bbody[:400]),
+            "k": norm("বৌদ্ধ ত্রিপিটক ধম্মপদ নিকায় বিনয় অভিধর্ম সূত্তপিটক " + bbody[:320]),
         })
     # হিন্দু মহাভারত শীর্ষ পাতা
     mbh_page = ROOT / "grantho" / "hindu" / "mahabharata.html"
@@ -158,6 +180,41 @@ def build_quran() -> list[dict]:
 
 
 AYAH_OUT = ROOT / "assets" / "search-ayahs.js"
+GRANTHO_VERSES_OUT = ROOT / "assets" / "search-grantho.js"
+
+
+def build_grantho_verses_file() -> int:
+    """গীতা (৭০১ শ্লোক) ও ধম্মপদ (৪০৫ গাথা)-এর হালকা শ্লোক-সূচি — সার্চে চাহিদা-মতো লোড হয়।"""
+    rows: list[list] = []
+    sources = [
+        (0, "gita"),
+        (1, "dhammapada"),
+    ]
+    for code, slug in sources:
+        d = ROOT / "assets" / "grantho" / "data" / slug
+        if not d.is_dir():
+            continue
+        for f in sorted(d.glob("ch*.json"), key=lambda x: int(re.sub(r"\D", "", x.stem) or 0)):
+            try:
+                ch = json.loads(f.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            cid = int(ch.get("id") or re.sub(r"\D", "", f.stem) or 0)
+            for v in ch.get("verses") or []:
+                vn = v.get("n")
+                bn = (v.get("bn") or "").strip()
+                if vn is None or not bn:
+                    continue
+                txt = re.sub(r"\s+", " ", bn).strip()
+                rows.append([code, cid, vn, txt])
+    payload = json.dumps(rows, ensure_ascii=False, separators=(",", ":"))
+    GRANTHO_VERSES_OUT.write_text(
+        "/* স্বয়ংক্রিয়ভাবে তৈরি — হাতে সম্পাদনা করবেন না।\n"
+        "   সার্চ করলে তবেই লোড হয়। নতুন করে বানাতে: python3 tools/build_search_index.py */\n"
+        f"window.SITE_GRANTHO_VERSES={payload};\n",
+        encoding="utf-8",
+    )
+    return len(rows)
 
 
 def build_ayah_file() -> int:
@@ -321,6 +378,29 @@ def build_grantho() -> list[dict]:
                 "d": f"{sa_n}টি শ্লোক · পর্ব {pid} · {bn_n} বাংলা অধ্যায়",
                 "k": norm(f"মহাভারত {pbn} {pen} mahabharata parva {pid}"),
             })
+    # English Bible: ৭৩টি পুস্তকের সরাসরি সার্চ এন্ট্রি
+    en_idx = base / "bible" / "english" / "index.json"
+    if en_idx.exists():
+        try:
+            ed = json.loads(en_idx.read_text(encoding="utf-8"))
+        except Exception:
+            ed = {}
+        for bk in ed.get("chapters") or []:
+            bid = bk.get("id")
+            en_name = bk.get("en") or f"Book {bid}"
+            bn_name = bk.get("bn") or ""
+            cnt = int(bk.get("count") or 0)
+            nch = len(bk.get("chapters") or [])
+            if not cnt:
+                continue
+            tlabel = "New Testament" if bk.get("testament") == "new" else "Old Testament"
+            out.append({
+                "t": "grantho",
+                "u": f"grantho/christian/english-bible.html#b{bid}c1",
+                "n": f"English Bible — {en_name}",
+                "d": f"{cnt}টি শ্লোক · {nch} অধ্যায় · {bn_name}",
+                "k": norm(f"english bible nabre {en_name} {bn_name} {tlabel}"),
+            })
     return out
 
 
@@ -345,6 +425,11 @@ def main() -> int:
     if n_ayah:
         akb = AYAH_OUT.stat().st_size / 1024
         print(f"✓ {AYAH_OUT.relative_to(ROOT)} — {n_ayah} আয়াত, {akb:.0f} KB (শুধু সার্চে লোড হয়)")
+
+    n_gv = build_grantho_verses_file()
+    if n_gv:
+        gkb = GRANTHO_VERSES_OUT.stat().st_size / 1024
+        print(f"✓ {GRANTHO_VERSES_OUT.relative_to(ROOT)} — {n_gv} শ্লোক/গাথা, {gkb:.0f} KB (শুধু সার্চে লোড হয়)")
     return 0
 
 

@@ -32,6 +32,8 @@
   var BASE = root.dataset.base || autoBase();
   var KEY = "grantho." + SLUG + ".v1";
   var BN = "০১২৩৪৫৬৭৮৯";
+  var GC = window.GranthoCommon || null;
+  var bmMgr = null;
 
   function bn(n) {
     return String(n).replace(/[0-9]/g, function (d) { return BN[+d]; });
@@ -413,10 +415,13 @@
     var hit = q && ((v.bn || "").toLowerCase().indexOf(q) > -1 ||
                     en.toLowerCase().indexOf(q) > -1);
     var shown = (typeof v.vn === "number") ? v.vn : v.n;
-    var out = '<article class="g-v' + (hit ? " hit" : "") + '" id="v' + v.n + '">';
+    var bmId = bookId + ":" + chapterId + ":" + v.n;
+    var isBm = !!(bmMgr && bmMgr.has(bmId));
+    var out = '<article class="g-v' + (hit ? " hit" : "") + (isBm ? " bm" : "") + '" id="v' + v.n + '" data-bm-ref="' + esc(bmId) + '">';
     out += (v.noNum ? '<div class="g-v-num g-v-nonum" aria-hidden="true"></div>'
                     : '<div class="g-v-num" aria-hidden="true">' + bn(shown) + "</div>") +
            '<div class="g-v-body">';
+    if (bmMgr) out += bmMgr.iconHTML(bmId, isBm);
     if (v.hd) out += '<p class="g-v-hd">' + esc(v.hd) + "</p>";
     if (v.spk) out += '<p class="g-v-spk">' + esc(v.spk) + "</p>";
     if (state.bn && v.bn && state.lang !== "en") {
@@ -583,7 +588,7 @@
   }
 
   /* ---------- অধ্যায় খোলা ---------- */
-  function openChapter(id) {
+  function openChapter(id, jumpVerse) {
     if (!id || isNaN(+id)) return;
     id = +id;
     chapterId = id;
@@ -606,11 +611,23 @@
       chapter = r[0]; chapterEn = r[1];
       syncHead(); refreshCrumb(); enNote(); syncFold();
       renderVerses();
-      try { window.scrollTo({ top: (gridEl || root).offsetTop - 90, behavior: "smooth" }); } catch (e) { }
-      var h = location.hash;
-      if (h && /^#v?\d+$/.test(h)) {
-        var el = document.getElementById("v" + h.replace("#v", "").replace("#", ""));
-        if (el) el.scrollIntoView({ block: "center" });
+      var targetV = jumpVerse || null;
+      if (!targetV) {
+        var h = location.hash || "";
+        var mv = h.match(/:(\d+)$/) || h.match(/^#v?(\d+)$/);
+        if (mv && !/^#b\d+c\d+$/.test(h)) targetV = +mv[1];
+      }
+      if (targetV) {
+        setTimeout(function () {
+          var el = document.getElementById("v" + targetV);
+          if (el) {
+            el.scrollIntoView({ block: "center" });
+            el.classList.add("hit");
+            setTimeout(function () { el.classList.remove("hit"); }, 1700);
+          }
+        }, 40);
+      } else {
+        try { window.scrollTo({ top: (gridEl || root).offsetTop - 90, behavior: "smooth" }); } catch (e) { }
       }
     }).catch(function () {
       bodyEl.innerHTML = '<p class="g-empty">অধ্যায়টি লোড করা গেল না। পুনরায় চেষ্টা করুন।</p>';
@@ -669,6 +686,50 @@
     });
     if (prevBtn) prevBtn.addEventListener("click", function () { step(-1); });
     if (nextBtn) nextBtn.addEventListener("click", function () { step(1); });
+    if (GC) GC.bindArrowNav(step);
+    if (bodyEl && GC) {
+      bodyEl.addEventListener("click", function (e) {
+        var bmBtn = e.target.closest && e.target.closest("[data-bm]");
+        if (bmBtn && bmMgr) {
+          var card = bmBtn.closest(".g-v");
+          var rawId = bmBtn.getAttribute("data-bm");
+          var p = rawId.split(":");
+          var vNum = +(p[p.length - 1] || 0);
+          var shownNo = card && card.querySelector(".g-v-num") ? card.querySelector(".g-v-num").textContent.trim() : bn(vNum);
+          var bkTitle = (bkOf().bn || "বাইবেল") + " " + bn(chapterId) + ":" + shownNo;
+          var txtEl = card && (card.querySelector(".g-v-bn") || card.querySelector(".g-v-en"));
+          var snip = txtEl ? txtEl.textContent.trim().slice(0, 72) : "";
+          bmMgr.toggle({
+            id: rawId,
+            book: bookId,
+            ch: chapterId,
+            v: vNum,
+            ref: bkTitle,
+            label: bkTitle,
+            snippet: snip,
+            url: "grantho/christian/bible.html#b" + bookId + "c" + chapterId + ":" + vNum
+          });
+          return;
+        }
+        var cpBtn = e.target.closest && e.target.closest("[data-copy]");
+        if (cpBtn) {
+          var card2 = cpBtn.closest(".g-v");
+          if (!card2) return;
+          var parts2 = [];
+          var bnEls = card2.querySelectorAll(".g-v-bn");
+          var enEl = card2.querySelector(".g-v-en");
+          if (bnEls && bnEls.length) {
+            var bnJoin = [];
+            for (var bi = 0; bi < bnEls.length; bi++) bnJoin.push(bnEls[bi].textContent.trim());
+            parts2.push(bnJoin.join("\n"));
+          }
+          if (enEl) parts2.push(enEl.textContent.trim());
+          var shownNo2 = card2.querySelector(".g-v-num") ? card2.querySelector(".g-v-num").textContent.trim() : "";
+          parts2.push("— " + (bkOf().bn || "বাংলা বাইবেল") + " " + bn(chapterId) + (shownNo2 ? ":" + shownNo2 : ""));
+          GC.copyText(parts2.join("\n\n"), cpBtn);
+        }
+      });
+    }
     if (listEl) listEl.addEventListener("keydown", function (e) {
       var b = e.target.closest && e.target.closest("[data-ch]");
       if (!b) return;
@@ -717,6 +778,21 @@
       if (lab) lab.hidden = true;
     }
     buildLangBox();
+    if (GC) {
+      var barEl = root.querySelector(".g-toolbar");
+      GC.initFontSize(root, barEl);
+      bmMgr = GC.initBookmarks({
+        root: root,
+        bar: barEl,
+        slug: SLUG,
+        onOpen: function (entry) {
+          if (entry.book != null && bookById(entry.book)) {
+            showBookView(entry.book);
+            if (entry.ch != null) openChapter(entry.ch, entry.v);
+          }
+        }
+      });
+    }
     bind();
     bindFold();
     syncStickTop();
@@ -736,11 +812,11 @@
     if (narrow) setFolded(typeof st.fold === "boolean" ? st.fold : true, false);
     else setFolded(false, false);
 
-    var m = (location.hash || "").match(/^#ch(\d+)$/) || (location.hash || "").match(/^#b(\d+)c(\d+)$/);
-    var startBook = null, startCh = null;
-    if (location.hash && /^#b\d+c\d+$/.test(location.hash)) {
-      var mm = location.hash.match(/^#b(\d+)c(\d+)$/);
-      startBook = +mm[1]; startCh = +mm[2];
+    var m = (location.hash || "").match(/^#ch(\d+)$/) || (location.hash || "").match(/^#b(\d+)c(\d+)(?::(\d+))?$/);
+    var startBook = null, startCh = null, startVerse = null;
+    if (location.hash && /^#b\d+c\d+(?::\d+)?$/.test(location.hash)) {
+      var mm = location.hash.match(/^#b(\d+)c(\d+)(?::(\d+))?$/);
+      startBook = +mm[1]; startCh = +mm[2]; startVerse = mm[3] ? +mm[3] : null;
     } else if (m) {
       startBook = +m[1];   /* পুরোনো লিংক #ch12 = পুস্তক-নম্বর */
     }
@@ -748,7 +824,7 @@
     renderBooks();
     renderTestaments();
     if (startBook != null && bookById(startBook)) {
-      if (startCh != null) { showBookView(startBook); openChapter(startCh); }
+      if (startCh != null) { showBookView(startBook); openChapter(startCh, startVerse); }
       else showBookView(startBook);
     } else if (st.book && bookById(st.book)) {
       if (st.last && st.lastbook === st.book && st.scope === "chapter") {
