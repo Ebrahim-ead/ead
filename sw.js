@@ -49,7 +49,7 @@
 /* শেল ও পাতা আলাদা সংস্করণ নম্বর পায় — শুধু শেল-তালিকা বদলালে
    ব্যবহারকারীর জমানো ডেটা (১৪২ MB পর্যন্ত) মুছে যাওয়া উচিত নয়।
    ডেটা বদলালেই (গঠন বা বিষয়বস্তু) DATA_VERSION বাড়াবেন। */
-var SHELL_VERSION = 'v26';
+var SHELL_VERSION = 'v27';
 var DATA_VERSION = 'v13';
 
 var SHELL_CACHE = 'ead-shell-' + SHELL_VERSION;
@@ -92,9 +92,9 @@ var SHELL = [
 
   /* হোম-পাতার প্রথম দৃশ্যের ছবি — অফলাইনে প্রথম খোলাতেই দেখা যাবে */
   '/ead/assets/img/logo-avatar.webp',
-  '/ead/assets/img/1f4b2d3123-sm.webp',
+  '/ead/assets/img/77f18abd6c-sm.webp',
   '/ead/assets/img/f2b99e768b-sm.webp',
-  '/ead/assets/img/1f4b2d3123.webp',
+  '/ead/assets/img/77f18abd6c.webp',
   '/ead/assets/img/f2b99e768b.webp'
 ];
 
