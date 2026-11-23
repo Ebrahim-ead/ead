@@ -68,6 +68,12 @@ for(const f of files){
   // structure checks
   const need=['site.css','site-extra.css'];
   for(const n of need) if(!html.includes(n)) errs.push('missing '+n);
+  for(const cssLink of [...doc.querySelectorAll('link[rel="stylesheet"]')]){
+    const h=cssLink.getAttribute('href')||'';
+    if(/(?:^|\/)(?:site|site-extra|nav-motion)\.css(?:\?|$)/.test(h) && cssLink.getAttribute('media')==='print'){
+      errs.push('blocking stylesheet should not use media="print" (causes refresh FOUC): '+h);
+    }
+  }
   if(!/property="og:image"/.test(html)) errs.push('no og:image');
   // 404.html আর offline.html — দুটোই সার্চে যাওয়ার যোগ্য নয়: noindex থাকবে,
   // canonical থাকবে না (canonical থাকলে সার্চ-ইঞ্জিন ওদের আলাদা পাতা ভাবতে পারে)।
