@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://ebrahim-ead.github.io/ead/about.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://ebrahim-ead.github.io/ead/abu-tahir-al-jannabi.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/ask.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/atheism.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://ebrahim-ead.github.io/ead/bible-alcohol.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>

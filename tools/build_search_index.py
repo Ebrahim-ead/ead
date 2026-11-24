@@ -32,6 +32,9 @@ SCRIPT_RE = re.compile(r"<(script|style|nav|header|footer)\b.*?</\1>", re.S | re
 MAIN_RE = re.compile(r"<main\b[^>]*>(.*?)</main>", re.S | re.I)
 TITLE_RE = re.compile(r"<title>(.*?)</title>", re.S | re.I)
 DESC_RE = re.compile(r'<meta\s+name="description"\s+content="([^"]*)"', re.I)
+PUB_AT_RE = re.compile(r'<meta\s+name="ead:publish-at"\s+content="([^"]*)"', re.I)
+SCHED_GATE_RE = re.compile(r"<section\b[^>]*\bdata-scheduled-gate\b[^>]*>.*?</section>", re.S | re.I)
+SCHED_CARD_RE = re.compile(r"<article\b[^>]*\bdata-publish-at\b[^>]*>.*?</article>", re.S | re.I)
 H1_RE = re.compile(r"<h1\b[^>]*>(.*?)</h1>", re.S | re.I)
 
 # সাইট-নেভিগেশনে যেসব পাতা আছে — সেগুলোর নাম বাংলায়
@@ -94,22 +97,27 @@ def build_pages() -> list[dict]:
         title = clean_html(TITLE_RE.search(raw).group(1)) if TITLE_RE.search(raw) else path.stem
         title = title.split("|")[0].strip()
         m = MAIN_RE.search(raw)
-        body = clean_html(m.group(1) if m else raw)
+        frag = m.group(1) if m else raw
+        frag = SCHED_GATE_RE.sub(" ", frag)
+        frag = SCHED_CARD_RE.sub(" ", frag)
+        body = clean_html(frag)
         desc = ""
         dm = DESC_RE.search(raw)
         if dm:
             desc = clean_html(dm.group(1))
         # কার্ড-শিরোনামগুলো আলাদা করে রাখি — সার্চে এগুলো ভালো ফল দেয়
-        heads = [clean_html(h) for h in H1_RE.findall(m.group(1) if m else raw)]
-        rows.append(
-            {
-                "t": "page",
-                "u": path.name,
-                "n": title or PAGE_NAMES.get(path.name, path.stem),
-                "d": (desc or body)[:140],
-                "k": norm(body[:480]),
-            }
-        )
+        heads = [clean_html(h) for h in H1_RE.findall(frag)]
+        row = {
+            "t": "page",
+            "u": path.name,
+            "n": title or PAGE_NAMES.get(path.name, path.stem),
+            "d": (desc or body)[:140],
+            "k": norm(body[:480]),
+        }
+        pm = PUB_AT_RE.search(raw)
+        if pm and pm.group(1).strip():
+            row["p"] = pm.group(1).strip()
+        rows.append(row)
     # গ্রন্থ হাব ও বিশেষ গ্রন্থ-পাতা (যেগুলো রুট ফোল্ডারের বাইরে grantho/-এ)
     extra_pages = [
         ("grantho/islam.html", "ইসলাম ধর্মগ্রন্থ — কুরআন ও হাদিস", "ইসলামি ধর্মগ্রন্থ, আল-কুরআন ও সিহাহ সিত্তাহ হাদিস সংকলনের প্রবেশদ্বার।", "ইসলাম কুরআন হাদিস সিহাহ সিত্তাহ"),

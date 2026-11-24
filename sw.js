@@ -49,7 +49,7 @@
 /* শেল ও পাতা আলাদা সংস্করণ নম্বর পায় — শুধু শেল-তালিকা বদলালে
    ব্যবহারকারীর জমানো ডেটা (১৪২ MB পর্যন্ত) মুছে যাওয়া উচিত নয়।
    ডেটা বদলালেই (গঠন বা বিষয়বস্তু) DATA_VERSION বাড়াবেন। */
-var SHELL_VERSION = 'v29';
+var SHELL_VERSION = 'v30';
 var DATA_VERSION = 'v13';
 
 var SHELL_CACHE = 'ead-shell-' + SHELL_VERSION;
@@ -108,6 +108,7 @@ var PREFETCH = [
   '/ead/assets/inventions-nav.js',
   '/ead/assets/book-pdf.js',
   '/ead/assets/article-pages.js',
+  '/ead/assets/scheduled-publish.js',
   '/ead/assets/img/icon-512.png',
   '/ead/assets/img/icon-maskable-512.png'
 ];

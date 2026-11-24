@@ -14,10 +14,38 @@
   var grid = document.querySelector('.article-list-grid');
   if (!grid) return;
 
-  var cards = [].slice.call(grid.querySelectorAll(':scope > .article-card'));
-  if (cards.length <= PER_PAGE) return;          // এক পৃষ্ঠাতেই শেষ — কিছু করতে হবে না
+  var allCards = [].slice.call(grid.querySelectorAll(':scope > .article-card'));
+  function pubTime(el) {
+    var v = el.getAttribute('data-publish-at');
+    if (!v) return 0;
+    var t = Date.parse(v);
+    return isFinite(t) ? t : 0;
+  }
 
-  var total = Math.ceil(cards.length / PER_PAGE);
+  var cards = [];
+  var total = 1;
+  var nextUnlock = 0;
+  var unlockTimer = 0;
+  var pager = document.querySelector('.pager');
+  var current = 0;
+
+  function syncScheduled() {
+    var now = Date.now();
+    cards = [];
+    nextUnlock = 0;
+    allCards.forEach(function (c) {
+      var t = pubTime(c);
+      if (!t || now >= t) {
+        c.hidden = false;
+        cards.push(c);
+      } else {
+        c.hidden = true;
+        if (!nextUnlock || t < nextUnlock) nextUnlock = t;
+      }
+    });
+    total = Math.max(1, Math.ceil(cards.length / PER_PAGE));
+  }
+
   var BN = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
   function bn(n) { return String(n).replace(/\d/g, function (d) { return BN[+d]; }); }
 
@@ -28,20 +56,24 @@
     return n > total ? total : n;
   }
 
-  /* পেজার বানাই (আগে থেকে থাকলে নতুন করে লিখি) */
-  var pager = document.querySelector('.pager');
-  if (!pager) {
-    pager = document.createElement('nav');
-    pager.className = 'pager';
-    pager.setAttribute('aria-label', 'প্রবন্ধের পৃষ্ঠা');
-    grid.parentNode.insertBefore(pager, grid.nextSibling);
-  }
-
-  var current = 0;
-
   function render(page) {
+    if (cards.length <= PER_PAGE) {
+      cards.forEach(function (c) { c.hidden = false; });
+      if (pager) pager.hidden = true;
+      current = 1;
+      return;
+    }
+
     if (page === current) return;
     current = page;
+
+    if (!pager) {
+      pager = document.createElement('nav');
+      pager.className = 'pager';
+      pager.setAttribute('aria-label', 'প্রবন্ধের পৃষ্ঠা');
+      grid.parentNode.insertBefore(pager, grid.nextSibling);
+    }
+    pager.hidden = false;
 
     /* কার্ড দেখানো/লুকানো — hidden অ্যাট্রিবিউট, তাই CSS-এর সংঘর্ষ নেই */
     cards.forEach(function (c, i) {
@@ -99,8 +131,27 @@
     grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  function scheduleNext() {
+    if (unlockTimer) { clearTimeout(unlockTimer); unlockTimer = 0; }
+    if (!nextUnlock) return;
+    var wait = nextUnlock - Date.now();
+    if (wait <= 0) wait = 20;
+    if (wait > 2147483647) return;
+    unlockTimer = setTimeout(function () {
+      syncScheduled();
+      current = 0;
+      render(pageFromUrl());
+      if (typeof window.__reveal === 'function') {
+        try { window.__reveal(); } catch (e) {}
+      }
+      scheduleNext();
+    }, wait + 20);
+  }
+
   window.addEventListener('popstate', function () { render(pageFromUrl()); });
 
-  /* পেজার-লিংকে কী-বোর্ড/মাঝের-ক্লিক স্বাভাবিক থাকুক */
+  syncScheduled();
+  if (!cards.length && !nextUnlock) return;
   render(pageFromUrl());
+  scheduleNext();
 })();
