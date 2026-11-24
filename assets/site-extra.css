@@ -45,9 +45,9 @@ body{font-family:"Noto Sans Bengali","Hind Siliguri",system-ui,-apple-system,"Se
 .card-timer-clock{font-size:13px;font-weight:800;color:#fff4d1;line-height:1.4;font-variant-numeric:tabular-nums}
 .card-timer-note{font-size:11.5px;font-weight:600;color:#ffca64;line-height:1.45;margin-top:2px}
 .card-timer-bar[hidden],.card-timer-note[hidden],.card-more-locked[hidden],.card-more-open[hidden]{display:none!important}
-html.is-card-unlocked [data-card-timer],html.is-card-unlocked .card-more-locked{display:none!important}
-html.is-card-unlocked .card-more-open{display:inline-flex!important}
-html.is-card-unlocked .article-card.is-scheduled-locked .article-card-link{cursor:pointer}
+.article-card.is-card-unlocked [data-card-timer],.article-card.is-card-unlocked .card-more-locked{display:none!important}
+.article-card.is-card-unlocked .card-more-open{display:inline-flex!important}
+.article-card.is-card-unlocked .article-card-link{cursor:pointer}
 .article-card.is-scheduled-locked{border-color:rgba(245,184,28,.48)}
 .article-card.is-scheduled-locked .article-card-link{cursor:not-allowed}
 .article-card.is-scheduled-locked .card-more-locked{color:#f5c64f;font-size:12.5px}
