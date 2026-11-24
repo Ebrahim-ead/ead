@@ -14,7 +14,7 @@
   var grid = document.querySelector('.article-list-grid');
   if (!grid) return;
 
-  var allCards = [].slice.call(grid.querySelectorAll(':scope > .article-card'));
+  var cards = [].slice.call(grid.querySelectorAll(':scope > .article-card'));
   function pubTime(el) {
     var v = el.getAttribute('data-publish-at');
     if (!v) return 0;
@@ -22,32 +22,98 @@
     return isFinite(t) ? t : 0;
   }
 
-  var cards = [];
-  var total = 1;
-  var nextUnlock = 0;
-  var unlockTimer = 0;
-  var pager = document.querySelector('.pager');
-  var current = 0;
-
-  function syncScheduled() {
-    var now = Date.now();
-    cards = [];
-    nextUnlock = 0;
-    allCards.forEach(function (c) {
-      var t = pubTime(c);
-      if (!t || now >= t) {
-        c.hidden = false;
-        cards.push(c);
-      } else {
-        c.hidden = true;
-        if (!nextUnlock || t < nextUnlock) nextUnlock = t;
-      }
-    });
-    total = Math.max(1, Math.ceil(cards.length / PER_PAGE));
+  var BN = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+  function bn(n, pad2) {
+    var s = String(n);
+    if (pad2 && s.length < 2) s = '0' + s;
+    return s.replace(/\d/g, function (d) { return BN[+d]; });
   }
 
-  var BN = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-  function bn(n) { return String(n).replace(/\d/g, function (d) { return BN[+d]; }); }
+  function formatLeft(ms) {
+    var totalSec = Math.max(0, Math.ceil(ms / 1000));
+    var days = Math.floor(totalSec / 86400);
+    var hours = Math.floor((totalSec % 86400) / 3600);
+    var mins = Math.floor((totalSec % 3600) / 60);
+    var secs = totalSec % 60;
+    var parts = [];
+    if (days > 0) parts.push(bn(days, false) + ' দিন');
+    parts.push(bn(hours, true) + ' ঘ.');
+    parts.push(bn(mins, true) + ' মি.');
+    parts.push(bn(secs, true) + ' সে.');
+    return 'বাকি: ' + parts.join(' ');
+  }
+
+  var scheduled = [];
+  cards.forEach(function (c) {
+    var t = pubTime(c);
+    if (!t) return;
+    scheduled.push({ card: c, time: t });
+    var link = c.querySelector('.article-card-link');
+    if (link && !link._schedBound) {
+      link._schedBound = true;
+      link.addEventListener('click', function (ev) {
+        if (Date.now() < t) {
+          ev.preventDefault();
+          var bar = c.querySelector('[data-card-timer]');
+          var note = c.querySelector('[data-timer-note]');
+          if (note) note.hidden = false;
+          if (bar) {
+            bar.classList.remove('is-nudged');
+            setTimeout(function () { bar.classList.add('is-nudged'); }, 15);
+          }
+        }
+      });
+    }
+  });
+
+  var tickTimer = 0;
+  function syncCardTimers() {
+    if (!scheduled.length) return;
+    var now = Date.now();
+    var anyLocked = false;
+    scheduled.forEach(function (item) {
+      var c = item.card;
+      var link = c.querySelector('.article-card-link');
+      var bar = c.querySelector('[data-card-timer]');
+      var clock = c.querySelector('[data-timer-clock]');
+      var note = c.querySelector('[data-timer-note]');
+      var lockedMore = c.querySelector('.card-more-locked');
+      var openMore = c.querySelector('.card-more-open');
+      var diff = item.time - now;
+
+      if (diff <= 0) {
+        c.classList.remove('is-scheduled-locked');
+        if (link) link.removeAttribute('aria-disabled');
+        if (bar) bar.hidden = true;
+        if (note) note.hidden = true;
+        if (lockedMore) lockedMore.hidden = true;
+        if (openMore) openMore.hidden = false;
+      } else {
+        anyLocked = true;
+        c.classList.add('is-scheduled-locked');
+        if (link) link.setAttribute('aria-disabled', 'true');
+        if (bar) bar.hidden = false;
+        if (clock) clock.textContent = formatLeft(diff);
+        if (lockedMore) lockedMore.hidden = false;
+        if (openMore) openMore.hidden = true;
+      }
+    });
+
+    if (!anyLocked) {
+      document.documentElement.classList.add('is-card-unlocked');
+      if (tickTimer) { clearInterval(tickTimer); tickTimer = 0; }
+    } else {
+      document.documentElement.classList.remove('is-card-unlocked');
+      if (!tickTimer) tickTimer = setInterval(syncCardTimers, 1000);
+    }
+  }
+
+  syncCardTimers();
+  if (cards.length <= PER_PAGE) return;
+
+  var total = Math.ceil(cards.length / PER_PAGE);
+  var pager = document.querySelector('.pager');
+  var current = 0;
 
   function pageFromUrl() {
     var m = /[?&]page=(\d+)/.exec(location.search);
@@ -57,13 +123,6 @@
   }
 
   function render(page) {
-    if (cards.length <= PER_PAGE) {
-      cards.forEach(function (c) { c.hidden = false; });
-      if (pager) pager.hidden = true;
-      current = 1;
-      return;
-    }
-
     if (page === current) return;
     current = page;
 
@@ -131,27 +190,7 @@
     grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  function scheduleNext() {
-    if (unlockTimer) { clearTimeout(unlockTimer); unlockTimer = 0; }
-    if (!nextUnlock) return;
-    var wait = nextUnlock - Date.now();
-    if (wait <= 0) wait = 20;
-    if (wait > 2147483647) return;
-    unlockTimer = setTimeout(function () {
-      syncScheduled();
-      current = 0;
-      render(pageFromUrl());
-      if (typeof window.__reveal === 'function') {
-        try { window.__reveal(); } catch (e) {}
-      }
-      scheduleNext();
-    }, wait + 20);
-  }
-
   window.addEventListener('popstate', function () { render(pageFromUrl()); });
 
-  syncScheduled();
-  if (!cards.length && !nextUnlock) return;
   render(pageFromUrl());
-  scheduleNext();
 })();
