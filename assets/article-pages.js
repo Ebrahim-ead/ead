@@ -83,6 +83,7 @@
 
       if (diff <= 0) {
         c.classList.remove('is-scheduled-locked');
+        c.classList.add('is-card-unlocked');
         if (link) link.removeAttribute('aria-disabled');
         if (bar) bar.hidden = true;
         if (note) note.hidden = true;
@@ -91,6 +92,7 @@
       } else {
         anyLocked = true;
         c.classList.add('is-scheduled-locked');
+        c.classList.remove('is-card-unlocked');
         if (link) link.setAttribute('aria-disabled', 'true');
         if (bar) bar.hidden = false;
         if (clock) clock.textContent = formatLeft(diff);
@@ -100,10 +102,8 @@
     });
 
     if (!anyLocked) {
-      document.documentElement.classList.add('is-card-unlocked');
       if (tickTimer) { clearInterval(tickTimer); tickTimer = 0; }
     } else {
-      document.documentElement.classList.remove('is-card-unlocked');
       if (!tickTimer) tickTimer = setInterval(syncCardTimers, 1000);
     }
   }
